@@ -293,6 +293,19 @@ defaults:
       comments: true
       share: true
       related: true
-      toc: true
+      show_header-meta: true
+      show_date: true
+      # toc: true
+      # toc-top: true
+      toc_sticky: true
       sidebar:
-        nav: main-sidebar
+        nav: "category-sidebar"
+
+  # home
+  - scope:
+      path: ""
+    values:
+      layout: home
+      author_profile: true
+      sidebar:
+        nav: "category-sidebar"

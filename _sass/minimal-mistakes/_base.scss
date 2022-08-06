@@ -10,7 +10,10 @@ html {
 
 body {
   margin: 0;
-  padding: 0;
+
+  // padding: 0;
+  padding-top: calc(3 * 16px + 8px);
+
   color: $text-color;
   font-family: $global-font-family;
   line-height: 1.5;
