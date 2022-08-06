@@ -14,13 +14,8 @@ main:
     url: https://github.com/soo-bak
 
 main-sidebar:
-  - title: "Test"
-    url: "/test/"
+  - title: "Mypost"
+    url: "/mypost/"
     children:
-    - title: "testChild"
-      url: "/test/child/"
-      children:
-      - title: "test Grand Child 1"
-        url: "/test/child/testgrandchild1/"
-      - title: "test Grand Child 2"
-        url: "/test/child/testgrandchild2/"
+    - title: "test"
+      url: "/mypost/test"
