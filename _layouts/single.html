@@ -26,10 +26,6 @@ layout: default
 
     <div class="page__inner-wrap">
       {% if page.url != "/" and site.breadcrumbs %}
-        {% unless paginator %}
-          {% comment %} {% include breadcrumbs.html %} {% endcomment %}
-          {% include my-breadcrumbs.html %}
-        {% endunless %}
       {% endif %}
       {% unless page.header.overlay_color or page.header.overlay_image %}
       <div class="page__header">
@@ -42,8 +38,6 @@ layout: default
       {% endunless %}
 
       {% include my-post_pagination.html %}
-
-      {% if page.share %}{% include my-social-share.html classes="page__share page__share-top" %}{% endif %}
 
       <section class="page__content" itemprop="text">
         {% if page.toc-top %}
@@ -76,9 +70,6 @@ layout: default
         {% if page.link %}<div><a href="{{ page.link }}" class="btn btn--primary">{{ site.data.ui-text[site.locale].ext_link_label | default: "Direct Link" }}</a></div>{% endif %}
       </section>
 
-      <p></p>
-      {% include ads/google/horizontal_ad.html %}
-
       <footer class="page__meta">
         {% if site.data.ui-text[site.locale].meta_label %}
           <h4 class="page__meta-title"><i class="far fa-file-alt"></i> {{ site.data.ui-text[site.locale].meta_label }}</h4>
@@ -87,7 +78,7 @@ layout: default
         {% include page__date.html %}
       </footer>
 
-      {% if page.share %}{% include social-share.html %}{% endif %}
+      <!-- {% if page.share %}{% include social-share.html %}{% endif %} -->
 
       {% include my-post_pagination.html %}
     </div>
