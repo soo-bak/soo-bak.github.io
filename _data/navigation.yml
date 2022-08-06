@@ -13,7 +13,7 @@ main:
   - title: "Soo-bak"
     url: https://github.com/soo-bak
 
-main-sidebar:
+category-sidebar:
   - title: "Mypost"
     url: "/mypost/"
     children:
