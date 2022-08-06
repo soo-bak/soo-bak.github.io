@@ -12,3 +12,15 @@ main:
   #   url: /sitemap/
   - title: "Soo-bak"
     url: https://github.com/soo-bak
+
+main-sidebar:
+  - title: "Test"
+    url: "/test/"
+    children:
+    - title: "testChild"
+      url: "/test/child/"
+      children:
+      - title: "test Grand Child 1"
+        url: "/test/child/testgrandchild1/"
+      - title: "test Grand Child 2"
+        url: "/test/child/testgrandchild2/"
