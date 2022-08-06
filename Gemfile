@@ -1,2 +1,10 @@
 source "https://rubygems.org"
-gemspec
+
+# for Github-page
+# gem "github-pages"
+# gem "jekyll-include-cache"
+
+gem "minimal-mistakes-jekyll"
+
+group :jekyll_plugins do
+end
