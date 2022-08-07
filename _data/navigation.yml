@@ -13,9 +13,9 @@ main:
   - title: "Soo-bak's GitHub"
     url: https://github.com/soo-bak
 
-category-sidebar:
+main-sidebar:
   - title: "Mypost"
     url: "/mypost/"
-    children:
-    - title: "test"
-      url: "/mypost/test"
+    # children:
+    # - title: "test"
+      # url: "/mypost/test"

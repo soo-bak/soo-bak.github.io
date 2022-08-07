@@ -299,7 +299,7 @@ defaults:
       # toc-top: true
       toc_sticky: true
       sidebar:
-        nav: "category-sidebar"
+        nav: "main-sidebar"
 
   # home
   - scope:
@@ -308,4 +308,13 @@ defaults:
       layout: home
       author_profile: true
       sidebar:
-        nav: "category-sidebar"
+        nav: "main-sidebar"
+
+  # toc
+  - scope:
+      path: ""
+    values:
+      layout: toc
+      author_profile: true
+      sidebar:
+        nav: "main-sidebar"
