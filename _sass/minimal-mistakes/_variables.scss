@@ -214,16 +214,6 @@
    $masthead-home-height: calc(2 * #{$masthead-font-size});
    $masthead-menu-height: calc(1.1 * #{$masthead-home-height});
 
-   // right-widget
-   $right-widget-background-color: black;
-   $right-widget-width: 400px;
-   $right-widget-height: calc(100vh - calc(#{$masthead-height}));
-   $right-widget__btn-border-color: $border-color;
-   $right-widget__btn-arrow-height: 20px;  // 7px;
-   $right-widget__btn-arrow-width: 20px;  // 50px;
-   $right-widget__btn-arrow-color: $primary-color;
-   $right-widget__body-backgroundcolor: rgba(0, 0, 0, .9); // mix(black, #fff, 85%);
-
    // initial-content
    $initial-content-top: calc(#{$masthead-height} + 8px);
 
