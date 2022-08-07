@@ -3,8 +3,8 @@
    ========================================================================== */
 
 .masthead {
-  // position: relative; // relative
-  position: fixed;  // masthead always will be top of the site.
+  position: relative; // relative
+  // position: fixed;  // masthead always will be top of the site.
   border-bottom: 1px solid $border-color;
   z-index: 20;
   top: 0;
