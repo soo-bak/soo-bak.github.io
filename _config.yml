@@ -308,8 +308,12 @@ defaults:
       related: true
       show_header-meta: true
       show_date: true
-      toc: false
+      toc: true
       toc-top: true
       toc_sticky: true
       sidebar:
         nav: "main-sidebar"
+
+footer_scripts:
+  - /assets/js/main.min.js
+  - /assets/js/customs.min.js
