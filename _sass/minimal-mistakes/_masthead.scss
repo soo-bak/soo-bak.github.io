@@ -166,13 +166,13 @@
           }
           position: relative; // for dropdown menu right align to it's parent.
 
-          &:hover {
-            background-color: $masthead-text-color;
-            a {
-              color: $text-color;
-            }
+          // &:hover {
+            // background-color: $masthead-text-color;
+            // a {
+              // color: $text-color;
+            // }
             // transition: all 0.2s ease-in-out;  // i can't decide it is better or not.
-          }
+          // }
 
           &:hover .masthead__submenu {
             clear: both;
