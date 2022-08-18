@@ -22,7 +22,7 @@ function sortArrayOfObjectsByKey(arr, key, sortDirection='asc') {
 }
 
 // for auto-scroll
-var top_offset = window.innerHeight * 0.27 - 1;
+var top_offset = 99
 function scrollToHash(h) {
   var yPos = $(h).offset().top - top_offset;
   scrollTo({top: yPos, behavior: 'smooth'});
