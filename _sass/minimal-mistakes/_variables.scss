@@ -217,7 +217,7 @@
    $masthead-menu-height: calc(1.1 * #{$masthead-home-height});
 
    // initial-content
-   $initial-content-top: calc(#{$masthead-height} + 8px);
+   $initial-content-top: calc(#{$masthead-height} + 16px);
 
    // Whole TOC
    $wholetoc-opt-view-icon-width: 22px;
