@@ -308,7 +308,7 @@ defaults:
       related: true
       show_header-meta: true
       show_date: true
-      toc: true
+      toc: false
       toc-top: true
       toc_sticky: true
       sidebar:
