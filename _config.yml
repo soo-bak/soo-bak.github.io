@@ -290,18 +290,22 @@ defaults:
       type: posts
     values:
       layout: single
-      author_profile: true
+      author_profile: false
       read_time: false
       comments: true
       share: true
       related: true
       show_header-meta: true
       show_date: true
-      toc: true
+      toc: false
       toc-top: true
       toc_sticky: true
       sidebar:
         nav: "main-sidebar"
+
+head_scripts:
+  - /assets/js/heads.min.js
+  - /assets/js/head-customs.min.js
 
 footer_scripts:
   - /assets/js/main.min.js
