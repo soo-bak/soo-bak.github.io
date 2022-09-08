@@ -4,7 +4,8 @@
     color: $text-color;
     text-decoration-line: none;
   }
-  ul, li {
+  ul,
+  li {
     padding: 0;
     margin: 0;
   }
@@ -36,11 +37,15 @@
   .wholetoc__opt-set {
     display: flex;
     align-items: center;
-    input, label {
+    input,
+    label {
       display: inline-block;
     }
-    button, select, span, label {
-      font-size: .85em;
+    button,
+    select,
+    span,
+    label {
+      font-size: 0.85em;
     }
     button {
       margin: 0 2px;
@@ -54,10 +59,10 @@
       margin-left: 4px;
     }
     span {
-      -webkit-user-select: none;  /* Chrome all / Safari all */
-      -moz-user-select: none;     /* Firefox all */
-      -ms-user-select: none;      /* IE 10+ */
-      user-select: none;          /* Likely future */
+      -webkit-user-select: none; /* Chrome all / Safari all */
+      -moz-user-select: none; /* Firefox all */
+      -ms-user-select: none; /* IE 10+ */
+      user-select: none; /* Likely future */
       padding-left: 3px;
     }
     label {
@@ -70,7 +75,7 @@
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-    font-size: .85em;
+    font-size: 0.85em;
     vertical-align: middle;
   }
   .view-style {
@@ -106,7 +111,7 @@
       padding-left: $wholetoc-indent-size;
     }
     &:not([depth="0"]):before {
-      content: '';
+      content: "";
       position: absolute;
       border-left: 1px solid $border-color;
       height: 100%;
@@ -116,7 +121,7 @@
       height: $wholetoc-category-branch-last-v-height;
     }
     &:not([depth="0"]):after {
-      content: '';
+      content: "";
       position: absolute;
       border-top: 1px solid $border-color;
       width: $wholetoc-category-branch-h-width;
@@ -145,7 +150,7 @@
     margin-left: 6px;
     font-weight: normal;
     color: gray;
-    font-size: .8em;
+    font-size: 0.8em;
   }
   /* Post View Style: list */
   .wholetoc__post-list.view-style__list {
@@ -157,7 +162,7 @@
         padding-left: $wholetoc-indent-size;
       }
       &:before {
-        content: '';
+        content: "";
         position: absolute;
         border-left: 1px solid $border-color;
         left: $wholetoc-category-branch-v-left;
@@ -170,7 +175,7 @@
         height: 100%;
       }
       &:after {
-        content: '';
+        content: "";
         position: absolute;
         border-top: 1px solid $border-color;
         width: $wholetoc-category-branch-h-width;
@@ -184,7 +189,7 @@
     position: relative;
     padding-left: $wholetoc-indent-size;
     &:before {
-      content: '';
+      content: "";
       position: absolute;
       border-left: 1px solid $border-color;
       left: $wholetoc-category-branch-v-left;

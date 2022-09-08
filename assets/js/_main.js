@@ -47,7 +47,7 @@ $(document).ready(function () {
   $(".search__toggle").on("click", function () {
     $(".search-content").toggleClass("is--visible");
     $(".initial-content").toggleClass("is--hidden");
-    // set focus on input
+    // set focus on inputp
     setTimeout(function () {
       $(".search-content input").focus();
     }, 400);

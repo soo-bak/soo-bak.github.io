@@ -23,9 +23,9 @@ main:
 
 main-sidebar:
   - title: "Game Design"
-    url: "/gamedesign/"
+    url: "/game-design/"
     children:
       - title: "Theory"
-        url: "/gamedesign/theory/"
+        url: "/game-design/theory/"
       - title: "Consideration"
-        url: "/gamedesign/consideration/"
+        url: "/game-design/consideration/"

@@ -28,8 +28,8 @@
   },
   "scripts": {
     "uglify-heads": "uglifyjs assets/js/vendor/jquery/jquery-3.6.0.js -c -m -o assets/js/heads.min.js",
-    "uglify": "uglifyjs assets/js/plugins/jquery.fitvids.js assets/js/plugins/jquery.magnific-popup.js assets/js/plugins/jquery.ba-throttle-debounce.js assets/js/plugins/pagination-2.1.5.js assets/js/plugins/smooth-scroll.js assets/js/plugins/gumshoe.js assets/js/_main.js -c -m -o assets/js/main.min.js",
     "uglify-head-customs": "uglifyjs assets/js/customs/head-common.js -c -m -o assets/js/head-customs.min.js",
+    "uglify": "uglifyjs assets/js/plugins/jquery.fitvids.js assets/js/plugins/jquery.ba-throttle-debounce.js assets/js/plugins/pagination-2.1.5.js assets/js/plugins/smooth-scroll.js assets/js/plugins/gumshoe.js assets/js/_main.js -c -m -o assets/js/main.min.js",
     "uglify-customs": "uglifyjs assets/js/customs/common.js assets/js/customs/whole-toc.js assets/js/customs/sidebar.js assets/js/customs/auto-scroll.js assets/js/customs/responsive-topbar.js assets/js/customs/statistics.js assets/js/customs/site-pagination.js assets/js/customs/post-utility.js -c -m -o assets/js/customs.min.js",
     "watch:js": "onchange \"assets/js/**/*.js\" -e \"assets/js/main.min.js\" -- npm run build:js",
     "build-heads-all:js": "npm run uglify-heads && npm run uglify-head-customs",
