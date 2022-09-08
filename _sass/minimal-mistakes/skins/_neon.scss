@@ -3,9 +3,9 @@
    ========================================================================== */
 
 /* Colors */
-$background-color: #141010 !default;
-$text-color: #fff6fb !default;
-$primary-color: #f21368 !default;
+$background-color: #101413 !default;
+$text-color: #f9fffb !default;
+$primary-color: #73f38f !default;
 $border-color: mix(#fff, $background-color, 20%) !default;
 $code-background-color: mix(#000, $background-color, 15%) !default;
 $code-background-color-dark: mix(#000, $background-color, 20%) !default;
@@ -43,7 +43,7 @@ $base0f: #cc6633 !default;
 .author__urls.social-icons i,
 .author__urls.social-icons .svg-inline--fa,
 .page__footer-follow .social-icons i,
-.page__footer-follow .social-icons .svg-inline--fa  {
+.page__footer-follow .social-icons .svg-inline--fa {
   color: inherit;
 }
 
