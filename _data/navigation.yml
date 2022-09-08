@@ -14,8 +14,8 @@ main:
     url: https://github.com/soo-bak
 
 main-sidebar:
-  - title: "Mypost"
-    url: "/mypost/"
+  - title: "Game Design"
+    url: "/gamedesign/"
     # children:
     # - title: "test"
-      # url: "/mypost/test"
+    # url: "/GameDesign/test"
