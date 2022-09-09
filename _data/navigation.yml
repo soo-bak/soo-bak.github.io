@@ -21,6 +21,8 @@ main:
 # [권장]
 # 1. CSS 적용 문제로 children 깊이는 2까지만 하는것을 권장. 즉, children의 children까지만.
 
+
+# 목차에 나타나는 타이틀 (첫글자 대문자) , 상단 요약에 나타나는 타이틀은 각 페이지 index 의 타이틀 값으로 모두 대문자로
 main-sidebar:
   - title: "Game Design"
     url: "/game-design/"
@@ -29,3 +31,5 @@ main-sidebar:
         url: "/game-design/theory/"
       - title: "Consideration"
         url: "/game-design/consideration/"
+  - title: "Unity"
+    url: "/unity/"
