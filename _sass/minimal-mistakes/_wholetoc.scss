@@ -131,12 +131,14 @@
   }
   .wholetoc__category-title {
     padding-top: $wholetoc-category-padding-top;
+    color: rgb(248, 207, 255);
     font-weight: bold;
     &[depth="0"] {
       border-bottom: 1px solid black;
       a {
         line-height: 1.5;
         font-size: $h-size-2-general;
+        color: rgb(199, 255, 253);
       }
     }
     .wholetoc__category-title-icon {
@@ -149,7 +151,7 @@
   .wholetoc__category-stat {
     margin-left: 6px;
     font-weight: normal;
-    color: gray;
+    color: rgb(189, 155, 196);
     font-size: 0.8em;
   }
   /* Post View Style: list */

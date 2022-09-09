@@ -143,14 +143,14 @@
       .nav__sub-title-stat,
       .nav__item-children-stat {
         align-self: center;
-        margin-right: 4px;
-        background-color: mix(orangered, #fff, 85%);
-        color: white;
-        font-size: 11px;
+        margin-right: 5px;
+        background-color: mix(rgb(46, 255, 129), #fff, 85%);
+        color: rgb(53, 0, 43);
+        font-size: 12px;
         padding-left: 6px;
         padding-right: 6px;
         border-radius: 8px;
-        font-weight: normal;
+        font-weight: bold
       }
       .nav__item-children-stat {
         margin-left: 8px;
