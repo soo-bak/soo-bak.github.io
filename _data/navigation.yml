@@ -33,3 +33,5 @@ main-sidebar:
         url: "/game-design/consideration/"
   - title: "Unity"
     url: "/unity/"
+  - title: "C#"
+    url: "/csharp/"

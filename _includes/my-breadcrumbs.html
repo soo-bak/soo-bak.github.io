@@ -36,7 +36,7 @@
         {% assign prev_crumbs = prev_crumbs | push: crumb %}
         {% assign current_crumb_dir = prev_crumbs | join: '/' %}
         <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-          <a href="{{ current_crumb_dir | prepend: crumb_path | relative_url }}" itemprop="item"><span itemprop="name">{{ crumb | upcase | replace: '-', ' ' | replace: '%20', ' '  }}</span></a>
+          <a href="{{ current_crumb_dir | prepend: crumb_path | relative_url }}" itemprop="item"><span itemprop="name">{{ crumb | upcase | replace: '-', ' ' | replace: 'CSHARP', 'C#' }}</span></a>
           <meta itemprop="position" content="{{ i }}" />
         </li>
         <span class="sep">{{ site.data.ui-text[site.locale].breadcrumb_separator | default: "/" }}</span>
