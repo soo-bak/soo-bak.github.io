@@ -76,6 +76,7 @@ body {
     margin-top: 0;
     margin-bottom: 0;
     font-size: $h-size-1-general;
+    color: rgb(199, 255, 253);
     @include breakpoint($small) {
       font-size: $h-size-1;
     }

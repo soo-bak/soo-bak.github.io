@@ -495,6 +495,10 @@
     .archive {
       #page-title {
         margin-bottom: 0;
+
+        .page__title {
+          color: rgb(199, 255, 253)
+        }
       }
       .archive__subtitle:first-of-type {
         margin-top: 0;
