@@ -35,3 +35,5 @@ main-sidebar:
     url: "/unity/"
   - title: "C#"
     url: "/csharp/"
+  - title: "일상"
+    url: "/dayilylife"
