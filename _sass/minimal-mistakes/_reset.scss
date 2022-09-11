@@ -8,6 +8,11 @@ html {
   /* apply a natural box layout model to all elements */
   box-sizing: border-box;
   background-color: $background-color;
+
+  .page__date {
+    font-size: 12px;
+  }
+
   font-size: $font-size;
 
   // @include breakpoint($medium) {
