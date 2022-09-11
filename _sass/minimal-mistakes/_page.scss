@@ -626,6 +626,16 @@ footer {
   color: $primary-color;
 }
 
+.grid__wrapper {
+  .grid__item {
+    .archive__item {
+      .archive__item-title.no_toc {
+        color:rgb(199, 255, 253);
+      }
+    }
+  }
+}
+
 /*
    Wide Pages
    ========================================================================== */
