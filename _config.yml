@@ -107,7 +107,7 @@ analytics:
 # Site Author
 author:
   name: "Soo-bak"
-  avatar: # path of avatar image, e.g. "/assets/images/bio-photo.jpg"
+  avatar: "https://avatars.githubusercontent.com/u/60930104?v=4"
   bio: "Game designer."
   location: "Seoul, ROK"
   email: znyous@gmail.com
