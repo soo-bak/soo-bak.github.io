@@ -35,5 +35,10 @@ main-sidebar:
     url: "/unity/"
   - title: "Algorithm"
     url: "/algorithm/"
+    children:
+      - title: "BOJ"
+        url: "/algorithm/boj"
+      - title: "Theory"
+        url: "/algorithm/theory"
   - title: "일상"
     url: "/dayilylife"
