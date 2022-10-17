@@ -17,10 +17,10 @@ minimal_mistakes_skin: "neon" # "air", "aqua", "contrast", "dark", "dirt", "neon
 
 # Site Settings
 locale: "en-US"
-title: "Soo-bak's blog"
+title: "soo:bak's blog"
 title_separator: "-"
 subtitle: # site tagline that appears below site title in masthead
-name: "soo-bak"
+name: "soo:bak"
 description: "게임 디자인 기획 사업 개발 유니티 C#"
 url: "https://soo-bak.github.io" # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
 baseurl: # the subpath of your site, e.g. "/blog"
@@ -106,9 +106,9 @@ analytics:
 
 # Site Author
 author:
-  name: "Soo-bak"
+  name: "soo:bak"
   avatar: "https://avatars.githubusercontent.com/u/60930104?v=4"
-  bio: "Game designer."
+  bio: "Game Designer."
   location: "Seoul, ROK"
   email: znyous@gmail.com
   links:
