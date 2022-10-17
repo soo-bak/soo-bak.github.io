@@ -33,7 +33,7 @@
         <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
           <meta itemprop="position" content="{{ i }}" />
 
-          <a href="{{ crumb | downcase | replace: '%20', '-' | prepend: path_type | prepend: crumb_path | relative_url }}" itemprop="item"><span itemprop="name">{{ crumb | upcase | replace: '-', ' ' | replace: 'CSHARP', 'C#' | replace: 'DAYILYLIFE', '일상' }}</span></a>
+          <a href="{{ crumb | downcase | replace: '%20', '-' | prepend: path_type | prepend: crumb_path | relative_url }}" itemprop="item"><span itemprop="name">{{ crumb | upcase | replace: '-', ' ' | replace: 'DAYILYLIFE', '일상' }}</span></a>
           </a>
         </li>
         <span class="sep">{{ site.data.ui-text[site.locale].breadcrumb_separator | default: "/" }}</span>
