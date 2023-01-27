@@ -207,6 +207,18 @@
 
   /* Figures and images */
 
+  img + em {
+    display: block;
+    text-align: center;
+    font-size: .8rem;
+    color: gray;
+  }
+
+  em {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+  }
+
   figure {
     display: -webkit-box;
     display: flex;
