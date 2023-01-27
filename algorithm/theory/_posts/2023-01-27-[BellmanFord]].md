@@ -1,6 +1,6 @@
 ---
 layout: single
-title: "벨만 포드 알고리즘(Bellman-Ford algorithm) - soo:bak"
+title: "벨만 포드 알고리즘 (Bellman-Ford algorithm) - soo:bak"
 date: "2023-01-27 18:45:00 +0900"
 ---
 
@@ -22,7 +22,7 @@ date: "2023-01-27 18:45:00 +0900"
 
   <b>단계 1&nbsp; . &nbsp;거리의 초깃값을 설정</b><br>
 
-  - 시작 노드의 거리 값은 `0`<br>
+  - 시작 노드의 거리값은 `0`<br>
   - 다른 모든 노드의 거리값은 `무한대`<br>
 
   <br><br><br>
