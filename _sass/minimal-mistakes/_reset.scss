@@ -33,17 +33,18 @@ html {
 
 /* Remove margin */
 
-body { margin: 0; }
+body { margin: 0;
+}
 
 /* Selected elements */
 
 ::-moz-selection {
-  color: #fff;
+  color: rgb(255, 187, 0);
   background: #000;
 }
 
 ::selection {
-  color: #fff;
+  color: rgb(0, 255, 136);
   background: #000;
 }
 
