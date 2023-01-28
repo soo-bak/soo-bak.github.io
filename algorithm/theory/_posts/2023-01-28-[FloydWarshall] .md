@@ -55,7 +55,8 @@ date: "2023-01-28 04:49:00 +0900"
     ![](/assets/images/slide_res/Floyd-Warshall_final.png)
     *최종 결과*
     <br>
-  - 예를 들면, 최종 행렬을 통해 `2번 노드`와 `4번 노드` 간의 최단 경로는 `8` 임을 알 수 있음
+  - 예를 들면, 최종 행렬을 통해 `2번 노드`와 `4번 노드` 간의 최단 경로는 `8` 임을 알 수 있음<br>
+
     ![](/assets/images/slide_res/Floyd-Warshall_example.png)
     *2번 노드와 4번 노드 사이의 최단 경로는 8*
 <br><br><br>
