@@ -64,7 +64,7 @@ date: "2023-01-28 04:49:00 +0900"
 - 먼저 `dist 배열` (행렬)을 `adj` (그래프의 인접 행렬)을 이용하여 초기화<br>
 
 ```c++
-for (int from = 1; from <= n; i++) {
+for (int from = 1; from <= n; from++) {
   for (int to = 1; to <= n; to++) {
     if (from == to) dist[from][to] = 0;
     else if (adj[from][to]) dist[from][to] = adj[from][to];
