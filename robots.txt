@@ -1,3 +1,3 @@
 User-agent: *
 Allow: /
-Sitemap: https://https://soo-bak.github.io/sitemap.xml
+Sitemap: https://soo-bak.github.io/sitemap.xml
