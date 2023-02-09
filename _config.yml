@@ -21,7 +21,7 @@ title: "soo:bak's blog"
 title_separator: "-"
 subtitle: # site tagline that appears below site title in masthead
 name: "soo:bak"
-description: "게임 디자인 기획 사업 개발 유니티 C#"
+description: "게임 디자인 기획 사업 개발 유니티 C# C++ PM 백준 알고리즘"
 url: "https://soo-bak.github.io" # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
 baseurl: # the subpath of your site, e.g. "/blog"
 repository: "soo-bak/soo-bak.github.io" # GitHub username/repo-name e.g. "mmistakes/minimal-mistakes"
