@@ -34,7 +34,7 @@ date: "2023-03-12 13:54:00 +0900"
 
   <br>
   이어서 구해야 할 것은 다음과 같습니다.
-  - 태양이 `특정한 위치` 에 돌아오는 연도들과, 달이 `특정한 위치` 에 돌아오는 연도들 중에서 `가장 빠르면서도 같은 연도`.
+  - 태양이 `특정한 위치` 에 돌아오는 연도들과, 달이 `특정한 위치` 에 돌아오는 연도들 중에서 `가장 빠르면서도 같은 연도`
 
   해당 값을 탐색하는 과정은 비교적 빠른 탐색이 가능하도록 `Hash-table` 을 사용하였습니다.<br>
 
@@ -57,7 +57,7 @@ date: "2023-03-12 13:54:00 +0900"
 namespace Solution {
   class Program {
 
-    public record Coordinate(int beforeCorrectPostionYear, int backToCorrectPostionYear);
+    public record YEARS(int lastCorrectPosYear, int backToCorrectPosYear);
 
     const int SUN = 0,
               MOON = 1;
@@ -67,35 +67,36 @@ namespace Solution {
       var SunInput = Console.ReadLine()?.Split();
       var MoonInput = Console.ReadLine()?.Split();
 
-      Coordinate[] coord = new Coordinate[2] {
-        new Coordinate(int.Parse(SunInput![0]), int.Parse(SunInput![1])),
-        new Coordinate(int.Parse(MoonInput![0]), int.Parse(MoonInput![1]))
+      YEARS[] years = new YEARS[2] {
+        new YEARS(int.Parse(SunInput![0]), int.Parse(SunInput![1])),
+        new YEARS(int.Parse(MoonInput![0]), int.Parse(MoonInput![1]))
       };
 
-      int sunNextEclipse = -coord[SUN].beforeCorrectPostionYear + coord[SUN].backToCorrectPostionYear;
-      int moonNextEclipse = -coord[MOON].beforeCorrectPostionYear + coord[MOON].backToCorrectPostionYear;
+      int nextSunEclipse = -years[SUN].lastCorrectPosYear + years[SUN].backToCorrectPosYear;
+      int nextMoonEclipse = -years[MOON].lastCorrectPosYear + years[MOON].backToCorrectPosYear;
 
-      List<int> sunV = new List<int> {sunNextEclipse};
-      List<int> moonV = new List<int> {moonNextEclipse};
+      List<int> sunEclipses = new List<int> {nextSunEclipse};
+      List<int> moonEclipses = new List<int> {nextMoonEclipse};
 
+      const int MAX_YEAR = 5000;
       while (true) {
-          if (sunNextEclipse > 5000 && moonNextEclipse > 5000) break;
+          if (nextSunEclipse > MAX_YEAR && nextMoonEclipse > MAX_YEAR) break;
 
-          if (sunNextEclipse <= 5000) {
-            sunNextEclipse += coord[SUN].backToCorrectPostionYear;
-            sunV.Add(sunNextEclipse);
+          if (nextSunEclipse <= MAX_YEAR) {
+            nextSunEclipse += years[SUN].backToCorrectPosYear;
+            sunEclipses.Add(nextSunEclipse);
           }
 
-          if (moonNextEclipse <= 5000) {
-            moonNextEclipse += coord[MOON].backToCorrectPostionYear;
-            moonV.Add(moonNextEclipse);
+          if (nextMoonEclipse <= MAX_YEAR) {
+            nextMoonEclipse += years[MOON].backToCorrectPosYear;
+            moonEclipses.Add(nextMoonEclipse);
           }
       }
 
-      HashSet<int> sunSet = new HashSet<int>(sunV);
+      HashSet<int> sunHashSet = new HashSet<int>(sunEclipses);
 
-      foreach (int element in moonV) {
-        if (sunSet.Contains(element)) {
+      foreach (int element in moonEclipses) {
+        if (sunHashSet.Contains(element)) {
           Console.WriteLine(element);
           break;
         }
@@ -117,37 +118,38 @@ using namespace std;
 constexpr int SUN = 0;
 constexpr int MOON = 1;
 
-struct Coordinate {
-  int beforeCorrectPostionYear,
-      backToCorrectPostionYear;
+struct YEARS {
+  int lsatCorrectPosYear,
+      backToCorrectPosYear;
 };
 
 int main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
 
-  Coordinate coord[2];
+  YEARS years[2];
 
-  cin >> coord[SUN].beforeCorrectPostionYear >> coord[SUN].backToCorrectPostionYear;
-  cin >> coord[MOON].beforeCorrectPostionYear >> coord[MOON].backToCorrectPostionYear;
+  cin >> years[SUN].lsatCorrectPosYear >> years[SUN].backToCorrectPosYear;
+  cin >> years[MOON].lsatCorrectPosYear >> years[MOON].backToCorrectPosYear;
 
-  int nextSunEclipse = -coord[SUN].beforeCorrectPostionYear + coord[SUN].backToCorrectPostionYear;
-  int nextMoonEclipse = -coord[MOON].beforeCorrectPostionYear + coord[MOON].backToCorrectPostionYear;
+  int nextSunEclipse = -years[SUN].lsatCorrectPosYear + years[SUN].backToCorrectPosYear,
+      nextMoonEclipse = -years[MOON].lsatCorrectPosYear + years[MOON].backToCorrectPosYear;
 
   vector<int> sunEclipses, moonEclipses;
   sunEclipses.push_back(nextSunEclipse);
   moonEclipses.push_back(nextMoonEclipse);
 
+  const int MAX_YEAR = 5000;
   while (true) {
-    if (nextSunEclipse > 5000 && nextMoonEclipse > 5000) break ;
+    if (nextSunEclipse > MAX_YEAR && nextMoonEclipse > MAX_YEAR) break ;
 
-    if (nextSunEclipse <= 5000) {
-      nextSunEclipse += coord[SUN].backToCorrectPostionYear;
+    if (nextSunEclipse <= MAX_YEAR) {
+      nextSunEclipse += years[SUN].backToCorrectPosYear;
       sunEclipses.push_back(nextSunEclipse);
     }
 
-    if (nextMoonEclipse <= 5000) {
-      nextMoonEclipse += coord[MOON].backToCorrectPostionYear;
+    if (nextMoonEclipse <= MAX_YEAR) {
+      nextMoonEclipse += years[MOON].backToCorrectPosYear;
       moonEclipses.push_back(nextMoonEclipse);
     }
   }
