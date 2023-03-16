@@ -59,7 +59,7 @@
 
 @function yiq-is-light(
   $color,
-  $threshold: $yiq-contrasted-threshold
+  $threshold: mix(#40dc7f, #000000, 33%),
 ) {
   $red: red($color);
   $green: green($color);
@@ -74,11 +74,11 @@
 
 @function yiq-contrast-color(
   $color,
-  $dark: $yiq-contrasted-dark-default,
-  $light: $yiq-contrasted-light-default,
+  $dark: mix(#40dc7f, #ffffff, 33%),
+  $light: mix(#40dc7f, #ffffff, 33%),
   $threshold: $yiq-contrasted-threshold
 ) {
-  @return if(yiq-is-light($color, $threshold), $yiq-contrasted-dark-default, $yiq-contrasted-light-default);
+  @return if(yiq-is-light($color, $threshold), mix(#40dc7f, #ffffff, 33%), mix(#40dc7f, #ffffff, 33%));
 }
 
 @mixin yiq-contrasted(
@@ -87,6 +87,6 @@
   $light: $yiq-contrasted-light-default,
   $threshold: $yiq-contrasted-threshold
 ) {
-  background-color: $background-color;
+  background-color: #101413;
   color: yiq-contrast-color($background-color, $dark, $light, $threshold);
 }
