@@ -533,10 +533,10 @@ nav.breadcrumbs {
   padding: 0;
   width: 100%;
   list-style: none;
-  font-size: 0.9em;
+  font-size: 1em;
 
   @include breakpoint($large) {
-    font-size: 0.8em;
+    font-size: 1em;
   }
 
   a {
