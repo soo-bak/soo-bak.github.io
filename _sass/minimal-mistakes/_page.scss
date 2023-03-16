@@ -38,7 +38,7 @@ body {
 .page {
   @include breakpoint($large) {
     float: right;
-    width: calc(100% - #{$left-sidebar-width} - 1em); // -1em from _mixins for padding of <div id='main'>.
+  width: calc(100% - #{$left-sidebar-width} - 1em); // -1em from _mixins for padding of <div id='main'>.
     padding-left: 1em;
     padding-right: $right-sidebar-width-narrow;
   }
@@ -136,7 +136,7 @@ body {
   p,
   li,
   dl {
-    font-size: 0.8em;
+    font-size: 13.3px;
   }
 
   /* paragraph indents */
