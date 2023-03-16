@@ -12,7 +12,7 @@ en: &DEFAULT_EN
   pagination_next            : "다음"
   breadcrumb_home_label      : "HOME"
   breadcrumb_separator       : "/"
-  menu_label                 : "게시글 카테고리 보기"
+  menu_label                 : "전체 게시글 카테고리 보기"
   search_label               : "Toggle search"
   toc_label                  : "목차"
   ext_link_label             : "Direct link"
