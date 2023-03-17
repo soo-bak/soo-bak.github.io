@@ -2,7 +2,7 @@
 {% assign find_array = include.find_array %}
 
 {% for start_item in find_array %}
-{% assign start_url = start_item.url | downcase | replace: ' ', '-' | replace: '일상', 'dailylife' %}
+{% assign start_url = start_item.url | downcase | replace: ' ', '-' %}
 {% capture start_url %}{% include functions/append_trailing_sep.html target=start_url sep='/' %}{% endcapture %}
 {% assign start_url = start_url | strip %}
 {% if start_url == include.target_category %}

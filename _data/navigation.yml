@@ -40,5 +40,10 @@ main-sidebar:
         url: "/algorithm/boj/"
       - title: "Theory"
         url: "/algorithm/theory/"
-  - title: "일상"
-    url: "/dailylife/"
+  - title: "Daily Life"
+    url: "/daily-life/"
+    children:
+     - title: "Happiness"
+       url: "/daily-life/happiness/"
+     - title: "Appreciation"
+       url: "/daily-life/appreciation/"
