@@ -38,8 +38,6 @@ main-sidebar:
         url: "/game-design/theory/"
       - title: "Consideration"
         url: "/game-design/consideration/"
-  - title: "Unity"
-    url: "/unity/"
   - title: "Algorithm"
     url: "/algorithm/"
     children:
@@ -47,3 +45,5 @@ main-sidebar:
         url: "/algorithm/boj/"
       - title: "Theory"
         url: "/algorithm/theory/"
+  - title: "Unity"
+    url: "/unity/"
