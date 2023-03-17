@@ -24,6 +24,13 @@ main:
 
 # 목차에 나타나는 타이틀 (첫글자 대문자) , 상단 요약에 나타나는 타이틀은 각 페이지 index 의 타이틀 값으로 모두 대문자로
 main-sidebar:
+  - title: "Daily Life"
+    url: "/daily-life/"
+    children:
+     - title: "Happiness"
+       url: "/daily-life/happiness/"
+     - title: "Appreciation"
+       url: "/daily-life/appreciation/"
   - title: "Game Design"
     url: "/game-design/"
     children:
@@ -40,10 +47,3 @@ main-sidebar:
         url: "/algorithm/boj/"
       - title: "Theory"
         url: "/algorithm/theory/"
-  - title: "Daily Life"
-    url: "/daily-life/"
-    children:
-     - title: "Happiness"
-       url: "/daily-life/happiness/"
-     - title: "Appreciation"
-       url: "/daily-life/appreciation/"
