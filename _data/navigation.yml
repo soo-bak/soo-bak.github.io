@@ -37,8 +37,8 @@ main-sidebar:
     url: "/algorithm/"
     children:
       - title: "BOJ"
-        url: "/algorithm/boj"
+        url: "/algorithm/boj/"
       - title: "Theory"
-        url: "/algorithm/theory"
+        url: "/algorithm/theory/"
   - title: "일상"
-    url: "/dayilylife"
+    url: "/dailylife/"
