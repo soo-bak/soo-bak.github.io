@@ -128,9 +128,30 @@ body {
     padding: 0.5em 0;
     border-top: 4px solid $border-color;
     border-bottom: 4px solid $border-color;
+    color: #5dff91;
+  }
+  h2 {
+    color: #6eff9c
+  }
+  h3 {
+    color: #bcffd1;
+  }
+  h4 {
+    color: #d7ffe4
   }
   h2, h3, h4, h5, h6 {
     margin-top: 1.3em;
+  }
+  .center {
+    display: block;
+    align-items: center;
+    margin-top: 1em;
+  }
+
+  .left {
+    display: block;
+    align-items: left;
+    margin-top: 1em;
   }
 
   p,
