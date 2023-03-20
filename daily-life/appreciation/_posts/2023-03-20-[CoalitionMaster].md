@@ -79,10 +79,10 @@ date: "2023-03-20 13:16:00 +0900"
   그리고 워크숍! 감사했던 Staff 님들! 다른 동료분들... 모두 참 감사하고 재밌는 기억을 남겨주셔서 참 감사할 따름이다. <br>
   <br>
   ![](/assets/images/slide_res/CoalitionMasterMentorWorkshop.jpg)
-  *비상근 멘토 워크숍 in 제주도, 초상권 보호를 위해 얼굴은 가림! *
+  *비상근 멘토 워크숍 in 제주도, 초상권 보호를 위해 얼굴은 가림!*
   <br><br><br>
   ![](/assets/images/slide_res/CoalitionMasterWorkshop.jpg)
-  *마스터 워크숍 in 제주도, 초상권 보호를 위해 얼굴은 가림! *
+  *마스터 워크숍 in 제주도, 초상권 보호를 위해 얼굴은 가림!*
   <br><br><br>
   ![](/assets/images/slide_res/CoalitionMaster42Logo.jpg)
   *신입 기수 환영 기념 42로 줄서기!*
