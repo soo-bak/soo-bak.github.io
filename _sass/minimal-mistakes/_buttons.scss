@@ -43,7 +43,9 @@
 
   @each $buttoncolor, $color in $buttoncolors {
     &--#{$buttoncolor} {
-      @include yiq-contrasted($color);
+      background-color: inherit;
+      color: #c0f3d5;
+      // @include yiq-contrasted($color);
       @if ($buttoncolor == inverse) {
         border: 1px solid #3FDB71;
       }
@@ -51,13 +53,13 @@
         border: 1px solid #fff;
       }
 
-      &:visited {
-        @include yiq-contrasted($color);
-      }
+      // &:visited {
+        // @include yiq-contrasted($color);
+      // }
 
-      &:hover {
-        @include yiq-contrasted(mix(#000, $color, 20%));
-      }
+      // &:hover {
+        // @include yiq-contrasted(mix(#000, $color, 20%));
+      // }
     }
   }
 
