@@ -96,7 +96,7 @@ date: "2023-03-20 15:16:00 +0900"
   <br><br>
 
 ---
-#### 캡슐화와 'Nested Class' 와 클래스, 클래스 간 메모리 관리 및 깊은/얕은 복사  관련 과제
+#### 캡슐화와 'Nested Class', 클래스 간 메모리 관리 및 깊은/얕은 복사  관련 과제
   <br>
 ![](/assets/images/slide_res/42SeoulCPP01.png){: width="77%" height="77%"}{: .left}
   <br><br>
