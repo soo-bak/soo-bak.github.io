@@ -213,9 +213,10 @@
 
   /* Figures and images */
 
+
   img + em {
-    display: block;
-    text-align: center;
+    display: inherit;
+    text-align: inherit;
     font-size: .8rem;
     color: gray;
   }
@@ -283,9 +284,10 @@
 
   figcaption {
     margin-bottom: 0.5em;
-    color: $muted-text-color;
-    font-family: $caption-font-family;
+    color: gray;
+    font-family: -apple-system,BlinkMacSystemFont,"Roboto","Segoe UI","Helvetica Neue","Lucida Grande",Arial,sans-serif;
     font-size: $type-size-6;
+    font-style: italic;
 
     a {
       -webkit-transition: $global-transition;
