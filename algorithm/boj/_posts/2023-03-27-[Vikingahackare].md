@@ -1,7 +1,7 @@
 ---
 layout: single
 title: "[백준 26906] Vikingahackare (C#, C++) - soo:bak"
-date: "2023-03-25 16:29:00 +0900"
+date: "2023-03-27 16:31:00 +0900"
 ---
 
 ## 문제 링크
