@@ -46,10 +46,6 @@ date: "2023-04-11 14:40:00 +0900"
 
   그 만큼 바쁘기도 바쁘고 몸도 피곤할 때가 많지만, 재미와 감사함, 그리고 행복함이 더 크게 느껴진다.<br>
 
-  <br>
-
-  `Soo:bak`, 내 개인 브랜딩 또한 점점 더 유명해지기를 바래본다. 🍉👍😂
-
   <p align="center">
     <img src="/assets/images/slide_res/KCIA_2.png" align="center" width="77%">
     <figcaption align="center">묵직한 메달!</figcaption>
