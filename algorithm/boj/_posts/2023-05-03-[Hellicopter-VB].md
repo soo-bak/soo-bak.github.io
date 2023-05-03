@@ -1,11 +1,11 @@
 ---
 layout: single
-title: "[백준 2377] Pottery (FreeBasic) - soo:bak"
-date: "2023-05-03 22:23:00 +0900"
+title: "[백준 14337] Helicopter (VisualBasic) - soo:bak"
+date: "2023-05-03 23:11:00 +0900"
 ---
 
 ## 문제 링크
-  [2377번 - Pottery](https://www.acmicpc.net/problem/2377)
+  [14337번 - Helicopter](https://www.acmicpc.net/problem/14337)
 
 ## 설명
 아스키 문자를 출력하는 간단한 문제이지만, 제출할 수 있는 언어가 `FreeBASIC` 로 제한되어 있습니다. <br>

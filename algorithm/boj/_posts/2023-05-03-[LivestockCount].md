@@ -1,6 +1,6 @@
 ---
 layout: single
-title: "[백준 2372] Livestock Count (C#, C++) - soo:bak"
+title: "[백준 2372] Livestock Count (Ada) - soo:bak"
 date: "2023-05-03 21:33:00 +0900"
 ---
 
