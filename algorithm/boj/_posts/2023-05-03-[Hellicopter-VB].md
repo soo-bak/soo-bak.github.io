@@ -8,47 +8,45 @@ date: "2023-05-03 23:11:00 +0900"
   [14337번 - Helicopter](https://www.acmicpc.net/problem/14337)
 
 ## 설명
-아스키 문자를 출력하는 간단한 문제이지만, 제출할 수 있는 언어가 `FreeBASIC` 로 제한되어 있습니다. <br>
+아스키 문자를 출력하는 간단한 문제이지만, 제출할 수 있는 언어가 `VisualBasic` 으로 제한되어 있습니다. <br>
 
-`FreeBASIC` 언어에 대한 간단한 설명은 다음과 같습니다. <br>
-- `BASIC` 언어의 현대적인 오픈소스 버전 <br>
-- 기존 `BASIC` 언어 사용자들이 쉽게적응할 수 있는 구문을 제공하면서도, 현대적인 프로그래밍 언어의 다양한 기능을 제공 <br>
-- 초보자가 배우기 쉬운 간결하고 이해하기 쉬운 문법을 제공 <br>
-- `Windows`, `Linux`, `DOS` 등 다중 운영체제 지원 <br>
+`VisualBasic` 언어에 대한 간단한 설명은 다음과 같습니다. <br>
+- 마이크로소프트(Microsoft)에서 개발한 언어로, 프로그래밍 초보자가 쉽게 접근할 수 있는 도구로 설계 <br>
+- 개발자들이 빠르게 Windows 기반의 응용 프로그램들을 만들 수 있도록 지원<br>
+- 마지막 버전인 `VisualBasic 6.0` 은 1998년도에 출시되었으며, 이후에는 `VB.NET` 으로 진화 <br>
+- 이후, `.NET` 프레임워크를 기반으로 한 새로운 버전이 만들어지고, `VisualBasic` 은 점차 `VB.NET` 으로 대체<br>
+- `VB.NET` 은 객체지향 프로그래밍 기능을 강화하고, `.NET` 프레임워크와의 호환성을 높임 <br>
 
 즉, 기존 `BASIC` 언어 사용자들이 현대 프로그래밍 환경에 적응하는 데 도움이 되는 언어라고 합니다. <br>
 
 <br>
 
-아래 코드에서 사용한 `FreeBASIC` 의 문법에 대한 설명은 다음과 같습니다.<br>
+아래 코드에서 사용한 `VisualBasic` 의 문법에 대한 설명은 다음과 같습니다.<br>
 코드 라인의 순서대로 설명하겠습니다. <br>
 
-- `Sub Main()` : `Main` 이라는 이름의 서브루틴을 정의합니다. 이 서브루틴은 프로그램이 시작되는 지점입니다. <br>
-- `Print` : `FreeBasic` 에서 사용하는 출력 명령어로, 변수와 문자열, 숫자 등을 콘솔 창에 출력하는 데에 사용되며, 출력 후 개행이 됩니다. <Br>
-- `End Sub` : `FreeBasic` 에서 서브루틴의 끝을 표시하는 키워드 입니다. <br>
-- `Main()` : 프로그램의 실행을 시작하기 위해 `Main` 서브루틴을 호출합니다. <br>
+- `Module Helicopter` : 새로운 코드 모듈을 선언하고, 해당 모듈의 이름을 지정합니다. <br>
+- `Sub Main()` : `Main` 이라는 이름의 새로운 서브루틴을 선언합니다. 이는 프로그램 실행의 시작점이 됩니다. <Br>
+- `Console.Writeline()` : 콘솔 창에 문자열을 출력하며, 마지막에 개행 문자를 자동으로 출력합니다. <br>
+- `End Sub` : `Main` 서브루틴의 끝을 나타냅니다. <br>
+- `End Module` : `Helicopter` 모듈의 끝을 나타냅니다. <br>
 
 <br>
 - - -
 
 ## Code
-<b>[ FreeBasic ] </b>
+<b>[ VisualBasic ] </b>
 <br>
 
-  ```FreeBasic
-Sub Main()
-    Print " _________"
-    Print " \_     _/"
-    Print "   \   /"
-    Print "    | |"
-    Print "   /   \"
-    Print "  /     \"
-    Print " |       |"
-    Print "/---------\"
-    Print "| \-/ \-/ |"
-    Print "\---------/"
-    Print " \_______/"
-End Sub
-
-Main()
+  ```VisualBasic
+Module Helicopter
+    Sub Main()
+        Console.WriteLine("      ===================")
+        Console.WriteLine("          ____||___")
+        Console.WriteLine("\ /      /       []\")
+        Console.WriteLine(" X=======           \__")
+        Console.WriteLine("/ \      \____________|")
+        Console.WriteLine("            ||  ||")
+        Console.WriteLine("         \-----------/")
+    End Sub
+End Module
   ```
