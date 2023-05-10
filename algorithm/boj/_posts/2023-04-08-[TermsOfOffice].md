@@ -1,11 +1,11 @@
 ---
 layout: single
-title: "[백준 9782] Terms of Office (C#, C++) - soo:bak"
+title: "[백준 6888] Terms of Office (C#, C++) - soo:bak"
 date: "2023-04-08 01:22:00 +0900"
 ---
 
 ## 문제 링크
-  [9782번 - Terms of Office](https://www.acmicpc.net/problem/9782)
+  [6888번 - Terms of Office](https://www.acmicpc.net/problem/6888)
 
 ## 설명
 입력으로 주어지는 두 연도 사이에서, 각 직업들이 <b>동시에</b> 변경되는 연도를 탐색하여 출력하는 문제입니다. <br>
