@@ -1,11 +1,11 @@
 ---
 layout: single
-title: "[백준 1008] A/B (C#, C++) - soo:bak"
-date: "2023-05-10 11:29:00 +0900"
+title: "[백준 1001] A-B (C#, C++) - soo:bak"
+date: "2023-05-10 11:23:00 +0900"
 ---
 
 ## 문제 링크
-  [1008번 - A/B](https://www.acmicpc.net/problem/1008)
+  [1001번 - A-B](https://www.acmicpc.net/problem/1001)
 
 ## 설명
 기본적인 사칙 연산 문제입니다. <br>
@@ -25,9 +25,7 @@ namespace Solution {
       var a = int.Parse(input![0]);
       var b = int.Parse(input![1]);
 
-      double ans = (double)a / b;
-
-      Console.WriteLine($"{ans:F9}");
+      Console.WriteLine($"{a - b}");
 
     }
   }
@@ -48,10 +46,7 @@ int main() {
 
   int a, b; cin >> a >> b;
 
-  double ans = (double)a / b;
-
-  cout.setf(ios::fixed); cout.precision(9);
-  cout << ans << "\n";
+  cout << a - b << "\n";
 
   return 0;
 }
