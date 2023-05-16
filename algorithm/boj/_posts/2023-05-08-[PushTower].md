@@ -65,7 +65,7 @@ int main() {
   int cntPush = 0;
   for (int i = 0; i < n; i++) {
     while (i < n - 1 && v[i] > v[i + 1]) i++;
-    cntPush++;
+      cntPush++;
   }
 
   cout << cntPush << "\n";
