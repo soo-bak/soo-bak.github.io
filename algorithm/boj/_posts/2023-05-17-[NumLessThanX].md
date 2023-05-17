@@ -1,11 +1,11 @@
 ---
 layout: single
-title: "[백준 2439] X보다 작은 수 (C#, C++) - soo:bak"
+title: "[백준 10871] X보다 작은 수 (C#, C++) - soo:bak"
 date: "2023-05-17 15:00:00 +0900"
 ---
 
 ## 문제 링크
-  [2439번 - X보다 작은 수](https://www.acmicpc.net/problem/2439)
+  [10871번 - X보다 작은 수](https://www.acmicpc.net/problem/10871)
 
 ## 설명
 `n` 개의 정수들이 입력으로 주어졌을 때, `x` 보다 작은 수를 출력하는 문제입니다. <br>
