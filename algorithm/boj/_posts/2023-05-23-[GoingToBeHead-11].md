@@ -33,8 +33,6 @@ namespace Solution {
 
       const int MAX = 15;
 
-      var cntCase = int.Parse(Console.ReadLine()!);
-
       var apt = new int[MAX, MAX];
 
       for (int i = 0; i < MAX; i++) {
@@ -47,6 +45,7 @@ namespace Solution {
           apt[i, j] = apt[i - 1, j] + apt[i, j - 1];
       }
 
+      var cntCase = int.Parse(Console.ReadLine()!);
       for (int c = 0; c < cntCase; c++) {
         var floor = int.Parse(Console.ReadLine()!);
         var numRoom = int.Parse(Console.ReadLine()!);
@@ -75,8 +74,6 @@ int main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
 
-  int cntCase; cin >> cntCase;
-
   vector<vi> apt(MAX, vi(MAX, 0));
 
   for (int i = 0; i < MAX; i++) {
@@ -89,6 +86,7 @@ int main() {
       apt[i][j] = apt[i - 1][j] + apt[i][j - 1];
   }
 
+  int cntCase; cin >> cntCase;
   for (int c = 0; c < cntCase; c++) {
     int floor, numRoom; cin >> floor >> numRoom;
     cout << apt[floor][numRoom] << "\n";
