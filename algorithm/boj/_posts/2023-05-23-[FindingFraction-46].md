@@ -1,11 +1,11 @@
 ---
 layout: single
-title: "[백준 4850] Baskets of Gold Coins (C#, C++) - soo:bak"
+title: "[백준 1193] 분수찾기 (C#, C++) - soo:bak"
 date: "2023-05-23 07:27:00 +0900"
 ---
 
 ## 문제 링크
-  [4850번 - Baskets of Gold Coins](https://www.acmicpc.net/problem/4850)
+  [1193번 - 분수찾기](https://www.acmicpc.net/problem/1193)
 
 ## 설명
 분수의 순서가 지그재그 형태로 나타난다는 점을 바탕으로, `x` 번쨰 분수를 구하는 문제입니다. <br>
