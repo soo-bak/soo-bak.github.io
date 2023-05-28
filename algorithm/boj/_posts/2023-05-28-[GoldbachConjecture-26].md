@@ -45,6 +45,7 @@ namespace Solution {
 
         var a = n / 2;
         var b = n / 2;
+
         while (a > 0) {
           if (isPrime[a] && isPrime[b]) {
             Console.WriteLine($"{a} {b}");
