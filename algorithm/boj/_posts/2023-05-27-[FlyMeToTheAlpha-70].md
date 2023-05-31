@@ -2,6 +2,7 @@
 layout: single
 title: "[백준 1011] Fly me to the Alpha Centauri (C#, C++) - soo:bak"
 date: "2023-05-27 16:54:00 +0900"
+description: 수학과 일반항 찾기 및 수열 등을 주제로 하는 백준 1011번 알고리즘 문제를 C# 과 C++ 로 풀이 및 해설
 ---
 
 ## 문제 링크

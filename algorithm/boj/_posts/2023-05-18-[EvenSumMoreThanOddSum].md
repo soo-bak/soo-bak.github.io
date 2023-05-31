@@ -2,6 +2,7 @@
 layout: single
 title: "[백준 5235] Even Sum More Than Odd Sum (C#, C++) - soo:bak"
 date: "2023-05-18 07:37:00 +0900"
+description: 수학과 짝수 홀수 판별을 주제로 하는 백준 5235번 알고리즘 문제를 C# 과 C++ 로 풀이 및 해설
 ---
 
 ## 문제 링크

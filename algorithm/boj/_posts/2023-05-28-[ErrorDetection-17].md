@@ -2,6 +2,7 @@
 layout: single
 title: "[백준 5220] Error Detection (C#, C++) - soo:bak"
 date: "2023-05-28 07:09:00 +0900"
+description: 수학과 비트 연산, 비트 다루기, 탐색 등을 주제로 하는 백준 5220번 알고리즘 문제를 C# 과 C++ 로 풀이 및 해설
 ---
 
 ## 문제 링크

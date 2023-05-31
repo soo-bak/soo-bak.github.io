@@ -2,6 +2,7 @@
 layout: single
 title: "[백준 25850] A Game Called Mind (C#, C++) - soo:bak"
 date: "2023-04-04 19:00:00 +0900"
+description: 구현고 정렬을 주제로 하는 백준 25850번 알고리즘 문제를 C# 과 C++ 로 풀이 및 해설
 ---
 
 ## 문제 링크

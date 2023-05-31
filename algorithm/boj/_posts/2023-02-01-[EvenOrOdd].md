@@ -2,6 +2,7 @@
 layout: single
 title: "[백준 18005] Even or Odd? (C#) - soo:bak"
 date: "2023-02-01 21:52:00 +0900"
+description: 연속된 정수의 합에 대한 홀수와 짝수 판정 관련 백준 18005번 문제를 C# 과 C++ 로 풀이 및 해설
 ---
 
 ## 문제 링크
@@ -34,5 +35,31 @@ namespace Solution {
 
     }
   }
+}
+  ```
+<br><br>
+<b>[ C++ ] </b>
+<br>
+
+  ```c++
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int main() {
+  ios::sync_with_stdio(false);
+  cin.tie(nullptr);
+
+  int n; cin >> n;
+
+  string ans = "0";
+  if (n % 2 == 0) {
+    if ((n / 2) % 2 == 1) ans = "1";
+    else ans = "2";
+  }
+
+  cout << ans << "\n";
+
+  return 0;
 }
   ```

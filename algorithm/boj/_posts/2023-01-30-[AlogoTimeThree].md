@@ -1,7 +1,8 @@
 ---
 layout: single
-title: "[백준 24264] 알고리즘의 수행 시간 3 (C#) - soo:bak"
+title: "[백준 24264] 알고리즘의 수행 시간 3 (C#, C++) - soo:bak"
 date: "2023-01-30 06:03:00 +0900"
+description: 알고리즘의 수행 시간에 대하여 백준 24264번 문제를 C# 과 C++ 로 풀이 및 해설
 ---
 
 ## 문제 링크
@@ -34,5 +35,27 @@ namespace Solution {
 
     }
   }
+}
+  ```
+<br><br>
+<b>[ C++ ] </b>
+<br>
+
+  ```c++
+#include <bits/stdc++.h>
+
+using namespace std;
+
+typedef long long ll;
+
+int main() {
+  ios::sync_with_stdio(false);
+  cin.tie(nullptr);
+
+  ll n; cin >> n;
+
+  cout << n * n << "\n" << 2 << "\n";
+
+  return 0;
 }
   ```

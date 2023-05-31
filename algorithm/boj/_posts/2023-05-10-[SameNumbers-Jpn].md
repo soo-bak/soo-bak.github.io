@@ -2,6 +2,7 @@
 layout: single
 title: "[백준 27324] ゾロ目 (Same Numbers) (C#, C++) - soo:bak"
 date: "2023-05-10 00:13:00 +0900"
+description: 수학과 수의 자릿수, 사칙 연산을 주제로 하는 백준 27324번 알고리즘 문제를 C# 과 C++ 로 풀이 및 해설
 ---
 
 ## 문제 링크

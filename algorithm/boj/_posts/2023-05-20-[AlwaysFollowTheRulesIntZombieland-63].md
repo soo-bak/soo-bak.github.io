@@ -2,6 +2,7 @@
 layout: single
 title: "[백준 4459] Always Follow the Rules in Zombieland (C#, C++) - soo:bak"
 date: "2023-05-20 08:56:00 +0900"
+description: 수학과 문자열 다루기를 주제로 하는 백준 4459번 알고리즘 문제를 C# 과 C++ 로 풀이 및 해설
 ---
 
 ## 문제 링크

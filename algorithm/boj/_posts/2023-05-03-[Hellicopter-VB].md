@@ -2,6 +2,7 @@
 layout: single
 title: "[백준 14337] Helicopter (VisualBasic) - soo:bak"
 date: "2023-05-03 23:11:00 +0900"
+description: VisualBasic 으로 출력을 하는 백준 14337번 문제 풀이 및 해설
 ---
 
 ## 문제 링크

@@ -2,6 +2,7 @@
 layout: single
 title: "[백준 2377] Pottery (FreeBasic) - soo:bak"
 date: "2023-05-03 22:23:00 +0900"
+description: FreeBasic 의 문법을 이용하여 아스키 아트를 출력하는 백준 2377번 문제 풀이 및 해설
 ---
 
 ## 문제 링크

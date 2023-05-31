@@ -2,6 +2,7 @@
 layout: single
 title: "[백준 10718] We love kriii (C#, C++) - soo:bak"
 date: "2023-05-10 09:47:00 +0900"
+description: 간단한 출력을 하는 백준 10718번 알고리즘 문제를 C# 과 C++ 로 풀이 및 해설
 ---
 
 ## 문제 링크

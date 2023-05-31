@@ -2,6 +2,7 @@
 layout: single
 title: "[백준 4758] Filling Out the Team (C#, C++) - soo:bak"
 date: "2023-05-21 07:52:00 +0900"
+description: 수학과 조건에 따른 계산을 주제로 하는 백준 4758번 알고리즘 문제를 C# 과 C++ 로 풀이 및 해설
 ---
 
 ## 문제 링크

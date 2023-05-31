@@ -2,6 +2,7 @@
 layout: single
 title: "[백준 5074] When Do We Finish? (C#, C++) - soo:bak"
 date: "2023-05-17 12:27:00 +0900"
+description: 수학과 시간 계산을 주제로 하는 백준 5074번 알고리즘 문제를 C# 과 C++ 로 풀이 및 해설
 ---
 
 ## 문제 링크

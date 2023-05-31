@@ -2,6 +2,7 @@
 layout: single
 title: "[백준 27541] 末尾の文字 (Last Letter) (C#, C++) - soo:bak"
 date: "2023-04-19 15:40:00 +0900"
+description: 문자열과 구현을 주제로 하는 백준 27541번 알고리즘 문제를 C# 과 C++ 로 풀이 및 해설
 ---
 
 ## 문제 링크

@@ -2,6 +2,7 @@
 layout: single
 title: "[백준 27328] 三方比較 (Three-Way Comparison) (C#, C++) - soo:bak"
 date: "2023-05-05 18:25:00 +0900"
+description: 수학과 두 정수의 비교를 주제로 하는 백준 27328번 알고리즘 문제를 C# 과 C++ 로 풀이 및 해설
 ---
 
 ## 문제 링크

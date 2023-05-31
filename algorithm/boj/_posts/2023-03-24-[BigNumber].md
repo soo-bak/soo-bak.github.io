@@ -2,6 +2,7 @@
 layout: single
 title: "[백준 26495] Big Number (C#, C++) - soo:bak"
 date: "2023-03-24 13:47:00 +0900"
+description: 문자열과 반복문, 입력과 출력을 주제로 하는 백준 26495번 알고리즘 문제를 C# 과 C++ 로 풀이 및 해설
 ---
 
 ## 문제 링크

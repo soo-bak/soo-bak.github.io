@@ -2,6 +2,7 @@
 layout: single
 title: "[백준 5163] Isn’t It Funny How a Bear Likes Honey? (C#, C++) - soo:bak"
 date: "2023-05-27 16:23:00 +0900"
+description: 수학과 구체의 부피 계산, 부력을 주제로 하는 백준 5163번 알고리즘 문제를 C# 과 C++ 로 풀이 및 해설
 ---
 
 ## 문제 링크

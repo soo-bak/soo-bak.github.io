@@ -2,6 +2,7 @@
 layout: single
 title: "[백준 27182] Rain Diary (C#, C++) - soo:bak"
 date: "2023-03-14 16:07:00 +0900"
+description: 수학과 구현에 대한 백준 27182번 알고리즘 문제를 C# 과 C++ 로 풀이 및 해설
 ---
 
 ## 문제 링크

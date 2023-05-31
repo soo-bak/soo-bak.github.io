@@ -2,6 +2,7 @@
 layout: single
 title: "[백준 25991] Lots of Liquid (C#, C++) - soo:bak"
 date: "2023-04-28 18:36:00 +0900"
+description: 수학과 부피 계산을 주제로 하는 백준 25991번 알고리즘 문제를 C# 과 C++ 로 풀이 및 해설
 ---
 
 ## 문제 링크

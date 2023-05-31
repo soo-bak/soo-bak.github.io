@@ -2,6 +2,7 @@
 layout: single
 title: "[백준 26340] Fold the Paper Nicely (C#, C++) - soo:bak"
 date: "2023-03-14 16:09:00 +0900"
+description: 수학과 구현에 대한 백준 26340번 알고리즘 문제를 C# 과 C++ 로 풀이 및 해설
 ---
 
 ## 문제 링크

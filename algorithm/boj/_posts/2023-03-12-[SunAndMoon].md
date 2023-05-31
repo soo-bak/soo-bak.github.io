@@ -2,6 +2,7 @@
 layout: single
 title: "[백준 27590] Sun and Moon (C#, C++) - soo:bak"
 date: "2023-03-12 13:54:00 +0900"
+description: 시뮬레이션과 구현에 대한 백준 27590번 알고리즘 문제를 C# 과 C++ 로 풀이 및 해설
 ---
 
 ## 문제 링크

@@ -2,6 +2,7 @@
 layout: single
 title: "[백준 27389] Metronome (C#, C++) - soo:bak"
 date: "2023-05-10 03:03:00 +0900"
+description: 수학과 시뮬레이션을 주제로 하는 백준 27389번 알고리즘 문제를 C# 과 C++ 로 풀이 및 해설
 ---
 
 ## 문제 링크

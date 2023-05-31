@@ -2,6 +2,7 @@
 layout: single
 title: "[백준 26742] Skarpetki (C#, C++) - soo:bak"
 date: "2023-04-26 19:33:00 +0900"
+description: 문자열과 탐색을 주제로 하는 백준 26742번 알고리즘 문제를 C# 과 C++ 로 풀이 및 해설
 ---
 
 ## 문제 링크

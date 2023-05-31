@@ -2,6 +2,7 @@
 layout: single
 title: "[백준 27331] 2 桁の整数 (Two-digit Integer) (C#, C++) - soo:bak"
 date: "2023-05-10 00:52:00 +0900"
+description: 수학과 수의 자릿수 다루기, 사칙 연산을 주제로 하는 백준 27331번 알고리즘 문제를 C# 과 C++ 로 풀이 및 해설
 ---
 
 ## 문제 링크

@@ -2,6 +2,7 @@
 layout: single
 title: "[백준 26546] Reverse (C#, C++) - soo:bak"
 date: "2023-04-25 17:35:00 +0900"
+description: 문자열과 구현을 주제로 하는 백준 26546번 알고리즘 문제를 C# 과 C++ 로 풀이 및 해설
 ---
 
 ## 문제 링크
