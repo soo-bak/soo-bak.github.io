@@ -31,10 +31,9 @@ description: 큐, 우선순위 큐 등을 주제로 하는 백준 1966번 문제
 namespace Solution {
   class Program {
 
-    public class Document
-    {
-        public int Index { get; set; }
-        public int Priority { get; set; }
+    public class Document {
+      public int Index { get; set; }
+      public int Priority { get; set; }
     }
 
     static void Main(string[] args) {
