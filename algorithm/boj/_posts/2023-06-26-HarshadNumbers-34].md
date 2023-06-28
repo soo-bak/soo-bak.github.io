@@ -1,12 +1,12 @@
 ---
 layout: single
-title: "[백준 168861] Harshad Numbers (C#, C++) - soo:bak"
+title: "[백준 16861] Harshad Numbers (C#, C++) - soo:bak"
 date: "2023-06-26 17:15:00 +0900"
-description: 수학, 완전 탐색, 브루트 포스 등을 주제로 하는 백준 168861번 문제를 C++ C# 으로 풀이 및 해설
+description: 수학, 완전 탐색, 브루트 포스 등을 주제로 하는 백준 16861번 문제를 C++ C# 으로 풀이 및 해설
 ---
 
 ## 문제 링크
-  [168861번 - Harshad Numbers](https://www.acmicpc.net/problem/168861)
+  [16861번 - Harshad Numbers](https://www.acmicpc.net/problem/16861)
 
 ## 설명
 문제의 목표는 주어진 숫자 이상의 최소 <b>하샤드 숫자</b>를 찾는 것입니다.<br>
