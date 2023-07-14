@@ -40,6 +40,8 @@ main-sidebar:
         url: "/game-design/consideration/"
       - title: "Played Game Review"
         url: "/game-design/played-game-review"
+      - title: "Project Review"
+        url: "/game-design/project-review"
   - title: "Algorithm"
     url: "/algorithm/"
     children:
