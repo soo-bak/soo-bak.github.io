@@ -1,12 +1,12 @@
 ---
 layout: single
-title: "[백준 6779] Backward numbers (C#, C++) - soo:bak"
+title: "[백준 6779] Who Has Seen The Wind (C#, C++) - soo:bak"
 date: "2023-07-25 23:15:00 +0900"
 description: 구현, 수학, 문자열 등을 주제로 하는 백준 6779번 문제를 C++ C# 으로 풀이 및 해설
 ---
 
 ## 문제 링크
-  [6779번 - Backward numbers](https://www.acmicpc.net/problem/6779)
+  [6779번 - Who Has Seen The Wind](https://www.acmicpc.net/problem/6779)
 
 ## 설명
 문제의 설명으로 주어진 공식을 활용하여 특정 시간 동안의 고도를 계산한 후,<br>
