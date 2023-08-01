@@ -7,6 +7,7 @@ date: "2023-07-15 00:33:30 +0900"
 As this is a post-production review, you might find it more enjoyable to read this after you've had a chance to play the game first.<br>
 <br><br><br>
 [BOB - Basis Of Bitwise Download - Google Play Store](https://play.google.com/store/apps/details?id=com.IcyMind.BOB)<br>
+[BOB - Basis Of Bitwise Download - App Store](https://apps.apple.com/us/app/bob-basis-of-bitwise/id6451136537)<br>
 <br><br><br>
 
 [Promotion video](https://www.youtube.com/watch?v=ftKtQKNHOeY)

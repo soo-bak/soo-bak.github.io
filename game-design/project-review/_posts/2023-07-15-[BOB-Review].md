@@ -7,6 +7,7 @@ date: "2023-07-15 00:33:00 +0900"
 제작의 후기 글인 만큼, 먼저 게임 플레이를 즐겨주신 후 읽어주시면 더욱 재미를 느끼실 수 있는 글이 될 것 같습니다.<br>
 <br><br><br>
 [BOB - Basis Of Bitwise 다운로드 - 구글 플레이 스토어](https://play.google.com/store/apps/details?id=com.IcyMind.BOB)<br>
+[BOB - Basis Of Bitwise 다운로드 - 앱 스토어](https://apps.apple.com/us/app/bob-basis-of-bitwise/id6451136537)<br>
 <br><br><br>
 
 [홍보 동영상](https://www.youtube.com/watch?v=ftKtQKNHOeY)
