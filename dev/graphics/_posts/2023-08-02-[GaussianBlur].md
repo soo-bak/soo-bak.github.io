@@ -64,6 +64,6 @@ date: "2023-08-02 15:01:00 +0900"
 - `Gaussian Blur`
     <p align="center">
     <img src="/assets/images/slide_res/GaussianBlur_00.gif" align="center" width="70%">
-    <figcaption align="center">가로 방향으로만 적용</figcaption>
+    <figcaption align="center">Gaussian Blur</figcaption>
   </p>
 <br>
