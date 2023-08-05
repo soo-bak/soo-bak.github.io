@@ -52,7 +52,7 @@ Unity에서 코루틴은 `IEnumerator` 인터페이스를 반환하는 메서드
 <br>
 이 때 코루틴의 상태와 지역변수들은 모두 유지된다.<br>
 <br>
-제어권을 받은 유니티 엔진은 다음 프레임에 도달하면 [IEnumerator](http://https://soo-bak.github.io/dev/unity/RelativeLuminance/#ienumerator) 의 `MoveNext()` 메서드를 호출하여 코루틴 실행을 재개한다.<br>
+제어권을 받은 유니티 엔진은 다음 프레임에 도달하면 [IEnumerator](https://soo-bak.github.io/dev/unity/UnityCoroutine/#ienumerator) 의 `MoveNext()` 메서드를 호출하여 코루틴 실행을 재개한다.<br>
 <br>
 이러한 방식이 반복됨으로써 코루틴을 통한 일종의 비동기 처리가 가능해지는 것이다. <br>
 <br><br>
