@@ -32,7 +32,7 @@ namespace Solution {
         var classNum = int.Parse(input[1]);
 
         if (grade == 1) noDept++;
-        else if (classNum == 2) software++;
+        else if (classNum <= 2) software++;
         else if (classNum == 3) embedded++;
         else if (classNum == 4) ai++;
       }
@@ -64,7 +64,7 @@ int main() {
     cin >> grade >> classNum >> num;
 
     if(grade == 1) noDept++;
-    else if(classNum == 2) software++;
+    else if(classNum <= 2) software++;
     else if(classNum == 3) embedded++;
     else if(classNum == 4) ai++;
   }
