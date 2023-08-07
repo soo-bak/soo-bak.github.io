@@ -75,7 +75,7 @@ Unity 게임 엔진에서는 API 를 통해 직접 자료형을 제공해주며,
 
 <br><br><br>
 
-코드<br>
+[ 코드 ]<br>
   ```csharp
 using System.Collections;
 using System.Collections.Generic;
@@ -140,7 +140,7 @@ public class RayCastingFOV : MonoBehaviour {
 }
   ```
 <br><br><br>
-[추가 - C언어와 Ray Casting 을 활용한 DOOM 모작 프로젝트(깃헙 링크) - soo:bak](https://github.com/soo-bak/cub3D)
+추가 - C언어와 Ray Casting 을 활용한 DOOM 모작 프로젝트 - soo:bak<br>
   <p align="center">
     <img src="/assets/images/slide_res/RayCastingExample2.gif" align="center" width="55%">
     <figcaption align="center">DOOM 모작</figcaption>
