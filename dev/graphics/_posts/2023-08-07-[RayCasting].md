@@ -39,6 +39,7 @@ Ray(t) = Origin + t * Direction <br>
   - C 는 구의 중심
   - r 은 구의 반지름
 <br>
+
 으로 표현했을 때, 레이 위의 어떤 점 P 가 구와 부딪혔는지, 혹은 구의 밖에 있는지, 아니면 구의 안에 있는지 등등을 다음과 같이 계산할 수 있다.<br>
 <br>
 (Origin + t * Direction - C) ⋅ (Origin + t * Direction - C) = r<sup>2</sup> <br>
