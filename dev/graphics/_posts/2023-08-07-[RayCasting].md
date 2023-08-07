@@ -84,7 +84,7 @@ using UnityEngine.UIElements;
 
 public class RayCastingFOV : MonoBehaviour {
 
-  public int numberOfRays = 1080;
+  public int numberOfRays = 720;
 
   public float fov = 60f;
 
