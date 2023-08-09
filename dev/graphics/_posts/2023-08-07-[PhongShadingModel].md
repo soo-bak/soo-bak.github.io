@@ -106,17 +106,9 @@ public class PhongShadingModel : MonoBehaviour
 
   public float shininess = 10f;
 
-  public Slider redSlider;
+  public Slider redSlider, greenSlider, blueSlider;
 
-  public Slider greenSlider;
-
-  public Slider blueSlider;
-
-  public Slider ambientSlider;
-
-  public Slider diffuseSlider;
-
-  public Slider specularSlider;
+  public Slider ambientSlider, diffuseSlider, specularSlider;
 
   private Mesh mesh;
 
