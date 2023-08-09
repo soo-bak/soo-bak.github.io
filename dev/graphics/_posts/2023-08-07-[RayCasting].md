@@ -114,16 +114,13 @@ public class RayCastingFOV : MonoBehaviour {
       if (angle >= -fov / 2 && angle <= fov / 2)
         rayColor = visibleColor;
 
+      LineRenderer line = CreateLineRenderer(rayColor);
+      line.SetPosition(0, transform.position);
 
-      if (Physics.Raycast(ray, out hit, rayDistance, wallMask)) {
-        LineRenderer line = CreateLineRenderer(rayColor);
-        line.SetPosition(0, transform.position);
+      if (Physics.Raycast(ray, out hit, rayDistance, wallMask))
         line.SetPosition(1, hit.point);
-      } else {
-        LineRenderer line = CreateLineRenderer(rayColor);
-        line.SetPosition(0, transform.position);
+      else
         line.SetPosition(1, transform.position + rayDirection * rayDistance);
-      }
     }
   }
   private LineRenderer CreateLineRenderer(Color color) {
