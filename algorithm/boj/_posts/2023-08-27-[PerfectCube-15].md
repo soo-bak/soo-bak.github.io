@@ -1,12 +1,12 @@
 ---
 layout: single
-title: "[백준 9724] Gift (C#, C++) - soo:bak"
+title: "[백준 9724] Perfect Cube (C#, C++) - soo:bak"
 date: "2023-08-27 21:07:00 +0900"
 description: 수학, 구현, 기하 등을 주제로 하는 백준 9724번 문제를 C++ C# 으로 풀이 및 해설
 ---
 
 ## 문제 링크
-  [9724번 - Gift](https://www.acmicpc.net/problem/9724)
+  [9724번 - Perfect Cube](https://www.acmicpc.net/problem/9724)
 
 ## 설명
 입력으로 주어진 범위 내에서 `완벽한 큐브` 를 찾는 문제입니다. <br>
