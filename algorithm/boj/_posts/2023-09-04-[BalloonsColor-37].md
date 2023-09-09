@@ -20,7 +20,7 @@ description: 수학, 사칙연산, 구현 등을 주제로 하는 백준 9635번
 <br>
 
   ```c#
-nnamespace Solution {
+namespace Solution {
   class Program {
     static void Main(string[] args) {
 
