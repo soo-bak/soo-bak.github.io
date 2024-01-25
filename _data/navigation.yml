@@ -69,6 +69,8 @@ main-sidebar:
         children:
           - title: "Test Driven Development"
             url: "/dev/methodology/test-driven-development/"
+      - title: "Language"
+        url: "/dev/language/"
       - title: "Graphics"
         url: "/dev/graphics/"
       - title: "Unity"
