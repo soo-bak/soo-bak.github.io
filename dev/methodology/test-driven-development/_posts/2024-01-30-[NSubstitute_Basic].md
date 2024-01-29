@@ -1,6 +1,6 @@
 ---
 layout: single
-title: "NSubstitute : .Net Mocking Framework- soo:bak"
+title: "- soo:bak"
 date: "2024-01-30 00:03:00 +0900"
 ---
 <br>
