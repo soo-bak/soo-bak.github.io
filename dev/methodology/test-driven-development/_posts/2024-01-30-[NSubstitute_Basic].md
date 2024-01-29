@@ -1,7 +1,7 @@
 ---
 layout: single
-title: "- soo:bak"
-date: "2024-01-30 00:03:00 +0900"
+title: "NSubstitute : .Net Mocking Framework - soo:bak"
+date: "2024-01-30 00:03:33 +0900"
 ---
 <br>
 
