@@ -59,7 +59,7 @@ Console.WriteLine(result);
 
 ### LINQ 확장 메서드 예시
 ```c#
-List<int> numbers = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+List<int> numbers = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 
 // 홀수만 필터링
 var oddNumbers = numbers.Where(n => n % 2 != 0);
@@ -105,7 +105,7 @@ foreach (var num in filteredNumbers) {
 예를 들어, 다음 `LINQ` 쿼리는 각 숫자와 그 제곱 값을 포함하는 새로운 익명의 컬렉션을 생성한다.<br>
 <br>
 ```c#
-var numberInfo = numbers.Select(n => new { Number = n, Squared = n * n});
+var numberInfo = numbers.Select(n => new { Number = n, Squared = n * n });
 
 foreach (var item in numberInfo) {
   Console.WriteLine($"Number: {item.Number}, Squared: {item.Squared}");
