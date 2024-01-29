@@ -24,6 +24,10 @@ description: 알고리즘의 수행 시간에 대하여 백준 24264번 문제�
 - - -
 
 ## Code
+<br>
+<b>[ C# ] </b>
+<br>
+
   ```c#
 namespace Solution {
   class Program {
