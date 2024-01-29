@@ -23,7 +23,7 @@ date: "2024-01-29 22:03:00 +0900"
 <br><br><br>
 
 ## 확장 메서드 작성 예시
-가령, `IEnumerable<T>` 인터페이스에 대한 확장 메서드를 작성하여 컬렉션의 모든 요소를 문자열로 결합하는 기능을 추가하고자 한다면, 다음과 같이 코드를 작성할 수 있다.<br>
+가령, `IEnumerable<T>` 인터페이스에 대한 확장 메서드를 작성하여 컬렉션의 모든 원소를 문자열로 결합하는 기능을 추가하고자 한다면, 다음과 같이 코드를 작성할 수 있다.<br>
 <br>
 ```c#
 public static class EnumerableExtensions {
@@ -64,7 +64,7 @@ List<int> numbers = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 // 홀수만 필터링
 var oddNumbers = numbers.Where(n => n % 2 != 0);
 
-// 각 요소를 제곱
+// 각 원소를 제곱
 var squaredNumbers = numbers.Select(n => n * n);
 
 // 원소 정렬
@@ -84,7 +84,7 @@ var sumOfNumbers = numbers.Sum();
 <br>
 즉, 실제로 쿼리의 결과가 필요할 때 까지 쿼리 실행이 지연된다.<br>
 <br>
-예를 들어, `Where` 메서드를 사용해 컬렉션을 필터링하는 경우, 필터링된 요소가 실제로 열거될 때까지 쿼리가 실행되지 않는다.<br>
+예를 들어, `Where` 메서드를 사용해 컬렉션을 필터링하는 경우, 필터링된 원소가 실제로 열거될 때까지 쿼리가 실행되지 않는다.<br>
 <br>
 ```c#
 var filteredNumbers = numbers.Where(n => n > 5);
