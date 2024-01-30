@@ -50,7 +50,7 @@ order.GetOrderName().Returns("Test Order");
 <br><br>
 
 ### 호출 검증
-`NSubstitute` 를 사용하면 특정 메서드가 호출되었는지, 몇 번 호출되었는지 등을 검증할 수 있다.<br>
+`NSubstitute` 를 사용하면 특정 메서드가 호출되었는지, 호출되었다면 몇 번 호출되었는지 등을 검증할 수 있다.<br>
 <br>
 예를 들어, `Submit()` 메서드가 한 번 호출되었는지 확인하려면 다음과 같이 한다 : <br>
 <br>
@@ -91,7 +91,7 @@ order.When(x => x.Submit()).Do(x => { throw new Exception("Error"); });
 예를 들어, `OrderProcessed` 이벤트에 대한 구독과 이벤트 발생을 다음과 같이 설정할 수 있다 :
 <br>
 ```c#
-//이벤트 구독
+// 이벤트 구독
 order.OrderProcessed += (sender, args) => { /* 이벤트 핸들러 코드 */ };
 
 // 이벤트 발생 시뮬레이션
