@@ -113,7 +113,7 @@ void testAddition() {
 }
 
 int main() {
-  testAddtion();
+  testAddition();
 
   return 0;
 }
