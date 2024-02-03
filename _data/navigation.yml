@@ -60,10 +60,10 @@ main-sidebar:
           - title: "Reactive Programming"
             url: "/dev/programming-paradigm/reactive-programming/"
       - title: "Design & Architecture"
-        url: "/dev/software-design-&-architecture/"
+        url: "/dev/design-&-architecture/"
         children:
           - title: "Design Pattern"
-            url: "/dev/software-design-&-architecture/design-pattern/"
+            url: "/dev/design-&-architecture/design-pattern/"
       - title: "Methodology"
         url: "/dev/methodology/"
         children:
