@@ -75,3 +75,10 @@ main-sidebar:
         url: "/dev/graphics/"
       - title: "Unity"
         url: "/dev/unity/"
+  - title: "LIBRARY"
+    url: "/library/"
+    children:
+      - title: "Book"
+        url: "/library/book/"
+      - title: "Lecture"
+        url: "/library/lecture/"
