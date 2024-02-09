@@ -82,3 +82,5 @@ main-sidebar:
         url: "/library/book/"
       - title: "Lecture"
         url: "/library/lecture/"
+  - title: "NOTE"
+    url: "/note/"
