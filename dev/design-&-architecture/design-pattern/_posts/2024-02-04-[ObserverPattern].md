@@ -1,6 +1,6 @@
 ---
 layout: single
-title: "관찰자 패턴(Observer Pattern) - soo:bak"
+title: "관찰자 패턴(Observer Pattern) 기초 - soo:bak"
 date: "2024-02-04 20:46:00 +0900"
 ---
 <br>
