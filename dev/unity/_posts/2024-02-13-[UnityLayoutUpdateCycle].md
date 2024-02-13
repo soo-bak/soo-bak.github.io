@@ -12,16 +12,16 @@ date: "2024-02-13 21:03:00 +0900"
 이번 포스팅에서는 `Unity GUI` 시스템의 `Layout Update Cycle` 을 자세히 살펴봄을 통해, `UI` 요소들의 `Layout` 이 어떻게 갱신되는지 다뤄보고자 한다.<br>
 <br>
 <br>
-> Unity 의 UI 시스템인, UGUI(Unity GUI)의 Update Cycle 은, Unity 의 표준 생명주기 이벤트와 연결되어 있지만, 정확하게 일치하지는 않는다.<br>
+> Unity GUI 시스템인, UGUI 의 Update Cycle 은, Unity 의 표준 생명주기 이벤트와 연결되어 있지만, 정확하게 일치하지는 않는다.<br>
 <br>
-즉, UGUI 의 Update 와 Rendering 은 Unity의 표준 생명 주기 사이 사이에서 처리된다.<br>
+즉, UGUI 의 Update Cycle 과 Rendering 은 Unity의 표준 생명 주기 사이 사이에서 처리된다.<br>
 <br>
 이 때, UGUI 의 Update Cycle 중 Layout Update Cycle(해당 포스트 주제), Graphic Update 는 Unity 의 표준 생명 주기 중, Update 단계 '이전' 에 발생한다.<br>
 <br>
 <br>
 반면, UGUI 의 Rendering 은 Unity 의 표준 생명 주기 중 LateUpdate 단계 '이후' 에 발생한다.<br>
 <br>
-이 때, 모든 Layout 및 Graphic Update 가 반영된 상태에서 UI 요소들이 최종적으로 화면에 렌더링되게 된다.<br>
+즉, 모든 Layout 및 Graphic Update 가 반영된 상태에서 UI 요소들이 최종적으로 화면에 렌더링되도록 한다.<br>
 <br>
 이는, UI 요소들이 Update 단계에서 사용자의 입력에 반응할 수 있도록 하고, 관련 로직이 처리된 후 시각적 요소들을 최신 상태로 갱신하기 위함이다.<br>
 
@@ -431,6 +431,108 @@ date: "2024-02-13 21:03:00 +0900"
 <br>
 <br>
 <br>
+
+## 간소화된 과정 : Rebuild, Layout, Post-Layout Cycle
+`Unity GUI` 의 `Layout Update Cycle` 을 '추상화 수준' 과 '상황' 에 따라서,<br>
+<br>
+보다 간소하게 `Rebuild` - `Layout` - `Post-Layout` 의 주요 단계에 초점을 맞춘 과정으로 구분하기도 한다.<br>
+<br>
+<br>
+<br>
+
+### Rebuild 단계
+`Unity GUI` 시스템에서 가장 중요한 부분 중 하나는, `Graphic` 컴포넌트, 그리고 이 컴포넌트가 어떻게 시각적 내용을 관리하고 화면에 렌더링하는지에 관한 것이다.<br>
+이 때, `Rebuild` 단계는 `UI` 요소들의 `Graphic` 과 `Layout` 이 변경될 필요가 있을 때 실행된다.<br>
+<br>
+<br>
+
+`Rebuild` 단계는 크게 두 부분으로 나뉜다.<br>
+<br>
+- Graphic Rebuild<br>
+<br>
+- Layout Rebuild<br>
+<br>
+<br>
+
+#### Graphic Rebuild
+<br>
+- 담당 컴포넌트 : `Graphic`, `CanvasRenderer`<br>
+<br>
+- 위의 `Layout Update Cycle` 의 여러 상세 단계를 포괄한다.<br>
+<br>
+
+`Graphic Rebuild` 단계에서는 `Text`, `Image`, `RawImage` 등과 같은 `Graphic` 컴포넌트를 통해 `UI` 요소들의 시각적 내용들이 <b>'재생성'</b> 된다.<br>
+<br>
+예를 들어, `Text` 의 내용이 변경되거나 `Image` 의 소스가 갱신되는 경우, 해당 `Graphic` 컴포넌트는 <b>새로운 그래픽 데이터를 생성</b>하는 것이다.<br>
+<br>
+이 때, 각 `Graphic` 컴포넌트는 <u>내부적으로</u> `CanvasRenderer` 와 연동하여 새로운 그래픽 데이터를 생성하고 화면에 렌더링한다.<br>
+<br>
+즉, `CanvasRenderer` 는 `Graphic` 컴포넌트로부터 받은 그래픽 관련 명령을 해석하고 실행하여 최종적으로 화면에 `UI` 요소들을 그리는 역할을 담당한다.<br>
+<br>
+
+> `CanvasRenderer` 의 작동 방식<br>
+<br>
+1. `Graphic` 컴포넌트로부터 그래픽 데이터를 수신<br>
+<br>
+2. 이 데이터를 기반으로 그래픽 명령을 생성<br>
+<br>
+3. 생성된 그래픽 명령을 실행하여 화면에 UI 요소를 렌더링<br>
+
+<br>
+<br>
+<br>
+
+#### Layout Rebuild
+<br>
+- 담당 컴포넌트 : `RectTransform`, `LayoutGroup` (`HorizontalLayoutGroup`, `VerticalLayoutGroup`, `GridLayoutGroup`)<br>
+<br>
+<br>
+
+`Layout Rebuild` 단계에서는 `UI` 요소들의 <b>위치</b>와 <b>크기</b>가 결정되는데, 이는 `RectTransform` 의 속성 변경이나 `LayoutGroup` 컴포넌트의 설정 변경 등에 의해서 유발된다.<br>
+<br>
+이 때, `LayoutGroup` 컴포넌트는 <b>자식</b> `UI` <b>요소</b>들을 특정한 규칙에 따라 배치하는데,<br>
+<br>
+예를 들어, `VerticalLayoutGroup` 은 자식 요소들을 수직으로 배치하며, 각 요소의 크기와 간격을 조정한다.<br>
+<br>
+이 과정을 통해 각 `UI` 요소의 `RectTransform` 은 최종적인 위치와 크기 값으로 <b>'갱신'</b>된다.<br>
+<br>
+<br>
+<br>
+<br>
+
+### Layout 단계
+`Layout` 단계에서는 위의 `Rebuild` 단계에서 결정된 `Layout` 을 기반으로 `UI` 요소들의 <b>최종적인 위치와 크기</b>가 <b>'적용'</b>된다.<br>
+<br>
+- 담당 컴포넌트 : `RectTransform`, `LayoutGroup`, `ContentSizeFitter`, `LayoutElement`<br>
+<br>
+- 위의 `Layout Update Cycle` 의 상세 단계들 중, `Calculation Phase` 와 `Set Layout Phase` 를 포괄한다.
+<br>
+
+`Layout` 단계에서는 `ContentSizeFitter` 와 `LayoutElement` 와 같은 컴포넌트의 작업이 중요한데,<br>
+<br>
+`ContentSizeFitter` 는 자식 요소의 크기에 따라 부모 요소의 크기를 조정하며,<br>
+<br>
+`LayoutElement` 는 개별 `UI` 요소에 대한 최소 크기, 선호 크기, 그리고 유연한 크기를 명시적으로 설정할 수 있도록 한다.<br>
+<br>
+<br>
+
+또한 `Layout` 단계에서는 `LayoutGroup` 컴포넌트가 <b>자식 요소들의 최종적인 배치를 수행</b>하며,<br>
+<br>
+`ContentSizeFitter` 와 `LayoutElement` 의 설정에 따라 개별 `UI` 요소들의 크기가 조정된다.<br>
+<br>
+이 과정을 통해 최종적으로 각 `UI` 요소의 `RectTransform` 은 화면에 표시될 <b>최종 위치와 크기로 설정</b>된다.<br>
+<br>
+<br>
+<br>
+
+### Post-Layout Phase
+모든 `UI` 요소들이 배치된 후에 필요한 추가 작업을 수행하는 단계이다.<br>
+<br>
+위의 `Layout Update Cycle` 의 상세 단계들 중, `Finalization Phase` 를 포함할 수도 있으며, 필요에 따라 `Rendering Phase` 도 포함할 수 있다.<br>
+<br>
+<br>
+<br>
+
 참고 : [[Manual]Unity UI: Unity User Interface](https://docs.unity3d.com/Packages/com.unity.ugui@2.0/manual/index.html)
 <br>
 <br>
