@@ -12,14 +12,12 @@ date: "2024-02-13 21:03:00 +0900"
 이번 포스팅에서는 `Unity GUI` 시스템의 `Layout Update Cycle` 을 자세히 살펴봄을 통해, `UI` 요소들의 `Layout` 이 어떻게 갱신되는지 다뤄보고자 한다.<br>
 <br>
 <br>
-> Unity GUI 시스템인, UGUI 의 Update Cycle 은, Unity 의 표준 생명주기 이벤트와 연결되어 있지만, 정확하게 일치하지는 않는다.<br>
+> Unity의 UI 시스템인, UGUI 의 Update Cycle 은, Unity 의 표준 생명주기 이벤트와 연결되어 있지만, 정확하게 일치하지는 않는다.<br>
 <br>
 즉, UGUI 의 Update Cycle 과 Rendering 은 Unity의 표준 생명 주기 사이 사이에서 처리된다.<br>
 <br>
-이 때, UGUI 의 Update Cycle 중 Layout Update Cycle(해당 포스트 주제), Graphic Update 는 Unity 의 표준 생명 주기 중, Update 단계 '이전' 에 발생한다.<br>
+이 때, UGUI 의 Update Cycle 중 Layout Update Cycle(해당 포스트 주제), Graphic Update 는 Unity 의 표준 생명 주기 중, Late Update 단계 '이후' 에 발생한다.<br>
 <br>
-<br>
-반면, UGUI 의 Rendering 은 Unity 의 표준 생명 주기 중 LateUpdate 단계 '이후' 에 발생한다.<br>
 <br>
 즉, 모든 Layout 및 Graphic Update 가 반영된 상태에서 UI 요소들이 최종적으로 화면에 렌더링되도록 한다.<br>
 <br>
@@ -92,7 +90,7 @@ date: "2024-02-13 21:03:00 +0900"
     <br>: `CanvasUpdate` 열거형을 매개변수로 받아, 지정된 업데이트 단계에서 레이아웃 재계산을 수행한다.<br>
     <br>
     `CanvasUpdate.Layout` 과 `CanvasUpdate.GraphicUpdate` 단계에서 사용될 수 있다.<br>
-  - `ForeRebuildLayoutImmediate(RectTransfrom layoutRoot)`<br>
+  - `ForceRebuildLayoutImmediate(RectTransfrom layoutRoot)`<br>
     <br>: 이 메서드는 지정된 `RectTransform` 의 레이아웃을 즉시 재계산하고 적용한다.<br>
     <br>
     즉, 레이아웃 변경이 즉각적으로 반영되어야 할 경우에 유용하게 사용된다.<br>
@@ -124,7 +122,7 @@ date: "2024-02-13 21:03:00 +0900"
 <br>
 <br>
 
-2. `"Dirty"` 상태 설정<br>
+2. `"dirty"` 상태 설정<br>
 <br>: 호출된 `RectTransform` 은 일명 `"dirty"` 상태로 표시된다.<br>
 <br>
 이는 해당 `UI` 요소의 레이아웃이 변경되었으며, 레이아웃 시스템은 이를 재계산해야 함을 의미한다.<br>

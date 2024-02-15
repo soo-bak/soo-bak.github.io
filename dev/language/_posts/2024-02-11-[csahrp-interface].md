@@ -63,7 +63,7 @@ class MyClass : IInterfaceName {
 <br>: `인터페이스`를 통해, 다양한 `클래스`를 '동일한 인터페이스'로 참조 할 수 있다.<br>
 <br>
 이러한 방법을 통해 객체 지향의 '다형성' 을 구현할 수 있다.<br>
-> 참고 : [다형성(Polymorphism) - soo:bak](https://soo-bak.github.io/dev/design-&-architecture/design-pattern/Polymorphism/)
+> 참고 : [다형성(Polymorphism) - soo:bak](https://soo-bak.github.io/dev/programming-paradigm/object-oriented-programming/Polymorphism/)
 
 <br>
 

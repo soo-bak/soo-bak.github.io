@@ -5,7 +5,7 @@ date: "2024-02-14 00:51:00 +0900"
 ---
 <br>
 
-`Unity` 에서 `ILayoutElement` 와 `ILayoutElement` 인터페이스는 `Unity` 의 `UI` 시스템인 `UGUI` 에서 레이아웃을 관리하는 데 사용된다.<br>
+`Unity` 에서 `ILayoutElement` 와 `ILayoutController` 인터페이스는 `Unity` 의 `UI` 시스템인 `UGUI` 에서 레이아웃을 관리하는 데 사용된다.<br>
 <br>
 이 인터페이스들은 `Unity` 엔진 내부의 `C#` 인터페이스로 정의되어있으며, `Unity` 의 소스 코드가 공개적으로 제공되지 않기 때문에,<br>
 <br>
