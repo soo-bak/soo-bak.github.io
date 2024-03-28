@@ -89,7 +89,7 @@ public interface IEnumerator {
 <br>
 코루틴이 시작되면, 유니티 엔진은 `MoveNext()` 메서드를 호출하여 코루틴을 실행하고,<br>
 <br>
-`yield return` 구문을 만났을 때 현재 태를 `Current` 프로퍼티에 저장한다음 코루틴을 중지 후 대기한다.<br>
+`yield return` 구문을 만났을 때 현재 상태를 `Current` 프로퍼티에 저장한다음 코루틴을 중지 후 대기한다.<br>
 <br>
 `Reset()` 메서드는 유니티의 코루틴에서는 사용되지 않는다.<br>
 <br><br>
