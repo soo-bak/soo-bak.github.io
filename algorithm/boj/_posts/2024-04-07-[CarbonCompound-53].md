@@ -38,23 +38,49 @@ description: 구현, 문자열, 완전 탐색, 브루트포스 알고리즘, 파
   ```c#
 namespace Solution {
   class Program {
+
+    static List<int> ParseMolecule(string formula) {
+      var cnt_C_H_O = new List<int> {0, 0, 0};
+      var lastAtom = ' ';
+
+      foreach (var atom in formula) {
+        if (atom == 'C' || atom == 'H' || atom == 'O')  {
+          lastAtom = atom;
+          cnt_C_H_O[lastAtom == 'C' ? 0 : lastAtom == 'H' ? 1 : 2]++;
+        } else cnt_C_H_O[lastAtom == 'C' ? 0 : lastAtom == 'H' ? 1 : 2] += atom - '1';
+      }
+
+      return cnt_C_H_O;
+    }
+
     static void Main(string[] args) {
 
-      var n = int.Parse(Console.ReadLine()!);
+      var formula = Console.ReadLine()!;
+      var plusPos = formula.IndexOf('+');
+      var eqPos = formula.IndexOf('=');
+      var m1 = formula[..plusPos];
+      var m2 = formula[(plusPos +1) .. eqPos];
+      var m3 = formula[(eqPos + 1)..];
 
-      var numbers = Enumerable.Range(0, n)
-        .Select(_ => {
-          var input = Console.ReadLine()!.Split(' ').Select(int.Parse).ToArray();
-          return (double)input[0] / input[1];
-        }).ToList();
+      var cntM1 = ParseMolecule(m1);
+      var cntM2 = ParseMolecule(m2);
+      var cntM3 = ParseMolecule(m3);
 
-      var sum = numbers.Sum();
-      var min = numbers.Min();
-      var max = numbers.Max();
-
-      Console.WriteLine($"{min:F6} {max:F6} {sum:F6}");
+      for (int x1 = 1; x1 <= 10; x1++) {
+        for (int x2 = 1; x2 <= 10; x2++) {
+          for (int x3 = 1; x3 <= 10; x3++) {
+            if (x1 * cntM1[0] + x2 * cntM2[0] == x3 * cntM3[0] &&
+                x1 * cntM1[1] + x2 * cntM2[1] == x3 * cntM3[1] &&
+                x1 * cntM1[2] + x2 * cntM2[2] == x3 * cntM3[2]) {
+              Console.WriteLine($"{x1} {x2} {x3}");
+              return ;
+            }
+          }
+        }
+      }
 
     }
+
   }
 }
   ```
