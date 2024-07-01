@@ -229,7 +229,12 @@ It eluded us then, but that's no matter—tomorrow we will run faster, stretch o
 <br>
 <br>
 <br>
-
+<br>
+  <p align="center">
+    <img src="/assets/images/slide_res/TheGreatGatsby_1.jpg" align="center" width="44%">
+    <img src="/assets/images/slide_res/TheGreatGatsby_2.jpg" align="center" width="44%">
+  </p>
+<br>
 정말 다시 읽어봐도 놀라운 소설이다.<br>
 <br><br><br>
 
