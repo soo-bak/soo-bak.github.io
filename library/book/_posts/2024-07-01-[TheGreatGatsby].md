@@ -346,7 +346,9 @@ It eluded us then, but that's no matter—tomorrow we will run faster, stretch o
   </p>
 <br>
 <br>
-반면, 밤새 '바퀴벌레' 처럼 숨어있다가,<br> <b>내리는</b> 폭우속에 집이 잠길 걱정을 하며 집으로 돌아갈 때는, 계단을 끊임없이 <b>내려간다</b>.
+반면, 밤새 '바퀴벌레' 처럼 숨어있다가,<br>
+<br>
+<b>내리는</b> 폭우속에 집이 잠길 걱정을 하며 집으로 돌아갈 때는, 계단을 끊임없이 <b>내려간다</b>.
 <br>
   <p align="center">
     <img src="/assets/images/slide_res/TheGreatGatsby_8.jpg" align="center" width="44%">
