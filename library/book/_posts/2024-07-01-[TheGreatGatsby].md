@@ -79,7 +79,7 @@ It eluded us then, but that's no matter—tomorrow we will run faster, stretch o
 <br>
 <br>
 <br>
-흔치 않은 타전공생이 반가우셔서 였을까,<br>
+흔치 않은 타전공생이 반가우셔서 였을까?<br>
 
 아니면 앞으로의 수업 과정에서 내가 넘어야할 장애물들이 많다는 것을 전혀 모른 채,<br>
 <br>
@@ -148,14 +148,14 @@ It eluded us then, but that's no matter—tomorrow we will run faster, stretch o
 소설 속에서, 개츠비의 사랑과 꿈은 이루어질 수 없는 것으로 보이며, 개츠비는 늘 그것을 향해 손을 뻗지만, 결코 그것을 완전히 잡을 수는 없는 것으로 묘사된다. <br>
 
 <br>
-또한, "boats against the current" 에서, `current` 는 '조류' 를 의미하여,<br>
+또한 "boats against the current" 에서, `current` 는 '조류' 를 의미하여,<br>
 <br>
 개츠비가 자신의 꿈을 이루기 위해 끊임없이 노력하고 장애물을 극복하려는 모습을 상징하기도 하지만,<br>
 <br>
 <br>
 영어에서 `current` 는 '현재' 라는 뜻 또한 가지고 있다.<br>
 <br>
-이 문장의 끝에 작가가 '굳이' 들어낸 'past' 라는 단어와 연결지어 생각해보면,
+이 문장의 끝에 작가가 '굳이' 들어낸 `past` 라는 단어와 연결지어 생각해보면,
 <br>
 "boats against the current" 는 개츠비가 현재의 현실을 받아들이지 않고 과거의 이상과 꿈을 쫓는 모습을 상징적으로 암시하기도 한다.<br>
 <br>
@@ -164,7 +164,7 @@ It eluded us then, but that's no matter—tomorrow we will run faster, stretch o
 <br>
 <br>
 
-이 떄, `위대한 개츠비` 가 작성된 `1920` 년대의 `미국` 에 대해서 살펴보자.<br>
+이 때, `위대한 개츠비` 가 작성된 `1920` 년대의 `미국` 에 대해서 살펴보자.<br>
 <br>
 이 시기는 일명 '재즈 시대' 라고도 불리며,<br>
 <br>
@@ -178,24 +178,26 @@ It eluded us then, but that's no matter—tomorrow we will run faster, stretch o
 <br>
 '아메리칸 드림' 은 '누구나' 자신의 노력과 능력만으로 성공할 수 있다는 미국의 이상을 상징한다.<br>
 <br>
-그러나, 작가 `F. Scott Fitzgerald` 는 그 꿈이 얼마나 취약하고, 얼마나 위험한 것인지를, 개츠비의 순수해보이는 사랑 이야기를 빌려 이야기 하는 것이다.
+그러나, 작가 `F. Scott Fitzgerald` 는 그 꿈이 얼마나 취약하고 위험한 것인지를,<br>
+<br>
+개츠비의 순수해보이는 사랑 이야기를 빌려 풀어내는 것이다.
 <br>
 <br>
 <br>
 
-즉, `위대한 개츠비` 는 단순한 사랑 이야기를 넘어, 아메리칸 드림의 허상과 그로 인한 비극을 정말 심도 있게 탐구한 작품이며,<br>
+`위대한 개츠비` 는 단순한 사랑 이야기를 넘어, 아메리칸 드림의 허상과 그로 인한 비극을 정말 깊이 있게 풀어낸 작품이며,<br>
 <br>
 상징, 은유, 반복, 시각적 이미지, 복선, 리듬 등등의 문학적 기법을 통해 '다층적인 의미' 를 하나의 소설로 전달한다.<br>
 <br>
 즉, 하나의 글 속에서 두 가지 이야기가 존재하는 것이다.<br>
 <br>
-개츠비와 데이지의 사랑 이야기와, 그리고 아메리칸 드림의 추구와 그 허상과 타락을.
+개츠비와 데이지의 사랑 이야기, 그리고 아메리칸 드림의 추구와 그 허상과 타락에 대한 이야기.
 <br>
 <br>
 <br>
 
 <i>"이 소설은 정말 천재적으로, 한 문장, 한 문장, 모든 문장 중 '의미 없이 작성된 문장' 이 없어요."</i><br>
-`위대한 개츠비` 에서 `F. Scott Fitzgerald` 의 천재성과 그의 작품에 대해 감탄하며 교수님께서 하셨던 말씀이다.
+`위대한 개츠비` 에서 `F. Scott Fitzgerald` 의 작품에 대해 감탄하며 교수님께서 하셨던 말씀이다.
 <br>
 <br><br>
 
@@ -252,11 +254,11 @@ It eluded us then, but that's no matter—tomorrow we will run faster, stretch o
  <br>
 점차 나는 이곳이 한때 <u>네덜란드 선원들의 눈에 피어났던 옛 섬임을</u> 깨닫게 되었다—<u>신세계</u>의 신선하고 <u>푸른 가슴</u>.<br>
 <br>
-<u>개츠비의 집을 위해 사라진 나무들</u>, 한때 인간의 가장 크고 마지막 꿈에 속삭였던 나무들.<br>
+<u>개츠비의 집을 위해 베어진 나무들</u>, 한때 <u>인간의 최후의 가장 큰 꿈</u>을 속삭였던 나무들.<br>
 <br>
 이 대륙 앞에서 사람은 일시적이고 매혹된 순간 동안 숨을 멈췄을 것이고,<br>
 <br>
-이해하지도 원하지도 않았던 미적 관조에 사로잡혀, 역사의 마지막 순간에 인간의 경이로움에 걸맞은 무엇인가와 대면했을 것이다."<br>
+이해하지도 원하지도 않았던 미적 사색에 사로잡혀, 역사의 마지막 순간에 인간의 경이로움에 걸맞은 무엇인가와 대면했을 것이다."<br>
 <br>
 
 
@@ -267,7 +269,7 @@ It eluded us then, but that's no matter—tomorrow we will run faster, stretch o
 <br>
 특히, `Henry Hudson` 은 1609년에 현재의 `New York` 을 탐험하며 허드슨 강을 따라 항해했다고 한다.<br>
 <br>
-또한, `New York` 은 원래 네덜란드의 식민지로, `New Amsterdam` 네덜란드의 수도인 `Amsterdam` 의 이름 앞에 `New` 를 붙였던 도시이다.<br>
+또한, `New York` 은 원래 네덜란드의 식민지로, `New Amsterdam` 네덜란드의 수도인 `Amsterdam` 의 이름 앞에 `New` 를 붙인 도시이다.<br>
 나중에, 영국에 의해 영국 `York` 지방의 이름을 따 `New York` 으로 이름이 바뀌었지만.
 <br>
 <br>
@@ -276,7 +278,7 @@ It eluded us then, but that's no matter—tomorrow we will run faster, stretch o
 <br>
 개츠비의 꿈은 순수하고 희망에 찬 미래를 향한 것이기 때문에.<br>
 <br>
-또한, 개츠비의 저택이 지어진 자리에는 한 떄 나무가 가득했지만, 지금은 사라졌다는 표현을 통해, 시간의 흐름과 변화, 그리고 인간의 욕망이 자연과 순수함에 어떤 영향을 미치는지, 바로 직전의 문장에 이어 여러 함의를 품고 있다.
+또한, 개츠비의 저택이 지어진 자리에는 한 때 나무가 가득했지만, 지금은 사라졌다는 표현을 통해, 시간의 흐름과 변화, 그리고 인간의 욕망이 자연과 순수함에 어떤 영향을 미치는지, 바로 직전의 문장에 이어 여러 함의를 품고 있다.
 <br>
 <br>
 <br>
@@ -288,8 +290,8 @@ It eluded us then, but that's no matter—tomorrow we will run faster, stretch o
 
 이 책을 읽고 난 후로, 비단 소설 뿐만 아니라 다른 소설, 영화, 드라마, 뿐만 아니라 게임과 애니메이션 등에서, 나는 '해석에 대한 여러가지 가능성' 을 염두해둘 수 있게 되었다. <br>
 <br>
-이를 통해, 다른 사람들이 만든 영화나 드라마 속에서,<br>
-
+이를 통해 다른 사람들이 만든 영화나 드라마 속에서,<br>
+<br>
 '하나의 이야기 속에 더 많은 의미를 함축시키기 위해 다양한 기법들을 사용하였다 라는 것을 스스로 알아차리는 것의 재미' 를 배울 수 있게 되었다.<br>
 <br>
 <br>
@@ -316,7 +318,7 @@ It eluded us then, but that's no matter—tomorrow we will run faster, stretch o
 <br>
 <br>
 
-여기서 잠깐, 해당 영화에서 조커가 계단을 <b>올라갈 때</b>는 어떻게 묘사되었는지 살펴보자.
+반면, 해당 영화에서 조커가 계단을 <b>올라갈 때</b>는 어떻게 묘사되었는지 살펴보자.
 <br>
   <p align="center">
     <img src="/assets/images/slide_res/TheGreatGatsby_6.jpg" align="center" width="44%">
@@ -339,7 +341,12 @@ It eluded us then, but that's no matter—tomorrow we will run faster, stretch o
 <br>
 가족들이 신분상승을 꿈꾸며 부잣집을 방문할 때에는 언덕을 <b>올라간다</b>.
 <br>
-반면, 숨어있는 것이 들킬까봐 밤새 '바퀴벌레' 처럼 숨어있다가,<br> <b>내리는</b> 폭우속에 집이 잠길 걱정을 하며 집으로 돌아갈 때는, 계단을 끊임없이 <b>내려간다</b>.
+  <p align="center">
+    <img src="/assets/images/slide_res/TheGreatGatsby_12.jpg" align="center" width="44%">
+  </p>
+<br>
+<br>
+반면, 밤새 '바퀴벌레' 처럼 숨어있다가,<br> <b>내리는</b> 폭우속에 집이 잠길 걱정을 하며 집으로 돌아갈 때는, 계단을 끊임없이 <b>내려간다</b>.
 <br>
   <p align="center">
     <img src="/assets/images/slide_res/TheGreatGatsby_8.jpg" align="center" width="44%">
@@ -359,17 +366,18 @@ It eluded us then, but that's no matter—tomorrow we will run faster, stretch o
 <br>
 <br>
 
-해석은 독자의 몫...<br>
 <br>
 작품을 만든 사람(들)이 전달하고자 하는 메시지를...<br>
 <br>
-좀 더 풍성하게,<br>
+좀 더 풍성하게<br>
 <br>
-다양한 각도에서,<br>
+다양한 각도에서<br>
 <br>
-여러가지 가능성을 고려하며,<br>
+여러가지 가능성을 고려하며<br>
 <br>
-콘텐츠를 소비하는 것은 정말 삶에 질을 크게 높여주는 아주 좋은 재미거리 인 것 같다.<br>
+콘텐츠를 소비하는 것은<br>
+<br>
+정말 삶에 질을 크게 높여주는 아주 좋은 재미거리 인 것 같다.<br>
 <br>
 <br>
 <br>
@@ -388,11 +396,17 @@ It eluded us then, but that's no matter—tomorrow we will run faster, stretch o
     <img src="/assets/images/slide_res/TheGreatGatsby_11.jpg" align="center" width="44%">
   </p>
 <br>
-자신이 가난할 때 미래를 응원 해주던 애인으로부터 선물 받은, 항상 애지 중지 하는 텀블러가,<br>
+자신이 가난하지만 정직한 변호사일 때,<br>
 <br>
-우수한 로펌에 들어가 차량과 비서까지 지원받은 후에는, 그 텀블러가 차의 컵홀더에 맞지 않는다.<br>
+미래를 응원 해주던 애인으로부터 선물 받아 항상 애지 중지 하는 텀블러가<br>
 <br>
-심지어 홧김에 차의 컵홀더를 부숴버리기도 하지만...<br>
+약간의 꼼수를 통해 입사한,
+<br>
+우수 로펌으로부터 지원받은 멋진 차량의 컵홀더에 맞지 않는다.<br>
+<br>
+홧김에 차의 컵홀더를 부숴버리기도 하지만...<br>
+<br>
+
 
 <br>
 <br>
@@ -405,7 +419,7 @@ It eluded us then, but that's no matter—tomorrow we will run faster, stretch o
 
 내가 `위대한 개츠비` 를 굉장히 좋아하는 이유는,<br>
 <br>
-이 소설의 짜임새와 문학적인 장치들, 그리고 다층적인 이야기에 대한 천재성이 나에게 큰 영감과 지적인 풍요로움을 준 부분도 있지만,<br>
+이 소설의 짜임새와 문학적인 장치들, 그리고 다층적인 이야기에 대한 천재성이 나에게 큰 영감과 마음의 풍요로움을 준 부분도 있지만,<br>
 <br>
 <br>
 <br>
@@ -413,27 +427,27 @@ It eluded us then, but that's no matter—tomorrow we will run faster, stretch o
 <br>
 <br>
 <br>
-가족, 집안, 어찌보면 본인 스스로까지 버려가면서...<br>
+가족, 집안, 어찌보면 본인 스스로까지 버려가면서<br>
 <br>
 <br>
 <br>
-지나간 과거를 바꿀 수 있다고 믿으며...<br>
+지나간 과거를 바꿀 수 있다고 믿으며<br>
 <br>
 <br>
 <br>
-과거를 바꾸기 위해...<br>
+과거를 바꾸기 위해<br>
 <br>
 <br>
 <br>
-자신이 할 수 있는 최선의 행동을 다 하고...<br>
+자신이 할 수 있는 최선의 행동을 다 하고<br>
 <br>
 <br>
 <br>
-미래에는 꿈과 이상을 가질 수, 되찾을 수 있다고 강력하게 믿으면서...<br>
+미래에는 꿈과 이상을 가질 수, 되찾을 수 있다고 강력하게 믿으며<br>
 <br>
 <br>
 <br>
-희망', '미래', '신념' 을 잃지 않는 모습에서 느낀 '<b>간절함</b>' 속에서, <br>
+희망', '미래', '신념' 을 잃지 않는 모습에서 보여지는 '<b>간절함</b>' 으로부터 <br>
 <br>
 <br>
 <br>
@@ -479,6 +493,7 @@ He looked around him wildly, as if the past were lurking here in the shadow of h
 <br>
 그는 결연하게 고개를 끄덕이며 말했다.<br>
 <br>
+"그녀도 알게 될 거야."<br>
 <br>
 <br>
 <br>
@@ -494,7 +509,7 @@ He looked around him wildly, as if the past were lurking here in the shadow of h
 <br>
 OST 중 'Young and beautiful' 은 굉장히 애정하고 좋아한다.<br>
 <br>
-개츠비의 '과거를 돌이키려는 간절함' 에 대해 상상해보며 들으면 기분이 오묘하다.
+개츠비의 '과거를 돌이키려는 간절함' 에 대해 상상해보면서 듣다보면 기분이 몽글몽글해진다.
 
 <br>
 
