@@ -178,7 +178,7 @@ It eluded us then, but that's no matter—tomorrow we will run faster, stretch o
 <br>
 '아메리칸 드림' 은 '누구나' 자신의 노력과 능력만으로 성공할 수 있다는 미국의 이상을 상징한다.<br>
 <br>
-그러나, 작가 `F. Scott Fitzgerald` 는 그 꿈이 얼마나 취약하고 위험한 것인지를,<br>
+이에 대해서 작가 `F. Scott Fitzgerald` 는 그 꿈이 얼마나 취약하고 위험한 것인지를,<br>
 <br>
 개츠비의 순수해보이는 사랑 이야기를 빌려 풀어내는 것이다.
 <br>
@@ -196,7 +196,7 @@ It eluded us then, but that's no matter—tomorrow we will run faster, stretch o
 <br>
 <br>
 
-<i>"이 소설은 정말 천재적으로, 한 문장, 한 문장, 모든 문장 중 '의미 없이 작성된 문장' 이 없어요."</i><br>
+<i>"이 소설은 정말 놀랍게도 한 문장, 한 문장, 모든 문장들 중 '의미 없이 작성된 문장' 이 없어요."</i><br>
 `위대한 개츠비` 에서 `F. Scott Fitzgerald` 의 작품에 대해 감탄하며 교수님께서 하셨던 말씀이다.
 <br>
 <br><br>
@@ -240,7 +240,9 @@ It eluded us then, but that's no matter—tomorrow we will run faster, stretch o
 정말 다시 읽어봐도 놀라운 소설이다.<br>
 <br><br><br>
 
-하지만, 반드시 원서로, 그리고 미국의 문화에 대하여 어느 정도 배경지식을 갖춘 상태에서 읽어봐야 이 소설의 숨은 속 뜻과, 문장 하나 하나가 담고 있는 상징과 복선 등을 알아챌 수 있다.<br>
+`위대한 개츠비` 는 번역본 보다는 원서로, 그리고 미국 문화에 대하여 어느 정도 배경지식을 갖춘 상태에서 읽기를 추천한다.<br>
+<br>
+그러면, 소설 속 숨은 뜻과 문장들이 담고 있는 상징, 그리고 복선 등을 보다 잘 알아챌 수 있기 때문이다.<br>
 <br>
 <br>
 <br>
@@ -252,11 +254,11 @@ It eluded us then, but that's no matter—tomorrow we will run faster, stretch o
 
  "달이 더 높이 떠오르자 불필요한 집들이 서서히 사라지기 시작했고,<br>
  <br>
-점차 나는 이곳이 한때 <u>네덜란드 선원들의 눈에 피어났던 옛 섬임을</u> 깨닫게 되었다—<u>신세계</u>의 신선하고 <u>푸른 가슴</u>.<br>
+점차 나는 이곳이 한때 <u>네덜란드 선원들의 눈에 피어났던 옛 섬임을</u> 깨닫게 되었다—<u>신세계</u>의 신선한, <u>녹색 빛의 가슴</u>.<br>
 <br>
-<u>개츠비의 집을 위해 베어진 나무들</u>, 한때 <u>인간의 최후의 가장 큰 꿈</u>을 속삭였던 나무들.<br>
+<u>개츠비의 집을 위해 베어진 나무들</u>, 한때 <u>인간 최후의 가장 큰 꿈</u>을 속삭였던 나무들.<br>
 <br>
-이 대륙 앞에서 사람은 일시적이고 매혹된 순간 동안 숨을 멈췄을 것이고,<br>
+찰나의 황홀한 순간에, 인간은 이 대륙의 존재에 숨을 참아야 했었고,<br>
 <br>
 이해하지도 원하지도 않았던 미적 사색에 사로잡혀, 역사의 마지막 순간에 인간의 경이로움에 걸맞은 무엇인가와 대면했을 것이다."<br>
 <br>
@@ -292,7 +294,7 @@ It eluded us then, but that's no matter—tomorrow we will run faster, stretch o
 <br>
 이를 통해 다른 사람들이 만든 영화나 드라마 속에서,<br>
 <br>
-'하나의 이야기 속에 더 많은 의미를 함축시키기 위해 다양한 기법들을 사용하였다 라는 것을 스스로 알아차리는 것의 재미' 를 배울 수 있게 되었다.<br>
+'작가가 숨겨놓은 장치들을 스스로 풀어내고 알아차리는 것의 재미' 를 배울 수 있게 되었다.<br>
 <br>
 <br>
 <br>
@@ -339,7 +341,7 @@ It eluded us then, but that's no matter—tomorrow we will run faster, stretch o
 <br>
 영화 '기생충' 에서는,<br>
 <br>
-가족들이 신분상승을 꿈꾸며 부잣집을 방문할 때에는 언덕을 <b>올라간다</b>.
+가족들이 신분상승을 꿈꾸며 부잣집을 방문할 때는 언덕을 <b>올라간다</b>.
 <br>
   <p align="center">
     <img src="/assets/images/slide_res/TheGreatGatsby_12.jpg" align="center" width="44%">
@@ -528,7 +530,7 @@ I know that you will<br>
 <br>
 당신은 여전히 나를 사랑해줄까요<br>
 <br>
-아픈 영혼만 남았을 때에도<br>
+내게 아픈 영혼만 남았을 때에도<br>
 <br>
 나는 알아요, 당신이 그럴 거라는 걸<br>
 <br>
