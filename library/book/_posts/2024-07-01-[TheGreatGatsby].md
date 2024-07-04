@@ -28,7 +28,6 @@ It eluded us then, but that's no matter—tomorrow we will run faster, stretch o
 <br>
 <br>
 
-
 아주 오래전부터 내가 '독후감' 이라는 것을 작성하게 된다면,<br>
 <br>
  이 책, `위대한 개츠비` 의 독후감부터 작성해야겠다고 다짐했다.<br>
@@ -44,8 +43,8 @@ It eluded us then, but that's no matter—tomorrow we will run faster, stretch o
 
 내가 다니고 있던 학교에는 영어와 관련된 학과가 다양했다.<br>
 <br>
-그 중, '영어학' 을 이중 전공으로 선택한 나는,<br>
-
+그 중, 첫 번째 전공은 '경영학' 이지만, '영어학' 을 이중 전공으로 선택한 나는,<br>
+<br>
 수강 신청 중 '영어대 교류' 제도를 통해 영어학의 학점으로도 인정 받을 수 있는, '영문학과' 의 '현대미국소설' 이라는 과목에 눈길이 갔다.<br>
 <br>
 <br>
@@ -58,18 +57,18 @@ It eluded us then, but that's no matter—tomorrow we will run faster, stretch o
 <br>
 "과연, 영문학은 영어학과 정확히 어떤 점들이 다를까?"에 대해서, <br>
 <br>
-'직접' 경험해보고 싶은 마음, 순수한 호기심에 이끌려 '현대 미국 소설' 에 수강 신청을 했다.<br>
+'직접' 경험해보고 싶은 마음, 순수한 호기심에 이끌려 '현대미국소설' 에 수강 신청을 했다.<br>
 <br>
 <br>
 <br>
 <br>
 <br>
-"`BA` 가 무슨 전공이에요?"<br>
+"... 출석부에 `BA` 라고 쓰여져 있는데, 무슨 전공이에요?"<br>
 <br>
 <br>
-아직도 교수님이 의아한 표정을 물어보셨던,<br>
 <br>
-따뜻한 핫초코를 들고 창문에 그려진 성애를 보고 있을 때,<br>
+<br>
+내가 따뜻한 '핫초코' 를 들고 창문에 그려진 성애를 보고 있을 때,<br>
 <br>
 첫 출석의 호명과 함께 나에게 질문해주신 교수님의 목소리가 생생히 떠오른다. <br>
 <br>
@@ -80,25 +79,24 @@ It eluded us then, but that's no matter—tomorrow we will run faster, stretch o
 <br>
 <br>
 흔치 않은 타전공생이 반가우셔서 였을까?<br>
-
+<br>
 아니면 앞으로의 수업 과정에서 내가 넘어야할 장애물들이 많다는 것을 전혀 모른 채,<br>
 <br>
-'핫초코' 에 손을 녹이는 데에 집중하며 답하는 내 모습에 신기함을 느끼셔서 였을까?
+태연히 '핫초코' 에 손을 녹이는 데에만 집중하며 답하는 내 모습에 신기함을 느끼셔서 였을까?<br>
+<br>
+<br>
+<br>
+교수님은 정말 굉장히 환하게 웃어주셨었다.<br>
+<br>
+<br>
+<br>
+그리고 만나게 된 `위대한 개츠비, The Great Gatsby` ...
 <br>
 <br>
 <br>
 
-교수님은 굉장히 환하게 웃어주셨었다.
-<br>
-<br>
-<br>
-그리고 읽게 된 `위대한 개츠비, The Great Gatsby` ...
-<br>
-<br>
-<br>
 
-
-2주차의 본격적인 수업이 시작되기 전만 해도,<br>
+본격적인 수업이 시작되기 전만 해도,<br>
 <br>
 나는 단순히, `위대한 개츠비` 라는 소설을 "한 남자가 과거게 얽메인 채 옛 연인을 사랑하다가 비극적인 결말을 맞이하는 '사랑 이야기' 를 다루는 소설" 로 오해했다.<br>
 <br>
@@ -109,7 +107,7 @@ It eluded us then, but that's no matter—tomorrow we will run faster, stretch o
 <br>
 장치를 연결하고 조립하다보면,<br>
 <br>
-"정말 이게 사람이 만들 수 있는 글인가?" 라는 생각까지 들게 할 정도로 놀라움과 감탄의 연속을 느끼게 해주는 무엇인가 였다.<br>
+"정말 이게 사람이 쓸 수 있는 글인가?" 라는 생각까지 들게 할 정도로 놀라움과 감탄의 연속을 느끼게 해주는 무엇인가 였다.<br>
 <br>
 <br>
 
@@ -122,16 +120,16 @@ It eluded us then, but that's no matter—tomorrow we will run faster, stretch o
 <br>
 <br>
 
-다시 한번, 이 포스트의 맨 위 글을 살펴보자.
-
+다시 한번, 이 포스트의 맨 위 글을 살펴보자.<br>
+<br>
 > Gatsby believed in the green light, the orgastic future that year by year recedes before us. <br>
 It eluded us then, but that's no matter—tomorrow we will run faster, stretch out our arms farther.<br>
 ...And then one fine morning - So we beat on, boats against the current, borne back ceaselessly into the past.
 
 피상적으로 문단의 의미를 바라보면, <br>
-
+<br>
 개츠비는 연인 데이지와 다시 이어질 수 있음을 믿었고, 그 것은 비록 실패하였지만, <br>
-
+<br>
 사랑에 대한 열망과 그 가능성을 놓지 않는 것의 중요성을 이야기하는 문장으로 생각될 수 있다.<br>
 <br>
 <br>
@@ -159,7 +157,7 @@ It eluded us then, but that's no matter—tomorrow we will run faster, stretch o
 <br>
 "boats against the current" 는 개츠비가 현재의 현실을 받아들이지 않고 과거의 이상과 꿈을 쫓는 모습을 상징적으로 암시하기도 한다.<br>
 <br>
-실제로, 소설에서 개츠비는 현재의 현실을 외면하고 (심지어 그의 출생과 뿌리, 이름, 아버지, 집안 배경 등 까지 모두 변경한다... 소설의 마지막 즈음 밝혀지지만 Gatsby 의 본명은 James Gatz 이다.) 데이지라는 이상을 쫓으며 살아가지만, 그 꿈은 결코 현실이 되지 않는, 과거에 사로잡혀 있는 인물이다.<br>
+실제로, 소설에서 개츠비는 현재의 현실을 외면하고 (심지어 그의 출생과 뿌리, 이름, 아버지, 집안 배경 등 까지 모두 변경한다... 소설의 마지막 즈음 밝혀지지만 Gatsby 의 본명은 James Gatz 이다. 사람들에게 죽었다고 소개한 아버지는, 개츠비가 죽었을 때 개츠비를 외면하지 않고 찾아온 몇 안되는 조문객들 중 하나이다.) 데이지라는 이상을 쫓으며 살아가지만, 그 꿈은 결코 현실이 되지 않는, 과거에 사로잡혀 있는 인물이다.<br>
 <br>
 <br>
 <br>
@@ -271,8 +269,9 @@ It eluded us then, but that's no matter—tomorrow we will run faster, stretch o
 <br>
 특히, `Henry Hudson` 은 1609년에 현재의 `New York` 을 탐험하며 허드슨 강을 따라 항해했다고 한다.<br>
 <br>
-또한, `New York` 은 원래 네덜란드의 식민지로, `New Amsterdam` 네덜란드의 수도인 `Amsterdam` 의 이름 앞에 `New` 를 붙인 도시이다.<br>
-나중에, 영국에 의해 영국 `York` 지방의 이름을 따 `New York` 으로 이름이 바뀌었지만.
+또한, `New York` 은 영국에 의해 영국 `York` 지방의 이름을 딴 `New York` 으로 이름이 바뀌기전,<br>
+<br>
+네덜란드의 수도인 `Amsterdam` 의 앞에 `New` 를 붙인, `New Amsterdam` 이라는 네덜란드의 식민 도시였다.<br>
 <br>
 <br>
 <br>
@@ -410,8 +409,8 @@ It eluded us then, but that's no matter—tomorrow we will run faster, stretch o
 <br>
 홧김에 차의 컵홀더를 부숴버리기도 하지만...<br>
 <br>
-
-
+<br>
+<br>
 <br>
 <br>
 <br>
@@ -515,7 +514,7 @@ He looked around him wildly, as if the past were lurking here in the shadow of h
 <br>
 <br>
 <br>
-개인적으로, `위대한 개츠비` 영화는 참 실망스럽지만,<br>
+개인적으로, `위대한 개츠비` 영화는 다소 실망스럽지만,<br>
 <br>
 OST 중 'Young and beautiful' 은 굉장히 애정하고 좋아한다.<br>
 <br>
