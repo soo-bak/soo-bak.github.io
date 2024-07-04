@@ -155,7 +155,7 @@ It eluded us then, but that's no matter—tomorrow we will run faster, stretch o
 <br>
 영어에서 `current` 는 '현재' 라는 뜻 또한 가지고 있다.<br>
 <br>
-이 문장의 끝에 작가가 '굳이' 들어낸 `past` 라는 단어와 연결지어 생각해보면,
+이 문장의 끝에 작가가 '굳이' 사용한 `past` 라는 단어와 연결지어 생각해보면,
 <br>
 "boats against the current" 는 개츠비가 현재의 현실을 받아들이지 않고 과거의 이상과 꿈을 쫓는 모습을 상징적으로 암시하기도 한다.<br>
 <br>
@@ -227,7 +227,7 @@ It eluded us then, but that's no matter—tomorrow we will run faster, stretch o
 
 개츠비가 작중 초반부에 했던 말과, 그가 사망한 장소, 그리고 그의 장례식에 등장하는 인물들, 그리고 밝혀지는 과거...조차도,<br>
 <br>
-<b>모두 각각의 함축과 상징적 의미를 담고 있다!!!</b>
+<b>모두 각각 함축과 상징적 의미를 담고 있다!!!</b>
 <br>
 <br>
 <br>
@@ -248,7 +248,7 @@ It eluded us then, but that's no matter—tomorrow we will run faster, stretch o
 <br>
 예를 들어,<br>
 <br>
-위대한 개츠비의 마지막 부분에는 다음과 같은 문단이 등장한다.<br>
+`위대한 개츠비` 의 마지막 부분에는 다음과 같은 문단이 등장한다.<br>
 <br>
 > And as the moon rose higher the inessential houses began to melt away until gradually I became aware of the old island here that flowered once for Dutch sailors' eyes—a fresh, green breast of the new world. Its vanished trees, the trees that had made way for Gatsby's house, had once pandered in whispers to the last and greatest of all human dreams; for a transitory enchanted moment man must have held his breath in the presence of this continent, compelled into an aesthetic contemplation he neither understood nor desired, face to face for the last time in history with something commensurate to his capacity for wonder.
 
@@ -443,15 +443,18 @@ It eluded us then, but that's no matter—tomorrow we will run faster, stretch o
 <br>
 <br>
 <br>
-자신이 할 수 있는 최선의 행동을 다 하고<br>
+자신이 할 수 있는 최선의 행동을 다 하는 것.<br>
 <br>
 <br>
 <br>
-미래에는 꿈과 이상을 가질 수, 되찾을 수 있다고 강력하게 믿으며<br>
+그리고, 미래에는 꿈과 이상을 가질 수, 되찾을 수 있다고 강력하게 믿으며<br>
 <br>
 <br>
 <br>
-희망', '미래', '신념' 을 잃지 않는 모습에서 보여지는 '<b>간절함</b>' 으로부터 <br>
+'희망', '미래', '신념' 을 잃지 않는 모습에서 보여지는 '<b>간절함</b>' 으로부터... <br>
+<br>
+<br>
+<br>
 <br>
 <br>
 <br>
@@ -459,6 +462,9 @@ It eluded us then, but that's no matter—tomorrow we will run faster, stretch o
 <br>
 <br>
 아이러니하게도 '<b>순수함</b>' 을 느꼈기 때문이다.<br>
+<br>
+<br>
+<br>
 <br>
 <br>
 <br>
