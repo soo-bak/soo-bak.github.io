@@ -492,7 +492,7 @@ He looked around him wildly, as if the past were lurking here in the shadow of h
 "She'll see."
 
 <br>
-  "과거를 반복할 수 없다고?" 그는 믿기지 않는다는 듯이 외쳤다.<br>
+"과거를 반복할 수 없다고?" 그는 믿기지 않는다는 듯이 울부짖었다.<br>
 <br>
 "당연히 할 수 있지!"<br>
 <br>
