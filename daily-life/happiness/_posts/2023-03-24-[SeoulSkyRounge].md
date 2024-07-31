@@ -22,11 +22,6 @@ date: "2023-03-24 00:55:00 +0900"
     <figcaption align="center">높은 곳에서 바라보는 한강은 왠지 참 기분이 좋아진다.</figcaption>
   </p>
 
-  <p align="center">
-    <img src="/assets/images/slide_res/123Rounge_restrant_2.png" align="center" width="77%">
-    <figcaption align="center">바깥 사진 찍는 데에 집중 😂</figcaption>
-  </p>
-
   전반적으로 분위기도 고급스러웠고, 웨이터&웨이트리스 분들이 다들 훈훈하게 생기시고 멋지셨다.<br>
 
   물론, 친절하기도 굉장히 친절하셨다. <br>
