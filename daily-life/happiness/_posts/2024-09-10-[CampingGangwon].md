@@ -1,6 +1,6 @@
 ---
 layout: single
-title: "캠핑과 휴식, 강원도 영월 캠프를 다녀오고 - soo:bak"
+title: "캠핑과 휴식 - soo:bak"
 date: "2024-09-10 00:36:00 +0900"
 ---
 <br>
