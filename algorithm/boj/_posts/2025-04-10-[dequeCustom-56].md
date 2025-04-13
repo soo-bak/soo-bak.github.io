@@ -32,7 +32,7 @@ using System.Text;
 
 namespace Solution {
   class Program {
-    const int MAX = 20001;
+    const int MAX = 20_001;
     static int[] dq = new int[MAX];
     static int head = MAX / 2;
     static int tail = MAX / 2;
