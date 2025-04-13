@@ -83,8 +83,7 @@ int main() {
     cout << q.front() << ", ";
     q.pop();
   }
-  cout << q.front() << ">
-";
+  cout << q.front() << ">";
 
   return 0;
 }

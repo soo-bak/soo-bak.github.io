@@ -84,7 +84,7 @@ int main() {
     if (maxW < w) maxW = w;
   }
 
-  cout << maxW << '\n';
+  cout << maxW << "\n";
 
   return 0;
 }
