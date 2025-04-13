@@ -57,8 +57,7 @@ namespace Solution {
 <br>
 
 ```cpp
-#include <iostream>
-#include <queue>
+#include <bits/stdc++.h>
 
 using namespace std;
 
