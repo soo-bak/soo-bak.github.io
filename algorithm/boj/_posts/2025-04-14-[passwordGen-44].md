@@ -9,8 +9,8 @@ description: 최소 조건을 만족하는 조합을 사전 순으로 출력하�
 [1759번 - 암호 만들기](https://www.acmicpc.net/problem/1759)
 
 ## 설명
-이 문제는 주어진 알파벳 중에서 `L`개의 문자를 선택하여,  
-**최소 1개의 모음**과 **최소 2개의 자음**을 포함하고  
+이 문제는 주어진 알파벳 중에서 `L`개의 문자를 선택하여,  <br>
+**최소 1개의 모음**과 **최소 2개의 자음**을 포함하고  <br>
 **사전 순으로 증가하는 암호**들을 전부 출력하는 문제입니다.
 
 ---
@@ -90,7 +90,7 @@ void dfs(string pwd, int now, int depth) {
       if (isVowel(pwd[i])) cntV++;
       else cntC++;
     }
-    if (cntV >= 1 && cntC >= 2) cout << pwd + '\n';
+    if (cntV >= 1 && cntC >= 2) cout << pwd + "\n";
     return ;
   }
 

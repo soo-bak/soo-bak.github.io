@@ -13,7 +13,7 @@ description: 입력 범위를 활용한 계수 정렬 기법으로 대량의 수
 일반적인 정렬 알고리듬이 아닌, **계수 정렬**(Counting Sort) 기법을 이용하여 정렬 성능을 효율화할 수 있습니다.
 
 ### 접근법
-- `1`부터 `10000`까지의 수를 카운팅할 배열을 선언합니다.
+- `1`부터 `10,000`까지의 수를 카운팅할 배열을 선언합니다.
 - 입력을 받으며 해당 수의 등장 횟수를 카운트합니다.
 - 다시 `1` 부터 순차적으로 카운트된 만큼 출력하면 정렬된 결과를 얻을 수 있습니다.
 
@@ -37,14 +37,14 @@ namespace Solution {
       using (StreamReader sr = new(Console.OpenStandardInput()))
       using (StreamWriter sw = new(Console.OpenStandardOutput())) {
         int n = int.Parse(sr.ReadLine());
-        int[] count = new int[10001];
+        int[] count = new int[10_001];
 
         for (int i = 0; i < n; i++) {
           int num = int.Parse(sr.ReadLine());
           count[num]++;
         }
 
-        for (int i = 1; i <= 10000; i++)
+        for (int i = 1; i <= 10_000; i++)
           for (int j = 0; j < count[i]; j++)
             sw.WriteLine(i);
       }
@@ -68,13 +68,13 @@ int main() {
 
   int n; cin >> n;
 
-  int count[10001] = {0};
+  int count[10`001] = {0, };
   for (int i = 0; i < n; i++) {
     int num; cin >> num;
     count[num]++;
   }
 
-  for (int i = 1; i <= 10000; i++) {
+  for (int i = 1; i <= 10`000; i++) {
     for (int j = 0; j < count[i]; j++)
       cout << i << "\n";
   }

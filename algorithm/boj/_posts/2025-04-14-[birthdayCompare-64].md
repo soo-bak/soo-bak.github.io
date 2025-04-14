@@ -116,7 +116,7 @@ int main() {
     }
   }
 
-  cout << youngestName << '\n' << oldest_name << '\n';
+  cout << youngestName << "\n" << oldest_name << "\n";
 
   return 0;
 }
