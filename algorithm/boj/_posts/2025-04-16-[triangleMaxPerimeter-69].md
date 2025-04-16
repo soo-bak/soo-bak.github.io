@@ -56,9 +56,15 @@ int main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
 
-  int side[3]; for (int i = 0; i < 3; i++) cin >> side[i];
+  int side[3];
+  for (int i = 0; i < 3; i++)
+    cin >> side[i];
+
   sort(side, side + 3);
-  while (side[2] >= side[0] + side[1]) side[2]--;
+
+  while (side[2] >= side[0] + side[1])
+    side[2]--;
+
   cout << side[0] + side[1] + side[2] << "\n";
 
   return 0;
