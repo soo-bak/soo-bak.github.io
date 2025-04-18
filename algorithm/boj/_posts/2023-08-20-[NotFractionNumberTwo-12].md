@@ -37,7 +37,7 @@ description: 수학, 사칙연산, 구현 등을 주제로 하는 백준 29196�
 <br>
 - <b>최대공약수를 이용하여 기약분수로 변환</b> : 분자와 분모의 최대공약수를 구한 후, 분자와 분모를 최대 공약수로 나누어 기약분수 형태로 변환합니다.<br>
 
-> 참고 : [GCD와 유클리드 호제법의 원리 - soo:bak](https://soo-bak.github.io/algorithm/theory/gcd-euclidean-explained/)
+> 참고 : [GCD(최대공약수)와 유클리드 호제법의 원리 - soo:bak](https://soo-bak.github.io/algorithm/theory/gcd-euclidean-explained/)
 
 <br>
 - <b>결과 출력</b> : 구한 분수를 출력합니다.<br>
