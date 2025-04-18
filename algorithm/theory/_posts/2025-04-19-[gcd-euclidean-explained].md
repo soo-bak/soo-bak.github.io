@@ -126,6 +126,7 @@ $$
 
 - **분수의 기약 형태 만들기**:
   분자와 분모의 GCD로 나누어 가장 간단한 형태의 분수로 바꿀 수 있습니다.
+  > 참고 : [기약 분수(irreducible fraction)의 알고리듬적 접근 - soo:bak](https://soo-bak.github.io/algorithm/theory/irreducible-fraction/)
 
 - **서로소 판별**:
   두 수의 GCD가 1이면 서로소 관계입니다. 이 개념은 정수론에서 매우 자주 등장합니다.
