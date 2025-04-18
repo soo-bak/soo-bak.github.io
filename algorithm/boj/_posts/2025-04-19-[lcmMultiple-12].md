@@ -35,7 +35,7 @@ description: 두 정수의 최소공배수를 계산하는 수학적 알고리�
 - 테스트케이스 수를 입력받고, 각 쌍의 두 정수 `a`, `b`를 입력받습니다.<br>
 - 유클리드 호제법으로 `GCD`를 계산하고, 위 공식을 통해 `LCM`을 출력합니다.<br>
 
-> 참고 : [GCD와 유클리드 호제법의 원리 - soo:bak](https://soo-bak.github.io/algorithm/theory/gcd-euclidean-explained/)
+> 참고 : [GCD(최대공약수)와 유클리드 호제법의 원리 - soo:bak](https://soo-bak.github.io/algorithm/theory/gcd-euclidean-explained/)
 
 ---
 
