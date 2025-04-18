@@ -149,3 +149,4 @@ $$
 - [백준 5347번 - LCM](https://soo-bak.github.io/algorithm/boj/lcmMultiple-12/)
 - [백준 1934번 - 최소공배수](https://soo-bak.github.io/algorithm/boj/lcm-52/)
 - [백준 29196번 - 소수가 아닌 수 2](https://soo-bak.github.io/algorithm/boj/NotFractionNumberTwo-12/)
+- [백준 1735번 - 분수 합](https://soo-bak.github.io/algorithm/boj/fractionSum-53/)
