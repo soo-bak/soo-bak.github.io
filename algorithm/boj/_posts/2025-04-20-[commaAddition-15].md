@@ -26,7 +26,7 @@ description: 콤마(,)로 구분된 문자열을 숫자로 분리한 뒤 합을 
 4. 결과를 출력합니다.
 
 - 문자열 파싱이 핵심인 문제입니다.
-- 시간 복잡도는 O(n)입니다.
+- 시간 복잡도는 `O(n)`입니다.
 
 ## Code
 
@@ -51,7 +51,6 @@ class Program {
 #include <bits/stdc++.h>
 
 using namespace std;
-typedef vector<int> vi;
 
 int main() {
   ios::sync_with_stdio(false);
