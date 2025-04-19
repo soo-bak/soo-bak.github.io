@@ -29,7 +29,7 @@ description: 문자열에 등장하는 서로 다른 숫자의 개수를 구하�
 
 ## Code
 
-### C# 코드
+### C#
 ```csharp
 using System;
 
@@ -54,7 +54,7 @@ class Program {
 }
 ```
 
-### C++ 코드
+### C++
 ```cpp
 #include <bits/stdc++.h>
 

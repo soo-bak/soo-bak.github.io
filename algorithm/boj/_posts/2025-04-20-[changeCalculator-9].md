@@ -33,7 +33,7 @@ description: 거스름돈을 쿼터, 다임, 니켈, 페니 단위로 최소 개
 
 ## Code
 
-### C# 코드
+### C#
 ```csharp
 using System;
 
@@ -56,7 +56,7 @@ class Program {
 }
 ```
 
-### C++ 코드
+### C++
 ```cpp
 #include <bits/stdc++.h>
 

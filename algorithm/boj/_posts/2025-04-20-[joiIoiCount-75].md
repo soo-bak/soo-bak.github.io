@@ -35,7 +35,7 @@ description: 문자열 내에서 JOI와 IOI의 등장 횟수를 각각 세는 �
 
 ## Code
 
-### C# 코드
+### C#
 ```csharp
 using System;
 
@@ -57,7 +57,7 @@ class Program {
 }
 ```
 
-### C++ 코드
+### C++
 ```cpp
 #include <bits/stdc++.h>
 

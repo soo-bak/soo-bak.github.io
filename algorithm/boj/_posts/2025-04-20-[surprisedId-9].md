@@ -26,7 +26,7 @@ description: 입력된 사용자 이름 뒤에 ??!를 붙여 출력하는 백준
 
 ## Code
 
-### C# 코드
+### C#
 ```csharp
 using System;
 
@@ -38,7 +38,7 @@ class Program {
 }
 ```
 
-### C++ 코드
+### C++
 ```cpp
 #include <bits/stdc++.h>
 
