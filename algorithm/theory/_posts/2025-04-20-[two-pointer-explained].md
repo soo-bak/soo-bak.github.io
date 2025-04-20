@@ -172,6 +172,10 @@ int maxLengthSubarray(vector<int>& arr, int target) {
 - **슬라이딩 윈도우**: 가변 크기 윈도우로 데이터 탐색.
 - **기하 문제**: 좌표나 벡터의 비율을 단순화하거나 거리 계산.
 
+
+> 참고 : [슬라이딩 윈도우(Sliding Window)의 이해와 구현 - soo:bak](https://soo-bak.github.io/algorithm/theory/sliding-window-explained/)
+
+<br>
 또한, 알고리듬 문제가 아닌 실제 실무에서도(예: 문자열에서 특정 패턴 찾기, 데이터 스트리밍에서 특정 시간 내 이벤트를 집계할 때 등) 투 포인터를 활용할 수 있습니다.<br>
 
 ---
