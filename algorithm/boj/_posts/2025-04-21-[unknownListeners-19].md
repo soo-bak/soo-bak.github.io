@@ -48,8 +48,10 @@ class Program {
     }
 
     result.Sort();
+
     Console.WriteLine(result.Count);
-    foreach (var name in result) Console.WriteLine(name);
+    foreach (var name in result)
+      Console.WriteLine(name);
   }
 }
 ```
