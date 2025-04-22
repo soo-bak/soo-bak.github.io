@@ -120,4 +120,4 @@ Middle-Square 방식은 단순한 수학적 아이디어로부터 시작된 고�
 **중복 발생의 원리**, **순환 수열의 형태**, **비둘기집 원리의 응용** 등을 함께 익히는 좋은 기회가 됩니다.
 
 <br>
-> **관련 문제**: [[백준 6500] 랜덤 숫자 만들기 (C#, C++) - soo:bak](https://soo-bak.github.io/algorithm/boj/random-number-generation-45/)
+> 관련 문제: [[백준 6500] 랜덤 숫자 만들기 (C#, C++) - soo:bak](https://soo-bak.github.io/algorithm/boj/random-number-generation-45/)

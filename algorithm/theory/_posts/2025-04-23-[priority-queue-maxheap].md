@@ -256,4 +256,6 @@ int findKthLargest(vector<int>& nums, int k) {
 <br>
 특히 우선순위 큐와 결합되면 다양한 탐색 및 스케줄링 문제 해결에 효율적인 도구로 사용할 수 있습니다.<br>
 
+> 관련 문제: [[백준 1927] 최소 힙 (C#, C++) - soo:bak](https://soo-bak.github.io/algorithm/boj/min-heap-20)
+
 > 관련 문제: [[백준 11279] 최대 힙 (C#, C++) - soo:bak](https://soo-bak.github.io/algorithm/boj/max-heap-14)
