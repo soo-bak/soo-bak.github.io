@@ -31,7 +31,7 @@ description: 주어진 수를 뒤집어 더한 결과가 회문인지 확인하�
 
 ```csharp
 using System;
- b
+
 class Program {
   static void Main() {
     int t = int.Parse(Console.ReadLine());
