@@ -80,6 +80,7 @@ description: 수학적 직관에서 출발하여 다양한 알고리듬 문제�
 ## 실전 예제
 
 > 관련 문제: [[백준 10570] Favorite Number (C#, C++) - soo:bak](https://soo-bak.github.io/algorithm/boj/pigeonhole-principle)
+<br>
 > 관련 문제: [[백준 6500] 랜덤 숫자 만들기 (C#, C++) - soo:bak](https://soo-bak.github.io/algorithm/boj/random-number-generation-45/)
 
 ---
