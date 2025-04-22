@@ -255,3 +255,5 @@ int findKthLargest(vector<int>& nums, int k) {
 최대 힙은 가장 큰 값을 빠르게 조회하고, 효율적으로 삽입/삭제할 수 있는 자료구조입니다.<br>
 <br>
 특히 우선순위 큐와 결합되면 다양한 탐색 및 스케줄링 문제 해결에 효율적인 도구로 사용할 수 있습니다.<br>
+
+> 관련 문제: [[백준 11279] 최대 힙 (C#, C++) - soo:bak](https://soo-bak.github.io/algorithm/boj/max-heap-14)
