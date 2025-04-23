@@ -67,7 +67,7 @@ description: 수학적 직관에서 출발하여 다양한 알고리듬 문제�
 > 관련 문제: [[백준 6500] 랜덤 숫자 만들기 (C#, C++) - soo:bak](https://soo-bak.github.io/algorithm/boj/random-number-generation-45/)
 <br>
 
-- 생성 가능한 수가 `0`부터 `9999`까지로 제한되므로, 10,000개를 초과하여 수를 생성하면 반드시 중복이 발생합니다.
+- 생성 가능한 수가 `0`부터 `9999`까지로 제한되므로, `10,000`개를 초과하여 수를 생성하면 반드시 중복이 발생합니다.
 <br>
 
 ### 3. 가능한 상태 수를 기준으로 논리적 모순 유도
@@ -77,13 +77,6 @@ description: 수학적 직관에서 출발하여 다양한 알고리듬 문제�
 
 ---
 
-## 실전 예제
-
-> 관련 문제: [[백준 10570] Favorite Number (C#, C++) - soo:bak](https://soo-bak.github.io/algorithm/boj/pigeonhole-principle)
-<br>
-> 관련 문제: [[백준 6500] 랜덤 숫자 만들기 (C#, C++) - soo:bak](https://soo-bak.github.io/algorithm/boj/random-number-generation-45/)
-
----
 
 ## 핵심 정리
 
@@ -97,5 +90,10 @@ description: 수학적 직관에서 출발하여 다양한 알고리듬 문제�
 
 비둘기집 원리는 문제를 해결하기 위한 구체적인 연산보다는, 전체적인 구조를 판단하거나 조건을 해석하는 데에 쓰입니다.<br>
 <br>
-특히 상태 수가 제한되어 있고, 연산이 반복되는 구조가 보일 때는 항상 이 원리를 떠올려보는 것이 좋습니다.
+특히 상태 수가 제한되어 있고, 연산이 반복되는 구조가 보일 때는 항상 이 원리를 떠올려보는 것이 도움이 됩니다.
 <br>
+
+
+> 관련 문제: [[백준 10570] Favorite Number (C#, C++) - soo:bak](https://soo-bak.github.io/algorithm/boj/pigeonhole-principle)
+<br>
+> 관련 문제: [[백준 6500] 랜덤 숫자 만들기 (C#, C++) - soo:bak](https://soo-bak.github.io/algorithm/boj/random-number-generation-45/)
