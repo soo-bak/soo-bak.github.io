@@ -105,7 +105,7 @@ pair<int, int> findPairWithSum(vector<int>& arr, int target) {
 
 배열에서 연속된 부분 배열의 합이 `target` 이하인 가장 긴 구간의 길이를 구하기.<br>
 
-1. 두 포인터 `start`와 `end`를 0으로 초기화.
+1. 두 포인터 `start`와 `end`를 `0`으로 초기화.
 2. 구간 합 `currentSum`을 유지하며 `end`를 증가:<br>
    - `currentSum`에 `arr[end]`를 더함.
    - `currentSum`이 `target`을 초과하면 `start`를 증가시키며 `arr[start]`를 뺌.

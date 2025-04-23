@@ -96,7 +96,7 @@ int maxSumFixedWindow(vector<int>& arr, int k) {
 예: `"ADOBECODEBANC"`, `k = 4` (문자 `A`, `B`, `C`, `D`), 결과: `"BANC"` (길이 = `4`).
 
 1. 초기화:
-   - `start=0`, `end=0`, 문자 빈도를 추적하는 해시맵.
+   - `start = 0`, `end = 0`, 문자 빈도를 추적하는 해시맵.
 2. 윈도우 확장:
    - `end`를 이동하며 문자 추가, 필요한 문자 개수 확인.
 3. 윈도우 축소:
