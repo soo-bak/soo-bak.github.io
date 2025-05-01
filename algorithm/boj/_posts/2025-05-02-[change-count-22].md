@@ -33,6 +33,8 @@ description: 가장 적은 개수의 동전으로 거스름돈을 줄 때 필요
 
 **그리디 알고리듬**의 대표적인 예로, 동전을 큰 단위부터 사용하는 방식으로 항상 최적의 해를 얻을 수 있습니다.
 
+> 참고 : [그리디 알고리듬(Greedy Algorithm, 탐욕법)의 원리와 적용 - soo:bak](https://soo-bak.github.io/algorithm/theory/greedyAlgo/)
+
 <br>
 
 ## Code
