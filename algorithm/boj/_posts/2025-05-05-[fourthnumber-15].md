@@ -51,12 +51,9 @@ class Program {
     var d1 = input[1] - input[0];
     var d2 = input[2] - input[1];
 
-    if (d1 == d2)
-      Console.WriteLine(input[2] + d1);
-    else if (2 * d2 == d1)
-      Console.WriteLine(input[0] + d2);
-    else
-      Console.WriteLine(input[1] + d1);
+    if (d1 == d2) Console.WriteLine(input[2] + d1);
+    else if (2 * d2 == d1) Console.WriteLine(input[0] + d2);
+    else Console.WriteLine(input[1] + d1);
   }
 }
 ```
