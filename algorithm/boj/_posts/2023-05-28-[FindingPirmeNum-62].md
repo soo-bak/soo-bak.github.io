@@ -13,7 +13,8 @@ description: 수학과 소수 찾기, 에라토스테네스의 체를 주제로 
 
 `에라토스테네스의 체` 에 대한 자세한 설명은 [여기](https://soo-bak.github.io/algorithm/theory/) 에서 확인하실 수 있습니다. <br>
 
-해당 문제에서 `C#` 의 경우 `StringBuilder` 을 사용하지 않으면 `시간 초과` 가 됨에 주의합니다.<br>
+<br>
+
 - - -
 
 ## Code
