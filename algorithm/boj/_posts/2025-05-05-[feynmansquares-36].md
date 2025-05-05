@@ -37,6 +37,7 @@ description: N × N 정사각형 그리드에서 만들 수 있는 모든 크기
   \sum_{k=1}^{N} k^2 = \frac{N(N+1)(2N+1)}{6}
   $$
 
+<br>
 > 참고 : [자연수 제곱합 공식의 원리와 유도 과정 - soo:bak](https://soo-bak.github.io/algorithm/theory/sumOfSquaresNatNums/)
 
 <br>
