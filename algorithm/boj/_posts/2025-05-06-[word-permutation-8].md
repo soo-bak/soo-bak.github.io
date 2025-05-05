@@ -55,7 +55,8 @@ class Program {
 
       if (i >= 0) {
         int j = s.Length - 1;
-        while (s[j] <= s[i]) j--;
+        while (s[j] <= s[i])
+          j--;
         (s[i], s[j]) = (s[j], s[i]);
         Array.Reverse(s, i + 1, s.Length - i - 1);
       }
