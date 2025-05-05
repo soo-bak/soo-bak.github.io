@@ -76,9 +76,9 @@ int main() {
     if (c == 'B') swap(cup[1], cup[2]);
     if (c == 'C') swap(cup[0], cup[2]);
   }
+
   for (int i = 0; i < 3; i++) {
-    if (cup[i]) cout << i + 1 << "
-";
+    if (cup[i]) cout << i + 1 << "\n";
   }
 
   return 0;
