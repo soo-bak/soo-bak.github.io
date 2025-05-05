@@ -27,6 +27,7 @@ description: 1부터 N까지의 수를 사전순으로 나열한 모든 순열�
 - 이러한 방식은 전형적인 **백트래킹(재귀)** 구조로 구현할 수 있으며, <br>
   사전순 출력을 위해 항상 **작은 수부터 탐색**합니다.
 
+<br>
 > 참고 : [백트래킹(Backtracking)의 개념과 구조적 사고 - soo:bak](https://soo-bak.github.io/algorithm/theory/backTracking/)
 
 <br>
