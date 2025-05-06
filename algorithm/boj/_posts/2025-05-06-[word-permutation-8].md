@@ -31,9 +31,12 @@ description: 주어진 단어의 다음 사전순 순열을 구하는 백준 908
 
 <br>
 > 관련 문제: [[백준 10972] 다음 순열 (C#, C++) - soo:bak](https://soo-bak.github.io/algorithm/boj/next-permutation-41)
+
 > 관련 문제: [[백준 10973] 이전 순열 (C#, C++) - soo:bak](https://soo-bak.github.io/algorithm/boj/prev-permutation-55)
 
 <br>
+
+---
 
 ## Code
 
