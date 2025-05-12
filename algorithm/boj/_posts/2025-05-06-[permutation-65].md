@@ -112,7 +112,7 @@ void backtrack(string& s, vb& used) {
     }
     return;
   }
-  for (int i = 0; i < s.size(); i++)
+  for (size_t i = 0; i < s.size(); i++) {
     if (!used[i]) {
       used[i] = true;
       p.push_back(s[i]);
@@ -120,6 +120,7 @@ void backtrack(string& s, vb& used) {
       p.pop_back();
       used[i] = false;
     }
+  }
 }
 
 int main() {
