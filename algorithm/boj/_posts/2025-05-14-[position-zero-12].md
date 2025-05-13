@@ -73,7 +73,6 @@ class Program {
 
     int left = x - r, right = x + r;
     int inner = 0, boundary = 0;
-
     foreach (int p in points) {
       if (p == left || p == right) boundary++;
       else if (left < p && p < right) inner++;
