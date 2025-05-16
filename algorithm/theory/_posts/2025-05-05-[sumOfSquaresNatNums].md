@@ -257,3 +257,7 @@ $$
 - 수학적 귀납법을 통한 증명
 
 등의 다양한 수학적 개념과 연결되어 있는 재미있는 공식입니다.
+
+<br>
+
+> 참고 : [1부터 n까지 자연수의 합과 삼각수 - soo:bak](https://soo-bak.github.io/algorithm/theory/TriNum/)
