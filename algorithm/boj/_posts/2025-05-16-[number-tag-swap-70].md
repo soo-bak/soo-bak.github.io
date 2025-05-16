@@ -66,9 +66,8 @@ class Program {
 
     for (int k = 1; k <= c; k++) {
       for (int i = 0; i < n - 1; i++) {
-        if (students[i] % k > students[i + 1] % k) {
+        if (students[i] % k > students[i + 1] % k)
           (students[i], students[i + 1]) = (students[i + 1], students[i]);
-        }
       }
     }
 
