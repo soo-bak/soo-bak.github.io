@@ -54,6 +54,11 @@ $$<br>
 
 이렇게 미리 결과를 계산해두고, 테스트케이스에서 주어진 입력에 대해 즉시 결과를 출력하면 됩니다.
 
+<br>
+> 참고 : [피보나치 수열 (Fibonacci Sequence) - soo:bak](https://soo-bak.github.io/algorithm/theory/fibonacciSeq/)
+
+<br>
+
 ## Code
 
 [ C# ]

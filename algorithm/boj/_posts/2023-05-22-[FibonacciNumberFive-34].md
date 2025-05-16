@@ -15,6 +15,12 @@ description: 수학과 피보나치 수열, 다이나믹 프로그래밍을 주�
 
 문제에서의 `n` 의 범위를 고려하여 다이나믹 프로그래밍을 활용하여 풀이하였습니다. <br>
 
+<br>
+
+> 참고 : [피보나치 수열 (Fibonacci Sequence) - soo:bak](https://soo-bak.github.io/algorithm/theory/fibonacciSeq/)
+
+<br>
+
 - - -
 
 ## Code
