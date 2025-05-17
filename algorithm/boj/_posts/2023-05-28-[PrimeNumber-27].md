@@ -19,7 +19,11 @@ description: 수학과 소수 찾기, 에라토스테네스의 체를 주제로 
 
 하지만, 더 효율적인 방법은 `에라토스테네스의 체` 알고리즘을 사용하는 것입니다. <br>
 
-`에라토스테네스의 체` 에 대한 자세한 설명은 [여기](https://soo-bak.github.io/algorithm/theory/) 에서 확인하실 수 있습니다. <br>
+<br>
+
+> 참고 : [에라토스테네스의 체 (Sieve of Eratosthenes) - soo:bak](https://soo-bak.github.io/algorithm/theory/SieveOfEratosthenes/)
+
+<br>
 
 - - -
 

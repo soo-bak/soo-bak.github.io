@@ -13,7 +13,9 @@ description: 수학과 베르트랑 공준, 에라토스테네스의 체, 소수
 
 `에라토스테네스의 체` 알고리즘을 활용하여 `2n` 까지의 범위에서 소수를 찾고, `n` 보다 큰 소수의 개수를 세면 됩니다. <br>
 
-`에라토스테네스의 체` 에 대한 자세한 설명은 [여기](https://soo-bak.github.io/algorithm/theory/) 에서 확인하실 수 있습니다. <br>
+> 참고 : [에라토스테네스의 체 (Sieve of Eratosthenes) - soo:bak](https://soo-bak.github.io/algorithm/theory/SieveOfEratosthenes/)
+
+<br>
 
 - - -
 

@@ -19,6 +19,12 @@ description: 소수를 체로 거르는 과정에서 K번째로 지워지는 수
 - 각 수 `i`가 아직 지워지지 않았고, `i`의 배수들을 순서대로 지울 때 `K`번째가 되면 해당 값을 출력합니다.
 - 에라토스테네스의 체는 일반적으로 **소수를 남기는 과정**이지만, 이 문제에서는 **지우는 순서**를 추적해야 합니다.
 
+<br>
+
+> 참고 : [에라토스테네스의 체 (Sieve of Eratosthenes) - soo:bak](https://soo-bak.github.io/algorithm/theory/SieveOfEratosthenes/)
+
+<br>
+
 ---
 
 ## Code

@@ -15,7 +15,11 @@ description: 수학과 골드바흐의 추측, 에라토스테네스의 체 와 
 
 이 때, 두 소수의 차이가 가장 작은 경우부터 찾아서 출력해야 합니다. <br>
 
-`에라토스테네스의 체` 에 대한 자세한 설명은 [여기](https://soo-bak.github.io/algorithm/theory/) 에서 확인하실 수 있습니다. <br>
+<br>
+
+> 참고 : [에라토스테네스의 체 (Sieve of Eratosthenes) - soo:bak](https://soo-bak.github.io/algorithm/theory/SieveOfEratosthenes/)
+
+<br>
 
 - - -
 

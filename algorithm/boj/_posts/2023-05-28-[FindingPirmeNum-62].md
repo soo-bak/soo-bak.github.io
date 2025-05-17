@@ -11,7 +11,9 @@ description: 수학과 소수 찾기, 에라토스테네스의 체를 주제로 
 ## 설명
 `에라토스테네스의 체` 를 활용하여 주어진 숫자 `m` 이상 `n` 이하의 범위에서 모든 소수를 찾고 출력하는 문제입니다. <br>
 
-`에라토스테네스의 체` 에 대한 자세한 설명은 [여기](https://soo-bak.github.io/algorithm/theory/) 에서 확인하실 수 있습니다. <br>
+<br>
+
+> 참고 : [에라토스테네스의 체 (Sieve of Eratosthenes) - soo:bak](https://soo-bak.github.io/algorithm/theory/SieveOfEratosthenes/)
 
 <br>
 
