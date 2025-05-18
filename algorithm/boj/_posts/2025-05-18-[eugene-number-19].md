@@ -68,8 +68,10 @@ class Program {
       string right = num.Substring(d);
 
       int prod1 = 1, prod2 = 1;
-      foreach (char c in left) prod1 *= c - '0';
-      foreach (char c in right) prod2 *= c - '0';
+      foreach (char c in left)
+        prod1 *= c - '0';
+      foreach (char c in right)
+        prod2 *= c - '0';
 
       if (prod1 == prod2) {
         found = true;
