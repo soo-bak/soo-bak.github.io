@@ -19,6 +19,12 @@ description: 수학과 소수 탐색의 기본을 주제로 하는 백준 1978�
 
 숫자 `1` 도 소수가 아니라는 점에 주의합니다. <br>
 
+<br>
+
+> 참고 : [에라토스테네스의 체 (Sieve of Eratosthenes) - soo:bak](https://soo-bak.github.io/algorithm/theory/SieveOfEratosthenes/)
+
+<br>
+
 - - -
 
 ## Code
