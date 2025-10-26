@@ -21,7 +21,7 @@ description: 주어진 세 수를 오름차순으로 정렬하여 출력하는 �
 - 정렬 함수를 이용해 오름차순으로 정렬합니다.<br>
 - 정렬된 세 수를 순서대로 출력합니다.<br>
 
-> 참고 : [퀵 정렬(Quick Sort)의 원리와 구현 - soo:bak](https://soo-bak.github.io/algorithm/theory/quick-sort/)
+> 참고 : [빠른 정렬(Quick Sort)의 원리와 구현 - soo:bak](https://soo-bak.github.io/algorithm/theory/quick-sort/)
 
 ---
 
