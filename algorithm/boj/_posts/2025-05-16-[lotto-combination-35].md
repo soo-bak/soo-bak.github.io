@@ -53,6 +53,8 @@ description: 오름차순 집합에서 6개의 수를 선택하는 모든 조합
 
 > 참고 : [백트래킹(Backtracking)의 개념과 구조적 사고 - soo:bak](https://soo-bak.github.io/algorithm/theory/backTracking/)
 
+> 참고 : [조합(Combination)의 원리와 구현 - soo:bak](https://soo-bak.github.io/algorithm/theory/combination/)
+
 <br>
 
 ---

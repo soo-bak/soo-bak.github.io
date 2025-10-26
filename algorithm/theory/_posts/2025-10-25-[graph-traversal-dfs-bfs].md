@@ -120,8 +120,7 @@ void dfs(int v) {
 
 별도의 스택 자료구조를 관리할 필요가 없습니다.
 
-관련 글:
-[백트래킹(Backtracking)의 개념과 구조적 사고 - soo:bak](https://soo-bak.github.io/algorithm/theory/backTracking/)
+> 참고 : [백트래킹(Backtracking)의 개념과 구조적 사고 - soo:bak](https://soo-bak.github.io/algorithm/theory/backTracking/)
 
 <br>
 

@@ -36,6 +36,10 @@ description: 모든 사용자 쌍의 최단 연락 단계를 합산해 케빈 �
 
 <br>
 
+> 참고 : [그래프 탐색 - DFS와 BFS - soo:bak](https://soo-bak.github.io/algorithm/theory/graph-traversal-dfs-bfs/)
+
+<br>
+
 ---
 
 ## Code

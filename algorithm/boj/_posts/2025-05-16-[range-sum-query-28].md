@@ -51,6 +51,10 @@ description: 여러 구간의 합을 빠르게 구하기 위해 누적합을 활
 
 <br>
 
+> 참고 : [누적합(Prefix Sum)의 원리와 구간 합 계산 - soo:bak](https://soo-bak.github.io/algorithm/theory/prefix-sum/)
+
+<br>
+
 ---
 
 ## Code

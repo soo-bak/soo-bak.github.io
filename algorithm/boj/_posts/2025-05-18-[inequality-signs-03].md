@@ -42,6 +42,12 @@ description: 주어진 부등호 조건을 만족하는 모든 숫자 조합 중
 
 <br>
 
+> 참고 : [백트래킹(Backtracking)의 개념과 구조적 사고 - soo:bak](https://soo-bak.github.io/algorithm/theory/backTracking/)
+
+> 참고 : [조합(Combination)의 원리와 구현 - soo:bak](https://soo-bak.github.io/algorithm/theory/combination/)
+
+<br>
+
 ---
 
 ## Code

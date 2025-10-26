@@ -47,6 +47,10 @@ $$
 
 <br>
 
+> 참고 : [누적합(Prefix Sum)의 원리와 구간 합 계산 - soo:bak](https://soo-bak.github.io/algorithm/theory/prefix-sum/)
+
+<br>
+
 ---
 
 ## Code

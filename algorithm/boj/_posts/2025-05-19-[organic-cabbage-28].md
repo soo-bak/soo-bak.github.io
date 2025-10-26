@@ -47,6 +47,10 @@ description: 인접한 배추 그룹을 DFS로 탐색하여 필요한 지렁이 
 
 <br>
 
+> 참고 : [그래프 탐색 - DFS와 BFS - soo:bak](https://soo-bak.github.io/algorithm/theory/graph-traversal-dfs-bfs/)
+
+<br>
+
 ---
 
 ## Code
