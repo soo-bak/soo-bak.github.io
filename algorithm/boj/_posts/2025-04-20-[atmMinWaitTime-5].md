@@ -27,6 +27,11 @@ description: 사람들의 인출 시간을 오름차순으로 정렬해 전체 �
 
 - 이 문제는 `정렬을 한 번 수행`하면 그 이후의 계산은 `O(n)`으로 가능하므로 전체 시간 복잡도는 `O(n log n)`입니다.
 
+<br>
+> 참고 : [그리디 알고리듬(Greedy Algorithm, 탐욕법)의 원리와 적용 - soo:bak](https://soo-bak.github.io/algorithm/theory/greedyAlgo/)
+
+<br>
+
 ## Code
 
 ### C#

@@ -27,6 +27,11 @@ description: 여러 개의 로프를 선택하여 들어올릴 수 있는 최대
   - 최대 중량은 `rope[i] * (N - i)`
 - 이 값을 매 반복마다 갱신하여 **최댓값을 추적**합니다.
 
+<br>
+> 참고 : [그리디 알고리듬(Greedy Algorithm, 탐욕법)의 원리와 적용 - soo:bak](https://soo-bak.github.io/algorithm/theory/greedyAlgo/)
+
+<br>
+
 ---
 
 ## Code

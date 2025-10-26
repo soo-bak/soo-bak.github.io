@@ -23,6 +23,11 @@ description: 주어진 동전 종류로 목표 금액을 만들기 위해 필요
 - 현재 금액이 해당 동전으로 나누어 떨어지면 몫만큼 카운트하고, 나머지 금액으로 갱신합니다.<br>
 - 반복하며 금액이 `0`이 될 때까지 진행합니다.<br>
 
+<br>
+> 참고 : [그리디 알고리듬(Greedy Algorithm, 탐욕법)의 원리와 적용 - soo:bak](https://soo-bak.github.io/algorithm/theory/greedyAlgo/)
+
+<br>
+
 ---
 
 ## Code
