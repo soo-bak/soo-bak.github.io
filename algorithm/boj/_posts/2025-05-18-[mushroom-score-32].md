@@ -36,6 +36,9 @@ description: 버섯 점수의 누적합을 계산하여 100에 가장 가까운 
   * 두 값이 같은 거리만큼 떨어져 있다면, **더 큰 값을 선택**하는 조건에 따라 지금까지의 누적합을 유지합니다.
 
 <br>
+> 참고 : [누적합(Prefix Sum)의 원리와 구간 합 계산 - soo:bak](https://soo-bak.github.io/algorithm/theory/prefix-sum/)
+
+<br>
 
 ---
 

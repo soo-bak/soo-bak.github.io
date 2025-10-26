@@ -20,6 +20,11 @@ description: 연속된 정답 보너스 점수를 계산하는 백준 2506번 �
   - 오답이면 누적 보너스 점수를 다시 `1`로 초기화합니다.
 - 최종 누적 점수를 출력하면 됩니다.
 
+<br>
+> 참고 : [누적합(Prefix Sum)의 원리와 구간 합 계산 - soo:bak](https://soo-bak.github.io/algorithm/theory/prefix-sum/)
+
+<br>
+
 ---
 
 ## Code
