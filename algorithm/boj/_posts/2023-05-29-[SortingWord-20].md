@@ -18,6 +18,10 @@ description: 문자열 정렬과 탐색 등을 주제로 하는 백준 1181번 �
 
 <br>
 
+> 참고 : [빠른 정렬(Quick Sort)의 원리와 구현 - soo:bak](https://soo-bak.github.io/algorithm/theory/quick-sort/)
+
+<br>
+
 - - -
 
 ## Code

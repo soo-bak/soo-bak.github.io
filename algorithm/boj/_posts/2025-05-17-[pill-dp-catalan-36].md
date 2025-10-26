@@ -83,6 +83,10 @@ description: 원알과 반알을 꺼내는 규칙을 조합적으로 계산하�
 
 <br>
 
+> 참고 : [동적 계획법(Dynamic Programming)의 원리와 구현 - soo:bak](https://soo-bak.github.io/algorithm/theory/dynamic-programming/)
+
+<br>
+
 ---
 
 ## Code

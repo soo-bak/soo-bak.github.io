@@ -422,8 +422,8 @@ int main() {
 <br>
 
 **관련 문제**:
-- [[백준 2750] 수 정렬하기](https://www.acmicpc.net/problem/2750)
-- [[백준 2752] 세수정렬](https://www.acmicpc.net/problem/2752)
-- [[백준 11004] K번째 수](https://www.acmicpc.net/problem/11004)
-- [[백준 11931] 수 정렬하기 4](https://www.acmicpc.net/problem/11931)
-- [[백준 1181] 단어 정렬](https://www.acmicpc.net/problem/1181)
+- [[백준 2750] 수 정렬하기](https://soo-bak.github.io/algorithm/boj/SortingNumbers-65/)
+- [[백준 2752] 세수정렬](https://soo-bak.github.io/algorithm/boj/sortThreeNumbers-4/)
+- [[백준 11004] K번째 수](https://soo-bak.github.io/algorithm/boj/kthnum-53/)
+- [[백준 11931] 수 정렬하기 4](https://soo-bak.github.io/algorithm/boj/sortdesc-44/)
+- [[백준 1181] 단어 정렬](https://soo-bak.github.io/algorithm/boj/SortingWord-20/)

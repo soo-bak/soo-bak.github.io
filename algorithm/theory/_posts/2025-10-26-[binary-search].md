@@ -173,6 +173,12 @@ C++ 표준 라이브러리에서는 `<algorithm>` 헤더의 `binary_search(begin
 
 이 함수는 값의 존재 여부를 `bool`로 반환합니다.
 
+<br>
+
+이분 탐색을 사용하기 전에는 반드시 배열이 정렬되어 있어야 합니다.
+
+정렬되지 않은 배열이라면 먼저 정렬을 수행해야 하는데, 이 때 [빠른 정렬(Quick Sort)](https://soo-bak.github.io/algorithm/theory/quick-sort/)이나 [삽입 정렬(Insertion Sort)](https://soo-bak.github.io/algorithm/theory/insertion-sort/) 등의 정렬 알고리듬을 활용할 수 있습니다.
+
 ---
 
 ## 시간 복잡도
@@ -268,6 +274,8 @@ int upperBound(vector<int>& arr, int target) {
 
 C++ 표준 라이브러리에서는 `std::lower_bound`와 `std::upper_bound`를 제공합니다.
 
+Lower Bound와 Upper Bound는 정렬된 배열에서 특정 조건을 만족하는 구간을 찾을 때 유용하며, [투 포인터(Two Pointer)](https://soo-bak.github.io/algorithm/theory/two-pointer-explained/)나 [슬라이딩 윈도우(Sliding Window)](https://soo-bak.github.io/algorithm/theory/sliding-window-explained/) 기법과 함께 활용되기도 합니다.
+
 <br>
 
 ### 3) 파라메트릭 서치 (Parametric Search)
@@ -311,6 +319,8 @@ int findMaxLength(vector<int>& cables, int k) {
   return answer;
 }
 ```
+
+파라메트릭 서치는 최적화 문제를 결정 문제로 변환하여 풀이하는 방식으로, [그리디 알고리듬(Greedy Algorithm)](https://soo-bak.github.io/algorithm/theory/greedyAlgo/)이나 [동적 계획법(Dynamic Programming)](https://soo-bak.github.io/algorithm/theory/dynamic-programming/)과 함께 활용되기도 합니다.
 
 <br>
 
@@ -461,16 +471,19 @@ $$O(\log n)$$의 시간 복잡도는 대용량 데이터 처리에서 효율적�
 <br>
 
 **관련 글**:
+- [빠른 정렬(Quick Sort)의 원리와 구현 - soo:bak](https://soo-bak.github.io/algorithm/theory/quick-sort/)
+- [삽입 정렬(Insertion Sort)의 원리와 구현 - soo:bak](https://soo-bak.github.io/algorithm/theory/insertion-sort/)
+- [투 포인터(Two Pointer)의 원리와 활용 - soo:bak](https://soo-bak.github.io/algorithm/theory/two-pointer-explained/)
+- [슬라이딩 윈도우(Sliding Window)의 원리와 활용 - soo:bak](https://soo-bak.github.io/algorithm/theory/sliding-window-explained/)
 - [그리디 알고리듬(Greedy Algorithm, 탐욕법)의 원리와 적용 - soo:bak](https://soo-bak.github.io/algorithm/theory/greedyAlgo/)
 - [동적 계획법(Dynamic Programming)의 원리와 구현 - soo:bak](https://soo-bak.github.io/algorithm/theory/dynamic-programming/)
 
 <br>
 
 **관련 문제**:
-- [[백준 1920] 수 찾기](https://www.acmicpc.net/problem/1920)
-- [[백준 1654] 랜선 자르기](https://www.acmicpc.net/problem/1654)
-- [[백준 2805] 나무 자르기](https://www.acmicpc.net/problem/2805)
-- [[백준 10816] 숫자 카드 2](https://www.acmicpc.net/problem/10816)
-- [[백준 1822] 차집합](https://www.acmicpc.net/problem/1822)
-- [[백준 11663] 선분 위의 점](https://www.acmicpc.net/problem/11663)
+- [[백준 1920] 수 찾기](https://soo-bak.github.io/algorithm/boj/FindingNum-39/)
+- [[백준 1654] 랜선 자르기](https://soo-bak.github.io/algorithm/boj/CuttingLines-37/)
+- [[백준 2805] 나무 자르기](https://soo-bak.github.io/algorithm/boj/CuttingTrees-44/)
+- [[백준 10816] 숫자 카드 2](https://soo-bak.github.io/algorithm/boj/numberCardTwo-43/)
+- [[백준 1822] 차집합](https://soo-bak.github.io/algorithm/boj/set-diff-21/)
 
