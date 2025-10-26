@@ -18,6 +18,8 @@ description: 이분 탐색, 수학 등을 주제로 하는 백준 2805번 문제
 
 절단기의 최소 높이는 `0` 으로, 최대 높이는 입력받은 나무들의 높이 중 가장 큰 높이로 설정하여 이분 탐색을 진행합니다. <br>
 
+> 참고 : [이분 탐색(Binary Search)의 원리와 구현 - soo:bak](https://soo-bak.github.io/algorithm/theory/binary-search/)
+
 이후, 각 경우의 절단기 높이로 나무를 잘랐을 때, 적어도 `m` 길이 이상의 나무를 얻을 수 있는지 확인합니다. <br>
 
 <br>

@@ -23,6 +23,8 @@ description: 자료 구조, 정렬, 이분 탐색, 해시를 사용한 집합과
 - 먼저 상근이가 가진 숫자 카드를 **정렬**합니다.<br>
 - 확인할 숫자에 대해 이분 탐색으로 **좌측 경계(left bound)**와 **우측 경계(right bound)**를 찾아 개수를 계산합니다.<br>
 
+> 참고 : [이분 탐색(Binary Search)의 원리와 구현 - soo:bak](https://soo-bak.github.io/algorithm/theory/binary-search/)
+
 #### 예제 시뮬레이션
 입력:<br>
 ```

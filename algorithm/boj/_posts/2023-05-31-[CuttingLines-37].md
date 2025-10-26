@@ -20,7 +20,7 @@ description: 이분 탐색을 주제로 하는 백준 1654번 알고리즘 문�
 
 <b>검색의 범위를 절반으로 줄이는 과정을 반복</b>하여 효율적으로 탐색을 진행할 수 있습니다. <br>
 
-`이분 탐색` 알고리즘에 관한 자세한 설명은 [여기](https://soo-bak.github.io/algorithm/theory/) 에서 확인하실 수 있습니다. <br>
+> 참고 : [이분 탐색(Binary Search)의 원리와 구현 - soo:bak](https://soo-bak.github.io/algorithm/theory/binary-search/)
 
 <br>
 먼저, 이미 가지고 있는 랜선들 중 가장 긴 길이를 찾고, 이 길이를 초기 최대 길이로 설정합니다.<br>
