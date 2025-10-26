@@ -334,6 +334,14 @@ int findKthLargest(vector<int>& nums, int k) {
 최대 힙은 가장 큰 값을 빠르게 조회하고, 효율적으로 삽입/삭제할 수 있는 자료구조입니다.<br>
 <br>
 특히 우선순위 큐와 결합되면 다양한 탐색 및 스케줄링 문제 해결에 효율적인 도구로 사용할 수 있습니다.<br>
+<br>
+힙은 자료구조로서의 활용뿐만 아니라, 힙 정렬과 같은 정렬 알고리듬의 기반이 되기도 합니다.<br>
+
+<br>
+
+> 관련 글: [힙 정렬(Heap Sort)의 원리와 구현 - soo:bak](https://soo-bak.github.io/algorithm/theory/heap-sort/)
+
+<br>
 
 > 관련 문제: [[백준 1927] 최소 힙 (C#, C++) - soo:bak](https://soo-bak.github.io/algorithm/boj/min-heap-20)
 
