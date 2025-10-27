@@ -22,10 +22,7 @@ description: 정렬, 빠른 정렬, 힙 정렬 등을 주제로 하는 백준 27
 
 <br>
 
-> 참고 : [빠른 정렬(Quick Sort)의 원리와 구현 - soo:bak](https://soo-bak.github.io/algorithm/theory/quick-sort/)
-
-> 참고 : [삽입 정렬(Insertion Sort)의 원리와 구현 - soo:bak](https://soo-bak.github.io/algorithm/theory/insertion-sort/)
-
+> 참고 : [힙 정렬(Heap Sort)의 원리와 구현 - soo:bak](https://soo-bak.github.io/algorithm/theory/heap-sort/)
 <br>
 
 - - -
