@@ -1,4 +1,4 @@
- ---
+---
 layout: single
 title: "삽입 정렬(Insertion Sort)의 원리와 구현 - soo:bak"
 date: "2025-10-26 02:00:00 +0900"
