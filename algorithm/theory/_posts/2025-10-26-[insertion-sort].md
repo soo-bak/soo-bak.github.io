@@ -1,4 +1,4 @@
----
+ ---
 layout: single
 title: "삽입 정렬(Insertion Sort)의 원리와 구현 - soo:bak"
 date: "2025-10-26 02:00:00 +0900"
@@ -7,15 +7,11 @@ description: 카드 정렬처럼 직관적인 삽입 정렬의 원리, 구현 �
 
 ## 삽입 정렬이란?
 
-`[5, 2, 4, 6, 1, 3]` 같은 정렬되지 않은 배열이 있을 때, 이를 정렬하는 방법은 여러 가지가 있습니다.
-
-모든 원소를 비교하며 정렬할 수도 있고, 작은 값을 찾아 앞으로 보낼 수도 있습니다.
-
-<br>
-
 **삽입 정렬(Insertion Sort)**은 카드를 한 장씩 받아 정렬하는 방식과 유사한 알고리듬입니다.
 
-배열을 정렬된 부분과 미정렬 부분으로 나누고, 미정렬 부분의 원소를 하나씩 꺼내어 정렬된 부분의 적절한 위치에 삽입합니다.
+배열을 정렬된 부분과 미정렬 부분으로 나누고, 미정렬 부분의 원소를 하나씩 꺼내어 정렬된 부분의 적절한 위치에 삽입하는 방식으로 동작합니다.
+
+구현이 간단하고 직관적이며, 작은 크기의 배열이나 거의 정렬된 배열에서 효율적으로 동작합니다.
 
 ---
 
@@ -28,10 +24,6 @@ description: 카드 정렬처럼 직관적인 삽입 정렬의 원리, 구현 �
 3. **비교 및 이동**: 정렬된 부분의 원소들과 비교하며, 선택한 원소보다 큰 원소들을 오른쪽으로 이동
 4. **삽입**: 적절한 위치를 찾으면 선택한 원소를 삽입
 5. **반복**: 2~4번 과정을 모든 원소에 대해 반복
-
-<br>
-
-각 단계에서 정렬된 부분은 항상 정렬 상태를 유지하며, 미정렬 부분의 원소가 하나씩 정렬된 부분으로 편입됩니다.
 
 <br>
 
@@ -278,7 +270,9 @@ $$
 
 - **직관적 구조**: 구현이 간단하고 이해하기 쉬움
 - **안정 정렬**: 같은 값을 가진 원소들의 상대적 순서 유지
+> 참고: [안정 정렬(Stable Sort)의 개념과 중요성 - soo:bak](https://soo-bak.github.io/algorithm/theory/stable-sort/)
 - **제자리 정렬**: 추가 메모리가 거의 필요하지 않음
+> 참고: [제자리 정렬(In-place Sort)의 개념과 중요성 - soo:bak](https://soo-bak.github.io/algorithm/theory/in-place-sort/)
 - **적응적 성능**: 거의 정렬된 데이터에서 $$O(n)$$에 근접
 - **작은 데이터에 효율적**: 오버헤드가 적어 작은 배열에서 빠름
 
@@ -466,6 +460,8 @@ After inserting 6: 1 3 5 6 7 9
 
 **관련 글**:
 - [빠른 정렬(Quick Sort)의 원리와 구현 - soo:bak](https://soo-bak.github.io/algorithm/theory/quick-sort/)
+- [병합 정렬(Merge Sort)의 원리와 구현 - soo:bak](https://soo-bak.github.io/algorithm/theory/merge-sort/)
+- [힙 정렬(Heap Sort)의 원리와 구현 - soo:bak](https://soo-bak.github.io/algorithm/theory/heap-sort/)
 - [이분 탐색(Binary Search)의 원리와 구현 - soo:bak](https://soo-bak.github.io/algorithm/theory/binary-search/)
 
 <br>
