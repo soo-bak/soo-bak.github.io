@@ -44,7 +44,7 @@ using System.Text;
 
 class Program {
   static void Main() {
-    var queue = new int[2000000];
+    var queue = new int[2_000_000];
     
     int n = int.Parse(Console.ReadLine()!);
     int front = 0, rear = 0;
@@ -83,7 +83,7 @@ int main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
 
-  int queue[2000000] = {0, };
+  int queue[2'000'000] = {0, };
   
   int front = 0, rear = 0;
   string output = "";
@@ -119,3 +119,4 @@ int main() {
 }
 ```
 
+ 
