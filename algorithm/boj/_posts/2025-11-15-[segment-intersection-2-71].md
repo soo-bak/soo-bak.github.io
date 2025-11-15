@@ -78,10 +78,13 @@ namespace Solution {
     }
 
     static void Main(string[] args) {
-      var p1 = ReadPoint();
-      var p2 = ReadPoint();
-      var p3 = ReadPoint();
-      var p4 = ReadPoint();
+      var line1 = Console.ReadLine()!.Split();
+      var p1 = new Point(long.Parse(line1[0]), long.Parse(line1[1]));
+      var p2 = new Point(long.Parse(line1[2]), long.Parse(line1[3]));
+
+      var line2 = Console.ReadLine()!.Split();
+      var p3 = new Point(long.Parse(line2[0]), long.Parse(line2[1]));
+      var p4 = new Point(long.Parse(line2[2]), long.Parse(line2[3]));
 
       var cp1 = CCW(p1, p2, p3);
       var cp2 = CCW(p1, p2, p4);
@@ -98,11 +101,6 @@ namespace Solution {
       } else {
         Console.WriteLine(0);
       }
-    }
-
-    static Point ReadPoint() {
-      var tokens = Console.ReadLine()!.Split();
-      return new Point(long.Parse(tokens[0]), long.Parse(tokens[1]));
     }
   }
 }
