@@ -1,7 +1,7 @@
 ---
 layout: single
 title: "[백준 8370] Plane (C#, C++) - soo:bak"
-date: "2025-11-17 23:03:00 +0900"
+date: "2025-11-17 23:08:00 +0900"
 description: 비즈니스/이코노미 좌석 수를 합산하는 백준 8370번 Plane 문제의 C# 및 C++ 풀이와 해설
 ---
 

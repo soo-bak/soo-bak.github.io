@@ -1,7 +1,7 @@
 ---
 layout: single
 title: "[백준 6778] Which Alien? (C#, C++) - soo:bak"
-date: "2025-11-21 23:27:00 +0900"
+date: "2025-11-21 23:47:00 +0900"
 description: 더듬이·눈 개수 조건을 만족하는 외계종을 판별하는 백준 6778번 Which Alien? 문제의 C# 및 C++ 풀이와 해설
 ---
 

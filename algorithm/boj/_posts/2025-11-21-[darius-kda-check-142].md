@@ -1,7 +1,7 @@
 ---
 layout: single
 title: "[백준 20499] Darius님 한타 안 함? (C#, C++) - soo:bak"
-date: "2025-11-21 23:27:00 +0900"
+date: "2025-11-21 23:48:00 +0900"
 description: KDA 문자열을 파싱해 조건에 따라 gosu/hasu를 출력하는 백준 20499번 문제의 C# 및 C++ 풀이와 해설
 ---
 

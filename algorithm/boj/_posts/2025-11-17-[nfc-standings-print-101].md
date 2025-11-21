@@ -1,7 +1,7 @@
 ---
 layout: single
 title: "[백준 10170] NFC West vs North (C#, C++) - soo:bak"
-date: "2025-11-17 23:03:00 +0900"
+date: "2025-11-17 23:09:00 +0900"
 description: NFC 서부·북부 디비전 순위를 예제 그대로 출력하는 백준 10170번 문제의 C# 및 C++ 풀이와 해설
 ---
 
