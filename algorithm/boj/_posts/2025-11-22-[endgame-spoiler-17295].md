@@ -2,7 +2,7 @@
 layout: single
 title: "[백준 17295] 엔드게임 스포일러 (C#, C++) - soo:bak"
 date: "2025-11-22 03:05:00 +0900"
-description: 입력과 상관없이 Avengers: Endgame을 출력하는 백준 17295번 엔드게임 스포일러 문제의 C# 및 C++ 풀이와 해설
+description: 입력과 상관없이 Avengers Endgame을 출력하는 백준 17295번 엔드게임 스포일러 문제의 C# 및 C++ 풀이와 해설
 ---
 
 ## 문제 링크
