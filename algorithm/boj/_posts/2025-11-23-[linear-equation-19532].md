@@ -10,27 +10,24 @@ description: 2×2 연립방정식을 Cramer의 공식으로 풀어 정수 해를
 
 ## 설명
 
-다음 연립방정식에서 `x`, `y`를 찾는 문제입니다.
+두 개의 일차방정식으로 이루어진 연립방정식의 계수가 주어질 때, 정수 해를 구하는 문제입니다.
 
-```
-ax + by = c
-dx + ey = f
-```
-
-해가 유일하고, `x`, `y`가 `-999` 이상 `999` 이하의 정수인 입력만 주어집니다.
+해가 유일하게 존재하며, 두 해 모두 -999 이상 999 이하의 정수로 보장됩니다.
 
 <br>
 
 ## 접근법
 
-2×2 연립방정식은 Cramer의 공식으로 바로 풀 수 있습니다. 행렬식 `det = a×e - b×d`가 0이 아니므로 해가 유일합니다.
+2×2 연립방정식은 Cramer의 공식을 이용하여 해를 구합니다.
 
-```
-x = (c×e - b×f) / det
-y = (a×f - c×d) / det
-```
+먼저 첫 번째 방정식의 첫 번째 계수와 두 번째 방정식의 두 번째 계수를 곱한 값에서 첫 번째 방정식의 두 번째 계수와 두 번째 방정식의 첫 번째 계수를 곱한 값을 뺀 행렬식을 계산합니다.
 
-입력 범위가 작고 나눗셈 결과가 항상 정수로 떨어지도록 보장되므로 위 식을 정수 연산으로 계산해 출력하면 됩니다.
+<br>
+행렬식이 0이 아니므로 해가 유일하게 존재하며,
+
+각 해는 상수항과 계수들의 곱셈과 뺄셈을 이용하여 구한 값을 행렬식으로 나누어 계산됩니다.
+
+입력 범위가 작고 나눗셈 결과가 항상 정수로 떨어지므로 정수 연산으로 처리합니다.
 
 <br>
 
@@ -47,16 +44,16 @@ namespace Solution {
   class Program {
     static void Main(string[] args) {
       var tokens = Console.ReadLine()!.Split();
-      int a = int.Parse(tokens[0]);
-      int b = int.Parse(tokens[1]);
-      int c = int.Parse(tokens[2]);
-      int d = int.Parse(tokens[3]);
-      int e = int.Parse(tokens[4]);
-      int f = int.Parse(tokens[5]);
+      var a = int.Parse(tokens[0]);
+      var b = int.Parse(tokens[1]);
+      var c = int.Parse(tokens[2]);
+      var d = int.Parse(tokens[3]);
+      var e = int.Parse(tokens[4]);
+      var f = int.Parse(tokens[5]);
 
-      int det = a * e - b * d;
-      int x = (c * e - b * f) / det;
-      int y = (a * f - c * d) / det;
+      var det = a * e - b * d;
+      var x = (c * e - b * f) / det;
+      var y = (a * f - c * d) / det;
 
       Console.WriteLine($"{x} {y}");
     }
