@@ -49,6 +49,7 @@ description: 축에 평행한 사각형 경계와 임의의 선분의 교차 개
 
 ### C#
 
+{% raw %}
 ```csharp
 using System;
 using System.Collections.Generic;
@@ -164,9 +165,11 @@ namespace Solution {
   }
 }
 ```
+{% endraw %}
 
 ### C++
 
+{% raw %}
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
@@ -288,4 +291,5 @@ int main() {
   return 0;
 }
 ```
+{% endraw %}
 
