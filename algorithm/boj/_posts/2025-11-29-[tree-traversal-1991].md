@@ -1,7 +1,7 @@
 ---
 layout: single
 title: "[백준 1991] 트리 순회 (C#, C++) - soo:bak"
-date: "2025-11-29 15:10:00 +0900"
+date: "2025-11-29 22:00:00 +0900"
 description: 전위, 중위, 후위 순회를 모두 출력하기 위해 각 노드의 좌우 자식을 저장한 뒤 재귀적으로 방문하는 백준 1991번 트리 순회 문제의 C# 및 C++ 풀이
 ---
 
@@ -10,24 +10,44 @@ description: 전위, 중위, 후위 순회를 모두 출력하기 위해 각 노
 
 ## 설명
 
-알파벳 대문자로 이름 붙은 이진 트리가 주어집니다. 항상 루트는 A이며, 각 노드의 왼쪽·오른쪽 자식이 문자로 제시되고 자식이 없으면 `.`으로 나타냅니다.  
-입력된 트리를 기준으로
+이진 트리의 구조가 주어지는 상황에서, 노드의 개수 N (1 ≤ N ≤ 26)과 각 노드의 정보(노드 이름, 왼쪽 자식, 오른쪽 자식)가 주어질 때, 전위 순회, 중위 순회, 후위 순회 결과를 각각 한 줄씩 출력하는 문제입니다.
 
-- 전위 순회 (루트 → 왼쪽 → 오른쪽)
-- 중위 순회 (왼쪽 → 루트 → 오른쪽)
-- 후위 순회 (왼쪽 → 오른쪽 → 루트)
-
-결과를 한 줄씩 출력하면 됩니다.
+노드는 A부터 순서대로 알파벳 대문자로 표현되며, 항상 A가 루트 노드입니다. 자식이 없는 경우에는 `.`으로 표시됩니다.
 
 <br>
 
 ## 접근법
 
-- 노드 이름이 A부터 시작하므로 인덱스를 `node - 'A'`로 환산해 좌우 자식을 배열에 저장합니다.
-- 재귀 함수를 각각 작성해 전위, 중위, 후위 순회를 수행합니다.  
-  자식 문자가 `'.'`이면 더 내려가지 않습니다.
-- 각 순회 결과를 차례대로 출력합니다.  
-시간 복잡도 O(N), 추가 공간은 노드 저장용 O(N)입니다.
+이진 트리의 세 가지 순회 방식은 각각 다음과 같습니다:
+
+- **전위 순회(Preorder)**: 루트 → 왼쪽 서브트리 → 오른쪽 서브트리
+- **중위 순회(Inorder)**: 왼쪽 서브트리 → 루트 → 오른쪽 서브트리
+- **후위 순회(Postorder)**: 왼쪽 서브트리 → 오른쪽 서브트리 → 루트
+
+<br>
+각 노드의 왼쪽 자식과 오른쪽 자식 정보를 저장한 후, 재귀적으로 트리를 순회하면 됩니다.
+
+재귀 함수는 현재 노드를 방문하고, 순회 방식에 따라 노드를 출력하는 시점을 달리합니다.
+
+자식이 없는 경우(`.`으로 표시된 경우)는 더 이상 내려가지 않고 종료합니다.
+
+<br>
+예를 들어, 다음과 같은 트리가 있다면:
+
+```
+    A
+   / \
+  B   C
+ / \
+D   E
+```
+
+- 전위 순회: A → B → D → E → C
+- 중위 순회: D → B → E → A → C
+- 후위 순회: D → E → B → C → A
+
+<br>
+각 노드를 한 번씩만 방문하므로 시간 복잡도는 O(N)입니다.
 
 <br>
 
@@ -39,53 +59,55 @@ description: 전위, 중위, 후위 순회를 모두 출력하기 위해 각 노
 
 ```csharp
 using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace Solution {
   class Program {
-    static readonly char[,] children = new char[26, 2];
-    static readonly StringBuilder sb = new StringBuilder();
+    static readonly Dictionary<char, (char left, char right)> tree = new();
+    static readonly StringBuilder result = new();
 
     static void Preorder(char node) {
-      if (node == '.') return;
-      sb.Append(node);
-      int idx = node - 'A';
-      Preorder(children[idx, 0]);
-      Preorder(children[idx, 1]);
+      if (node == '\0') return;
+      result.Append(node);
+      var (left, right) = tree[node];
+      Preorder(left);
+      Preorder(right);
     }
 
     static void Inorder(char node) {
-      if (node == '.') return;
-      int idx = node - 'A';
-      Inorder(children[idx, 0]);
-      sb.Append(node);
-      Inorder(children[idx, 1]);
+      if (node == '\0') return;
+      var (left, right) = tree[node];
+      Inorder(left);
+      result.Append(node);
+      Inorder(right);
     }
 
     static void Postorder(char node) {
-      if (node == '.') return;
-      int idx = node - 'A';
-      Postorder(children[idx, 0]);
-      Postorder(children[idx, 1]);
-      sb.Append(node);
+      if (node == '\0') return;
+      var (left, right) = tree[node];
+      Postorder(left);
+      Postorder(right);
+      result.Append(node);
     }
 
     static void Main(string[] args) {
-      int n = int.Parse(Console.ReadLine()!);
-      for (int i = 0; i < n; i++) {
-        var parts = Console.ReadLine()!.Split();
-        int idx = parts[0][0] - 'A';
-        children[idx, 0] = parts[1][0];
-        children[idx, 1] = parts[2][0];
+      var n = int.Parse(Console.ReadLine()!);
+      for (var i = 0; i < n; i++) {
+        var input = Console.ReadLine()!.Split();
+        var node = input[0][0];
+        var left = input[1][0] == '.' ? '\0' : input[1][0];
+        var right = input[2][0] == '.' ? '\0' : input[2][0];
+        tree[node] = (left, right);
       }
 
       Preorder('A');
-      sb.Append('\n');
+      result.Append('\n');
       Inorder('A');
-      sb.Append('\n');
+      result.Append('\n');
       Postorder('A');
 
-      Console.Write(sb.ToString());
+      Console.Write(result.ToString());
     }
   }
 }
@@ -97,30 +119,29 @@ namespace Solution {
 #include <bits/stdc++.h>
 using namespace std;
 
-char childNode[26][2];
+typedef map<char, pair<char, char>> Tree;
 
-void preorder(char node, string& out) {
-  if (node == '.') return;
-  out.push_back(node);
-  int idx = node - 'A';
-  preorder(childNode[idx][0], out);
-  preorder(childNode[idx][1], out);
+Tree tree;
+
+void preorder(char node) {
+  if (node == '\0') return;
+  cout << node;
+  preorder(tree[node].first);
+  preorder(tree[node].second);
 }
 
-void inorder(char node, string& out) {
-  if (node == '.') return;
-  int idx = node - 'A';
-  inorder(childNode[idx][0], out);
-  out.push_back(node);
-  inorder(childNode[idx][1], out);
+void inorder(char node) {
+  if (node == '\0') return;
+  inorder(tree[node].first);
+  cout << node;
+  inorder(tree[node].second);
 }
 
-void postorder(char node, string& out) {
-  if (node == '.') return;
-  int idx = node - 'A';
-  postorder(childNode[idx][0], out);
-  postorder(childNode[idx][1], out);
-  out.push_back(node);
+void postorder(char node) {
+  if (node == '\0') return;
+  postorder(tree[node].first);
+  postorder(tree[node].second);
+  cout << node;
 }
 
 int main() {
@@ -128,22 +149,24 @@ int main() {
   cin.tie(nullptr);
 
   int n; cin >> n;
+
   for (int i = 0; i < n; i++) {
-    char cur, left, right; 
-    cin >> cur >> left >> right;
-    int idx = cur - 'A';
-    childNode[idx][0] = left;
-    childNode[idx][1] = right;
+    char node, left, right;
+    cin >> node >> left >> right;
+    if (left == '.') left = '\0';
+    if (right == '.') right = '\0';
+    tree[node] = {left, right};
   }
 
-  string ans;
-  preorder('A', ans);
-  ans.push_back('\n');
-  inorder('A', ans);
-  ans.push_back('\n');
-  postorder('A', ans);
-
-  cout << ans;
+  preorder('A');
+  cout << "\n";
+  inorder('A');
+  cout << "\n";
+  postorder('A');
+  cout << "\n";
+  
   return 0;
 }
 ```
+
+
