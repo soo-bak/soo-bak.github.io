@@ -79,7 +79,7 @@ class Program {
         if (crossP <= 0) {
           convex.Add(a);
           break;
-        }
+      }
       }
       convex.Add(v[i]);
     }
@@ -148,7 +148,7 @@ int main() {
       if (crossP <= 0) {
         convex.push_back(a);
         break;
-      }
+    }
     }
     convex.push_back(v[i]);
   }
