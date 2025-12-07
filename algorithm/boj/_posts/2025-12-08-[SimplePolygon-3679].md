@@ -9,17 +9,28 @@ description: 최좌하단 기준으로 극각 정렬 후 마지막 collinear 구
 [3679번 - 단순 다각형](https://www.acmicpc.net/problem/3679)
 
 ## 설명
-**주어진 점들을 모두 꼭짓점으로 갖는 단순 다각형을 만드는 한 가지 순서를 찾는 문제입니다.**
-
-최좌하단 점을 기준점으로 잡아 다른 점들을 극각 기준으로 정렬하면 볼록껍질 순서가 됩니다. 기준점과 일직선상에 있는 점들이 맨 끝에 몰리는데, 이 collinear 구간을 뒤집어주면 선분 교차 없이 모든 점을 잇는 단순 다각형 순서를 얻을 수 있습니다.
+주어진 점들을 모두 꼭짓점으로 사용하여 선분이 서로 교차하지 않는 단순 다각형을 만드는 문제입니다.
 
 <br>
 
 ## 접근법
-- 입력 순서 index를 함께 저장합니다.
-- `y`가 가장 작고 `x`가 가장 작은 점을 기준으로 삼아, 나머지를 CCW(극각) 기준으로 정렬합니다. (동일 각도 시 거리 순)
-- 정렬 뒤, 끝에서부터 기준점과 일직선인 구간을 찾아 그 구간을 역순으로 출력합니다.
-- 정렬된 순서를 index로 출력하면 조건을 만족하는 다각형이 됩니다.
+단순 다각형을 만드는 가장 직관적인 방법은 한 점을 기준으로 나머지 점들을 각도 순으로 정렬하는 것입니다. 기준점에서 시작해서 각도 순으로 점들을 이으면 선분이 교차하지 않습니다.
+
+<br>
+
+먼저 기준점을 정합니다. 가장 왼쪽에 있는 점 중에서 가장 아래에 있는 점을 기준으로 삼습니다. 이 점을 기준으로 나머지 점들을 반시계 방향 각도 순으로 정렬합니다. 각도가 같은 점들은 x 좌표가 작은 순으로 정렬합니다.
+
+<br>
+
+여기서 주의할 점이 있습니다. 정렬된 점들을 순서대로 이으면 마지막 점에서 다시 기준점으로 돌아와야 합니다. 그런데 마지막 구간에 기준점과 일직선상에 있는 점들이 여러 개 있으면 문제가 생깁니다.
+
+예를 들어 기준점 A와 일직선상에 B, C가 있고 A에서 가까운 순으로 B, C라면, 정렬 결과는 ... B, C 순서가 됩니다. 그러면 C에서 A로 돌아갈 때 B를 지나게 되어 선분이 겹칩니다.
+
+<br>
+
+이 문제를 해결하려면 마지막 일직선 구간의 순서를 뒤집으면 됩니다. ... C, B 순서로 바꾸면 C에서 B로, B에서 A로 자연스럽게 이어집니다.
+
+따라서 정렬 후 맨 끝에서부터 기준점과 일직선인 점들의 구간을 찾아서 그 구간만 역순으로 출력합니다.
 
 <br>
 
@@ -38,46 +49,46 @@ class Program {
     public long x, y;
   }
 
-  static long Ccw(Point a, Point b, Point c) =>
-    a.x * b.y + b.x * c.y + c.x * a.y - (a.y * b.x + b.y * c.x + c.y * a.x);
+  static long Ccw(long x1, long y1, long x2, long y2, long x3, long y3) =>
+    (x1 * y2 + x2 * y3 + x3 * y1) - (y1 * x2 + y2 * x3 + y3 * x1);
 
   static void Main() {
-    int T = int.Parse(Console.ReadLine()!);
-    while (T-- > 0) {
+    var t = int.Parse(Console.ReadLine()!);
+    while (t-- > 0) {
       var tokens = new Queue<string>(Console.ReadLine()!.Split());
-      int n = int.Parse(tokens.Dequeue());
+      var n = int.Parse(tokens.Dequeue());
       var pts = new List<Point>(n);
-      for (int i = 0; i < n; i++) {
+      for (var i = 0; i < n; i++) {
         if (tokens.Count < 2) {
           foreach (var s in Console.ReadLine()!.Split())
             tokens.Enqueue(s);
         }
-        long x = long.Parse(tokens.Dequeue());
-        long y = long.Parse(tokens.Dequeue());
+        var x = long.Parse(tokens.Dequeue());
+        var y = long.Parse(tokens.Dequeue());
         pts.Add(new Point { idx = i, x = x, y = y });
       }
 
       pts.Sort((a, b) => {
-        if (a.y != b.y) return a.y.CompareTo(b.y);
-        return a.x.CompareTo(b.x);
+        if (a.x != b.x) return a.x.CompareTo(b.x);
+        return a.y.CompareTo(b.y);
       });
 
-      Point baseP = pts[0];
+      var baseP = pts[0];
       pts.Sort(1, n - 1, Comparer<Point>.Create((a, b) => {
-        long cross = Ccw(baseP, a, b);
+        var cross = Ccw(baseP.x, baseP.y, a.x, a.y, b.x, b.y);
         if (cross == 0) {
-          if (a.x == b.x) return a.y.CompareTo(b.y);
-          return a.x.CompareTo(b.x);
+          if (a.x != b.x) return a.x.CompareTo(b.x);
+          return a.y.CompareTo(b.y);
         }
-        return cross > 0 ? -1 : 1; // CCW 먼저
+        return cross > 0 ? -1 : 1;
       }));
 
-      int idx = n - 2;
-      while (idx >= 0 && Ccw(baseP, pts[idx], pts[idx + 1]) == 0) idx--;
+      var idx = n - 2;
+      while (idx >= 0 && Ccw(baseP.x, baseP.y, pts[idx].x, pts[idx].y, pts[idx + 1].x, pts[idx + 1].y) == 0) idx--;
 
       var output = new List<int>(n);
-      for (int i = 0; i <= idx; i++) output.Add(pts[i].idx);
-      for (int i = n - 1; i > idx; i--) output.Add(pts[i].idx);
+      for (var i = 0; i <= idx; i++) output.Add(pts[i].idx);
+      for (var i = n - 1; i > idx; i--) output.Add(pts[i].idx);
 
       Console.WriteLine(string.Join(" ", output));
     }
@@ -89,55 +100,59 @@ class Program {
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
-using ll = long long;
 
-struct Point {
-  int idx;
-  ll x, y;
-};
+typedef long long ll;
+typedef pair<ll, ll> pll;
+typedef pair<int, pll> pill;
 
-ll ccw(const Point& a, const Point& b, const Point& c) {
-  return a.x * b.y + b.x * c.y + c.x * a.y - (a.y * b.x + b.y * c.x + c.y * a.x);
+vector<pill> v;
+
+ll ccw(ll x1, ll y1, ll x2, ll y2, ll x3, ll y3) {
+  return (x1 * y2 + x2 * y3 + x3 * y1) - (y1 * x2 + y2 * x3 + y3 * x1);
+}
+
+bool comp1(pill& a, pill& b) {
+  if (a.second.first == b.second.first) return a.second.second < b.second.second;
+  return a.second.first < b.second.first;
+}
+
+bool comp2(pill& a, pill& b) {
+  ll crossP = ccw(v[0].second.first, v[0].second.second, a.second.first, a.second.second, b.second.first, b.second.second);
+  if (!crossP) {
+    if (a.second.first == b.second.first) return a.second.second < b.second.second;
+    else return a.second.first < b.second.first;
+  }
+  return crossP > 0;
 }
 
 int main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
 
-  int T; cin >> T;
-  while (T--) {
+  int cntCase; cin >> cntCase;
+  while (cntCase--) {
     int n; cin >> n;
-    vector<Point> p(n);
+    v.clear(); v.assign(n, {0, {0, 0}});
     for (int i = 0; i < n; i++) {
-      cin >> p[i].x >> p[i].y;
-      p[i].idx = i;
+      v[i].first = i;
+      cin >> v[i].second.first >> v[i].second.second;
     }
 
-    sort(p.begin(), p.end(), [](const Point& a, const Point& b) {
-      if (a.y != b.y) return a.y < b.y;
-      return a.x < b.x;
-    });
-    Point base = p[0];
-
-    sort(p.begin() + 1, p.end(), [&](const Point& a, const Point& b) {
-      ll cross = ccw(base, a, b);
-      if (cross == 0) {
-        if (a.x != b.x) return a.x < b.x;
-        return a.y < b.y;
-      }
-      return cross > 0;
-    });
+    sort(v.begin(), v.end(), comp1);
+    sort(v.begin() + 1, v.end(), comp2);
 
     int idx = n - 2;
-    while (idx >= 0 && ccw(base, p[idx], p[idx + 1]) == 0) idx--;
-
-    for (int i = 0; i <= idx; i++) cout << p[i].idx << " ";
-    for (int i = n - 1; i > idx; i--) {
-      cout << p[i].idx;
-      if (i > 0) cout << " ";
+    while (true) {
+      if (idx < 0 || ccw(v[0].second.first, v[0].second.second, v[idx].second.first, v[idx].second.second, v[idx + 1].second.first, v[idx + 1].second.second))
+        break;
+      idx--;
     }
+
+    for (int i = 0; i <= idx; i++) cout << v[i].first << " ";
+    for (int i = n - 1; i > idx; i--) cout << v[i].first << " ";
     cout << "\n";
   }
+
   return 0;
 }
 ```
