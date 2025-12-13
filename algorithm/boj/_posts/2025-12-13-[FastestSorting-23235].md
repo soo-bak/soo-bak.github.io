@@ -2,7 +2,7 @@
 layout: single
 title: "[백준 23235] The Fastest Sorting Algorithm In The World (C#, C++) - soo:bak"
 date: "2025-12-13 13:02:00 +0900"
-description: 입력이 이미 정렬됐다고 가정하는 문제에서 각 테스트케이스마다 Case x: Sorting... done!을 출력하는 백준 23235번 The Fastest Sorting Algorithm In The World 문제의 C# 및 C++ 풀이와 해설
+description: 입력이 이미 정렬됐다고 가정하는 문제에서 각 테스트케이스마다 출력하는 백준 23235번 The Fastest Sorting Algorithm In The World 문제의 C# 및 C++ 풀이와 해설
 ---
 
 ## 문제 링크
