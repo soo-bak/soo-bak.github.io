@@ -1,12 +1,12 @@
 ---
 layout: single
-title: "[백준 21212] Breaking Branches (C#, C++) - soo:bak"
+title: "[백준 17783] Breaking Branches (C#, C++) - soo:bak"
 date: "2023-09-09 12:46:00 +0900"
-description: 수학, 게임 이론, 구현 등을 주제로 하는 백준 21212번 문제를 C++ C# 으로 풀이 및 해설
+description: 수학, 게임 이론, 구현 등을 주제로 하는 백준 17783번 문제를 C++ C# 으로 풀이 및 해설
 ---
 
 ## 문제 링크
-  [21212번 - Breaking Branches](https://www.acmicpc.net/problem/21212)
+  [17783번 - Breaking Branches](https://www.acmicpc.net/problem/17783)
 
 ## 설명
 문제의 목표는 주어진 각 재료의 양을 사용하여 최대 몇 개의 케이크를 만들 수 있는지를 결정하는 것입니다. <br>
