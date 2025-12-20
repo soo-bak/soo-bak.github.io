@@ -9,17 +9,14 @@ description: 문자열에서 좌측 U와 우측 F 사이를 규칙에 따라 U,C
 [25813번 - Changing Strings](https://www.acmicpc.net/problem/25813)
 
 ## 설명
-문자열에서 가장 왼쪽의 U와 가장 오른쪽의 F를 찾습니다. 왼쪽 U 이전은 '-', 오른쪽 F 이후도 '-', U~F 사이(양 끝 포함)는 'U','F'를 제외하고 모두 'C'로 바꿉니다. 입력엔 항상 U가 있고, 그 이후에 F가 있으며, 그 사이에 최소 한 문자가 있습니다.
+문자열에서 가장 왼쪽의 U와 가장 오른쪽의 F를 찾아 규칙에 따라 변환하는 문제입니다.
+
+U 이전과 F 이후는 하이픈으로, U와 F 사이의 문자는 모두 C로 바꿉니다.
 
 <br>
 
 ## 접근법
-`l = s.IndexOf('U')`, `r = s.LastIndexOf('F')`를 찾습니다. 새 문자열을 만들 때:
-- i < l 또는 i > r ⇒ '-'
-- i == l ⇒ 'U'
-- i == r ⇒ 'F'
-- 그 사이 ⇒ 'C'
-길이가 최대 50이므로 간단히 O(n)으로 처리합니다.
+가장 왼쪽 U의 위치와 가장 오른쪽 F의 위치를 찾습니다. 각 인덱스에 대해 U 이전이거나 F 이후면 하이픈, U 위치면 U, F 위치면 F, 그 사이면 C를 출력합니다.
 
 - - -
 
@@ -33,11 +30,11 @@ using System.Text;
 class Program {
   static void Main() {
     var s = Console.ReadLine()!;
-    int l = s.IndexOf('U');
-    int r = s.LastIndexOf('F');
+    var l = s.IndexOf('U');
+    var r = s.LastIndexOf('F');
 
     var sb = new StringBuilder(s.Length);
-    for (int i = 0; i < s.Length; i++) {
+    for (var i = 0; i < s.Length; i++) {
       char ch;
       if (i < l || i > r) ch = '-';
       else if (i == l) ch = 'U';
@@ -60,8 +57,7 @@ int main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
 
-  string s;
-  if (!(cin >> s)) return 0;
+  string s; cin >> s;
   int l = s.find('U');
   int r = s.rfind('F');
 
@@ -77,6 +73,7 @@ int main() {
   }
 
   cout << out << "\n";
+
   return 0;
 }
 ```
