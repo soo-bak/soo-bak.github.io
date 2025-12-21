@@ -2,7 +2,7 @@
 layout: single
 title: "[백준 9924] The Euclidean Algorithm (C#, C++) - soo:bak"
 date: "2025-12-21 21:51:00 +0900"
-description: 뺄셈 기반 유클리드 알고리듬에서 최대공약수에 도달하기까지의 반복 횟수를 세는 문제
+description: 뺄셈 기반 유클리드 알고리듬에서 최대공약수에 도달하기까지의 반복 횟수를 세는 백준 9924번 문제에 대한 C# 및 C++ 설명
 ---
 
 ## 문제 링크
@@ -26,7 +26,7 @@ using System;
 
 class Program {
   static void Main() {
-    var parts = Console.ReadLine()!.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+    var parts = Console.ReadLine()!.Split();
     var a = int.Parse(parts[0]);
     var b = int.Parse(parts[1]);
 
