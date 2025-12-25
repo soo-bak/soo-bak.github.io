@@ -28,20 +28,6 @@ description: 심리전 발언에 맞춰 항상 지는 손을 반환하는 함수
 
 ## Code
 
-### C#
-```csharp
-using System;
-
-public static class Program {
-  public static void init(int T) {
-  }
-
-  public static int janken(int P) {
-    return P;
-  }
-}
-```
-
 ### C++
 ```cpp
 #include "WAEP.h"
