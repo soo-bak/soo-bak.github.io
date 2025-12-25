@@ -41,7 +41,7 @@ class Program {
     for (var caseNum = 1; caseNum <= t; caseNum++) {
       var c = int.Parse(parts[idx++]);
       var n = int.Parse(parts[idx++]);
-      var arr = new int[n][2];
+      var arr = new int[n][];
       for (var i = 0; i < n; i++)
         arr[i] = new int[] { int.Parse(parts[idx++]), i + 1 };
 
