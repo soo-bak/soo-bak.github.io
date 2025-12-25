@@ -1,0 +1,110 @@
+---
+layout: single
+title: "[백준 12603] Store Credit (Small) (C#, C++) - soo:bak"
+date: "2025-12-26 03:02:00 +0900"
+description: 합이 크레딧이 되는 두 물건의 위치를 찾는 문제
+---
+
+## 문제 링크
+[12603번 - Store Credit (Small)](https://www.acmicpc.net/problem/12603)
+
+## 설명
+주어진 가격 목록에서 합이 크레딧이 되는 두 물건의 위치를 찾는 문제입니다.
+
+<br>
+
+## 접근법
+먼저 모든 가격을 배열에 저장합니다.
+
+다음으로 두 물건을 고르는 모든 조합을 확인하며 합이 크레딧인 순간을 찾습니다.
+
+마지막으로 찾은 두 위치를 작은 인덱스부터 출력합니다.
+
+<br>
+
+- - -
+
+## Code
+
+### C#
+```csharp
+using System;
+using System.Text;
+
+class Program {
+  static void Main() {
+    var parts = Console.In.ReadToEnd().Split();
+    var idx = 0;
+    var t = int.Parse(parts[idx++]);
+    var sb = new StringBuilder();
+
+    for (var caseNum = 1; caseNum <= t; caseNum++) {
+      var c = int.Parse(parts[idx++]);
+      var n = int.Parse(parts[idx++]);
+      var arr = new int[n];
+      for (var i = 0; i < n; i++)
+        arr[i] = int.Parse(parts[idx++]);
+
+      var a = 0;
+      var b = 0;
+      var found = false;
+      for (var i = 0; i < n; i++) {
+        for (var j = i + 1; j < n; j++) {
+          if (arr[i] + arr[j] == c) {
+            a = i + 1;
+            b = j + 1;
+            found = true;
+            break;
+          }
+        }
+        if (found) break;
+      }
+
+      sb.AppendLine($"Case #{caseNum}: {a} {b}");
+    }
+
+    Console.Write(sb);
+  }
+}
+```
+
+### C++
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+typedef vector<int> vi;
+
+int main() {
+  ios::sync_with_stdio(false);
+  cin.tie(nullptr);
+
+  int t; cin >> t;
+
+  for (int caseNum = 1; caseNum <= t; caseNum++) {
+    int c, n; cin >> c >> n;
+
+    vi arr(n);
+    for (int i = 0; i < n; i++)
+      cin >> arr[i];
+
+    int a = 0;
+    int b = 0;
+    bool found = false;
+    for (int i = 0; i < n; i++) {
+      for (int j = i + 1; j < n; j++) {
+        if (arr[i] + arr[j] == c) {
+          a = i + 1;
+          b = j + 1;
+          found = true;
+          break;
+        }
+      }
+      if (found) break;
+    }
+
+    cout << "Case #" << caseNum << ": " << a << " " << b << "\n";
+  }
+
+  return 0;
+}
+```
