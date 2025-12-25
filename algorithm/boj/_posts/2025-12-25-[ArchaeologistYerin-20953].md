@@ -2,7 +2,7 @@
 layout: single
 title: "[백준 20953] 고고학자 예린 (C#, C++) - soo:bak"
 date: "2025-12-25 16:05:00 +0900"
-description: 삼중 반복문의 카운트 결과를 수식으로 계산하는 문제
+description: 삼중 반복문의 반복 횟수를 수식으로 계산하는 백준 20953번 고고학자 예린 문제의 C# 및 C++ 풀이와 해설
 ---
 
 ## 문제 링크
@@ -14,8 +14,11 @@ description: 삼중 반복문의 카운트 결과를 수식으로 계산하는 �
 <br>
 
 ## 접근법
-내부 루프는 j에 대해 0부터 j-1까지 반복되므로 횟수는 j입니다.  
-이를 정리하면 전체 합은 n × n × (n - 1) / 2가 되며, n은 a + b입니다.
+먼저, 가장 안쪽 루프는 0부터 j - 1까지 반복하므로 횟수는 j입니다.
+
+다음으로, 바깥 두 루프는 각각 0부터 a + b - 1까지 반복하므로, 전체 합은 (a + b) × (0 + 1 + ... + (a + b - 1))입니다.
+
+이를 정리하면 (a + b - 1) × (a + b) × (a + b) / 2가 됩니다.
 
 - - -
 
@@ -30,15 +33,13 @@ class Program {
   static void Main() {
     var parts = Console.In.ReadToEnd().Split();
     var idx = 0;
-    var t = int.Parse(parts[idx++]);
+    var t = long.Parse(parts[idx++]);
 
     var sb = new StringBuilder();
-    for (var i = 0; i < t; i++) {
-      var a = int.Parse(parts[idx++]);
-      var b = int.Parse(parts[idx++]);
-      var n = a + b;
-      var ans = n * n * (n - 1) / 2;
-      sb.AppendLine(ans.ToString());
+    for (var i = 0L; i < t; i++) {
+      var a = long.Parse(parts[idx++]);
+      var b = long.Parse(parts[idx++]);
+      sb.AppendLine(((a + b - 1) * (a + b) * (a + b) / 2).ToString());
     }
 
     Console.Write(sb);
@@ -51,16 +52,16 @@ class Program {
 #include <bits/stdc++.h>
 using namespace std;
 
+typedef long long ll;
+
 int main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
 
-  int t; cin >> t;
+  ll t; cin >> t;
   while (t--) {
-    int a, b; cin >> a >> b;
-    int n = a + b;
-    int ans = n * n * (n - 1) / 2;
-    cout << ans << "\n";
+    ll a, b; cin >> a >> b;
+    cout << (a + b - 1) * (a + b) * (a + b) / 2 << "\n";
   }
 
   return 0;
