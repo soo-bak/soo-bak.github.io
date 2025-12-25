@@ -60,8 +60,7 @@ int main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
 
-  int n;
-  if (!(cin >> n)) return 0;
+  int n; cin >> n;
 
   int sum = 0;
   int mx = -1;
