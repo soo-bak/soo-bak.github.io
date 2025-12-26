@@ -14,13 +14,13 @@ description: 두 배열에서 차이가 최소인 값을 찾는 문제
 <br>
 
 ## 접근법
-먼저 두 고도 목록을 정렬합니다.
+두 배열을 정렬하면 투 포인터로 효율적으로 최소 차이를 찾을 수 있습니다.
 
-다음으로 두 포인터로 차이를 줄여가며 최소 차이를 갱신합니다.
+두 포인터가 가리키는 값의 차이를 계산하고, 더 작은 쪽의 포인터를 앞으로 이동시킵니다. 작은 값을 키워야 차이가 줄어들 가능성이 있기 때문입니다.
 
-마지막으로 구한 최소 차이를 출력합니다.
+이 과정에서 만난 모든 차이 중 최솟값이 답입니다.
 
-<br>
+
 
 - - -
 
@@ -41,15 +41,13 @@ class Program {
     for (var tc = 0; tc < t; tc++) {
       var n = int.Parse(parts[idx++]);
       var a = new int[n];
-      for (var i = 0; i < n; i++) {
+      for (var i = 0; i < n; i++)
         a[i] = int.Parse(parts[idx++]);
-      }
 
       var m = int.Parse(parts[idx++]);
       var b = new int[m];
-      for (var i = 0; i < m; i++) {
+      for (var i = 0; i < m; i++)
         b[i] = int.Parse(parts[idx++]);
-      }
 
       Array.Sort(a);
       Array.Sort(b);
@@ -60,6 +58,7 @@ class Program {
       while (i1 < n && i2 < m) {
         var diff = Math.Abs(a[i1] - b[i2]);
         if (diff < best) best = diff;
+
         if (a[i1] < b[i2]) i1++;
         else i2++;
       }
@@ -104,6 +103,7 @@ int main() {
     while (i1 < n && i2 < m) {
       int diff = abs(a[i1] - b[i2]);
       if (diff < best) best = diff;
+      
       if (a[i1] < b[i2]) i1++;
       else i2++;
     }
