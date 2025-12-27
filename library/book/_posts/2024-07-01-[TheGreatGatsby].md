@@ -2,6 +2,7 @@
 layout: single
 title: "위대한 개츠비, The Great Gatsby - soo:bak"
 date: "2024-07-01 03:33:00 +0900"
+description: F. 스콧 피츠제럴드의 위대한 개츠비 독서 리뷰입니다. 아메리칸 드림과 1920년대 재즈 시대를 배경으로 한 개츠비의 이야기를 분석합니다.
 ---
 <br>
 

@@ -2,6 +2,7 @@
 layout: single
 title: "플로이드-워셜 알고리즘 (Floyd-Warshall algorithm) - soo:bak"
 date: "2023-01-28 04:49:00 +0900"
+description: 플로이드-워셜 알고리즘의 개념과 원리를 설명합니다. 모든 노드 쌍 간의 최단 경로를 O(n³) 시간 복잡도로 구하는 방법을 다룹니다.
 ---
 
 ## 개념
