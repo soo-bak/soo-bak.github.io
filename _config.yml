@@ -21,7 +21,7 @@ title: "soo:bak's blog"
 title_separator: "-"
 subtitle: # site tagline that appears below site title in masthead
 name: "soo:bak"
-description: "게임 디자인 기획 사업 개발 유니티 C# C++ PM 백준 알고리즘"
+description: "게임 디자인, 기획, 개발과 C#/C++ 프로그래밍, 유니티, 그래픽스, 알고리즘 문제 풀이를 다루는 블로그입니다."
 url: "https://soo-bak.github.io" # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
 baseurl: # the subpath of your site, e.g. "/blog"
 repository: "soo-bak/soo-bak.github.io" # GitHub username/repo-name e.g. "mmistakes/minimal-mistakes"
@@ -76,7 +76,7 @@ google:
 # SEO Related
 google_site_verification: wzq85Kk2-o9rXMM_y7yUXxzSTD16WFESMUAg7agyWSs
 bing_site_verification:
-naver_site_verification:
+naver_site_verification: "7ce21d5783b73eab50eff5e457054612"
 yandex_site_verification:
 baidu_site_verification:
 
