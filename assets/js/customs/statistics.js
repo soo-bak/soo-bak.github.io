@@ -5,18 +5,6 @@ function getCategoryCount(stats, categoryPath) {
   return stats[categoryPath] || 0;
 }
 
-// Helper function to calculate parent category totals
-function getParentCategoryTotal(stats, categoryPath) {
-  var total = 0;
-  var prefix = categoryPath + "|";
-  for (var key in stats) {
-    if (key === categoryPath || key.indexOf(prefix) === 0) {
-      total += stats[key];
-    }
-  }
-  return total;
-}
-
 $(function () {
   // Load lightweight category stats for sidebar
   $.ajax({
@@ -27,7 +15,7 @@ $(function () {
       $(".nav__sub-title-name > a").each(function (idx, item) {
         var $item = $(item);
         var itemCat = $item.attr("id").split("sidebar-")[1];
-        var numTot = getParentCategoryTotal(categoryStats, itemCat);
+        var numTot = getCategoryCount(categoryStats, itemCat);
         $item.append('<span class="nav__sub-title-stat">' + numTot + "</span>");
       });
 
@@ -35,7 +23,7 @@ $(function () {
       $(".nav__item-children > li > a").each(function (idx, item) {
         var $item = $(item);
         var itemCats = $item.attr("id").split("sidebar-")[1];
-        var numTot = getParentCategoryTotal(categoryStats, itemCats);
+        var numTot = getCategoryCount(categoryStats, itemCats);
         $item.append('<span class="nav__item-children-stat">' + numTot + "</span>");
       });
 
@@ -53,7 +41,7 @@ $(function () {
           if (itemCats.substr(itemCats.length - 1, 1) == "/")
             itemCats = itemCats.substring(0, itemCats.length - 1);
           itemCats = itemCats.split("/").join("|");
-          var numTot = getParentCategoryTotal(categoryStats, itemCats);
+          var numTot = getCategoryCount(categoryStats, itemCats);
           $item.append('<span class="wholetoc__category-stat">(' + numTot + ")</span>");
         });
       }
