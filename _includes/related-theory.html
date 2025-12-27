@@ -1,0 +1,34 @@
+{% comment %}
+  태그 기반 관련 알고리즘 이론 자동 링크
+  - BOJ 문제 풀이 페이지에서 태그를 분석하여 관련 이론 글 표시
+  - _data/tag-theory-map.yml 파일에서 매핑 정보 로드
+{% endcomment %}
+
+{% assign theory_map = site.data.tag-theory-map %}
+{% assign matched_theories = "" | split: "" %}
+{% assign matched_urls = "" | split: "" %}
+
+{% for tag in page.tags %}
+  {% if theory_map[tag] %}
+    {% unless matched_urls contains theory_map[tag].url %}
+      {% assign matched_theories = matched_theories | push: theory_map[tag] %}
+      {% assign matched_urls = matched_urls | push: theory_map[tag].url %}
+    {% endunless %}
+  {% endif %}
+{% endfor %}
+
+{% if matched_theories.size > 0 %}
+<div class="related-theory">
+  <h4 class="related-theory__title"><i class="fas fa-book-open"></i> 관련 알고리즘 이론</h4>
+  <ul class="related-theory__list">
+    {% for theory in matched_theories %}
+    <li>
+      <a href="{{ theory.url | relative_url }}#page-title" class="related-theory__link">
+        {{ theory.title }}
+      </a>
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}
+

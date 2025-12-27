@@ -77,6 +77,11 @@ layout: default
         {% if page.link %}<div><a href="{{ page.link }}" class="btn btn--primary">{{ site.data.ui-text[site.locale].ext_link_label | default: "Direct Link" }}</a></div>{% endif %}
       </section>
 
+      {% comment %} 알고리즘 관련 이론 자동 링크 (algorithm 카테고리에서만) {% endcomment %}
+      {% if page.categories contains 'algorithm' and page.tags.size > 0 %}
+        {% include related-theory.html %}
+      {% endif %}
+
       <p></p>
 
       <footer class="page__meta">

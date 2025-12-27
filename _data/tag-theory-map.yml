@@ -1,0 +1,79 @@
+# 태그와 알고리즘 이론 글 매핑
+# BOJ 문제 풀이의 태그를 기반으로 관련 이론 글을 자동 연결
+
+다이나믹 프로그래밍:
+  title: "동적 계획법(DP)"
+  url: "/algorithm/theory/dynamic-programming/"
+
+그리디:
+  title: "그리디 알고리즘"
+  url: "/algorithm/theory/greedyAlgo/"
+
+정렬:
+  title: "정렬 알고리즘"
+  url: "/algorithm/theory/quick-sort/"
+
+그래프:
+  title: "그래프 탐색 (DFS/BFS)"
+  url: "/algorithm/theory/graph-traversal-dfs-bfs/"
+
+graph_traversal:
+  title: "그래프 탐색 (DFS/BFS)"
+  url: "/algorithm/theory/graph-traversal-dfs-bfs/"
+
+BFS:
+  title: "그래프 탐색 (DFS/BFS)"
+  url: "/algorithm/theory/graph-traversal-dfs-bfs/"
+
+DFS:
+  title: "그래프 탐색 (DFS/BFS)"
+  url: "/algorithm/theory/graph-traversal-dfs-bfs/"
+
+이분탐색:
+  title: "이분 탐색"
+  url: "/algorithm/theory/binary-search/"
+
+백트래킹:
+  title: "백트래킹"
+  url: "/algorithm/theory/backTracking/"
+
+조합론:
+  title: "조합"
+  url: "/algorithm/theory/combination/"
+
+최단경로:
+  title: "다익스트라 알고리즘"
+  url: "/algorithm/theory/Dijkstra/"
+
+정수론:
+  title: "유클리드 호제법 (GCD)"
+  url: "/algorithm/theory/gcd-euclidean-explained/"
+
+누적합:
+  title: "누적 합 (Prefix Sum)"
+  url: "/algorithm/theory/prefix-sum/"
+
+투포인터:
+  title: "투 포인터"
+  url: "/algorithm/theory/two-pointer-explained/"
+
+슬라이딩윈도우:
+  title: "슬라이딩 윈도우"
+  url: "/algorithm/theory/sliding-window-explained/"
+
+피보나치:
+  title: "피보나치 수열"
+  url: "/algorithm/theory/fibonacciSeq/"
+
+에라토스테네스:
+  title: "에라토스테네스의 체"
+  url: "/algorithm/theory/SieveOfEratosthenes/"
+
+우선순위큐:
+  title: "우선순위 큐 / 힙"
+  url: "/algorithm/theory/priority-queue-maxheap/"
+
+힙:
+  title: "힙 정렬"
+  url: "/algorithm/theory/heap-sort/"
+
