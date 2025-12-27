@@ -77,3 +77,96 @@ DFS:
   title: "힙 정렬"
   url: "/algorithm/theory/heap-sort/"
 
+# 새로 추가된 이론 글 매핑
+
+문자열:
+  title: "문자열 알고리즘"
+  url: "/algorithm/theory/string-algorithm/"
+
+브루트포스:
+  title: "완전탐색(Brute Force)"
+  url: "/algorithm/theory/brute-force/"
+
+완전탐색:
+  title: "완전탐색(Brute Force)"
+  url: "/algorithm/theory/brute-force/"
+
+분할정복:
+  title: "분할정복"
+  url: "/algorithm/theory/divide-and-conquer/"
+
+스택:
+  title: "스택과 큐"
+  url: "/algorithm/theory/stack-and-queue/"
+
+큐:
+  title: "스택과 큐"
+  url: "/algorithm/theory/stack-and-queue/"
+
+덱:
+  title: "스택과 큐"
+  url: "/algorithm/theory/stack-and-queue/"
+
+비트마스킹:
+  title: "비트마스킹"
+  url: "/algorithm/theory/bitmask/"
+
+lis:
+  title: "LIS (최장 증가 부분 수열)"
+  url: "/algorithm/theory/lis/"
+
+트리:
+  title: "트리 자료구조"
+  url: "/algorithm/theory/tree/"
+
+기하학:
+  title: "기하학 알고리즘"
+  url: "/algorithm/theory/geometry/"
+
+세그먼트트리:
+  title: "세그먼트 트리"
+  url: "/algorithm/theory/segment-tree/"
+
+유니온파인드:
+  title: "유니온-파인드"
+  url: "/algorithm/theory/union-find/"
+
+분리집합:
+  title: "유니온-파인드"
+  url: "/algorithm/theory/union-find/"
+
+자료구조:
+  title: "스택과 큐"
+  url: "/algorithm/theory/stack-and-queue/"
+
+재귀:
+  title: "분할정복"
+  url: "/algorithm/theory/divide-and-conquer/"
+
+구현:
+  title: "완전탐색(Brute Force)"
+  url: "/algorithm/theory/brute-force/"
+
+시뮬레이션:
+  title: "완전탐색(Brute Force)"
+  url: "/algorithm/theory/brute-force/"
+
+파싱:
+  title: "문자열 알고리즘"
+  url: "/algorithm/theory/string-algorithm/"
+
+유클리드호제법:
+  title: "유클리드 호제법 (GCD)"
+  url: "/algorithm/theory/gcd-euclidean-explained/"
+
+다익스트라:
+  title: "다익스트라 알고리즘"
+  url: "/algorithm/theory/Dijkstra/"
+
+플로이드워셜:
+  title: "플로이드-워셜 알고리즘"
+  url: "/algorithm/theory/FloydWarshall/"
+
+벨만포드:
+  title: "벨만-포드 알고리즘"
+  url: "/algorithm/theory/BellmanFord/"
