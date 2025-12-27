@@ -1,0 +1,28 @@
+---
+layout: empty
+---
+{
+{%- assign category_counts = "" | split: "" -%}
+{%- for post in site.posts -%}
+  {%- assign path = "" -%}
+  {%- for cat in post.categories -%}
+    {%- if path == "" -%}
+      {%- assign path = cat -%}
+    {%- else -%}
+      {%- assign path = path | append: "|" | append: cat -%}
+    {%- endif -%}
+    {%- assign category_counts = category_counts | push: path -%}
+  {%- endfor -%}
+{%- endfor -%}
+{%- assign unique_paths = category_counts | uniq | sort -%}
+{%- for path in unique_paths -%}
+  {%- assign count = 0 -%}
+  {%- for item in category_counts -%}
+    {%- if item == path -%}
+      {%- assign count = count | plus: 1 -%}
+    {%- endif -%}
+  {%- endfor -%}
+  "{{ path }}": {{ count }}{%- unless forloop.last -%},{% endunless %}
+{% endfor -%}
+}
+

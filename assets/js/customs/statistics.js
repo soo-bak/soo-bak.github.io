@@ -1,119 +1,49 @@
-// We need data about posts, but doesn't have backend. So, use trick like below ajax.
+// Category statistics - using pre-calculated stats for fast sidebar loading
 
-function groupByCategories(post, group, nestedIdx = 0) {
-  var postKey = post.categories[nestedIdx];
-  group[postKey] = group[postKey] || { posts: [], children: {} };
-  if (nestedIdx >= post.categories.length - 1) {
-    // if last nested
-    group[postKey]["posts"] = group[postKey]["posts"] || [];
-    group[postKey]["posts"].push(post);
-  } else {
-    // if not last nested
-    updatedGroupChildren = groupByCategories(
-      post,
-      group[postKey].children,
-      ++nestedIdx
-    );
-    group[postKey].children = updatedGroupChildren;
-  }
-  return group;
+// Helper function to get count from category-stats
+function getCategoryCount(stats, categoryPath) {
+  return stats[categoryPath] || 0;
 }
 
-function countPostsGroupByCats(group) {
-  var numIncludeChildren = group["posts"].length;
-  var childKeys = Object.keys(group["children"]);
-  for (catKey of childKeys) {
-    // if current group has children
-    countedGroupChildren = countPostsGroupByCats(group["children"][catKey]);
-    group["children"][catKey] = countedGroupChildren;
-    numIncludeChildren += countedGroupChildren["numTot"]; // propagate count of children's to parent
+// Helper function to calculate parent category totals
+function getParentCategoryTotal(stats, categoryPath) {
+  var total = 0;
+  var prefix = categoryPath + "|";
+  for (var key in stats) {
+    if (key === categoryPath || key.indexOf(prefix) === 0) {
+      total += stats[key];
+    }
   }
-  group["numTot"] = numIncludeChildren;
-  return group;
+  return total;
 }
 
-function getStatFromGroupByCategories(
-  postsGroupByCats,
-  targetCategories,
-  targetStat = "numTot",
-  defaultVal = 0,
-  nestedIdx = 0
-) {
-  if (!Array.isArray(targetCategories)) targetCategories = [targetCategories];
-  var res = defaultVal;
-  var catKey = targetCategories[nestedIdx];
-  if (!postsGroupByCats[catKey]) return defaultVal;
-
-  if (nestedIdx < targetCategories.length - 1) {
-    // if not last nested
-    res = getStatFromGroupByCategories(
-      postsGroupByCats[catKey]["children"],
-      targetCategories,
-      targetStat,
-      defaultVal,
-      ++nestedIdx
-    );
-  } else {
-    // if last nested
-    res = postsGroupByCats[catKey][targetStat];
-  }
-  return res;
-}
-
-var postsGroupByCats = {};
 $(function () {
+  // Load lightweight category stats for sidebar
   $.ajax({
-    url: location.origin + "/data/" + "posts-info.json",
+    url: location.origin + "/data/category-stats.json",
     dataType: "json",
-    success: function (data) {
-      // Aggregate Statistics
-      var allPosts = data;
-
-      $(allPosts).each(function (idx, item) {
-        postsGroupByCats = groupByCategories(item, postsGroupByCats);
-      });
-
-      $(Object.keys(postsGroupByCats)).each(function (idx, catKey) {
-        postsGroupByCats[catKey] = countPostsGroupByCats(
-          postsGroupByCats[catKey]
-        );
-      });
-
-      // Sidebar Num of Posts
-      //   Main Menu
+    success: function (categoryStats) {
+      // Sidebar Num of Posts - Main Menu
       $(".nav__sub-title-name > a").each(function (idx, item) {
         var $item = $(item);
         var itemCat = $item.attr("id").split("sidebar-")[1];
-        var numTot = getStatFromGroupByCategories(
-          postsGroupByCats,
-          itemCat,
-          "numTot",
-          0
-        );
+        var numTot = getParentCategoryTotal(categoryStats, itemCat);
         $item.append('<span class="nav__sub-title-stat">' + numTot + "</span>");
       });
-      //   Sub Menu
-      var catSep = "|";
+
+      // Sidebar Num of Posts - Sub Menu
       $(".nav__item-children > li > a").each(function (idx, item) {
         var $item = $(item);
-        var itemCats = $item.attr("id").split("sidebar-")[1].split(catSep);
-        var numTot = getStatFromGroupByCategories(
-          postsGroupByCats,
-          itemCats,
-          "numTot",
-          0
-        );
-        $item.append(
-          '<span class="nav__item-children-stat">' + numTot + "</span>"
-        );
+        var itemCats = $item.attr("id").split("sidebar-")[1];
+        var numTot = getParentCategoryTotal(categoryStats, itemCats);
+        $item.append('<span class="nav__item-children-stat">' + numTot + "</span>");
       });
+
       // Sidebar Afterprocess - Resize sidebar font
       resizeSidebarFont();
 
-      // From memo type
-      var memoType = $(".memo").data("type"); // this selector.data return first class's data in page.
       // Whole TOC Page
-      var catSep = "/";
+      var memoType = $(".memo").data("type");
       if (memoType == "toc") {
         $(".wholetoc__category-title > a").each(function (idx, item) {
           var $item = $(item);
@@ -122,67 +52,95 @@ $(function () {
             itemCats = itemCats.substring(1, itemCats.length);
           if (itemCats.substr(itemCats.length - 1, 1) == "/")
             itemCats = itemCats.substring(0, itemCats.length - 1);
-          itemCats = itemCats.split("/");
-          var numTot = getStatFromGroupByCategories(
-            postsGroupByCats,
-            itemCats,
-            "numTot",
-            0
-          );
-          $item.append(
-            '<span class="wholetoc__category-stat">(' + numTot + ")</span>"
-          );
+          itemCats = itemCats.split("/").join("|");
+          var numTot = getParentCategoryTotal(categoryStats, itemCats);
+          $item.append('<span class="wholetoc__category-stat">(' + numTot + ")</span>");
         });
       }
-      // Post Pagination
-      let $pagination = $(".post-pagination");
-      if ($pagination.length > 0) {
-        let postsInCurCats = getStatFromGroupByCategories(
+    },
+    statusCode: {
+      404: function () {}
+    }
+  });
+
+  // Post Pagination - load full posts data only when needed
+  let $pagination = $(".post-pagination");
+  if ($pagination.length > 0) {
+    $.ajax({
+      url: location.origin + "/data/posts-info.json",
+      dataType: "json",
+      success: function (data) {
+        var postsGroupByCats = {};
+
+        function groupByCategories(post, group, nestedIdx) {
+          nestedIdx = nestedIdx || 0;
+          var postKey = post.categories[nestedIdx];
+          group[postKey] = group[postKey] || { posts: [], children: {} };
+          if (nestedIdx >= post.categories.length - 1) {
+            group[postKey]["posts"] = group[postKey]["posts"] || [];
+            group[postKey]["posts"].push(post);
+          } else {
+            group[postKey].children = groupByCategories(post, group[postKey].children, nestedIdx + 1);
+          }
+          return group;
+        }
+
+        function getPostsFromGroup(group, categories, idx) {
+          idx = idx || 0;
+          var catKey = categories[idx];
+          if (!group[catKey]) return [];
+          if (idx < categories.length - 1) {
+            return getPostsFromGroup(group[catKey].children, categories, idx + 1);
+          }
+          return group[catKey].posts || [];
+        }
+
+        $(data).each(function (idx, item) {
+          postsGroupByCats = groupByCategories(item, postsGroupByCats);
+        });
+
+        var postsInCurCats = getPostsFromGroup(
           postsGroupByCats,
-          $pagination.data("categories").split("/"),
-          "posts",
-          []
+          $pagination.data("categories").split("/")
         );
+
         if (postsInCurCats.length > 1) {
-          // except itself
           $pagination.removeClass("hidden");
 
           sortArrayOfObjectsByKey(postsInCurCats, "date", "asc");
           sortArrayOfObjectsByKey(postsInCurCats, "post-order", "asc");
 
-          let curPath = window.location.pathname;
-          let curPathIdx = postsInCurCats.findIndex(function (item) {
+          var curPath = window.location.pathname;
+          var curPathIdx = postsInCurCats.findIndex(function (item) {
             return item.url == curPath;
           });
+
           if (curPathIdx > -1) {
-            let prevPost = postsInCurCats[curPathIdx - 1];
+            var prevPost = postsInCurCats[curPathIdx - 1];
             if (prevPost) {
-              $(".pagination__pager.pager-prev").attr(
-                "href",
-                prevPost.url + "#page-title"
-              );
+              $(".pagination__pager.pager-prev").attr("href", prevPost.url + "#page-title");
               $(".pagination__pager.pager-prev .pager-title").text(
                 $("<textarea />").html(prevPost.title).text()
               );
-            } else $(".pagination__pager.pager-prev").css("display", "none");
-            let nextPost = postsInCurCats[curPathIdx + 1];
+            } else {
+              $(".pagination__pager.pager-prev").css("display", "none");
+            }
+
+            var nextPost = postsInCurCats[curPathIdx + 1];
             if (nextPost) {
-              $(".pagination__pager.pager-next").attr(
-                "href",
-                nextPost.url + "#page-title"
-              );
+              $(".pagination__pager.pager-next").attr("href", nextPost.url + "#page-title");
               $(".pagination__pager.pager-next .pager-title").text(
                 $("<textarea />").html(nextPost.title).text()
               );
-            } else $(".pagination__pager.pager-next").css("display", "none");
+            } else {
+              $(".pagination__pager.pager-next").css("display", "none");
+            }
           }
         }
-      }
-    },
-    statusCode: {
-      404: function () {
-        // alert('There was a problem with the server. Try again soon!');
       },
-    },
-  });
+      statusCode: {
+        404: function () {}
+      }
+    });
+  }
 });
