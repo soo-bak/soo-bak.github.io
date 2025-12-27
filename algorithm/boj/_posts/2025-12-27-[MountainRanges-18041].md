@@ -58,8 +58,7 @@ int main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
 
-  int n, x;
-  if (!(cin >> n >> x)) return 0;
+  int n, x; cin >> n >> x;
   vi a(n);
   for (int i = 0; i < n; i++) cin >> a[i];
 
@@ -67,7 +66,7 @@ int main() {
   for (int i = 1; i < n; i++) {
     if (a[i] - a[i - 1] <= x) cur++;
     else cur = 1;
-    
+
     if (cur > best) best = cur;
   }
 
