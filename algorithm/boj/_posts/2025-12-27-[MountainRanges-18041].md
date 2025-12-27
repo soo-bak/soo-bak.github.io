@@ -60,7 +60,8 @@ int main() {
 
   int n, x; cin >> n >> x;
   vi a(n);
-  for (int i = 0; i < n; i++) cin >> a[i];
+  for (int i = 0; i < n; i++)
+    cin >> a[i];
 
   int best = 1, cur = 1;
   for (int i = 1; i < n; i++) {
