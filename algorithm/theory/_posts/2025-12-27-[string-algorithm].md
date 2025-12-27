@@ -206,39 +206,44 @@ H(S[i+1...i+m]) = (H(S[i...i+m-1]) - s[i] × dᵐ⁻¹) × d + s[i+m]
 #include <bits/stdc++.h>
 using namespace std;
 
-vector<int> getFailure(const string& pattern) {
-    int m = pattern.length();
-    vector<int> fail(m, 0);
-    int j = 0;
+typedef vector<int> vi;
 
-    for (int i = 1; i < m; i++) {
-        while (j > 0 && pattern[i] != pattern[j])
-            j = fail[j - 1];
-        if (pattern[i] == pattern[j])
-            fail[i] = ++j;
-    }
-    return fail;
+// 실패 함수 계산
+vi getFailure(const string& pattern) {
+  int m = pattern.length();
+  vi fail(m, 0);
+  int j = 0;
+
+  for (int i = 1; i < m; i++) {
+    while (j > 0 && pattern[i] != pattern[j])
+      j = fail[j - 1];
+    if (pattern[i] == pattern[j])
+      fail[i] = ++j;
+  }
+  return fail;
 }
 
-vector<int> kmp(const string& text, const string& pattern) {
-    vector<int> result;
-    vector<int> fail = getFailure(pattern);
-    int n = text.length(), m = pattern.length();
-    int j = 0;
+// KMP 패턴 매칭
+vi kmp(const string& text, const string& pattern) {
+  vi result;
+  vi fail = getFailure(pattern);
+  int n = text.length(), m = pattern.length();
+  int j = 0;
 
-    for (int i = 0; i < n; i++) {
-        while (j > 0 && text[i] != pattern[j])
-            j = fail[j - 1];
-        if (text[i] == pattern[j]) {
-            if (j == m - 1) {
-                result.push_back(i - m + 1);
-                j = fail[j];
-            } else {
-                j++;
-            }
-        }
+  for (int i = 0; i < n; i++) {
+    while (j > 0 && text[i] != pattern[j])
+      j = fail[j - 1];
+    if (text[i] == pattern[j]) {
+      // 패턴 매칭 성공
+      if (j == m - 1) {
+        result.push_back(i - m + 1);  // 매칭 시작 위치 저장
+        j = fail[j];
+      } else {
+        j++;
+      }
     }
-    return result;
+  }
+  return result;
 }
 ```
 
