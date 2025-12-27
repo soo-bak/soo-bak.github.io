@@ -1,0 +1,43 @@
+{% comment %}
+  태그 기반 관련 포스트 표시
+  - 현재 포스트와 공통 태그가 많은 포스트를 추천
+  - algorithm/boj 카테고리 전용 최적화
+{% endcomment %}
+
+{% assign current_tags = page.tags | join: ',' %}
+{% assign related_posts = "" | split: "" %}
+{% assign max_related = 4 %}
+
+{% comment %} 같은 카테고리(boj)의 포스트 중에서 태그가 겹치는 것 찾기 {% endcomment %}
+{% for post in site.posts %}
+  {% if post.url != page.url %}
+    {% assign common_tags = 0 %}
+    {% for tag in post.tags %}
+      {% if current_tags contains tag %}
+        {% comment %} 문제 번호 태그는 제외하고 카운트 {% endcomment %}
+        {% assign tag_is_number = tag | plus: 0 | times: 1 %}
+        {% if tag_is_number == 0 or tag != tag_is_number %}
+          {% assign common_tags = common_tags | plus: 1 %}
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+    {% if common_tags > 1 %}
+      {% assign related_posts = related_posts | push: post %}
+    {% endif %}
+  {% endif %}
+  {% if related_posts.size >= 20 %}
+    {% break %}
+  {% endif %}
+{% endfor %}
+
+{% if related_posts.size > 0 %}
+<div class="page__related page__related--tags">
+  <h4 class="page__related-title"><i class="fas fa-link"></i> 관련 문제</h4>
+  <div class="grid__wrapper">
+    {% for post in related_posts limit: max_related %}
+      {% include archive-single.html type="grid" %}
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+

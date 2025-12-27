@@ -172,6 +172,48 @@
 </script>
 {% endif %}
 
+{% comment %} BreadcrumbList JSON-LD Schema {% endcomment %}
+{% assign crumbs = page.url | split: '/' | compact %}
+{% if crumbs.size > 0 %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": {{ '/' | absolute_url | jsonify }}
+    }
+    {% assign defined_crumbs = crumbs | pop %}
+    {% assign position = 2 %}
+    {% assign crumb_url = "" %}
+    {% for crumb in defined_crumbs %}
+      {% unless crumb == "" %}
+        {% assign crumb_url = crumb_url | append: "/" | append: crumb %}
+        ,{
+          "@type": "ListItem",
+          "position": {{ position }},
+          "name": "{{ crumb | replace: '-', ' ' | capitalize }}",
+          "item": {{ crumb_url | append: "/" | absolute_url | jsonify }}
+        }
+        {% assign position = position | plus: 1 %}
+      {% endunless %}
+    {% endfor %}
+    {% if page.title %}
+    ,{
+      "@type": "ListItem",
+      "position": {{ position }},
+      "name": {{ page.title | escape | jsonify }},
+      "item": {{ canonical_url | jsonify }}
+    }
+    {% endif %}
+  ]
+}
+</script>
+{% endif %}
+
 {% if site.google_site_verification %}
   <meta name="google-site-verification" content="{{ site.google_site_verification }}" />
 {% endif %}

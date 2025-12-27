@@ -94,7 +94,12 @@ layout: default
     {% endif %}
   </article>
 
-  {% comment %}<!-- only show related on a post page when `related: true` -->{% endcomment %}
+  {% comment %}<!-- 태그 기반 관련 포스트 (알고리즘 문제에 최적화) -->{% endcomment %}
+  {% if page.id and page.related and page.tags.size > 0 %}
+    {% include related-posts-by-tags.html %}
+  {% endif %}
+
+  {% comment %}<!-- 기본 관련 포스트 or 최근 포스트 -->{% endcomment %}
   {% if page.id and page.related and site.related_posts.size > 0 %}
     <div class="page__related">
       <h4 class="page__related-title">{{ site.data.ui-text[site.locale].related_label | default: "이 블로그의 다른 글" }}</h4>
@@ -104,7 +109,6 @@ layout: default
         {% endfor %}
       </div>
     </div>
-  {% comment %}<!-- otherwise show recent posts if no related when `related: true` -->{% endcomment %}
   {% elsif page.id and page.related %}
     <div class="page__related">
       <h4 class="page__related-title">{{ site.data.ui-text[site.locale].related_label | default: "이 블로그의 다른 글" }}</h4>
