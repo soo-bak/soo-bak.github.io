@@ -77,8 +77,6 @@ DFS:
   title: "힙 정렬"
   url: "/algorithm/theory/heap-sort/"
 
-# 새로 추가된 이론 글 매핑
-
 문자열:
   title: "문자열 알고리즘"
   url: "/algorithm/theory/string-algorithm/"
@@ -170,3 +168,35 @@ lis:
 벨만포드:
   title: "벨만-포드 알고리즘"
   url: "/algorithm/theory/BellmanFord/"
+
+병합정렬:
+  title: "병합 정렬"
+  url: "/algorithm/theory/merge-sort/"
+
+삽입정렬:
+  title: "삽입 정렬"
+  url: "/algorithm/theory/insertion-sort/"
+
+하노이:
+  title: "하노이의 탑"
+  url: "/algorithm/theory/hanoi/"
+
+비둘기집:
+  title: "비둘기집 원리"
+  url: "/algorithm/theory/pigeonhole-principle/"
+
+사이클:
+  title: "플로이드 사이클 탐지"
+  url: "/algorithm/theory/floyd-cycle-detection/"
+
+기약분수:
+  title: "기약분수"
+  url: "/algorithm/theory/irreducible-fraction/"
+
+삼각수:
+  title: "삼각수"
+  url: "/algorithm/theory/TriNum/"
+
+순열:
+  title: "순열의 순환"
+  url: "/algorithm/theory/permutation-cycle/"
