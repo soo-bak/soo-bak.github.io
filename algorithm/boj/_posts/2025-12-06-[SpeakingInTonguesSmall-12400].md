@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 문자열
+  - 애드혹
 keywords: "백준 12400, 백준 12400번, BOJ 12400, SpeakingInTonguesSmall, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

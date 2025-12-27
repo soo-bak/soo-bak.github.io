@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
+  - arithmetic
 keywords: "백준 11636, 백준 11636번, BOJ 11636, StandOnZanzibar, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - arithmetic
 keywords: "백준 1712, 백준 1712번, BOJ 1712, BreakEvenPoint, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

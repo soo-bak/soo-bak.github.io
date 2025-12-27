@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
 keywords: "백준 29738, 백준 29738번, BOJ 29738, GoodbyeCodeJam, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

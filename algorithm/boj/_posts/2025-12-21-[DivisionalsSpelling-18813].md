@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 문자열
 keywords: "백준 18813, 백준 18813번, BOJ 18813, DivisionalsSpelling, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

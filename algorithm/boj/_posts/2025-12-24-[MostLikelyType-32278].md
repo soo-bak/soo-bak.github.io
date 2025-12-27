@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
 keywords: "백준 32278, 백준 32278번, BOJ 32278, MostLikelyType, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

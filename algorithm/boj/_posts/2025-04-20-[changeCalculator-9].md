@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 그리디
+  - arithmetic
 keywords: "백준 2720, 백준 2720번, BOJ 2720, changeCalculator, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

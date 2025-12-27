@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 브루트포스
+  - 기하학
 keywords: "백준 6013, 백준 6013번, BOJ 6013, lonesomePartners, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

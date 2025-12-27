@@ -10,6 +10,10 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
+  - 기하학
+  - arithmetic
 keywords: "백준 32171, 백준 32171번, BOJ 32171, rectanglePerimeter, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

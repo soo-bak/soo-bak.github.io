@@ -10,6 +10,10 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
+  - arithmetic
+  - 시뮬레이션
 keywords: "백준 30569, 백준 30569번, BOJ 30569, lastOneStanding, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - arithmetic
 keywords: "백준 4850, 백준 4850번, BOJ 4850, BasketsOfGoldCoins, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

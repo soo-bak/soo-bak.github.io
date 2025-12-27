@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
 keywords: "백준 1748, 백준 1748번, BOJ 1748, digitlengthsum, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

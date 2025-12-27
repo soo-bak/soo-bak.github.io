@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - arithmetic
 keywords: "백준 4623, 백준 4623번, BOJ 4623, CopierReduction, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

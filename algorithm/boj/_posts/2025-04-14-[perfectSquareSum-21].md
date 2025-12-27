@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
+  - 브루트포스
 keywords: "백준 1977, 백준 1977번, BOJ 1977, perfectSquareSum, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

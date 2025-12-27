@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - arithmetic
+  - 수학
 keywords: "백준 2420, 백준 2420번, BOJ 2420, safariWorld, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

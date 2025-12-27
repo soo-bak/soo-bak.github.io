@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - pythagoras
+  - 기하학
 keywords: "백준 1297, 백준 1297번, BOJ 1297, tvResolution, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

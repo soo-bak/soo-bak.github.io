@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 브루트포스
 keywords: "백준 1436, 백준 1436번, BOJ 1436, MovieDirectorShom, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

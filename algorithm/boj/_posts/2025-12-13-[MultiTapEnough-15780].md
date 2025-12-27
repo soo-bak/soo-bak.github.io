@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - arithmetic
 keywords: "백준 15780, 백준 15780번, BOJ 15780, MultiTapEnough, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

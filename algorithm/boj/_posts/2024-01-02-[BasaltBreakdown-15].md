@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 기하학
+  - arithmetic
 keywords: "백준 21983, 백준 21983번, BOJ 21983, BasaltBreakdown, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

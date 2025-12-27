@@ -10,6 +10,11 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
+  - 기하학
+  - arithmetic
+  - pythagoras
 keywords: "백준 16728, 백준 16728번, BOJ 16728, Chaarshanbegaan, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

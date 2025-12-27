@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
 keywords: "백준 4118, 백준 4118번, BOJ 4118, FredsLottoTickets, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

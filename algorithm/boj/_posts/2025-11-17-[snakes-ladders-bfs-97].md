@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 그래프
+  - graph_traversal
+  - BFS
 keywords: "백준 16928, 백준 16928번, BOJ 16928, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

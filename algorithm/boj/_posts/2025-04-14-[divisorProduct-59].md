@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 정수론
 keywords: "백준 1037, 백준 1037번, BOJ 1037, divisorProduct, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

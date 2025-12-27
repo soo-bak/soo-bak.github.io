@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 기하학
+  - pythagoras
 keywords: "백준 16479, 백준 16479번, BOJ 16479, cheeseDepth, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

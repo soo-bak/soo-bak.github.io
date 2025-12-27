@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
+  - arithmetic
 keywords: "백준 28960, 백준 28960번, BOJ 28960, LevitationCloak, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

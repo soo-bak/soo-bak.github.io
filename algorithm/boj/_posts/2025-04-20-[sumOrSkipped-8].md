@@ -10,6 +10,11 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
+  - 문자열
+  - arithmetic
+  - 파싱
 keywords: "백준 5026, 백준 5026번, BOJ 5026, sumOrSkipped, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

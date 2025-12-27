@@ -10,6 +10,11 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 자료구조
+  - 문자열
+  - set
+  - hash_set
+  - tree_set
 keywords: "백준 11478, 백준 11478번, BOJ 11478, DistinctSubstrings, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

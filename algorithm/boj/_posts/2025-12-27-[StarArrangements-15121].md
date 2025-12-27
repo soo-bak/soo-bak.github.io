@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 브루트포스
+  - arithmetic
 keywords: "백준 15121, 백준 15121번, BOJ 15121, StarArrangements, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

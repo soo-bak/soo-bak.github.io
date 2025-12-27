@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - arithmetic
 keywords: "백준 16648, 백준 16648번, BOJ 16648, AccumulatorBattery, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

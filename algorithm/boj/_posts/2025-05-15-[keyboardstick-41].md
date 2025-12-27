@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 문자열
 keywords: "백준 7120, 백준 7120번, BOJ 7120, keyboardstick, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

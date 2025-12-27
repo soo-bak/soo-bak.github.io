@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 기하학
 keywords: "백준 3053, 백준 3053번, BOJ 3053, TaxicapGeometry, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 그리디
+  - 문자열
 keywords: "백준 30700, 백준 30700번, BOJ 30700, KOREAStringSuccess, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

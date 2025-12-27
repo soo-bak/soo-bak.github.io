@@ -10,6 +10,11 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
+  - 기하학
+  - arithmetic
+  - 케이스분류
 keywords: "백준 9366, 백준 9366번, BOJ 9366, triangleclassify, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

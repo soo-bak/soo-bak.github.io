@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 문자열
+  - 구현
 keywords: "백준 11586, 백준 11586번, BOJ 11586, mirrorReflection, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

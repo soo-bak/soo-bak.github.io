@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 문자열
 keywords: "백준 29534, 백준 29534번, BOJ 29534, LettersAndScales, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 브루트포스
 keywords: "백준 3040, 백준 3040번, BOJ 3040, snowWhiteSeven, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

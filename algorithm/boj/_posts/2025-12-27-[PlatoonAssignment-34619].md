@@ -10,6 +10,10 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
+  - 브루트포스
+  - arithmetic
 keywords: "백준 34619, 백준 34619번, BOJ 34619, PlatoonAssignment, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

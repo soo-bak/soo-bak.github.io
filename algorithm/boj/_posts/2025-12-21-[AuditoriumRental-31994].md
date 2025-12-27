@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
 keywords: "백준 31994, 백준 31994번, BOJ 31994, AuditoriumRental, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

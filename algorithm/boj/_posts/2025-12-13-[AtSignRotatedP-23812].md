@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
 keywords: "백준 23812, 백준 23812번, BOJ 23812, AtSignRotatedP, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

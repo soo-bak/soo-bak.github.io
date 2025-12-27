@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 구성적
 keywords: "백준 19155, 백준 19155번, BOJ 19155, CopyingHomework, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

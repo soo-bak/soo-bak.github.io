@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - arithmetic
 keywords: "백준 10178, 백준 10178번, BOJ 10178, halloweenCandy, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

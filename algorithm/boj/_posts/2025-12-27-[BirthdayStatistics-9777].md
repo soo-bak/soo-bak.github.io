@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 문자열
+  - 파싱
 keywords: "백준 9777, 백준 9777번, BOJ 9777, BirthdayStatistics, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

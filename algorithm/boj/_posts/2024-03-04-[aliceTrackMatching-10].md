@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 문자열
 keywords: "백준 31428, 백준 31428번, BOJ 31428, aliceTrackMatching, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

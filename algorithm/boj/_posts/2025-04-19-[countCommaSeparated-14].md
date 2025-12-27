@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 문자열
+  - 파싱
 keywords: "백준 10821, 백준 10821번, BOJ 10821, countCommaSeparated, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

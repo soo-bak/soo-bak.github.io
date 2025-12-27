@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
 keywords: "백준 2920, 백준 2920번, BOJ 2920, MusicalScale, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

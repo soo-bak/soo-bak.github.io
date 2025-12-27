@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
 keywords: "백준 31669, 백준 31669번, BOJ 31669, EscapeSpecialSchool, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

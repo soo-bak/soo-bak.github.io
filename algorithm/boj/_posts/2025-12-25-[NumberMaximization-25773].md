@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 정렬
 keywords: "백준 25773, 백준 25773번, BOJ 25773, NumberMaximization, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
+  - arithmetic
 keywords: "백준 21614, 백준 21614번, BOJ 21614, SecretInstructions, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

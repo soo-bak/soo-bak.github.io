@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 문자열
+  - 케이스분류
 keywords: "백준 32621, 백준 32621번, BOJ 32621, ClubFeeEmbezzlement, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

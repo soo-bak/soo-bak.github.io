@@ -10,6 +10,10 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
+  - arithmetic
+  - 시뮬레이션
 keywords: "백준 12351, 백준 12351번, BOJ 12351, HedgemonySmall, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 브루트포스
+  - 수학
 keywords: "백준 18141, 백준 18141번, BOJ 18141, AreTheyAllIntegers, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

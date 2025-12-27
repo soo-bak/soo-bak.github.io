@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
 keywords: "백준 2441, 백준 2441번, BOJ 2441, rightAlignStar, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

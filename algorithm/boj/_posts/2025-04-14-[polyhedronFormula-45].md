@@ -10,6 +10,10 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 기하학
+  - arithmetic
+  - euler_characteristic
 keywords: "백준 10569, 백준 10569번, BOJ 10569, polyhedronFormula, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

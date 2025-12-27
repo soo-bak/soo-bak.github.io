@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
 keywords: "백준 13456, 백준 13456번, BOJ 13456, RichardHamming, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

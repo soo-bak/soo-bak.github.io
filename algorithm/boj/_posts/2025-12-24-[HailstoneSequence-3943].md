@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 시뮬레이션
 keywords: "백준 3943, 백준 3943번, BOJ 3943, HailstoneSequence, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

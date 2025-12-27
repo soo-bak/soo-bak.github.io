@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 그리디
 keywords: "백준 30019, 백준 30019번, BOJ 30019, ClassroomReservationSystem, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 문자열
 keywords: "백준 6766, 백준 6766번, BOJ 6766, BigBangSecrets, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

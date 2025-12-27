@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
 keywords: "백준 31868, 백준 31868번, BOJ 31868, WatermelonGame, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

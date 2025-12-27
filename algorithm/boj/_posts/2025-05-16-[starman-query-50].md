@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - precomputation
 keywords: "백준 12791, 백준 12791번, BOJ 12791, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

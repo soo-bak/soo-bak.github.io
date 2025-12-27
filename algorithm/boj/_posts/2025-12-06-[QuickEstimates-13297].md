@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 문자열
 keywords: "백준 13297, 백준 13297번, BOJ 13297, QuickEstimates, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

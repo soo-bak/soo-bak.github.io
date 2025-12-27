@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 기하학
+  - pythagoras
 keywords: "백준 20215, 백준 20215번, BOJ 20215, CuttingCorners, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

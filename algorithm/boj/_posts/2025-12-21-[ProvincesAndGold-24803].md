@@ -10,6 +10,10 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
+  - arithmetic
+  - 케이스분류
 keywords: "백준 24803, 백준 24803번, BOJ 24803, ProvincesAndGold, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

@@ -10,6 +10,10 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 정수론
+  - primality_test
+  - prime_factorization
 keywords: "백준 11653, 백준 11653번, BOJ 11653, FactorizationOfFactors, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

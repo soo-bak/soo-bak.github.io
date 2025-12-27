@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 문자열
 keywords: "백준 5211, 백준 5211번, BOJ 5211, AMinorAndCMajor, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

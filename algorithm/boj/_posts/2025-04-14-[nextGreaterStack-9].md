@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 자료구조
+  - 스택
 keywords: "백준 17298, 백준 17298번, BOJ 17298, nextGreaterStack, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

@@ -10,6 +10,10 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 정렬
+  - 기하학
+  - convex_hull
+  - angle_sorting
 keywords: "백준 3679, 백준 3679번, BOJ 3679, SimplePolygon, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

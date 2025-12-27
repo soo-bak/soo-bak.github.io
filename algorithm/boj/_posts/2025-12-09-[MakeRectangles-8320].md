@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
 keywords: "백준 8320, 백준 8320번, BOJ 8320, MakeRectangles, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

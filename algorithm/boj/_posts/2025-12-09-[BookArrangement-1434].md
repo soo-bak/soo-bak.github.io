@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
+  - arithmetic
 keywords: "백준 1434, 백준 1434번, BOJ 1434, BookArrangement, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

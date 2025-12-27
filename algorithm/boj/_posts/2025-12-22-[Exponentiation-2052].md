@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - arbitrary_precision
 keywords: "백준 2052, 백준 2052번, BOJ 2052, Exponentiation, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 문자열
+  - 케이스분류
 keywords: "백준 30957, 백준 30957번, BOJ 30957, BigdataVsSecurityVsAI, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

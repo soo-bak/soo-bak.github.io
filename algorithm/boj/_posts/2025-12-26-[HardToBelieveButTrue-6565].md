@@ -10,6 +10,11 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
+  - 문자열
+  - arithmetic
+  - 파싱
 keywords: "백준 6565, 백준 6565번, BOJ 6565, HardToBelieveButTrue, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

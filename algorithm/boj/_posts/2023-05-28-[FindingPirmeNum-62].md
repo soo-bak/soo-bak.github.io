@@ -10,6 +10,10 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 정수론
+  - primality_test
+  - 에라토스테네스
 keywords: "백준 1929, 백준 1929번, BOJ 1929, FindingPirmeNum, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

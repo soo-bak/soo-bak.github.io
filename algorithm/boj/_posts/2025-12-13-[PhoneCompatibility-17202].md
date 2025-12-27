@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 문자열
+  - 시뮬레이션
 keywords: "백준 17202, 백준 17202번, BOJ 17202, PhoneCompatibility, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

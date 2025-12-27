@@ -10,6 +10,10 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 브루트포스
+  - 정수론
+  - modular_multiplicative_inverse
 keywords: "백준 15995, 백준 15995번, BOJ 15995, ModularInverse, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

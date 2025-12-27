@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 그리디
 keywords: "백준 11047, 백준 11047번, BOJ 11047, coinChangeGreedy, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

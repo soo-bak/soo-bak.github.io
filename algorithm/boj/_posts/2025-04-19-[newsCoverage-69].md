@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - arithmetic
+  - 수학
 keywords: "백준 2845, 백준 2845번, BOJ 2845, newsCoverage, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

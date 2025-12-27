@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 문자열
 keywords: "백준 26041, 백준 26041번, BOJ 26041, SimilarPhoneNumber, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

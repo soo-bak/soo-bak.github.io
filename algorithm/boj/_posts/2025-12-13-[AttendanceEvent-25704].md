@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
+  - arithmetic
 keywords: "백준 25704, 백준 25704번, BOJ 25704, AttendanceEvent, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

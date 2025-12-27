@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 문자열
+  - 브루트포스
 keywords: "백준 8965, 백준 8965번, BOJ 8965, CircularSequence, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

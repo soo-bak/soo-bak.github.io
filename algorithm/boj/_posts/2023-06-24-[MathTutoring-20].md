@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
+  - calculus
 keywords: "백준 9299, 백준 9299번, BOJ 9299, MathTutoring, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

@@ -10,6 +10,10 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
+  - 정렬
+  - arithmetic
 keywords: "백준 2587, 백준 2587번, BOJ 2587, averageAndMedian, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 브루트포스
 keywords: "백준 32585, 백준 32585번, BOJ 32585, BuildingPyramids, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

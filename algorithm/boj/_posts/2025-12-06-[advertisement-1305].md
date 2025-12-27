@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 문자열
+  - kmp
 keywords: "백준 1305, 백준 1305번, BOJ 1305, advertisement, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

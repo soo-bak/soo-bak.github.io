@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 기하학
+  - arithmetic
 keywords: "백준 30886, 백준 30886번, BOJ 30886, ArtisticSouvenir, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 애드혹
 keywords: "백준 29196, 백준 29196번, BOJ 29196, NotFractionNumberTwo, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

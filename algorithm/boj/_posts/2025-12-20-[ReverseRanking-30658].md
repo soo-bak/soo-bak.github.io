@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
 keywords: "백준 30658, 백준 30658번, BOJ 30658, ReverseRanking, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

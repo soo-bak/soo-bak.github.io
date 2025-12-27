@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 애드혹
+  - arithmetic
 keywords: "백준 30204, 백준 30204번, BOJ 30204, BarracksCatering, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

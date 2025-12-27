@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
 keywords: "백준 4564, 백준 4564번, BOJ 4564, numbercardgame, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

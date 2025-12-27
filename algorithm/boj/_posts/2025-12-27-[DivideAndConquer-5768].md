@@ -10,6 +10,10 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 브루트포스
+  - 정수론
+  - arithmetic
 keywords: "백준 5768, 백준 5768번, BOJ 5768, DivideAndConquer, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

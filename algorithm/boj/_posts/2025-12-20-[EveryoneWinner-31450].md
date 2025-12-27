@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - arithmetic
 keywords: "백준 31450, 백준 31450번, BOJ 31450, EveryoneWinner, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

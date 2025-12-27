@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 브루트포스
+  - 정렬
 keywords: "백준 13280, 백준 13280번, BOJ 13280, SelectionOfParticipants, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

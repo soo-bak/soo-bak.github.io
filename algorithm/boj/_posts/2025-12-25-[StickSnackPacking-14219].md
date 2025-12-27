@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - arithmetic
 keywords: "백준 14219, 백준 14219번, BOJ 14219, StickSnackPacking, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

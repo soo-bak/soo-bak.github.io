@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 문자열
 keywords: "백준 2789, 백준 2789번, BOJ 2789, forbiddenLetters, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

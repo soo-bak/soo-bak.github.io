@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 문자열
 keywords: "백준 11269, 백준 11269번, BOJ 11269, CryptographersConundrum, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

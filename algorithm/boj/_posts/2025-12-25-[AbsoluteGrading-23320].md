@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
+  - arithmetic
 keywords: "백준 23320, 백준 23320번, BOJ 23320, AbsoluteGrading, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

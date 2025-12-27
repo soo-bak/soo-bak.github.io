@@ -10,6 +10,10 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
+  - 문자열
+  - arithmetic
 keywords: "백준 28249, 백준 28249번, BOJ 28249, ChiliPeppers, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

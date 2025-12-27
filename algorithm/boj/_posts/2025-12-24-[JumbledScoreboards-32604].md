@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
 keywords: "백준 32604, 백준 32604번, BOJ 32604, JumbledScoreboards, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

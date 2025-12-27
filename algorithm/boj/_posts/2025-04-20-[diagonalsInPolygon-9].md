@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 조합론
 keywords: "백준 3049, 백준 3049번, BOJ 3049, diagonalsInPolygon, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

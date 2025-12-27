@@ -10,6 +10,10 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 기하학
+  - arithmetic
+  - pythagoras
 keywords: "백준 6322, 백준 6322번, BOJ 6322, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

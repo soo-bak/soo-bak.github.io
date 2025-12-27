@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 그리디
+  - 정렬
 keywords: "백준 1026, 백준 1026번, BOJ 1026, minimumScalarProduct, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

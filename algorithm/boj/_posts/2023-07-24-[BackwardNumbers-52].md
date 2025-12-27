@@ -10,6 +10,10 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
+  - 문자열
+  - arithmetic
 keywords: "백준 6721, 백준 6721번, BOJ 6721, BackwardNumbers, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

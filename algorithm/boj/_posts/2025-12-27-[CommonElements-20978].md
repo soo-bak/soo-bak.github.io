@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
 keywords: "백준 20978, 백준 20978번, BOJ 20978, CommonElements, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

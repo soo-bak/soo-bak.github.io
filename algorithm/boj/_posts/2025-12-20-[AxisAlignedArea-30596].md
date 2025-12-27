@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 기하학
+  - arithmetic
 keywords: "백준 30596, 백준 30596번, BOJ 30596, AxisAlignedArea, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

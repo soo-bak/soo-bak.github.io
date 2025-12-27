@@ -10,6 +10,10 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 정수론
+  - primality_test
+  - 에라토스테네스
 keywords: "백준 9020, 백준 9020번, BOJ 9020, GoldbachConjecture, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

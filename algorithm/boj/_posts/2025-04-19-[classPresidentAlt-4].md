@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 케이스분류
 keywords: "백준 2456, 백준 2456번, BOJ 2456, classPresidentAlt, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

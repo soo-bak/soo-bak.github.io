@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
+  - arithmetic
 keywords: "백준 2577, 백준 2577번, BOJ 2577, CountOfNums, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

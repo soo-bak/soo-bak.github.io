@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 브루트포스
+  - 기하학
+  - pythagoras
 keywords: "백준 1711, 백준 1711번, BOJ 1711, RightTriangles, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

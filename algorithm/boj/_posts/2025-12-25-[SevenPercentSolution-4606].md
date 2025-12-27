@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 문자열
 keywords: "백준 4606, 백준 4606번, BOJ 4606, SevenPercentSolution, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

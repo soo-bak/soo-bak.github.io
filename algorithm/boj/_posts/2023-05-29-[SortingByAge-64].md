@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 정렬
+  - set
 keywords: "백준 10814, 백준 10814번, BOJ 10814, SortingByAge, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

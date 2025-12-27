@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
+  - arithmetic
 keywords: "백준 25829, 백준 25829번, BOJ 25829, PresidentialElection, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

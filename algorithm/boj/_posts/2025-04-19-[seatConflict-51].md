@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
 keywords: "백준 1453, 백준 1453번, BOJ 1453, seatConflict, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

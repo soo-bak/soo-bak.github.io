@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
 keywords: "백준 5054, 백준 5054번, BOJ 5054, parkingDistance, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

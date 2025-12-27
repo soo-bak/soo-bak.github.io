@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 문자열
 keywords: "백준 5949, 백준 5949번, BOJ 5949, AddingCommas, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

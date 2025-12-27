@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 문자열
 keywords: "백준 25630, 백준 25630번, BOJ 25630, PalindromeSotteok, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

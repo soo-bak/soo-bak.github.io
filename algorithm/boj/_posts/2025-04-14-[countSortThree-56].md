@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 정렬
 keywords: "백준 10989, 백준 10989번, BOJ 10989, countSortThree, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

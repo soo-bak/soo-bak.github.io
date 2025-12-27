@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
 keywords: "백준 17946, 백준 17946번, BOJ 17946, PizzaGetsBigger, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
 keywords: "백준 1673, 백준 1673번, BOJ 1673, ChickenCoupon, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

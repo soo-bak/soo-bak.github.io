@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - arithmetic
 keywords: "백준 9437, 백준 9437번, BOJ 9437, missingpages, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

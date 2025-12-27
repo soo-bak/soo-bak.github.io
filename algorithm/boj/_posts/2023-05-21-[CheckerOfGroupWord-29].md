@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 문자열
 keywords: "백준 1316, 백준 1316번, BOJ 1316, CheckerOfGroupWord, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

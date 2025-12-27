@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 문자열
+  - 케이스분류
 keywords: "백준 30272, 백준 30272번, BOJ 30272, RandomNumberGenerator, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

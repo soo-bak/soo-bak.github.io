@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
+  - arithmetic
 keywords: "백준 16917, 백준 16917번, BOJ 16917, HalfHalfChicken, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

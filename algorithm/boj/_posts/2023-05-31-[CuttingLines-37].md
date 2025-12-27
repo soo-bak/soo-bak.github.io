@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 이분탐색
+  - parametric_search
 keywords: "백준 1654, 백준 1654번, BOJ 1654, CuttingLines, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

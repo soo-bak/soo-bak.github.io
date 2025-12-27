@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
+  - arithmetic
 keywords: "백준 25830, 백준 25830번, BOJ 25830, MicrowaveMishap, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

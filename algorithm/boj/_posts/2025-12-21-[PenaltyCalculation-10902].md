@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
+  - arithmetic
 keywords: "백준 10902, 백준 10902번, BOJ 10902, PenaltyCalculation, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

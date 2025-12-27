@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 기하학
+  - convex_hull
+  - rotating_calipers
 keywords: "백준 15028, 백준 15028번, BOJ 15028, BreakingBiscuits, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - arithmetic
 keywords: "백준 9349, 백준 9349번, BOJ 9349, FeglaAndTheBedBugs, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

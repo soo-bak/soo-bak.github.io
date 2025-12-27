@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - arithmetic
+  - 수학
 keywords: "백준 11382, 백준 11382번, BOJ 11382, childjungmin, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

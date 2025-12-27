@@ -10,6 +10,10 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 자료구조
+  - 정렬
+  - 이분탐색
+  - hash_set
 keywords: "백준 10816, 백준 10816번, BOJ 10816, numberCardTwo, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

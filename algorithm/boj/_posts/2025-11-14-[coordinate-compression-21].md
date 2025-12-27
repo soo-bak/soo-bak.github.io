@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 정렬
+  - coordinate_compression
 keywords: "백준 18870, 백준 18870번, BOJ 18870, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

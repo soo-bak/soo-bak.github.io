@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 문자열
+  - 구현
 keywords: "백준 16172, 백준 16172번, BOJ 16172, IHaveFewFriends, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

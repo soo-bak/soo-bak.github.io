@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
+  - arithmetic
 keywords: "백준 24544, 백준 24544번, BOJ 24544, KakaoViewCuration, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

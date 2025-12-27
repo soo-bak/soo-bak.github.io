@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - arithmetic
+  - arbitrary_precision
 keywords: "백준 15858, 백준 15858번, BOJ 15858, SimpleArithmetic, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

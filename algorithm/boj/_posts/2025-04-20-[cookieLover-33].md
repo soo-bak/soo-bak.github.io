@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - arithmetic
 keywords: "백준 11134, 백준 11134번, BOJ 11134, cookieLover, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

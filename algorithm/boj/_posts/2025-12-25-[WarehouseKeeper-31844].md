@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 문자열
 keywords: "백준 31844, 백준 31844번, BOJ 31844, WarehouseKeeper, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

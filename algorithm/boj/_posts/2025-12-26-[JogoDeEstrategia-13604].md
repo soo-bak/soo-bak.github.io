@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
 keywords: "백준 13604, 백준 13604번, BOJ 13604, JogoDeEstrategia, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

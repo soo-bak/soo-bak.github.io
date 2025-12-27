@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
+  - arithmetic
 keywords: "백준 5157, 백준 5157번, BOJ 5157, BailoutBonus, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

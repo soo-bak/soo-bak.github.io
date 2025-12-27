@@ -10,6 +10,11 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
+  - 브루트포스
+  - 정수론
+  - arithmetic
 keywords: "백준 6975, 백준 6975번, BOJ 6975, DeficientPerfectAbundant, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

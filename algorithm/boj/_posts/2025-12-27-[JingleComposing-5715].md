@@ -10,6 +10,10 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
+  - 문자열
+  - arithmetic
 keywords: "백준 5715, 백준 5715번, BOJ 5715, JingleComposing, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

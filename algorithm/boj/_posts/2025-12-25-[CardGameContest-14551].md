@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - arithmetic
+  - 조합론
 keywords: "백준 14551, 백준 14551번, BOJ 14551, CardGameContest, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

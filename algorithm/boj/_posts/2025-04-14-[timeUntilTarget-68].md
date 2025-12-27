@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
+  - arithmetic
 keywords: "백준 1408, 백준 1408번, BOJ 1408, timeUntilTarget, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

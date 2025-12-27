@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 문자열
 keywords: "백준 5656, 백준 5656번, BOJ 5656, compareOperator, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

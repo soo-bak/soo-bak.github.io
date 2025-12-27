@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 문자열
 keywords: "백준 25246, 백준 25246번, BOJ 25246, BrexitingBrentering, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

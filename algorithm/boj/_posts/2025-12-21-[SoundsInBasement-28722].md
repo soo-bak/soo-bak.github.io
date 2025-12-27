@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - game_theory
 keywords: "백준 28722, 백준 28722번, BOJ 28722, SoundsInBasement, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

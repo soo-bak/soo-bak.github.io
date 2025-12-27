@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
 keywords: "백준 2909, 백준 2909번, BOJ 2909, CandyPurchase, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 브루트포스
 keywords: "백준 17618, 백준 17618번, BOJ 17618, InterestingNumbers, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

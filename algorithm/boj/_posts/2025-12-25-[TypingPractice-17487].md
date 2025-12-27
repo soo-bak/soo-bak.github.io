@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
 keywords: "백준 17487, 백준 17487번, BOJ 17487, TypingPractice, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

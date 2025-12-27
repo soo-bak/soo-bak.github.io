@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 시뮬레이션
 keywords: "백준 29991, 백준 29991번, BOJ 29991, FatigueFightingVacation, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

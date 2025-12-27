@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 애드혹
 keywords: "백준 28932, 백준 28932번, BOJ 28932, PrefixesSuffixes, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

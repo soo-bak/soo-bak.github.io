@@ -10,6 +10,11 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 그래프
+  - graph_traversal
+  - BFS
+  - DFS
+  - grid_graph
 keywords: "백준 1926, 백준 1926번, BOJ 1926, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

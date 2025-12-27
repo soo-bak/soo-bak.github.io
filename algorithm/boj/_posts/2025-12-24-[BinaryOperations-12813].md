@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 문자열
 keywords: "백준 12813, 백준 12813번, BOJ 12813, BinaryOperations, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

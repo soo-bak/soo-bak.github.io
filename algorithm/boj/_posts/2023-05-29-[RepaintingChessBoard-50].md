@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 브루트포스
 keywords: "백준 1018, 백준 1018번, BOJ 1018, RepaintingChessBoard, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

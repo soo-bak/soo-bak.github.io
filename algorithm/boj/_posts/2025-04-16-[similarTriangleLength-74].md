@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 기하학
 keywords: "백준 16478, 백준 16478번, BOJ 16478, similarTriangleLength, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 브루트포스
 keywords: "백준 12572, 백준 12572번, BOJ 12572, RopeIntranetLarge, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

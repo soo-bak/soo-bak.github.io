@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - arithmetic
 keywords: "백준 10474, 백준 10474번, BOJ 10474, mixedFraction, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

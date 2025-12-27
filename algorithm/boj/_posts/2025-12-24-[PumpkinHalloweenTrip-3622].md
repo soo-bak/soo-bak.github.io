@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 기하학
+  - 케이스분류
 keywords: "백준 3622, 백준 3622번, BOJ 3622, PumpkinHalloweenTrip, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

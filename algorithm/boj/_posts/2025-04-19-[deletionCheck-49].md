@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 문자열
+  - parity
 keywords: "백준 9243, 백준 9243번, BOJ 9243, deletionCheck, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

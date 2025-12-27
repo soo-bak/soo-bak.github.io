@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - precomputation
 keywords: "백준 26495, 백준 26495번, BOJ 26495, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

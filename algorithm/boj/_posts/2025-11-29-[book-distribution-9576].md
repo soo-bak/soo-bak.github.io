@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 그리디
+  - 정렬
+  - bipartite_matching
 keywords: "백준 9576, 백준 9576번, BOJ 9576, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 브루트포스
 keywords: "백준 26336, 백준 26336번, BOJ 26336, AreWeStoppingAgain, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

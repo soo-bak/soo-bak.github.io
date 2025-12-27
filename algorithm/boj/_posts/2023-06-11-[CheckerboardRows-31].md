@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
 keywords: "백준 5246, 백준 5246번, BOJ 5246, CheckerboardRows, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

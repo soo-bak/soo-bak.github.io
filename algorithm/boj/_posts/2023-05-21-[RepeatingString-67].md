@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 문자열
 keywords: "백준 2675, 백준 2675번, BOJ 2675, RepeatingString, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

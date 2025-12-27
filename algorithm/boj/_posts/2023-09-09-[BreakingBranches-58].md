@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - game_theory
+  - parity
 keywords: "백준 17783, 백준 17783번, BOJ 17783, BreakingBranches, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

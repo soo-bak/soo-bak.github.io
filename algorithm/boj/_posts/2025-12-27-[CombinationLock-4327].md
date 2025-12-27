@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
+  - arithmetic
 keywords: "백준 4327, 백준 4327번, BOJ 4327, CombinationLock, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

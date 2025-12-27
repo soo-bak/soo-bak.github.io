@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 문자열
 keywords: "백준 1259, 백준 1259번, BOJ 1259, PalindromeNumber, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

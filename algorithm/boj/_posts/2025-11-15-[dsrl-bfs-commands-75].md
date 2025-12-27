@@ -10,6 +10,10 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 그래프
+  - graph_traversal
+  - BFS
+  - traceback
 keywords: "백준 9019, 백준 9019번, BOJ 9019, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

@@ -10,6 +10,11 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - BFS
+  - 그래프
+  - graph_traversal
+  - grid_graph
+  - 최단경로
 keywords: "백준 7569, 백준 7569번, BOJ 7569, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

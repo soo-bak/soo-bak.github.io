@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
 keywords: "백준 14624, 백준 14624번, BOJ 14624, JeonbukUniversity, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

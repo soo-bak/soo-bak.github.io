@@ -10,6 +10,10 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 문자열
+  - 시뮬레이션
+  - parity
 keywords: "백준 13419, 백준 13419번, BOJ 13419, SweetAndSourPork, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

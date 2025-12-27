@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
 keywords: "백준 18228, 백준 18228번, BOJ 18228, PenguinFallCommittee, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

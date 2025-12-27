@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
+  - arithmetic
 keywords: "백준 11522, 백준 11522번, BOJ 11522, SumKindOfProblem, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 브루트포스
 keywords: "백준 9558, 백준 9558번, BOJ 9558, BetweenTheMountains, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

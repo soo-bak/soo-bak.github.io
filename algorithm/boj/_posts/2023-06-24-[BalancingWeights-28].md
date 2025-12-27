@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - arithmetic
+  - 구현
+  - 수학
 keywords: "백준 11131, 백준 11131번, BOJ 11131, BalancingWeights, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

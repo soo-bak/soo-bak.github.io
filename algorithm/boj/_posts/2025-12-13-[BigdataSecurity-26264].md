@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 문자열
 keywords: "백준 26264, 백준 26264번, BOJ 26264, BigdataSecurity, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

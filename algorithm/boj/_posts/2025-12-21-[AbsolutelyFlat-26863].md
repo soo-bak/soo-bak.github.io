@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
+  - arithmetic
 keywords: "백준 26863, 백준 26863번, BOJ 26863, AbsolutelyFlat, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

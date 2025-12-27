@@ -10,6 +10,11 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 그래프
+  - graph_traversal
+  - 기하학
+  - BFS
 keywords: "백준 1430, 백준 1430번, BOJ 1430, AttackSuccess, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

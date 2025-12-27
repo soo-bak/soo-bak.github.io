@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 문자열
+  - 파싱
 keywords: "백준 12518, 백준 12518번, BOJ 12518, CentauriPrimeSmall2, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
 keywords: "백준 18158, 백준 18158번, BOJ 18158, WhatAnEasyProblem, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

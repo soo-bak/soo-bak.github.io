@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 이분탐색
+  - lis
 keywords: "백준 2352, 백준 2352번, BOJ 2352, semiconductor, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

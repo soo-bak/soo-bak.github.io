@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 시뮬레이션
 keywords: "백준 30260, 백준 30260번, BOJ 30260, FindingYourRoots, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

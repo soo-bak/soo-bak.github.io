@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 문자열
 keywords: "백준 6750, 백준 6750번, BOJ 6750, RotatingLetter, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

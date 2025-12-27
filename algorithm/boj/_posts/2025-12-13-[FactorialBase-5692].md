@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - arithmetic
 keywords: "백준 5692, 백준 5692번, BOJ 5692, FactorialBase, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 그리디
+  - arithmetic
 keywords: "백준 23854, 백준 23854번, BOJ 23854, BattleOfGiants, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

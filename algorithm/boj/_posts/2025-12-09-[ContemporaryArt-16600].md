@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 기하학
 keywords: "백준 16600, 백준 16600번, BOJ 16600, ContemporaryArt, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

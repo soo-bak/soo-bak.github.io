@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
 keywords: "백준 5292, 백준 5292번, BOJ 5292, CountingSwans, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

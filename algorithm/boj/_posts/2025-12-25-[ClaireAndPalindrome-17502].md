@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 문자열
 keywords: "백준 17502, 백준 17502번, BOJ 17502, ClaireAndPalindrome, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

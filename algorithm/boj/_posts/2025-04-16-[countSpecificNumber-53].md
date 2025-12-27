@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
 keywords: "백준 10807, 백준 10807번, BOJ 10807, countSpecificNumber, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

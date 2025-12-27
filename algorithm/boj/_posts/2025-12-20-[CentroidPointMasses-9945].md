@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - arithmetic
 keywords: "백준 9945, 백준 9945번, BOJ 9945, CentroidPointMasses, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

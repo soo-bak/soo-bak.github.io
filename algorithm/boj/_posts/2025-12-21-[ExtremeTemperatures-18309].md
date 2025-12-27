@@ -10,6 +10,11 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
+  - 문자열
+  - arithmetic
+  - 파싱
 keywords: "백준 18309, 백준 18309번, BOJ 18309, ExtremeTemperatures, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
 keywords: "백준 2592, 백준 2592번, BOJ 2592, modeAndAverage, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

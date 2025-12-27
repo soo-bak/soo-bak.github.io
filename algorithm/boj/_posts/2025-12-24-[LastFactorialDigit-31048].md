@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - arithmetic
 keywords: "백준 31048, 백준 31048번, BOJ 31048, LastFactorialDigit, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

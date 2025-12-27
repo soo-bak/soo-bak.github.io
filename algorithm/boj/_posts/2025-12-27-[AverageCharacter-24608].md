@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 문자열
+  - arithmetic
 keywords: "백준 24608, 백준 24608번, BOJ 24608, AverageCharacter, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

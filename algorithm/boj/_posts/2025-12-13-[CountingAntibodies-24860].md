@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - arithmetic
+  - 조합론
 keywords: "백준 24860, 백준 24860번, BOJ 24860, CountingAntibodies, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

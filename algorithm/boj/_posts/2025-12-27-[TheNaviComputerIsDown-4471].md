@@ -10,6 +10,10 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 문자열
+  - 기하학
+  - geometry_3d
 keywords: "백준 4471, 백준 4471번, BOJ 4471, TheNaviComputerIsDown, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

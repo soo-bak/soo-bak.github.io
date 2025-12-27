@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 브루트포스
 keywords: "백준 14697, 백준 14697번, BOJ 14697, RoomAssignment, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

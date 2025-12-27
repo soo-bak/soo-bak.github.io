@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 문자열
 keywords: "백준 2495, 백준 2495번, BOJ 2495, maxRepeatDigit, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

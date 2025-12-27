@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 기하학
 keywords: "백준 1085, 백준 1085번, BOJ 1085, EscapingFromRect, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

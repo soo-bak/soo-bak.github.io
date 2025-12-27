@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
 keywords: "백준 6060, 백준 6060번, BOJ 6060, WheelRotation, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

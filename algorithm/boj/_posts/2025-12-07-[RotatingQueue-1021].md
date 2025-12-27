@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 자료구조
+  - deque
 keywords: "백준 1021, 백준 1021번, BOJ 1021, RotatingQueue, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

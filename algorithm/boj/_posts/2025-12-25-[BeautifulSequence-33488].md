@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 애드혹
+  - 구성적
 keywords: "백준 33488, 백준 33488번, BOJ 33488, BeautifulSequence, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

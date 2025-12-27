@@ -10,6 +10,11 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 자료구조
+  - 그래프
+  - graph_traversal
+  - 기하학
+  - disjoint_set
 keywords: "백준 10216, 백준 10216번, BOJ 10216, CountCircleGroups, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

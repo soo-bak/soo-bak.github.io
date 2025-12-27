@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - arithmetic
 keywords: "백준 10833, 백준 10833번, BOJ 10833, mandarinRemainder, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

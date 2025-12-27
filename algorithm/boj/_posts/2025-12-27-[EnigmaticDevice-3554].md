@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
 keywords: "백준 3554, 백준 3554번, BOJ 3554, EnigmaticDevice, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

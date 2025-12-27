@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 비트마스킹
 keywords: "백준 24578, 백준 24578번, BOJ 24578, UltimateBinaryWatch, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

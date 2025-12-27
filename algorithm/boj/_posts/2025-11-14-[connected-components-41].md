@@ -10,6 +10,10 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 그래프
+  - graph_traversal
+  - BFS
+  - DFS
 keywords: "백준 11724, 백준 11724번, BOJ 11724, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

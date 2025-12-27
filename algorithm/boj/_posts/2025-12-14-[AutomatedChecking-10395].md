@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
 keywords: "백준 10395, 백준 10395번, BOJ 10395, AutomatedChecking, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

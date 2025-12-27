@@ -10,6 +10,10 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
+  - arithmetic
+  - 시뮬레이션
 keywords: "백준 6609, 백준 6609번, BOJ 6609, MosquitoMultiplication, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

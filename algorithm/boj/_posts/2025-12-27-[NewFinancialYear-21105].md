@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - arithmetic
 keywords: "백준 21105, 백준 21105번, BOJ 21105, NewFinancialYear, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

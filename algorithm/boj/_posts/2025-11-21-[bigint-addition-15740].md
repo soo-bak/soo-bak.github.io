@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - arithmetic
+  - arbitrary_precision
 keywords: "백준 15740, 백준 15740번, BOJ 15740, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

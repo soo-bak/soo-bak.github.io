@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 문자열
 keywords: "백준 18198, 백준 18198번, BOJ 18198, BasketballOneOnOne, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

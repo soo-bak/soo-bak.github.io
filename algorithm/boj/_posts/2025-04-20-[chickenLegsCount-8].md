@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - arithmetic
 keywords: "백준 11006, 백준 11006번, BOJ 11006, chickenLegsCount, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

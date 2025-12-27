@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
+  - arithmetic
 keywords: "백준 32306, 백준 32306번, BOJ 32306, BasketballScore, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

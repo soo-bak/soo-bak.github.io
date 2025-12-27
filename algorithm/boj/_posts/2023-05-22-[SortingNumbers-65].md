@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 정렬
+  - 구현
 keywords: "백준 2750, 백준 2750번, BOJ 2750, SortingNumbers, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

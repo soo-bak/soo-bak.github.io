@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 조합론
+  - arbitrary_precision
 keywords: "백준 2407, 백준 2407번, BOJ 2407, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

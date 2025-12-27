@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 그리디
+  - 애드혹
 keywords: "백준 27940, 백준 27940번, BOJ 27940, EggplantLandslide, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

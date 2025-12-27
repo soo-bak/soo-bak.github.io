@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 정렬
+  - 투포인터
 keywords: "백준 1940, 백준 1940번, BOJ 1940, twoPointerArmor, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 애드혹
 keywords: "백준 31215, 백준 31215번, BOJ 31215, StrangeShuffleOperation, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

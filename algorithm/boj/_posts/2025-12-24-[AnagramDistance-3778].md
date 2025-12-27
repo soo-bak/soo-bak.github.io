@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 문자열
 keywords: "백준 3778, 백준 3778번, BOJ 3778, AnagramDistance, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

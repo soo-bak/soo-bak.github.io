@@ -10,6 +10,10 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 문자열
+  - arithmetic
+  - arbitrary_precision
 keywords: "백준 5988, 백준 5988번, BOJ 5988, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

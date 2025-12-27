@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 문자열
 keywords: "백준 11121, 백준 11121번, BOJ 11121, CommunicationChannels, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

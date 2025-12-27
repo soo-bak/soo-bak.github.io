@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 문자열
 keywords: "백준 25870, 백준 25870번, BOJ 25870, ParityOfStrings, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

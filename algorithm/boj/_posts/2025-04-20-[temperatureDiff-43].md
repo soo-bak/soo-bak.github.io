@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - arithmetic
 keywords: "백준 4766, 백준 4766번, BOJ 4766, temperatureDiff, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

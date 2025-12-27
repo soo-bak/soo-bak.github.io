@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 문자열
 keywords: "백준 7286, 백준 7286번, BOJ 7286, AncientKeyboard, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

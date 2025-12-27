@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 누적합
 keywords: "백준 15460, 백준 15460번, BOJ 15460, MyCowAteMyHomework, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

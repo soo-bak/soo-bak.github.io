@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
 keywords: "백준 1268, 백준 1268번, BOJ 1268, TemporaryPresident, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

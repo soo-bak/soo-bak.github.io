@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
 keywords: "백준 31776, 백준 31776번, BOJ 31776, PreliminaryReport, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

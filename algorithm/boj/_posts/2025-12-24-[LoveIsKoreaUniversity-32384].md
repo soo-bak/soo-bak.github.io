@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
 keywords: "백준 32384, 백준 32384번, BOJ 32384, LoveIsKoreaUniversity, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

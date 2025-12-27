@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 문자열
 keywords: "백준 27891, 백준 27891번, BOJ 27891, EncryptedSchool, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

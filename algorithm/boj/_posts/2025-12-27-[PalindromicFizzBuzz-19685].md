@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 문자열
 keywords: "백준 19685, 백준 19685번, BOJ 19685, PalindromicFizzBuzz, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

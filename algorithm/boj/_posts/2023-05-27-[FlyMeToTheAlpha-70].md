@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
 keywords: "백준 1011, 백준 1011번, BOJ 1011, FlyMeToTheAlpha, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

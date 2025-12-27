@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
+  - 문자열
 keywords: "백준 1225, 백준 1225번, BOJ 1225, WeirdMultiplication, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

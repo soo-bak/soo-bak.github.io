@@ -10,6 +10,11 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
+  - 기하학
+  - arithmetic
+  - pythagoras
 keywords: "백준 11113, 백준 11113번, BOJ 11113, TheTravelingOrienteerer, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - arithmetic
+  - 수학
 keywords: "백준 2475, 백준 2475번, BOJ 2475, VerificationNumber, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

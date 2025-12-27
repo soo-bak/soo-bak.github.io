@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - arithmetic
+  - arbitrary_precision
 keywords: "백준 22193, 백준 22193번, BOJ 22193, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

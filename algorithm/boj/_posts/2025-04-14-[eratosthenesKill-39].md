@@ -10,6 +10,11 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
+  - 정수론
+  - primality_test
+  - 에라토스테네스
 keywords: "백준 2960, 백준 2960번, BOJ 2960, eratosthenesKill, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

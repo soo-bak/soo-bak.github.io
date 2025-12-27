@@ -10,6 +10,10 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 자료구조
+  - 기하학
+  - disjoint_set
+  - line_intersection
 keywords: "백준 2162, 백준 2162번, BOJ 2162, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

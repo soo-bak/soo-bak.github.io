@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
 keywords: "백준 25840, 백준 25840번, BOJ 25840, SharingBirthdays, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

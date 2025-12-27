@@ -10,6 +10,11 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 그래프
+  - graph_traversal
+  - BFS
+  - DFS
+  - grid_graph
 keywords: "백준 1012, 백준 1012번, BOJ 1012, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

@@ -10,6 +10,10 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - arithmetic
+  - 구현
+  - 수학
+  - 문자열
 keywords: "백준 3486, 백준 3486번, BOJ 3486, AddingReversedNumbers, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

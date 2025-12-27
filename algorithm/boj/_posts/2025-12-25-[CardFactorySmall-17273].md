@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 시뮬레이션
 keywords: "백준 17273, 백준 17273번, BOJ 17273, CardFactorySmall, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

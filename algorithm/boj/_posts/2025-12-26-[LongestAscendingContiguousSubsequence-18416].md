@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 브루트포스
 keywords: "백준 18416, 백준 18416번, BOJ 18416, LongestAscendingContiguousSubsequence, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

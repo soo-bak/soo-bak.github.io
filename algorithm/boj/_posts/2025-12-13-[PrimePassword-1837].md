@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 브루트포스
+  - arbitrary_precision
 keywords: "백준 1837, 백준 1837번, BOJ 1837, PrimePassword, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

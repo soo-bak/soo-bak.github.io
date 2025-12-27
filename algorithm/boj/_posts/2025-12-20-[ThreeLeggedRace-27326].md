@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
 keywords: "백준 27326, 백준 27326번, BOJ 27326, ThreeLeggedRace, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

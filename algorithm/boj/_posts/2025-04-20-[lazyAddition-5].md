@@ -10,6 +10,10 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
+  - 문자열
+  - arithmetic
 keywords: "백준 8949, 백준 8949번, BOJ 8949, lazyAddition, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

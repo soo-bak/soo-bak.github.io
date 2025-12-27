@@ -10,6 +10,10 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
+  - arithmetic
+  - parity
 keywords: "백준 14683, 백준 14683번, BOJ 14683, ExactlyElectrical, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

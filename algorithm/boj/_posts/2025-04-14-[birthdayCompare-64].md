@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 문자열
+  - 정렬
 keywords: "백준 5635, 백준 5635번, BOJ 5635, birthdayCompare, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

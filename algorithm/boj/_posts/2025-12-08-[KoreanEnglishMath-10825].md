@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 정렬
 keywords: "백준 10825, 백준 10825번, BOJ 10825, KoreanEnglishMath, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

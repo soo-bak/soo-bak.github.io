@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 문자열
 keywords: "백준 2941, 백준 2941번, BOJ 2941, CroatiaAlphabet, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

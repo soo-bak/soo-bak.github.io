@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
 keywords: "백준 28289, 백준 28289번, BOJ 28289, SearchingMajor, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

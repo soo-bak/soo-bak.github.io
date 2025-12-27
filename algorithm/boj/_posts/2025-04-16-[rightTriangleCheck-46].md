@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 기하학
+  - pythagoras
 keywords: "백준 7510, 백준 7510번, BOJ 7510, rightTriangleCheck, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

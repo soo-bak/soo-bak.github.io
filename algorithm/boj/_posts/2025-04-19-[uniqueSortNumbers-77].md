@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 정렬
 keywords: "백준 10867, 백준 10867번, BOJ 10867, uniqueSortNumbers, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 그리디
+  - arithmetic
 keywords: "백준 21146, 백준 21146번, BOJ 21146, RatingProblems, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

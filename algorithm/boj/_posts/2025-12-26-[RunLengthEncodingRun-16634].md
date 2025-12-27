@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 문자열
 keywords: "백준 16634, 백준 16634번, BOJ 16634, RunLengthEncodingRun, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

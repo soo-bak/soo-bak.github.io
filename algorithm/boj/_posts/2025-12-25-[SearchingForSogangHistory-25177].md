@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
 keywords: "백준 25177, 백준 25177번, BOJ 25177, SearchingForSogangHistory, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

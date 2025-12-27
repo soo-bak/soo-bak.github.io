@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 문자열
 keywords: "백준 11149, 백준 11149번, BOJ 11149, DecodeTheMessage, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

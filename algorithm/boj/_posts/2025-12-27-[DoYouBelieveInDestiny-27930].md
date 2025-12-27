@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 그리디
+  - 문자열
 keywords: "백준 27930, 백준 27930번, BOJ 27930, DoYouBelieveInDestiny, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

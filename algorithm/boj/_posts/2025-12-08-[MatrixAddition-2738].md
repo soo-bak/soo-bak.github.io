@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
+  - arithmetic
 keywords: "백준 2738, 백준 2738번, BOJ 2738, MatrixAddition, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

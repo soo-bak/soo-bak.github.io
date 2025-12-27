@@ -10,6 +10,11 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 그리디
+  - 브루트포스
+  - 정렬
+  - arithmetic
 keywords: "백준 24387, 백준 24387번, BOJ 24387, HoneyExhibition, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 브루트포스
+  - arithmetic
 keywords: "백준 11759, 백준 11759번, BOJ 11759, BottledUpFeelings, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

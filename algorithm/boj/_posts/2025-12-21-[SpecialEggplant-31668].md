@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - arithmetic
 keywords: "백준 31668, 백준 31668번, BOJ 31668, SpecialEggplant, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
+  - arithmetic
 keywords: "백준 32432, 백준 32432번, BOJ 32432, AttentionToTheMeeting, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

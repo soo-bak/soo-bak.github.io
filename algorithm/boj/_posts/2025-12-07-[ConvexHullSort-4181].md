@@ -10,6 +10,10 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 정렬
+  - 기하학
+  - convex_hull
+  - angle_sorting
 keywords: "백준 4181, 백준 4181번, BOJ 4181, ConvexHullSort, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

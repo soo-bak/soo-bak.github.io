@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
+  - arithmetic
 keywords: "백준 9295, 백준 9295번, BOJ 9295, diceCaseSum, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

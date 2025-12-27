@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - arithmetic
+  - 구현
+  - 수학
 keywords: "백준 9501, 백준 9501번, BOJ 9501, spaceflight, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

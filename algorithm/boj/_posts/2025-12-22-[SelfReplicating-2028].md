@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
 keywords: "백준 2028, 백준 2028번, BOJ 2028, SelfReplicating, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

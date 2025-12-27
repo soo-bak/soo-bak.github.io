@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 그리디
 keywords: "백준 25053, 백준 25053번, BOJ 25053, OrganizingSWERC, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 그리디
+  - pigeonhole_principle
 keywords: "백준 33572, 백준 33572번, BOJ 33572, lookclosely, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

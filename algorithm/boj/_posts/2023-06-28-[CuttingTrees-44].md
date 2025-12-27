@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 이분탐색
+  - parametric_search
 keywords: "백준 2805, 백준 2805번, BOJ 2805, CuttingTrees, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

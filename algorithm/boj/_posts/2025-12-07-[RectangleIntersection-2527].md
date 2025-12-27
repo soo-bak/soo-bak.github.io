@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 기하학
+  - 케이스분류
 keywords: "백준 2527, 백준 2527번, BOJ 2527, RectangleIntersection, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

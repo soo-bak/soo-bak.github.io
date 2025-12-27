@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 문자열
 keywords: "백준 23367, 백준 23367번, BOJ 23367, DickensianDictionary, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

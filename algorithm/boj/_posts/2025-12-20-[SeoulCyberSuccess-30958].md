@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 문자열
 keywords: "백준 30958, 백준 30958번, BOJ 30958, SeoulCyberSuccess, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

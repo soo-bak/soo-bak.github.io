@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 정수론
 keywords: "백준 2004, 백준 2004번, BOJ 2004, CombinationZeros, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

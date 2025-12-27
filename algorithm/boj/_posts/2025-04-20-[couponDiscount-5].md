@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
+  - arithmetic
 keywords: "백준 10179, 백준 10179번, BOJ 10179, couponDiscount, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

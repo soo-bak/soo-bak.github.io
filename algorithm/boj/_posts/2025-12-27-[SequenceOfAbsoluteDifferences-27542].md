@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
 keywords: "백준 27542, 백준 27542번, BOJ 27542, SequenceOfAbsoluteDifferences, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

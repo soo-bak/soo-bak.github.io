@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
 keywords: "백준 21280, 백준 21280번, BOJ 21280, ConfusedLecturer, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 문자열
 keywords: "백준 26040, 백준 26040번, BOJ 26040, ConvertingUppercase, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

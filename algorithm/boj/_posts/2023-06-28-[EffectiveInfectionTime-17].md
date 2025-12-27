@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
+  - arithmetic
 keywords: "백준 9428, 백준 9428번, BOJ 9428, EffectiveInfectionTime, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

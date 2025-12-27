@@ -10,6 +10,10 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
+  - 브루트포스
+  - arithmetic
 keywords: "백준 24421, 백준 24421번, BOJ 24421, Multiplication, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

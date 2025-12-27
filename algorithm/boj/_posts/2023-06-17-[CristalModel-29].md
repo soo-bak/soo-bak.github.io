@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - arithmetic
 keywords: "백준 18127, 백준 18127번, BOJ 18127, CristalModel, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

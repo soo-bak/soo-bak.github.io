@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
+  - 기하학
 keywords: "백준 14215, 백준 14215번, BOJ 14215, triangleMaxPerimeter, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

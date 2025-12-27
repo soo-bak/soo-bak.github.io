@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 조합론
 keywords: "백준 31995, 백준 31995번, BOJ 31995, PlacingGamePieces, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

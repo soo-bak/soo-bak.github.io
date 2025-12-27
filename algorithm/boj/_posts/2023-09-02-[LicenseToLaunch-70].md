@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
 keywords: "백준 17912, 백준 17912번, BOJ 17912, LicenseToLaunch, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

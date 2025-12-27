@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 문자열
+  - arithmetic
 keywords: "백준 31833, 백준 31833번, BOJ 31833, OnTheOtherHand, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

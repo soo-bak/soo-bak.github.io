@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - arithmetic
 keywords: "백준 30979, 백준 30979번, BOJ 30979, TakeCarePadaeng, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

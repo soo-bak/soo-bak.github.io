@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 케이스분류
 keywords: "백준 6845, 백준 6845번, BOJ 6845, FedralVotingAge, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

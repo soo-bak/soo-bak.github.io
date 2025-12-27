@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - arithmetic
 keywords: "백준 31798, 백준 31798번, BOJ 31798, DanwonPyeongga, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

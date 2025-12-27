@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
 keywords: "백준 14648, 백준 14648번, BOJ 14648, QueryIntroduction, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

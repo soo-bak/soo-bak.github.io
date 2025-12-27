@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - arithmetic
 keywords: "백준 9550, 백준 9550번, BOJ 9550, kidsLoveCandy, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

@@ -10,6 +10,10 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
+  - arithmetic
+  - precomputation
 keywords: "백준 19759, 백준 19759번, BOJ 19759, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

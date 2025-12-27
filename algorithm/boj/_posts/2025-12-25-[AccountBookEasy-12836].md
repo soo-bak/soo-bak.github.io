@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
 keywords: "백준 12836, 백준 12836번, BOJ 12836, AccountBookEasy, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

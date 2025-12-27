@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 브루트포스
 keywords: "백준 14790, 백준 14790번, BOJ 14790, TidyNumbersSmall, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

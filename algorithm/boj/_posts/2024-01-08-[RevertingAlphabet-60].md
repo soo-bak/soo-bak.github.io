@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
 keywords: "백준 30032, 백준 30032번, BOJ 30032, RevertingAlphabet, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

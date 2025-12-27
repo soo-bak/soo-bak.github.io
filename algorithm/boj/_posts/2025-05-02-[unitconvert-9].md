@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
+  - arithmetic
 keywords: "백준 2712, 백준 2712번, BOJ 2712, unitconvert, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

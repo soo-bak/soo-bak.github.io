@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
 keywords: "백준 32089, 백준 32089번, BOJ 32089, ClubMemberTransitions, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

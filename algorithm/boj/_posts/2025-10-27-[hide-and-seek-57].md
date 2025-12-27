@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 그래프
+  - graph_traversal
+  - BFS
 keywords: "백준 1697, 백준 1697번, BOJ 1697, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

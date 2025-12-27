@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 문자열
 keywords: "백준 6783, 백준 6783번, BOJ 6783, EnglishOrFrench, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

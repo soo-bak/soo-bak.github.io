@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 문자열
+  - 애드혹
 keywords: "백준 20528, 백준 20528번, BOJ 20528, PalindromeWordChain, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

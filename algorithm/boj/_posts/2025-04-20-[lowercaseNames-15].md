@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 문자열
 keywords: "백준 5524, 백준 5524번, BOJ 5524, lowercaseNames, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

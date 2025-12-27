@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 문자열
 keywords: "백준 13462, 백준 13462번, BOJ 13462, BattleSimulation, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

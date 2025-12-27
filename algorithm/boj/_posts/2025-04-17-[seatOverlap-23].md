@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - set
 keywords: "백준 5176, 백준 5176번, BOJ 5176, seatOverlap, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

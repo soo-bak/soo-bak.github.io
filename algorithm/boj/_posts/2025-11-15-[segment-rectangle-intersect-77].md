@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 기하학
+  - line_intersection
 keywords: "백준 6439, 백준 6439번, BOJ 6439, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

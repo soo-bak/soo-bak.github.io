@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - precomputation
 keywords: "백준 27621, 백준 27621번, BOJ 27621, SumOfThreeCubes, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

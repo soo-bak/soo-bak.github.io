@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - primality_test
+  - 정수론
+  - 수학
 keywords: "백준 2581, 백준 2581번, BOJ 2581, PrimeNumber, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

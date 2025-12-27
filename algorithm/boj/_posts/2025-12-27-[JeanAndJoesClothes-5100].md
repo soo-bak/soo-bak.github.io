@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 문자열
 keywords: "백준 5100, 백준 5100번, BOJ 5100, JeanAndJoesClothes, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

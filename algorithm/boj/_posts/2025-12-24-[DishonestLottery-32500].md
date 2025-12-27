@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
 keywords: "백준 32500, 백준 32500번, BOJ 32500, DishonestLottery, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

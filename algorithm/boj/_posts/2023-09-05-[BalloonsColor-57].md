@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - arithmetic
 keywords: "백준 28636, 백준 28636번, BOJ 28636, BalloonsColor, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

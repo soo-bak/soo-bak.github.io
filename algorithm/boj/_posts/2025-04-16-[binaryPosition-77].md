@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
 keywords: "백준 3460, 백준 3460번, BOJ 3460, binaryPosition, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

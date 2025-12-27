@@ -10,6 +10,10 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 문자열
+  - arithmetic
+  - 파싱
 keywords: "백준 10823, 백준 10823번, BOJ 10823, commaAdditionMultiLine, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

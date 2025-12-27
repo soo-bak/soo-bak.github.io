@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 문자열
+  - 정렬
 keywords: "백준 20124, 백준 20124번, BOJ 20124, RecommendPresident, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

@@ -10,6 +10,10 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 정수론
+  - primality_test
+  - 에라토스테네스
 keywords: "백준 4948, 백준 4948번, BOJ 4948, BetrandPostulate, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

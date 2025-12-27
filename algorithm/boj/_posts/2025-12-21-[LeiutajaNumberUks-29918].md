@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
+  - arithmetic
 keywords: "백준 29918, 백준 29918번, BOJ 29918, LeiutajaNumberUks, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

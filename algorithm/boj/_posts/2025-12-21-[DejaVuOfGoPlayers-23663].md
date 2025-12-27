@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 그리디
+  - game_theory
 keywords: "백준 23663, 백준 23663번, BOJ 23663, DejaVuOfGoPlayers, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

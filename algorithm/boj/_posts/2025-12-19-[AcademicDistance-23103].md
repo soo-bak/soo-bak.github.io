@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
+  - arithmetic
 keywords: "백준 23103, 백준 23103번, BOJ 23103, AcademicDistance, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

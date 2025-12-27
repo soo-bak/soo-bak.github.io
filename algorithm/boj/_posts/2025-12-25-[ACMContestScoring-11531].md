@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
 keywords: "백준 11531, 백준 11531번, BOJ 11531, ACMContestScoring, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - arithmetic
 keywords: "백준 32326, 백준 32326번, BOJ 32326, ConveyorBeltSushi, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

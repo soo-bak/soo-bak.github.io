@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 문자열
 keywords: "백준 10809, 백준 10809번, BOJ 10809, FindingAlphabet, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

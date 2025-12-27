@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - arithmetic
+  - 조합론
 keywords: "백준 11368, 백준 11368번, BOJ 11368, ReadingProblem, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

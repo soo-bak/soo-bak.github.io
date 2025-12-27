@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - arithmetic
 keywords: "백준 13136, 백준 13136번, BOJ 13136, DoNotTouchAnything, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

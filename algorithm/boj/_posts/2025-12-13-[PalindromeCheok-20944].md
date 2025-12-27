@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 문자열
+  - 애드혹
 keywords: "백준 20944, 백준 20944번, BOJ 20944, PalindromeCheok, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

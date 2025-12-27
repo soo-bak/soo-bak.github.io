@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 기하학
 keywords: "백준 21335, 백준 21335번, BOJ 21335, AnotherEruption, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

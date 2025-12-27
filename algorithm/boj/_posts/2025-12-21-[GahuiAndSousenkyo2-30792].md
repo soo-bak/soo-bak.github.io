@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
 keywords: "백준 30792, 백준 30792번, BOJ 30792, GahuiAndSousenkyo2, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

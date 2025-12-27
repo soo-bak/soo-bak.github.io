@@ -10,6 +10,10 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 기하학
+  - arithmetic
+  - pythagoras
 keywords: "백준 9723, 백준 9723번, BOJ 9723, RightTriangle, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

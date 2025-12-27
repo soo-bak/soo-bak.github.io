@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
 keywords: "백준 10708, 백준 10708번, BOJ 10708, ChristmasParty, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

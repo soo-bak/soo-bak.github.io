@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 문자열
 keywords: "백준 4458, 백준 4458번, BOJ 4458, capitalizeFirst, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

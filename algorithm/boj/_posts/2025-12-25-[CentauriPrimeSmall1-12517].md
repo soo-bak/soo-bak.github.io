@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 문자열
 keywords: "백준 12517, 백준 12517번, BOJ 12517, CentauriPrimeSmall1, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

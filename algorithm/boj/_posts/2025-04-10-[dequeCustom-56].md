@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 자료구조
+  - deque
 keywords: "백준 10866, 백준 10866번, BOJ 10866, dequeCustom, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

@@ -10,6 +10,10 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
+  - 브루트포스
+  - arithmetic
 keywords: "백준 8794, 백준 8794번, BOJ 8794, Poneidzialki, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
+  - arithmetic
 keywords: "백준 15080, 백준 15080번, BOJ 15080, EverySecondCounts, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

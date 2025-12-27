@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 기하학
+  - arithmetic
 keywords: "백준 23375, 백준 23375번, BOJ 23375, ArmCoordination, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

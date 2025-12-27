@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 문자열
 keywords: "백준 9948, 백준 9948번, BOJ 9948, HaveYouHadYourBirthdayYet, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

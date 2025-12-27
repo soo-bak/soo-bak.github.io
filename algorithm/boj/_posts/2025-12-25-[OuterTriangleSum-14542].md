@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
+  - arithmetic
 keywords: "백준 14542, 백준 14542번, BOJ 14542, OuterTriangleSum, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

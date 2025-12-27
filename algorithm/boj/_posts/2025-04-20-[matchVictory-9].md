@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
 keywords: "백준 5523, 백준 5523번, BOJ 5523, matchVictory, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

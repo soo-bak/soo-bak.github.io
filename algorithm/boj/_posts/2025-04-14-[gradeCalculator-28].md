@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
+  - arithmetic
 keywords: "백준 10984, 백준 10984번, BOJ 10984, gradeCalculator, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

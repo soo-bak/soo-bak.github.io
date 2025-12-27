@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
 keywords: "백준 23235, 백준 23235번, BOJ 23235, FastestSorting, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

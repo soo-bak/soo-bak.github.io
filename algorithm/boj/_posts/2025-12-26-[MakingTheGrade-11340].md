@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 브루트포스
+  - arithmetic
 keywords: "백준 11340, 백준 11340번, BOJ 11340, MakingTheGrade, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

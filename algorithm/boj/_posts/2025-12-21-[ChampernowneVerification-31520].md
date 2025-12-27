@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
 keywords: "백준 31520, 백준 31520번, BOJ 31520, ChampernowneVerification, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

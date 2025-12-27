@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 문자열
 keywords: "백준 31636, 백준 31636번, BOJ 31636, ThreeConsecutive, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

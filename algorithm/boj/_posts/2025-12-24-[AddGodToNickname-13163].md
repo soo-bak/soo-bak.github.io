@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 문자열
 keywords: "백준 13163, 백준 13163번, BOJ 13163, AddGodToNickname, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

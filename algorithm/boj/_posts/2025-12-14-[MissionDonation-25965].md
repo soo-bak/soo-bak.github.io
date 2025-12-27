@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
+  - arithmetic
 keywords: "백준 25965, 백준 25965번, BOJ 25965, MissionDonation, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

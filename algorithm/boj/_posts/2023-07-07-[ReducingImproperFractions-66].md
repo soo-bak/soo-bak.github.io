@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - arithmetic
 keywords: "백준 9297, 백준 9297번, BOJ 9297, ReducingImproperFractions, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

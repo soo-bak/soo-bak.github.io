@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - arithmetic
 keywords: "백준 29667, 백준 29667번, BOJ 29667, PenaltyShootout, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

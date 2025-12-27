@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 문자열
 keywords: "백준 28691, 백준 28691번, BOJ 28691, IntroduceOfInfoCommu, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

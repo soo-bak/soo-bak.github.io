@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 문자열
 keywords: "백준 7513, 백준 7513번, BOJ 7513, JunsalProgrammingContest, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

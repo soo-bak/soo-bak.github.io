@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 문자열
 keywords: "백준 4575, 백준 4575번, BOJ 4575, RefrigeratorMagnets, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

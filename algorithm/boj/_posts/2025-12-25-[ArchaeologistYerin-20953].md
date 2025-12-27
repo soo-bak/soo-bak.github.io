@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
 keywords: "백준 20953, 백준 20953번, BOJ 20953, ArchaeologistYerin, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

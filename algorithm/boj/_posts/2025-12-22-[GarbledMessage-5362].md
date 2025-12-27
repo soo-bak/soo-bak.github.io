@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 문자열
 keywords: "백준 5362, 백준 5362번, BOJ 5362, GarbledMessage, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

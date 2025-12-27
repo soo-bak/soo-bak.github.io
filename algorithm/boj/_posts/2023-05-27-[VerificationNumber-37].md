@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
+  - arithmetic
 keywords: "백준 5163, 백준 5163번, BOJ 5163, VerificationNumber, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

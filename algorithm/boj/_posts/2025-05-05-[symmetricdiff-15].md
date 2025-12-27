@@ -10,6 +10,10 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 자료구조
+  - set
+  - hash_set
+  - tree_set
 keywords: "백준 1269, 백준 1269번, BOJ 1269, symmetricdiff, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

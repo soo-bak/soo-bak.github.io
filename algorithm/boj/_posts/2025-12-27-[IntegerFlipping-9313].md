@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
 keywords: "백준 9313, 백준 9313번, BOJ 9313, IntegerFlipping, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

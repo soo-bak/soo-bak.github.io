@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 문자열
 keywords: "백준 1159, 백준 1159번, BOJ 1159, basketballCaptainInitials, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

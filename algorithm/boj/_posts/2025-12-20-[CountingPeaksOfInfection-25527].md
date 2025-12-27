@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
 keywords: "백준 25527, 백준 25527번, BOJ 25527, CountingPeaksOfInfection, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 브루트포스
+  - arithmetic
 keywords: "백준 14914, 백준 14914번, BOJ 14914, ShareApplesBananas, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

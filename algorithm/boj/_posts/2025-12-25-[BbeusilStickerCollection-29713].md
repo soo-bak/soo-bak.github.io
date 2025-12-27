@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 문자열
 keywords: "백준 29713, 백준 29713번, BOJ 29713, BbeusilStickerCollection, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
 keywords: "백준 2774, 백준 2774번, BOJ 2774, beautifulNumber, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

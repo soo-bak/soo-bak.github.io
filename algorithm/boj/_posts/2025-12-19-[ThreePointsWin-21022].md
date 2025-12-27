@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
+  - arithmetic
 keywords: "백준 21022, 백준 21022번, BOJ 21022, ThreePointsWin, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

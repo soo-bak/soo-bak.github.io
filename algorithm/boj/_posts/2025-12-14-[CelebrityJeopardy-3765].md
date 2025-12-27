@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 문자열
+  - 애드혹
 keywords: "백준 3765, 백준 3765번, BOJ 3765, CelebrityJeopardy, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

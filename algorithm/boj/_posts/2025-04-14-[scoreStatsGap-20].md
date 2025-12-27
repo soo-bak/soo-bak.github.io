@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 정렬
 keywords: "백준 5800, 백준 5800번, BOJ 5800, scoreStatsGap, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

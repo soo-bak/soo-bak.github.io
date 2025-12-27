@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 기하학
+  - pythagoras
 keywords: "백준 4153, 백준 4153번, BOJ 4153, RightAngledTriangle, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

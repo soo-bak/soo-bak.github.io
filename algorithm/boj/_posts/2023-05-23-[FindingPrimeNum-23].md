@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - primality_test
+  - 정수론
+  - 수학
 keywords: "백준 1978, 백준 1978번, BOJ 1978, FindingPrimeNum, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

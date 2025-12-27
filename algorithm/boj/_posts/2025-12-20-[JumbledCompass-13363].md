@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
+  - arithmetic
 keywords: "백준 13363, 백준 13363번, BOJ 13363, JumbledCompass, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

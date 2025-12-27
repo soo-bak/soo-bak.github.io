@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
+  - arithmetic
 keywords: "백준 28352, 백준 28352번, BOJ 28352, FactorialTen, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

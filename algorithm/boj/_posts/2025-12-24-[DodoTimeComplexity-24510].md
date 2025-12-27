@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 문자열
 keywords: "백준 24510, 백준 24510번, BOJ 24510, DodoTimeComplexity, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

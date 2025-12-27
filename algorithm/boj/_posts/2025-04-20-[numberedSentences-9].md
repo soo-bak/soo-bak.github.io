@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 문자열
 keywords: "백준 4470, 백준 4470번, BOJ 4470, numberedSentences, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

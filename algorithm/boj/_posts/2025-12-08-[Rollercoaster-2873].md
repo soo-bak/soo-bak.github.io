@@ -10,6 +10,10 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 그리디
+  - 구성적
+  - parity
 keywords: "백준 2873, 백준 2873번, BOJ 2873, Rollercoaster, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

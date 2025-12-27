@@ -10,6 +10,10 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 다이나믹 프로그래밍
+  - 그래프
+  - dag
+  - topological_sorting
 keywords: "백준 1516, 백준 1516번, BOJ 1516, GameDevelopment, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

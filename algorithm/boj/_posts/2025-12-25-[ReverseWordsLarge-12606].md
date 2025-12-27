@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
+  - 문자열
+  - 파싱
 keywords: "백준 12606, 백준 12606번, BOJ 12606, ReverseWordsLarge, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

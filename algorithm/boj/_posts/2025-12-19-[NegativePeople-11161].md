@@ -10,6 +10,9 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
+  - arithmetic
 keywords: "백준 11161, 백준 11161번, BOJ 11161, NegativePeople, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

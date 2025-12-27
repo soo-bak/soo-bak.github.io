@@ -10,6 +10,7 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 구현
 keywords: "백준 20001, 백준 20001번, BOJ 20001, RubberDuckDebugging, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

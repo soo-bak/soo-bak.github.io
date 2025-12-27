@@ -10,6 +10,11 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 수학
+  - 구현
+  - 문자열
+  - arithmetic
+  - 파싱
 keywords: "백준 10822, 백준 10822번, BOJ 10822, commaAddition, C# 풀이, C++ 풀이, 알고리즘"
 ---
 

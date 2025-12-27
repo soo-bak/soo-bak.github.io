@@ -10,6 +10,8 @@ tags:
   - C#
   - C++
   - 알고리즘
+  - 분할정복
+  - 재귀
 keywords: "백준 14956, 백준 14956번, BOJ 14956, PhilosophersWalk, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
