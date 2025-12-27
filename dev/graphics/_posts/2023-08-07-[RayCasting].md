@@ -2,6 +2,15 @@
 layout: single
 title: "Ray Casting - soo:bak"
 date: "2023-08-07 08:59:00 +0900"
+description: "Ray Casting 기법의 개념과 Unity에서의 활용 방법을 설명합니다. 충돌 감지, 시야 판별, FPS 게임 등 다양한 활용 사례를 다룹니다."
+tags:
+  - 그래픽스
+  - Ray Casting
+  - 충돌 감지
+  - Unity
+  - 게임 개발
+  - C#
+keywords: "Ray Casting, 레이캐스팅, 충돌 감지, Unity, 게임 개발, FPS, 시야 판별, 컴퓨터 그래픽스"
 ---
 <br>
 

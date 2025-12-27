@@ -2,6 +2,15 @@
 layout: single
 title: "Unity 에서의 NSubstitute 사용 - soo:bak"
 date: "2024-01-30 01:03:00 +0900"
+description: "Unity 프로젝트에서 NSubstitute를 활용한 단위 테스트 작성 방법을 다양한 예제와 함께 상세히 설명합니다."
+tags:
+  - Unity
+  - NSubstitute
+  - 단위 테스트
+  - TDD
+  - C#
+  - 게임 개발
+keywords: "Unity NSubstitute, 단위 테스트, TDD, 모킹, 게임 개발, C#, 의존성 주입"
 ---
 <br>
 <br>

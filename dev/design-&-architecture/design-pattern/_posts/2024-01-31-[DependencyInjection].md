@@ -2,6 +2,15 @@
 layout: single
 title: "의존성 주입(Dependency Injection) - soo:bak"
 date: "2024-01-31 00:03:00 +0900"
+description: "의존성 주입(DI)의 개념, 구현 방식(생성자, 수정자, 인터페이스 주입), DI 컨테이너의 역할을 상세히 설명합니다."
+tags:
+  - 디자인 패턴
+  - 의존성 주입
+  - DI
+  - IoC
+  - C#
+  - 소프트웨어 설계
+keywords: "의존성 주입, Dependency Injection, DI, IoC, DI 컨테이너, 생성자 주입, 수정자 주입, 디자인 패턴"
 ---
 <br>
 

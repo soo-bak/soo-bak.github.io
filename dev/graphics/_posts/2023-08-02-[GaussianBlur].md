@@ -2,6 +2,14 @@
 layout: single
 title: "Gaussian Blur - soo:bak"
 date: "2023-08-02 15:01:00 +0900"
+description: "Gaussian Blur 블러링 기술의 개념과 구현 방법을 설명합니다. 가우시안 분포를 활용한 자연스러운 이미지 블러 처리 알고리즘입니다."
+tags:
+  - 그래픽스
+  - 이미지 처리
+  - 블러
+  - Gaussian Blur
+  - 컴퓨터 그래픽스
+keywords: "Gaussian Blur, 가우시안 블러, 이미지 블러, 블러링, 가우시안 분포, 이미지 처리, 컴퓨터 그래픽스, Convolution"
 ---
 <br>
 

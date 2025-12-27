@@ -2,6 +2,14 @@
 layout: single
 title: "테스트 주도 개발(TDD, Test-Driven Developement) 기본 - soo:bak"
 date: "2024-01-29 23:33:00 +0900"
+description: "테스트 주도 개발(TDD)의 핵심 개념인 Red-Green-Refactor 주기, 장단점, 적용 방법을 설명합니다."
+tags:
+  - TDD
+  - 테스트 주도 개발
+  - 단위 테스트
+  - 소프트웨어 개발
+  - 방법론
+keywords: "TDD, 테스트 주도 개발, Test-Driven Development, Red-Green-Refactor, 단위 테스트, 리팩토링"
 ---
 <br>
 

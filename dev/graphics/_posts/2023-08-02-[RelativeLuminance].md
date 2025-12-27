@@ -2,6 +2,14 @@
 layout: single
 title: "Relative Luminance - soo:bak"
 date: "2023-08-02 15:55:00 +0900"
+description: "Relative Luminance(상대적 루미넌스) 개념과 계산 방법을 설명합니다. RGB 색상의 밝기를 인간의 눈 감도에 맞게 계산하는 방법입니다."
+tags:
+  - 그래픽스
+  - 색상
+  - Luminance
+  - RGB
+  - 컴퓨터 그래픽스
+keywords: "Relative Luminance, 상대적 루미넌스, 밝기, RGB, 색상 처리, 이미지 처리, 컴퓨터 그래픽스"
 ---
 <br>
 

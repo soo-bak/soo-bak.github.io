@@ -2,6 +2,15 @@
 layout: single
 title: "Unity 와 코루틴(Coroutine) - soo:bak"
 date: "2023-08-05 05:40:00 +0900"
+description: "Unity 코루틴의 개념, yield return, IEnumerator 인터페이스, async/await와의 비교를 상세히 설명합니다."
+tags:
+  - Unity
+  - 코루틴
+  - Coroutine
+  - C#
+  - 게임 개발
+  - 비동기
+keywords: "Unity 코루틴, Coroutine, yield return, IEnumerator, StartCoroutine, 비동기 처리, Unity 게임 개발"
 ---
 <br>
 

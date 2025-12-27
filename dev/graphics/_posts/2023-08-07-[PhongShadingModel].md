@@ -2,6 +2,15 @@
 layout: single
 title: "Phong Shading - soo:bak"
 date: "2023-08-07 00:33:00 +0900"
+description: "Phong Shading 광원 모델의 개념과 Unity에서의 구현 방법을 설명합니다. Ambient, Diffuse, Specular 반사를 통한 입체감 표현 기법입니다."
+tags:
+  - 그래픽스
+  - 셰이딩
+  - Phong Shading
+  - 광원 모델
+  - Unity
+  - C#
+keywords: "Phong Shading, 퐁 셰이딩, 광원 모델, Ambient, Diffuse, Specular, Unity, 컴퓨터 그래픽스, 셰이더"
 ---
 <br>
 

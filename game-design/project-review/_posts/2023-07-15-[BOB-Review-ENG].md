@@ -2,6 +2,16 @@
 layout: single
 title: "[BOB - Basis Of Bitwise] production review [ENG] - soo:bak"
 date: "2023-07-15 00:33:30 +0900"
+description: "BOB - Basis Of Bitwise mobile game development review. Sharing experiences of gamification, Unity development, and solo game development."
+tags:
+  - Game Development
+  - Indie Game
+  - Unity
+  - Gamification
+  - Mobile Game
+  - BOB
+  - Bitwise Operations
+keywords: "BOB Basis Of Bitwise, game development review, indie game, Unity, gamification, bitwise operations game, educational game"
 ---
 
 As this is a post-production review, you might find it more enjoyable to read this after you've had a chance to play the game first.<br>

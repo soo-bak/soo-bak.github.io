@@ -2,6 +2,15 @@
 layout: single
 title: "42Seoul 공통과정 수료 - soo:bak"
 date: "2023-03-20 15:16:00 +0900"
+description: "42Seoul 공통과정 수료 후기입니다. C언어, C++, 네트워크, 운영체제 등 커리큘럼과 동료 학습 경험을 공유합니다."
+tags:
+  - 42Seoul
+  - 공통과정
+  - 동료 학습
+  - C언어
+  - C++
+  - 비전공자
+keywords: "42Seoul, 42서울, 공통과정, 동료 학습, C언어, C++, 비전공자 개발자"
 ---
 <br>
 

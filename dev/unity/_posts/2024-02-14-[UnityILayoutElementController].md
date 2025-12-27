@@ -2,6 +2,15 @@
 layout: single
 title: "Unity GUI 의 ILayoutElement, ILayoutController - soo:bak"
 date: "2024-02-14 00:51:00 +0900"
+description: "Unity UGUI의 ILayoutElement와 ILayoutController 인터페이스의 역할과 구현 컴포넌트들을 상세히 설명합니다."
+tags:
+  - Unity
+  - UGUI
+  - ILayoutElement
+  - ILayoutController
+  - UI
+  - 게임 개발
+keywords: "Unity ILayoutElement, ILayoutController, LayoutGroup, ContentSizeFitter, LayoutElement, Unity UI"
 ---
 <br>
 

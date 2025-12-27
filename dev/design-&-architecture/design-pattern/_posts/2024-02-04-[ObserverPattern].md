@@ -2,6 +2,15 @@
 layout: single
 title: "관찰자 패턴(Observer Pattern) 기초 - soo:bak"
 date: "2024-02-04 20:46:00 +0900"
+description: "관찰자 패턴의 개념, 구성 요소, 작동 원리, 장단점을 C# 예제와 함께 설명합니다. 발행-구독 모델의 기초입니다."
+tags:
+  - 디자인 패턴
+  - 관찰자 패턴
+  - Observer Pattern
+  - C#
+  - 이벤트
+  - 소프트웨어 설계
+keywords: "관찰자 패턴, Observer Pattern, 발행-구독, Publish-Subscribe, MVC, 디자인 패턴, C# 이벤트"
 ---
 <br>
 

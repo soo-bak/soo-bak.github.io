@@ -2,6 +2,14 @@
 layout: single
 title: "죽음의 다이아몬드(DDD, the Deadly Diamond of Death) - soo:bak"
 date: "2024-02-12 00:58:00 +0900"
+description: "다중 상속의 문제점인 죽음의 다이아몬드와 C++의 가상 상속을 통한 해결 방법을 설명합니다."
+tags:
+  - OOP
+  - 다중 상속
+  - 가상 상속
+  - C++
+  - 죽음의 다이아몬드
+keywords: "죽음의 다이아몬드, Deadly Diamond of Death, 다중 상속, 가상 상속, Virtual Inheritance, C++, OOP"
 ---
 <br>
 

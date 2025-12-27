@@ -2,6 +2,14 @@
 layout: single
 title: "C# 에서의 인터페이스(Interface) - soo:bak"
 date: "2024-02-12 01:27:00 +0900"
+description: "C# 인터페이스의 개념, 선언 방법, 장점을 설명합니다. 다형성, 다중 상속과의 관계를 다룹니다."
+tags:
+  - C#
+  - 인터페이스
+  - Interface
+  - OOP
+  - 다형성
+keywords: "C# 인터페이스, Interface, 다형성, 다중 상속, OOP, 객체지향 프로그래밍"
 ---
 <br>
 

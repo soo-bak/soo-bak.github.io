@@ -2,6 +2,15 @@
 layout: single
 title: "Unity GUI 의 Layout Update Cycle - soo:bak"
 date: "2024-02-13 21:03:00 +0900"
+description: "Unity GUI 시스템의 Layout Update Cycle을 상세히 설명합니다. Rebuild, Layout, Rendering 단계와 관련 컴포넌트를 다룹니다."
+tags:
+  - Unity
+  - UGUI
+  - Layout
+  - UI
+  - 게임 개발
+  - RectTransform
+keywords: "Unity Layout Update Cycle, UGUI, LayoutGroup, ContentSizeFitter, RectTransform, Canvas, Unity UI"
 ---
 <br>
 

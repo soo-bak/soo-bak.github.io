@@ -2,6 +2,15 @@
 layout: single
 title: "UniRX 입문 (1) - soo:bak"
 date: "2024-02-12 03:18:00 +0900"
+description: "UniRx 입문 시리즈 첫 번째 글입니다. 데이터 스트림, IObservable, IObserver, Subscribe의 개념을 설명합니다."
+tags:
+  - Unity
+  - UniRx
+  - 반응형 프로그래밍
+  - Reactive Extensions
+  - C#
+  - 게임 개발
+keywords: "UniRx 입문, IObservable, IObserver, Subscribe, 데이터 스트림, 반응형 프로그래밍, Unity"
 ---
 <br>
 

@@ -2,6 +2,15 @@
 layout: single
 title: "NSubstitute : .Net Mocking Framework - soo:bak"
 date: "2024-01-30 00:03:33 +0900"
+description: "NSubstitute 모킹 프레임워크의 기본 사용법과 고급 기능을 설명합니다. 가짜 객체 생성, 메서드 동작 설정, 호출 검증 방법을 다룹니다."
+tags:
+  - NSubstitute
+  - 모킹
+  - TDD
+  - 단위 테스트
+  - .NET
+  - C#
+keywords: "NSubstitute, 모킹, Mock, TDD, 단위 테스트, .NET, C#, 가짜 객체"
 ---
 <br>
 

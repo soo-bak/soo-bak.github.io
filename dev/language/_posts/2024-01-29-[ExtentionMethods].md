@@ -2,6 +2,14 @@
 layout: single
 title: "C#의 확장 메서드(Extension Methods) - soo:bak"
 date: "2024-01-29 22:03:00 +0900"
+description: "C# 확장 메서드의 개념, 작성법, 사용법을 설명합니다. LINQ와의 연관성과 지연 실행에 대해서도 다룹니다."
+tags:
+  - C#
+  - 확장 메서드
+  - Extension Methods
+  - LINQ
+  - .NET
+keywords: "C# 확장 메서드, Extension Methods, LINQ, 지연 실행, Lazy Evaluation, .NET"
 ---
 <br>
 

@@ -2,6 +2,15 @@
 layout: single
 title: "AAA패턴 : TDD 의 핵심 원칙 - soo:bak"
 date: "2024-01-30 00:03:00 +0900"
+description: "TDD의 핵심 원칙인 AAA 패턴(Arrange-Act-Assert)을 C++, C# 예제와 함께 상세히 설명합니다."
+tags:
+  - TDD
+  - AAA 패턴
+  - 단위 테스트
+  - C#
+  - C++
+  - 소프트웨어 개발
+keywords: "AAA 패턴, Arrange Act Assert, TDD, 테스트 주도 개발, 단위 테스트, C#, C++"
 ---
 <br>
 

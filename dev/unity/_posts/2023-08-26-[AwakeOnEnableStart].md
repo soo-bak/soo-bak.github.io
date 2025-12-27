@@ -2,6 +2,15 @@
 layout: single
 title: "Unity 의 Awake, Start 그리고 OnEnable - soo:bak"
 date: "2023-08-26 11:50:00 +0900"
+description: "Unity의 Awake, Start, OnEnable 메서드의 호출 순서, 용도, 차이점을 상세히 설명합니다. 객체 초기화 시점 이해하기."
+tags:
+  - Unity
+  - Awake
+  - Start
+  - OnEnable
+  - 게임 개발
+  - MonoBehaviour
+keywords: "Unity Awake, Start, OnEnable, 초기화, Order of Execution, Unity 게임 개발, MonoBehaviour"
 ---
 <br>
 

@@ -2,6 +2,16 @@
 layout: single
 title: "[BOB - Basis Of Bitwise] 제작 후기 - soo:bak"
 date: "2023-07-15 00:33:00 +0900"
+description: "BOB - Basis Of Bitwise 모바일 게임 개발 후기입니다. 게이미피케이션, Unity 개발, 1인 개발 경험을 공유합니다."
+tags:
+  - 게임 개발
+  - 1인 개발
+  - Unity
+  - 게이미피케이션
+  - 모바일 게임
+  - BOB
+  - 비트 연산
+keywords: "BOB Basis Of Bitwise, 게임 개발 후기, 1인 개발, Unity, 게이미피케이션, 비트 연산 게임, 교육용 게임"
 ---
 
 제작의 후기 글인 만큼, 먼저 게임 플레이를 즐겨주신 후 읽어주시면 더욱 재미를 느끼실 수 있는 글이 될 것 같습니다.<br>
