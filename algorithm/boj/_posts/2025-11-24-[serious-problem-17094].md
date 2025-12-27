@@ -3,6 +3,14 @@ layout: single
 title: "[백준 17094] Serious Problem (C#, C++) - soo:bak"
 date: "2025-11-24 23:25:00 +0900"
 description: 문자열에서 문자 2와 e의 빈도를 비교해 더 많은 쪽을 출력하고, 같으면 yee를 출력하는 백준 17094번 Serious Problem 문제의 C# 및 C++ 풀이
+tags:
+  - 백준
+  - BOJ
+  - 17094
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 17094, 백준 17094번, BOJ 17094, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

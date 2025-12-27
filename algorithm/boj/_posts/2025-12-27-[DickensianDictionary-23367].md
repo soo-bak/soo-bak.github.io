@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 23367] Dickensian Dictionary (C#, C++) - soo:bak"
 date: "2025-12-27 01:55:00 +0900"
-description: 왼손과 오른손이 번갈아 나오는 단어인지 판별하는 문제
+description: "백준 23367번 C#, C++ 풀이 - 왼손과 오른손이 번갈아 나오는 단어인지 판별하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 23367
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 23367, 백준 23367번, BOJ 23367, DickensianDictionary, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

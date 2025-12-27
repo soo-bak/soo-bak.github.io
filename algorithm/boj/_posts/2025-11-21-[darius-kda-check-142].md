@@ -3,6 +3,14 @@ layout: single
 title: "[백준 20499] Darius님 한타 안 함? (C#, C++) - soo:bak"
 date: "2025-11-21 23:48:00 +0900"
 description: KDA 문자열을 파싱해 조건에 따라 gosu/hasu를 출력하는 백준 20499번 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 20499
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 20499, 백준 20499번, BOJ 20499, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

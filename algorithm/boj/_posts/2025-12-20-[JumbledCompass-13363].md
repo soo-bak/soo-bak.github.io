@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 13363] Jumbled Compass (C#, C++) - soo:bak"
 date: "2025-12-20 16:02:00 +0900"
-description: 나침반 바늘을 현재 각도에서 목표 각도로 최단 회전시키는 방향과 크기를 구하는 문제
+description: "백준 13363번 C#, C++ 풀이 - 나침반 바늘을 현재 각도에서 목표 각도로 최단 회전시키는 방향과 크기를 구하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 13363
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 13363, 백준 13363번, BOJ 13363, JumbledCompass, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

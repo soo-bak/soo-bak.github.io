@@ -3,6 +3,14 @@ layout: single
 title: "[백준 6030] Scavenger Hunt (C#, C++) - soo:bak"
 date: "2025-12-13 22:20:00 +0900"
 description: P의 약수와 Q의 약수를 오름차순으로 나열해 모든 조합을 출력하는 백준 6030번 Scavenger Hunt 문제의 C#/C++ 풀이
+tags:
+  - 백준
+  - BOJ
+  - 6030
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 6030, 백준 6030번, BOJ 6030, ScavengerHunt, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

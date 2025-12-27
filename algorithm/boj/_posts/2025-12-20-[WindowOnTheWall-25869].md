@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 25869] Window on the Wall (C#, C++) - soo:bak"
 date: "2025-12-20 16:02:00 +0900"
-description: 벽과 창문 사이 최소 여백이 주어질 때 설치 가능한 최대 창문 넓이를 구하는 문제
+description: "백준 25869번 C#, C++ 풀이 - 벽과 창문 사이 최소 여백이 주어질 때 설치 가능한 최대 창문 넓이를 구하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 25869
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 25869, 백준 25869번, BOJ 25869, WindowOnTheWall, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

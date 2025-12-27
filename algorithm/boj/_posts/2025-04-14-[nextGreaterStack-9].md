@@ -3,6 +3,14 @@ layout: single
 title: "[백준 17298] 오큰수 (C#, C++) - soo:bak"
 date: "2025-04-14 05:04:45 +0900"
 description: 스택을 활용하여 각 원소의 오큰수를 효율적으로 구하는 백준 17298번 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 17298
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 17298, 백준 17298번, BOJ 17298, nextGreaterStack, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

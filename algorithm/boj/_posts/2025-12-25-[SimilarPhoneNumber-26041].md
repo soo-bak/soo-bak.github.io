@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 26041] 비슷한 전화번호 표시 (C#, C++) - soo:bak"
 date: "2025-12-25 16:05:00 +0900"
-description: 전화번호 목록에서 특정 접두사를 갖는 항목을 세는 문제
+description: "백준 26041번 C#, C++ 풀이 - 전화번호 목록에서 특정 접두사를 갖는 항목을 세는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 26041
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 26041, 백준 26041번, BOJ 26041, SimilarPhoneNumber, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

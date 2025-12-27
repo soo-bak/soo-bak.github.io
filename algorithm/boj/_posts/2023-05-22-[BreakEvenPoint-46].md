@@ -3,6 +3,14 @@ layout: single
 title: "[백준 1712] 손익분기점 (C#, C++) - soo:bak"
 date: "2023-05-22 15:33:00 +0900"
 description: 수학과 사칙 연산 및 계산을 주제로 하는 백준 1712번 알고리즘 문제를 C# 과 C++ 로 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 1712
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 1712, 백준 1712번, BOJ 1712, BreakEvenPoint, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

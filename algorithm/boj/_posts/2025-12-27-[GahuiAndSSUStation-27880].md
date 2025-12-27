@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 27880] Gahui and Soongsil University station (C#, C++) - soo:bak"
 date: "2025-12-27 15:05:00 +0900"
-description: 계단과 에스컬레이터 정보로 역의 깊이를 계산하는 문제
+description: "백준 27880번 C#, C++ 풀이 - 계단과 에스컬레이터 정보로 역의 깊이를 계산하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 27880
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 27880, 백준 27880번, BOJ 27880, GahuiAndSSUStation, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

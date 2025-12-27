@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 17502] 클레어와 팰린드롬 (C#, C++) - soo:bak"
 date: "2025-12-25 14:56:00 +0900"
-description: ?로 지워진 문자를 복원해 팰린드롬 문자열을 만드는 문제
+description: "백준 17502번 C#, C++ 풀이 - ?로 지워진 문자를 복원해 팰린드롬 문자열을 만드는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 17502
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 17502, 백준 17502번, BOJ 17502, ClaireAndPalindrome, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

@@ -3,6 +3,14 @@ layout: single
 title: "[백준 3533] Explicit Formula (C#, C++) - soo:bak"
 date: "2023-05-16 12:24:00 +0900"
 description: 논리 연산과 비트 연산자 등을 주제로 하는 백준 3533번 알고리즘 문제를 C# 과 C++ 로 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 3533
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 3533, 백준 3533번, BOJ 3533, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 5211] 가단조와 다장조 (C#, C++) - soo:bak"
 date: "2025-12-24 12:30:00 +0900"
-description: 마디의 첫 음 중심음을 세어 조성을 판별하는 문제
+description: "백준 5211번 C#, C++ 풀이 - 마디의 첫 음 중심음을 세어 조성을 판별하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 5211
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 5211, 백준 5211번, BOJ 5211, AMinorAndCMajor, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

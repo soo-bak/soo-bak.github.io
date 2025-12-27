@@ -3,6 +3,14 @@ layout: single
 title: "[백준 14683] Exactly Electrical (C#, C++) - soo:bak"
 date: "2025-12-06 20:15:00 +0900"
 description: 맨해튼 거리와 배터리 잔량으로 정확히 도착 가능 여부를 판별하는 백준 14683번 Exactly Electrical 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 14683
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 14683, 백준 14683번, BOJ 14683, ExactlyElectrical, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

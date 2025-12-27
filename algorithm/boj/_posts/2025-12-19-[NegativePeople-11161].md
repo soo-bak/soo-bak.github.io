@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 11161] Negative People in Da House (C#, C++) - soo:bak"
 date: "2025-12-19 22:47:00 +0900"
-description: 출입 기록을 순서대로 누적하며 최저 인원수를 확인해 초기 인원을 최소로 만드는 문제
+description: "백준 11161번 C#, C++ 풀이 - 출입 기록을 순서대로 누적하며 최저 인원수를 확인해 초기 인원을 최소로 만드는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 11161
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 11161, 백준 11161번, BOJ 11161, NegativePeople, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

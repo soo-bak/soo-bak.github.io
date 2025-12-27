@@ -3,6 +3,14 @@ layout: single
 title: "[백준 5026] P=NP? (C#, C++) - soo:bak"
 date: "2025-04-20 03:18:00 +0900"
 description: 주어진 문자열이 P=NP인지 덧셈 문제인지 판별하여 처리하는 백준 5026번 P=NP? 문제의 C# 및 C++ 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 5026
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 5026, 백준 5026번, BOJ 5026, sumOrSkipped, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

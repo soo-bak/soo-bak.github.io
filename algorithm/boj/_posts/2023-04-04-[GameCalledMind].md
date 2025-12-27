@@ -3,6 +3,14 @@ layout: single
 title: "[백준 25850] A Game Called Mind (C#, C++) - soo:bak"
 date: "2023-04-04 19:00:00 +0900"
 description: 구현고 정렬을 주제로 하는 백준 25850번 알고리즘 문제를 C# 과 C++ 로 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 25850
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 25850, 백준 25850번, BOJ 25850, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

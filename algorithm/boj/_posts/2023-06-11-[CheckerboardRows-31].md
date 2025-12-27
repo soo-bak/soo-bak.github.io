@@ -3,6 +3,14 @@ layout: single
 title: "[백준 5246] Checkerboard Rows (C#, C++) - soo:bak"
 date: "2023-06-11 20:11:00 +0900"
 description: 최댓값 찾기를 주제로 하는 백준 5246번 문제를 C++ C# 으로 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 5246
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 5246, 백준 5246번, BOJ 5246, CheckerboardRows, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

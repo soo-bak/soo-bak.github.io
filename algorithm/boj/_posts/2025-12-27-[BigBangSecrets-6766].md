@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 6766] Big Bang Secrets (C#, C++) - soo:bak"
 date: "2025-12-27 02:45:00 +0900"
-description: 위치별로 다른 시프트를 역변환해 원문을 복호화하는 문제
+description: "백준 6766번 C#, C++ 풀이 - 위치별로 다른 시프트를 역변환해 원문을 복호화하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 6766
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 6766, 백준 6766번, BOJ 6766, BigBangSecrets, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

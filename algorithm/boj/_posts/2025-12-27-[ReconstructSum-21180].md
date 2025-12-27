@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 21180] Reconstruct Sum (C#, C++) - soo:bak"
 date: "2025-12-27 10:15:00 +0900"
-description: 주어진 수 중 하나가 나머지 모든 수의 합과 같은지 찾아 출력하는 문제
+description: "백준 21180번 C#, C++ 풀이 - 주어진 수 중 하나가 나머지 모든 수의 합과 같은지 찾아 출력하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 21180
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 21180, 백준 21180번, BOJ 21180, ReconstructSum, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

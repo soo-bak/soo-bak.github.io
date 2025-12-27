@@ -3,6 +3,14 @@ layout: single
 title: "[백준 23809] 골뱅이 찍기 - 돌아간 ㅈ (C#, C++) - soo:bak"
 date: "2025-12-13 17:01:00 +0900"
 description: 다섯 블록을 N배 확장해 돌아간 ㅈ 모양을 출력하는 백준 23809번 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 23809
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 23809, 백준 23809번, BOJ 23809, AtSignRotatedJieut, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

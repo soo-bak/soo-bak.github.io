@@ -3,6 +3,14 @@ layout: single
 title: "[백준 5656] 비교 연산자 (C#, C++) - soo:bak"
 date: "2025-04-20 01:05:00 +0900"
 description: 두 수와 비교 연산자를 받아 조건을 판별하는 백준 5656번 비교 연산자 문제의 C# 및 C++ 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 5656
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 5656, 백준 5656번, BOJ 5656, compareOperator, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

@@ -3,6 +3,14 @@ layout: single
 title: "[백준 5586] JOI와 IOI (C#, C++) - soo:bak"
 date: "2025-04-20 00:55:00 +0900"
 description: 문자열 내에서 JOI와 IOI의 등장 횟수를 각각 세는 백준 5586번 JOI와 IOI 문제의 C# 및 C++ 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 5586
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 5586, 백준 5586번, BOJ 5586, joiIoiCount, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

@@ -3,6 +3,14 @@ layout: single
 title: "[백준 21339] Contest Struggles (C#, C++) - soo:bak"
 date: "2025-12-21 21:51:00 +0900"
 description: 전체 평균과 풀었던 문제 평균으로 남은 문제들의 평균 난이도를 구하거나 불가능하면 impossible을 출력하는 백준 21339번 문제에 대한 C# 및 C++ 설명
+tags:
+  - 백준
+  - BOJ
+  - 21339
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 21339, 백준 21339번, BOJ 21339, ContestStruggles, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

@@ -3,6 +3,14 @@ layout: single
 title: "[백준 27475] Cancel the Trains (C#, C++) - soo:bak"
 date: "2023-03-29 16:04:00 +0900"
 description: 탐색과 구현을 주제로 하는 백준 27475번 알고리즘 문제를 C# 과 C++ 로 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 27475
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 27475, 백준 27475번, BOJ 27475, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

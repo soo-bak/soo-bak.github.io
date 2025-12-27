@@ -3,6 +3,14 @@ layout: single
 title: "[백준 4470] 줄 번호 (C#, C++) - soo:bak"
 date: "2025-04-20 01:51:00 +0900"
 description: 각 문장의 앞에 줄 번호를 붙여 출력하는 백준 4470번 줄 번호 문제의 C# 및 C++ 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 4470
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 4470, 백준 4470번, BOJ 4470, numberedSentences, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

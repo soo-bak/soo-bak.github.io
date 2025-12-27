@@ -3,6 +3,14 @@ layout: single
 title: "[백준 24183] Affischutskicket (C#, C++) - soo:bak"
 date: "2025-12-13 00:03:00 +0900"
 description: C4 봉투(두 장), A3 포스터 두 장, A4 안내문 한 장의 면적과 제지 gsm을 곱해 총 무게를 구하는 백준 24183번 Affischutskicket 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 24183
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 24183, 백준 24183번, BOJ 24183, Affischutskicket, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

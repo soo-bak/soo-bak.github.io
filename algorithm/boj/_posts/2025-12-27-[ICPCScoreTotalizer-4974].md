@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 4974] ICPC Score Totalizer Software (C#, C++) - soo:bak"
 date: "2025-12-27 10:25:00 +0900"
-description: 최고점 1개와 최저점 1개를 제외한 점수 평균의 내림 값을 구하는 문제
+description: "백준 4974번 C#, C++ 풀이 - 최고점 1개와 최저점 1개를 제외한 점수 평균의 내림 값을 구하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 4974
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 4974, 백준 4974번, BOJ 4974, ICPCScoreTotalizer, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

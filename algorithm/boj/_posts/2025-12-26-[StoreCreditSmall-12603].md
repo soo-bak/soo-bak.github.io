@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 12603] Store Credit (Small) (C#, C++) - soo:bak"
 date: "2025-12-26 03:02:00 +0900"
-description: 합이 크레딧이 되는 두 물건의 위치를 찾는 문제
+description: "백준 12603번 C#, C++ 풀이 - 합이 크레딧이 되는 두 물건의 위치를 찾는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 12603
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 12603, 백준 12603번, BOJ 12603, StoreCreditSmall, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

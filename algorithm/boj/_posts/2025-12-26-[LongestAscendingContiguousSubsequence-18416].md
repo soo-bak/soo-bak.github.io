@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 18416] 最長昇順連続部分列 (Longest Ascending Contiguous Subsequence) (C#, C++) - soo:bak"
 date: "2025-12-26 04:11:00 +0900"
-description: 비내림 연속 부분수열의 최장 길이를 구하는 문제
+description: "백준 18416번 C#, C++ 풀이 - 비내림 연속 부분수열의 최장 길이를 구하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 18416
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 18416, 백준 18416번, BOJ 18416, LongestAscendingContiguousSubsequence, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

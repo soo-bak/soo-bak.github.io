@@ -3,6 +3,14 @@ layout: single
 title: "[백준 16485] 작도하자! - ② (C#, C++) - soo:bak"
 date: "2025-04-16 02:09:00 +0900"
 description: 삼각형의 각의 이등분선 정리에 따라 선분 BM과 CM의 비율을 구하는 백준 16485번 작도하자! - ② 문제의 C# 및 C++ 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 16485
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 16485, 백준 16485번, BOJ 16485, angleBisectorRatio, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

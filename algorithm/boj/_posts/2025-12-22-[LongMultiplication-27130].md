@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 27130] Long Multiplication (C#, C++) - soo:bak"
 date: "2025-12-22 00:03:00 +0900"
-description: 두 정수의 긴 곱셈 과정을 자리별로 출력하는 문제
+description: "백준 27130번 C#, C++ 풀이 - 두 정수의 긴 곱셈 과정을 자리별로 출력하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 27130
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 27130, 백준 27130번, BOJ 27130, LongMultiplication, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

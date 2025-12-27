@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 2909] 캔디 구매 (C#, C++) - soo:bak"
 date: "2025-12-24 12:30:00 +0900"
-description: 가격을 10의 K제곱 단위로 반올림하는 문제
+description: "백준 2909번 C#, C++ 풀이 - 가격을 10의 K제곱 단위로 반올림하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 2909
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 2909, 백준 2909번, BOJ 2909, CandyPurchase, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

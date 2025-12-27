@@ -3,6 +3,12 @@ layout: single
 title: "[백준 2372] Livestock Count (Ada) - soo:bak"
 date: "2023-05-03 21:33:00 +0900"
 description: Ada 언어의 출력을 주제로 하는 백준 2372번 알고리즘 문제의 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 2372
+  - 알고리즘
+keywords: "백준 2372, 백준 2372번, BOJ 2372, 알고리즘"
 ---
 
 ## 문제 링크

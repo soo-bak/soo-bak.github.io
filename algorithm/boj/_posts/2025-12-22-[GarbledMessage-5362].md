@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 5362] Garbled Message (C#, C++) - soo:bak"
 date: "2025-12-22 00:03:00 +0900"
-description: iiing을 th로 치환해 원문을 복원하는 문제
+description: "백준 5362번 C#, C++ 풀이 - iiing을 th로 치환해 원문을 복원하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 5362
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 5362, 백준 5362번, BOJ 5362, GarbledMessage, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

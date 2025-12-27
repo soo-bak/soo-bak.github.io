@@ -3,6 +3,14 @@ layout: single
 title: "[백준 1978] 소수 찾기 (C#, C++) - soo:bak"
 date: "2023-05-23 09:09:00 +0900"
 description: 수학과 소수 탐색의 기본을 주제로 하는 백준 1978번 알고리즘 문제를 C# 과 C++ 로 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 1978
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 1978, 백준 1978번, BOJ 1978, FindingPrimeNum, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

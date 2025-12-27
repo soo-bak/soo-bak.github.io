@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 30394] 회전하지 않는 캘리퍼스 (C#, C++) - soo:bak"
 date: "2025-12-20 16:02:00 +0900"
-description: 자를 세워 놓고 점 집합의 최소/최대 x좌표 차이를 구하는 문제
+description: "백준 30394번 C#, C++ 풀이 - 자를 세워 놓고 점 집합의 최소/최대 x좌표 차이를 구하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 30394
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 30394, 백준 30394번, BOJ 30394, NonRotatingCalipers, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

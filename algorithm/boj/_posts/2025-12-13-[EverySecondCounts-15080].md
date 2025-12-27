@@ -3,6 +3,14 @@ layout: single
 title: "[백준 15080] Every Second Counts (C#, C++) - soo:bak"
 date: "2025-12-13 05:01:00 +0900"
 description: 시작·종료 시각 hh:mm:ss를 초로 환산해 경과 시간을 계산하고 자정 넘김을 처리하는 백준 15080번 Every Second Counts 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 15080
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 15080, 백준 15080번, BOJ 15080, EverySecondCounts, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

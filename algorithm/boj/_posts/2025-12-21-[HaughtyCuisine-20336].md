@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 20336] Haughty Cuisine (C#, C++) - soo:bak"
 date: "2025-12-21 21:51:00 +0900"
-description: 세트 메뉴 중 하나를 그대로 골라 추천 목록으로 출력하는 문제
+description: "백준 20336번 C#, C++ 풀이 - 세트 메뉴 중 하나를 그대로 골라 추천 목록으로 출력하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 20336
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 20336, 백준 20336번, BOJ 20336, HaughtyCuisine, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

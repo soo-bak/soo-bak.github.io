@@ -3,6 +3,14 @@ layout: single
 title: "[백준 6013] Lonesome Partners (C#, C++) - soo:bak"
 date: "2025-04-19 00:17:10 +0900"
 description: 2차원 평면 위 N개의 점 중 가장 거리가 먼 두 점의 번호를 찾는 백준 6013번 Lonesome Partners 문제의 C# 및 C++ 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 6013
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 6013, 백준 6013번, BOJ 6013, lonesomePartners, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

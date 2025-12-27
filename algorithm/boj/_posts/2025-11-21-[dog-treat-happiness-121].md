@@ -3,6 +3,14 @@ layout: single
 title: "[백준 19602] Dog Treats (C#, C++) - soo:bak"
 date: "2025-11-21 23:41:00 +0900"
 description: 1×S + 2×M + 3×L 점수로 강아지 행복 여부를 판단하는 백준 19602번 Dog Treats 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 19602
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 19602, 백준 19602번, BOJ 19602, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

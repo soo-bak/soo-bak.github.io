@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 4471] The Navi-Computer is Down! (C#, C++) - soo:bak"
 date: "2025-12-27 09:45:00 +0900"
-description: 두 성계의 3차원 좌표로 거리를 구해 포맷에 맞춰 출력하는 문제
+description: "백준 4471번 C#, C++ 풀이 - 두 성계의 3차원 좌표로 거리를 구해 포맷에 맞춰 출력하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 4471
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 4471, 백준 4471번, BOJ 4471, TheNaviComputerIsDown, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

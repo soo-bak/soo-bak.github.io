@@ -3,6 +3,14 @@ layout: single
 title: "[백준 26863] Absolutely Flat (C#, C++) - soo:bak"
 date: "2025-12-21 21:51:00 +0900"
 description: 한 다리에 패드를 붙이거나 붙이지 않아 네 다리 길이를 같게 만들 수 있는지 판별하는 문제
+tags:
+  - 백준
+  - BOJ
+  - 26863
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 26863, 백준 26863번, BOJ 26863, AbsolutelyFlat, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

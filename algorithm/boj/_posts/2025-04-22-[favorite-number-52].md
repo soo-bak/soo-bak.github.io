@@ -3,6 +3,14 @@ layout: single
 title: "[백준 10570] Favorite Number (C#, C++) - soo:bak"
 date: "2025-04-22 22:23:00 +0900"
 description: 여러 숫자 중에서 가장 많이 등장한 수를 찾고, 동률일 경우 더 작은 수를 출력하는 백준 10570번 Favorite Number 문제의 C# 및 C++ 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 10570
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 10570, 백준 10570번, BOJ 10570, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 12351] Hedgemony (Small) (C#, C++) - soo:bak"
 date: "2025-12-20 16:02:00 +0900"
-description: 양끝 평균 이하가 될 때만 깎는 규칙을 따라가며 끝에서 두 번째 덤불 높이를 구하는 문제
+description: "백준 12351번 C#, C++ 풀이 - 양끝 평균 이하가 될 때만 깎는 규칙을 따라가며 끝에서 두 번째 덤불 높이를 구하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 12351
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 12351, 백준 12351번, BOJ 12351, HedgemonySmall, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

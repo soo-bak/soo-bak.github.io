@@ -3,6 +3,14 @@ layout: single
 title: "[백준 20978] 共通要素 (Common Elements) (C#, C++) - soo:bak"
 date: "2025-12-27 00:35:00 +0900"
 description: 두 수열에 공통으로 등장하는 정수를 오름차순으로 출력하는 백준 20978번 共通要素 (Common Elements) 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 20978
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 20978, 백준 20978번, BOJ 20978, CommonElements, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

@@ -3,6 +3,14 @@ layout: single
 title: "[백준 17618] 신기한 수 (C#, C++) - soo:bak"
 date: "2025-12-13 17:01:00 +0900"
 description: 1부터 N까지 자릿수 합으로 나누어떨어지는 수를 세는 백준 17618번 신기한 수 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 17618
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 17618, 백준 17618번, BOJ 17618, InterestingNumbers, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

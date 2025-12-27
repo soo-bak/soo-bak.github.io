@@ -3,6 +3,14 @@ layout: single
 title: "[백준 2331] 반복수열 (C#, C++) - soo:bak"
 date: "2025-12-07 04:15:00 +0900"
 description: 각 자릿수의 P제곱 합으로 수열을 만들어 반복 전 원소 개수를 구하는 백준 2331번 반복수열 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 2331
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 2331, 백준 2331번, BOJ 2331, RepeatingSequence, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

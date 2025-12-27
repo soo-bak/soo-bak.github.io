@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 29713] 브실이의 띠부띠부씰 컬렉션 (C#, C++) - soo:bak"
 date: "2025-12-25 16:05:00 +0900"
-description: BRONZESILVER를 만들 수 있는 최대 개수를 구하는 문제
+description: "백준 29713번 C#, C++ 풀이 - BRONZESILVER를 만들 수 있는 최대 개수를 구하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 29713
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 29713, 백준 29713번, BOJ 29713, BbeusilStickerCollection, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

@@ -3,6 +3,14 @@ layout: single
 title: "[백준 10395] Automated Checking Machine (C#, C++) - soo:bak"
 date: "2025-12-14 09:03:00 +0900"
 description: 동일 위치에서 두 커넥터의 핀 형태가 달라야 호환되므로 5자리 모두가 서로 다르면 Y, 하나라도 같으면 N을 출력하는 백준 10395번 문제의 C#/C++ 풀이
+tags:
+  - 백준
+  - BOJ
+  - 10395
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 10395, 백준 10395번, BOJ 10395, AutomatedChecking, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

@@ -3,6 +3,14 @@ layout: single
 title: "[백준 26772] Poziome serca (C#, C++) - soo:bak"
 date: "2023-03-31 20:24:00 +0900"
 description: 구현을 주제로 하는 백준 26772번 알고리즘 문제를 C# 과 C++ 로 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 26772
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 26772, 백준 26772번, BOJ 26772, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

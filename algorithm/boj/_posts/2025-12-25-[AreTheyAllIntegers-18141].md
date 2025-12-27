@@ -3,6 +3,14 @@ layout: single
 title: "[백준 18141] Are They All Integers? (C#, C++) - soo:bak"
 date: "2025-12-25 16:05:00 +0900"
 description: 모든 서로 다른 i, j, k에 대해 (A[i]-A[j])가 A[k]로 나눠지는지 판단하는 문제
+tags:
+  - 백준
+  - BOJ
+  - 18141
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 18141, 백준 18141번, BOJ 18141, AreTheyAllIntegers, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 12605] 단어순서 뒤집기 (C#, C++) - soo:bak"
 date: "2025-12-24 22:35:00 +0900"
-description: 문장을 단어 단위로 뒤집어 출력하는 문제
+description: "백준 12605번 C#, C++ 풀이 - 문장을 단어 단위로 뒤집어 출력하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 12605
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 12605, 백준 12605번, BOJ 12605, ReverseWordOrder, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

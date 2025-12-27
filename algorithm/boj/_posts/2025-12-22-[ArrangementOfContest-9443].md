@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 9443] Arrangement of Contest (C#, C++) - soo:bak"
 date: "2025-12-22 00:03:00 +0900"
-description: 제목의 첫 글자가 A, B, C...로 이어지는 최대 길이를 구하는 문제
+description: "백준 9443번 C#, C++ 풀이 - 제목의 첫 글자가 A, B, C...로 이어지는 최대 길이를 구하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 9443
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 9443, 백준 9443번, BOJ 9443, ArrangementOfContest, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

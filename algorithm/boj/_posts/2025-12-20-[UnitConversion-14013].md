@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 14013] Unit Conversion (C#, C++) - soo:bak"
 date: "2025-12-20 16:02:00 +0900"
-description: 두 단위 사이의 비율이 주어질 때 여러 값을 상호 변환하는 문제
+description: "백준 14013번 C#, C++ 풀이 - 두 단위 사이의 비율이 주어질 때 여러 값을 상호 변환하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 14013
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 14013, 백준 14013번, BOJ 14013, UnitConversion, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

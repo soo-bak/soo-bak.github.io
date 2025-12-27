@@ -3,6 +3,14 @@ layout: single
 title: "[백준 12400] Speaking in Tongues (Small) (C#, C++) - soo:bak"
 date: "2025-12-06 22:55:00 +0900"
 description: 고정된 Googlerese 치환 표를 이용해 소문자 알파벳을 복호화하는 백준 12400번 Speaking in Tongues (Small) 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 12400
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 12400, 백준 12400번, BOJ 12400, SpeakingInTonguesSmall, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

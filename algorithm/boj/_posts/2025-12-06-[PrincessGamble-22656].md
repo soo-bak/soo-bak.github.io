@@ -3,6 +3,14 @@ layout: single
 title: "[백준 22656] Princess' Gamble (C#, C++) - soo:bak"
 date: "2025-12-06 23:10:00 +0900"
 description: 파리뮤추엘 방식으로 총 배팅 금액에서 차감률을 제외한 금액을 당첨 티켓 수로 나눠 배당금을 구하는 백준 22656번 Princess' Gamble 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 22656
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 22656, 백준 22656번, BOJ 22656, PrincessGamble, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

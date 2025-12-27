@@ -3,6 +3,14 @@ layout: single
 title: "[백준 5086] 배수와 약수 (C#, C++) - soo:bak"
 date: "2023-05-22 17:07:00 +0900"
 description: 수학과 배수 약수를 주제로 하는 백준 5086번 알고리즘 문제를 C# 과 C++ 로 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 5086
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 5086, 백준 5086번, BOJ 5086, MultipleAndFactor, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 21105] New Financial Year (C#, C++) - soo:bak"
 date: "2025-12-27 14:45:00 +0900"
-description: 새 가격과 변화율로부터 원래 가격을 역산하는 문제
+description: "백준 21105번 C#, C++ 풀이 - 새 가격과 변화율로부터 원래 가격을 역산하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 21105
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 21105, 백준 21105번, BOJ 21105, NewFinancialYear, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

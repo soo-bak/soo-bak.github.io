@@ -3,6 +3,14 @@ layout: single
 title: "[백준 10886] 0 = not cute / 1 = cute (C#, C++) - soo:bak"
 date: "2025-11-15 00:45:00 +0900"
 description: 설문 결과에서 0과 1의 개수를 비교해 메시지를 출력하는 백준 10886번 0 = not cute / 1 = cute 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 10886
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 10886, 백준 10886번, BOJ 10886, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

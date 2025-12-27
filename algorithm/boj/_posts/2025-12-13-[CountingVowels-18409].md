@@ -3,6 +3,14 @@ layout: single
 title: "[백준 18409] 母音を数える (Counting Vowels) (C#, C++) - soo:bak"
 date: "2025-12-13 13:02:00 +0900"
 description: 문자열에서 모음 a,i,u,e,o의 개수를 세어 출력하는 백준 18409번 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 18409
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 18409, 백준 18409번, BOJ 18409, CountingVowels, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

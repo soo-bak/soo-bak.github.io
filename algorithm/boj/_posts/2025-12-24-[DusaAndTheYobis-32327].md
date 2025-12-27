@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 32327] Dusa And The Yobis (C#, C++) - soo:bak"
 date: "2025-12-24 12:30:00 +0900"
-description: 순서대로 먹을 수 있는 Yobi만 흡수하며 크기를 갱신하는 문제
+description: "백준 32327번 C#, C++ 풀이 - 순서대로 먹을 수 있는 Yobi만 흡수하며 크기를 갱신하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 32327
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 32327, 백준 32327번, BOJ 32327, DusaAndTheYobis, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

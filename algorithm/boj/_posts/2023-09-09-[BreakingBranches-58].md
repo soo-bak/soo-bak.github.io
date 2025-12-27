@@ -3,6 +3,14 @@ layout: single
 title: "[백준 17783] Breaking Branches (C#, C++) - soo:bak"
 date: "2023-09-09 12:46:00 +0900"
 description: 수학, 게임 이론, 구현 등을 주제로 하는 백준 17783번 문제를 C++ C# 으로 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 17783
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 17783, 백준 17783번, BOJ 17783, BreakingBranches, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

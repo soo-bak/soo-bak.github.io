@@ -3,6 +3,14 @@ layout: single
 title: "[백준 2902] KMP는 왜 KMP일까? (C#, C++) - soo:bak"
 date: "2025-04-17 01:06:35 +0900"
 description: 하이픈으로 구분된 단어의 약어를 추출하여 출력하는 간단한 문자열 처리 문제인 백준 2902번 KMP는 왜 KMP일까? 문제의 C# 및 C++ 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 2902
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 2902, 백준 2902번, BOJ 2902, kmpAcronym, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

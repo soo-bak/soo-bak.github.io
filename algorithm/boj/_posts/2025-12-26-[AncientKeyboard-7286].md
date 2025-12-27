@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 7286] Ancient Keyboard (C#, C++) - soo:bak"
 date: "2025-12-26 01:55:00 +0900"
-description: 시간에 따른 LED 개수로 출력 문자열을 만드는 문제
+description: "백준 7286번 C#, C++ 풀이 - 시간에 따른 LED 개수로 출력 문자열을 만드는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 7286
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 7286, 백준 7286번, BOJ 7286, AncientKeyboard, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

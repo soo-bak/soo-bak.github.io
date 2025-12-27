@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 7366] Counting Sheep (C#, C++) - soo:bak"
 date: "2025-12-25 16:05:00 +0900"
-description: 단어 목록에서 sheep의 등장 횟수를 세는 문제
+description: "백준 7366번 C#, C++ 풀이 - 단어 목록에서 sheep의 등장 횟수를 세는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 7366
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 7366, 백준 7366번, BOJ 7366, CountingSheep, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

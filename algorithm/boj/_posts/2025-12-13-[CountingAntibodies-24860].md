@@ -3,6 +3,14 @@ layout: single
 title: "[백준 24860] Counting Antibodies (C#, C++) - soo:bak"
 date: "2025-12-13 05:01:00 +0900"
 description: 경쇄 두 타입 조합 수(VJ 합)와 중쇄 조합 수(VDJ 곱)를 곱해 면역글로불린 가짓수를 구하는 백준 24860번 Counting Antibodies 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 24860
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 24860, 백준 24860번, BOJ 24860, CountingAntibodies, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

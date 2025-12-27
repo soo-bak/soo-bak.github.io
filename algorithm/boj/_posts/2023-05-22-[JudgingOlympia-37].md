@@ -3,6 +3,14 @@ layout: single
 title: "[백준 4909] Judging Olympia (C#, C++) - soo:bak"
 date: "2023-05-22 15:23:00 +0900"
 description: 수학과 평균 계산 및 사칙연산을 주제로 하는 백준 4909번 알고리즘 문제를 C# 과 C++ 로 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 4909
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 4909, 백준 4909번, BOJ 4909, JudgingOlympia, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

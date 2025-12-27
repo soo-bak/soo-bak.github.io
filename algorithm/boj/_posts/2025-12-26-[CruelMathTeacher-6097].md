@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 6097] Cruel Math Teacher (C#, C++) - soo:bak"
 date: "2025-12-26 03:24:00 +0900"
-description: 큰 정수 거듭제곱을 계산해 출력하는 문제
+description: "백준 6097번 C#, C++ 풀이 - 큰 정수 거듭제곱을 계산해 출력하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 6097
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 6097, 백준 6097번, BOJ 6097, CruelMathTeacher, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

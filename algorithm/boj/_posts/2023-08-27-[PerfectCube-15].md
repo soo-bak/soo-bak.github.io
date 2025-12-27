@@ -3,6 +3,14 @@ layout: single
 title: "[백준 9724] Perfect Cube (C#, C++) - soo:bak"
 date: "2023-08-27 21:07:00 +0900"
 description: 수학, 구현, 기하 등을 주제로 하는 백준 9724번 문제를 C++ C# 으로 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 9724
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 9724, 백준 9724번, BOJ 9724, PerfectCube, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

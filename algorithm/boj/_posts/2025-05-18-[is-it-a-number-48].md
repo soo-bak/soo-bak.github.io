@@ -3,6 +3,14 @@ layout: single
 title: "[백준 11145] Is it a Number? (C++, C#) - soo:bak"
 date: "2025-05-18 17:31:00 +0900"
 description: 입력 문자열이 정수인지 판별하는 백준 11145번 Is it a Number? 문제의 C# 및 C++ 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 11145
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 11145, 백준 11145번, BOJ 11145, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

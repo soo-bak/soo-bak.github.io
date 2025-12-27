@@ -3,6 +3,14 @@ layout: single
 title: "[백준 13297] Quick Estimates (C#, C++) - soo:bak"
 date: "2025-12-06 21:05:00 +0900"
 description: 정수 견적의 자릿수 길이만 출력하는 백준 13297번 Quick Estimates 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 13297
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 13297, 백준 13297번, BOJ 13297, QuickEstimates, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

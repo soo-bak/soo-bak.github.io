@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 32604] Jumbled Scoreboards (C#, C++) - soo:bak"
 date: "2025-12-24 12:30:00 +0900"
-description: 두 팀 점수가 시간에 따라 감소하지 않는지 확인하는 문제
+description: "백준 32604번 C#, C++ 풀이 - 두 팀 점수가 시간에 따라 감소하지 않는지 확인하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 32604
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 32604, 백준 32604번, BOJ 32604, JumbledScoreboards, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

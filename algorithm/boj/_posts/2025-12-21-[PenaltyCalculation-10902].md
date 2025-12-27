@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 10902] Penalty calculation (C#, C++) - soo:bak"
 date: "2025-12-21 09:00:00 +0900"
-description: 최고 점수를 가장 먼저 받은 제출을 찾아 페널티를 계산하는 문제
+description: "백준 10902번 C#, C++ 풀이 - 최고 점수를 가장 먼저 받은 제출을 찾아 페널티를 계산하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 10902
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 10902, 백준 10902번, BOJ 10902, PenaltyCalculation, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

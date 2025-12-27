@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 23854] The Battle of Giants (C#, C++) - soo:bak"
 date: "2025-12-27 03:55:00 +0900"
-description: 최종 점수 a:b를 만들 수 있는 최소 경기 수와 승/무/패 개수를 구하는 문제
+description: "백준 23854번 C#, C++ 풀이 - 최종 점수 a:b를 만들 수 있는 최소 경기 수와 승/무/패 개수를 구하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 23854
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 23854, 백준 23854번, BOJ 23854, BattleOfGiants, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 12571] Rope Intranet (Small) (C#, C++) - soo:bak"
 date: "2025-12-21 09:00:00 +0900"
-description: 두 건물 사이 N개 선분의 교차 개수를 완전탐색으로 세는 문제
+description: "백준 12571번 C#, C++ 풀이 - 두 건물 사이 N개 선분의 교차 개수를 완전탐색으로 세는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 12571
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 12571, 백준 12571번, BOJ 12571, RopeIntranetSmall, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 16032] Income Inequality (C#, C++) - soo:bak"
 date: "2025-12-26 00:28:01 +0900"
-description: 평균 이하 소득자의 수를 계산해 출력하는 문제
+description: "백준 16032번 C#, C++ 풀이 - 평균 이하 소득자의 수를 계산해 출력하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 16032
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 16032, 백준 16032번, BOJ 16032, IncomeInequality, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

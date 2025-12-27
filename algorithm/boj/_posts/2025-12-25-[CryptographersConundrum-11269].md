@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 11269] Cryptographer’s Conundrum (C#, C++) - soo:bak"
 date: "2025-12-25 16:05:00 +0900"
-description: 문자열을 PER 반복으로 바꾸기 위해 다른 글자 수를 세는 문제
+description: "백준 11269번 C#, C++ 풀이 - 문자열을 PER 반복으로 바꾸기 위해 다른 글자 수를 세는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 11269
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 11269, 백준 11269번, BOJ 11269, CryptographersConundrum, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

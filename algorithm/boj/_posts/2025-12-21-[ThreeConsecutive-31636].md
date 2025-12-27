@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 31636] 三連続 (Three Consecutive) (C#, C++) - soo:bak"
 date: "2025-12-21 21:51:00 +0900"
-description: 문자열에 o가 3번 연속 등장하는지 확인해 Yes/No를 출력하는 문제
+description: "백준 31636번 C#, C++ 풀이 - 문자열에 o가 3번 연속 등장하는지 확인해 Yes/No를 출력하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 31636
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 31636, 백준 31636번, BOJ 31636, ThreeConsecutive, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

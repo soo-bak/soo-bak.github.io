@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 24803] Provinces and Gold (C#, C++) - soo:bak"
 date: "2025-12-21 21:51:00 +0900"
-description: 보유한 동전 가치로 구매 가능한 최고의 승점 카드와 보물 카드를 출력하는 문제
+description: "백준 24803번 C#, C++ 풀이 - 보유한 동전 가치로 구매 가능한 최고의 승점 카드와 보물 카드를 출력하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 24803
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 24803, 백준 24803번, BOJ 24803, ProvincesAndGold, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

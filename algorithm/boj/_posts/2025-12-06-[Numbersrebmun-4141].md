@@ -3,6 +3,14 @@ layout: single
 title: "[백준 4141] Numbersrebmun (C#, C++) - soo:bak"
 date: "2025-12-06 22:20:00 +0900"
 description: 회사 이름을 전화키패드 숫자로 치환한 뒤 팰린드롬인지 확인하는 백준 4141번 Numbersrebmun 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 4141
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 4141, 백준 4141번, BOJ 4141, Numbersrebmun, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

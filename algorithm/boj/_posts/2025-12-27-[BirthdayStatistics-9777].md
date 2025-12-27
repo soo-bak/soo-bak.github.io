@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 9777] Birthday Statistics (C#, C++) - soo:bak"
 date: "2025-12-27 12:45:00 +0900"
-description: 직원들의 생일 데이터에서 월별 인원 수를 집계하는 문제
+description: "백준 9777번 C#, C++ 풀이 - 직원들의 생일 데이터에서 월별 인원 수를 집계하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 9777
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 9777, 백준 9777번, BOJ 9777, BirthdayStatistics, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

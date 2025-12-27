@@ -3,6 +3,14 @@ layout: single
 title: "[백준 9297] Reducing Improper Fractions (C#, C++) - soo:bak"
 date: "2023-07-07 09:57:00 +0900"
 description: 분수, 수학, 정수부, 소수부, 구현 등을 주제로 하는 백준 9297번 문제를 C++ C# 으로 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 9297
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 9297, 백준 9297번, BOJ 9297, ReducingImproperFractions, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

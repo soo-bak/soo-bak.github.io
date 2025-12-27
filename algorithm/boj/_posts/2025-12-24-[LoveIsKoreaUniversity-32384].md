@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 32384] 사랑은 고려대입니다 (C#, C++) - soo:bak"
 date: "2025-12-24 12:30:00 +0900"
-description: 문장을 N번 공백으로 구분해 출력하는 문제
+description: "백준 32384번 C#, C++ 풀이 - 문장을 N번 공백으로 구분해 출력하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 32384
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 32384, 백준 32384번, BOJ 32384, LoveIsKoreaUniversity, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

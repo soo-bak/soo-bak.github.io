@@ -3,6 +3,14 @@ layout: single
 title: "[백준 14956] Philosopher’s Walk (C#, C++) - soo:bak"
 date: "2025-12-08 00:22:00 +0900"
 description: 힐베르트 커브 성질을 이용해 n=2^k 격자에서 m번째 위치의 좌표를 구하는 백준 14956번 Philosopher’s Walk 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 14956
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 14956, 백준 14956번, BOJ 14956, PhilosophersWalk, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

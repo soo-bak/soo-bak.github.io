@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 20155] 우리 집 밑에 편의점이 있는데 (C#, C++) - soo:bak"
 date: "2025-12-25 16:05:00 +0900"
-description: 브랜드별 편의점 수의 최댓값을 구하는 문제
+description: "백준 20155번 C#, C++ 풀이 - 브랜드별 편의점 수의 최댓값을 구하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 20155
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 20155, 백준 20155번, BOJ 20155, ConvenienceStoreUnderMyHouse, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 29991] Fatigue-Fighting Vacation (C#, C++) - soo:bak"
 date: "2025-12-24 12:30:00 +0900"
-description: 피로도 조건에 따라 활동을 순서대로 수행하며 가능한 총 개수를 계산하는 문제
+description: "백준 29991번 C#, C++ 풀이 - 피로도 조건에 따라 활동을 순서대로 수행하며 가능한 총 개수를 계산하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 29991
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 29991, 백준 29991번, BOJ 29991, FatigueFightingVacation, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

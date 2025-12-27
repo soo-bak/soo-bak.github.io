@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 30216] Increasing Sublist (C#, C++) - soo:bak"
 date: "2025-12-21 20:42:00 +0900"
-description: 연속 구간 중 Strictly Increasing한 최대 길이를 구하는 문제
+description: "백준 30216번 C#, C++ 풀이 - 연속 구간 중 Strictly Increasing한 최대 길이를 구하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 30216
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 30216, 백준 30216번, BOJ 30216, IncreasingSublist, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

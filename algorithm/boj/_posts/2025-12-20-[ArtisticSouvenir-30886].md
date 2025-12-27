@@ -3,6 +3,14 @@ layout: single
 title: "[백준 30886] Artistic Souvenir (C#, C++) - soo:bak"
 date: "2025-12-20 12:12:00 +0900"
 description: 원형 무늬 면적이 주어질 때 1cm 여백을 두고 담을 최소 정사각형 타일의 면적을 구하는 문제
+tags:
+  - 백준
+  - BOJ
+  - 30886
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 30886, 백준 30886번, BOJ 30886, ArtisticSouvenir, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

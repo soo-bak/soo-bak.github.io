@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 12250] New Lottery Game (Small) (C#, C++) - soo:bak"
 date: "2025-12-21 09:00:00 +0900"
-description: A, B, K < 1000 범위에서 (x&y) < K인 쌍을 완전탐색으로 세는 문제
+description: "백준 12250번 C#, C++ 풀이 - A, B, K < 1000 범위에서 (x&y) < K인 쌍을 완전탐색으로 세는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 12250
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 12250, 백준 12250번, BOJ 12250, NewLotteryGameSmall, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

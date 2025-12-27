@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 11368] A Serious Reading Problem (C#, C++) - soo:bak"
 date: "2025-12-19 22:47:00 +0900"
-description: C^(W×L×P) 개의 책이 존재한다는 사실로 큰 수 거듭제곱을 계산하는 문제
+description: "백준 11368번 C#, C++ 풀이 - C^(W×L×P) 개의 책이 존재한다는 사실로 큰 수 거듭제곱을 계산하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 11368
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 11368, 백준 11368번, BOJ 11368, ReadingProblem, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

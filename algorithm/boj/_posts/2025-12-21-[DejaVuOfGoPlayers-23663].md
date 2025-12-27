@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 23663] Deja vu of Go Players (C#, C++) - soo:bak"
 date: "2025-12-21 21:51:00 +0900"
-description: 선공이 가진 더미 수가 상대 이하인지로 승리 가능 여부를 판단하는 문제
+description: "백준 23663번 C#, C++ 풀이 - 선공이 가진 더미 수가 상대 이하인지로 승리 가능 여부를 판단하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 23663
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 23663, 백준 23663번, BOJ 23663, DejaVuOfGoPlayers, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

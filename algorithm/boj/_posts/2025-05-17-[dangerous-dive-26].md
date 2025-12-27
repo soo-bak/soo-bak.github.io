@@ -3,6 +3,14 @@ layout: single
 title: "[백준 13627] Dangerous Dive (C#, C++) - soo:bak"
 date: "2025-05-17 20:06:56 +0900"
 description: 전체 인원 중 복귀하지 않은 번호를 오름차순으로 구하는 백준 13627번 Dangerous Dive 문제의 C# 및 C++ 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 13627
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 13627, 백준 13627번, BOJ 13627, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

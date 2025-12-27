@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 1252] 이진수 덧셈 (C#, C++) - soo:bak"
 date: "2025-12-24 12:30:00 +0900"
-description: 두 이진 문자열을 직접 더해 결과 이진수를 만드는 문제
+description: "백준 1252번 C#, C++ 풀이 - 두 이진 문자열을 직접 더해 결과 이진수를 만드는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 1252
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 1252, 백준 1252번, BOJ 1252, BinaryAddition, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 24830] Broken Calculator (C#, C++) - soo:bak"
 date: "2025-12-21 21:51:00 +0900"
-description: 이전 결과를 이용해 연산 규칙이 바뀐 계산기의 결과를 순서대로 출력하는 문제
+description: "백준 24830번 C#, C++ 풀이 - 이전 결과를 이용해 연산 규칙이 바뀐 계산기의 결과를 순서대로 출력하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 24830
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 24830, 백준 24830번, BOJ 24830, BrokenCalculator, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

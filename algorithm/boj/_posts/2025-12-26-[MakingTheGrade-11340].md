@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 11340] Making the Grade? (C#, C++) - soo:bak"
 date: "2025-12-26 01:12:47 +0900"
-description: 가중 평균이 90 이상이 되기 위한 최소 기말 점수를 구하는 문제
+description: "백준 11340번 C#, C++ 풀이 - 가중 평균이 90 이상이 되기 위한 최소 기말 점수를 구하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 11340
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 11340, 백준 11340번, BOJ 11340, MakingTheGrade, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

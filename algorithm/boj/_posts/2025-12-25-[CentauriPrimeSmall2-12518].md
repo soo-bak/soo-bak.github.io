@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 12518] Centauri Prime (Small2) (C#, C++) - soo:bak"
 date: "2025-12-25 16:05:00 +0900"
-description: 나라 이름의 마지막 글자로 통치자를 판별하는 문제
+description: "백준 12518번 C#, C++ 풀이 - 나라 이름의 마지막 글자로 통치자를 판별하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 12518
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 12518, 백준 12518번, BOJ 12518, CentauriPrimeSmall2, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

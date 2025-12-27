@@ -3,6 +3,14 @@ layout: single
 title: "[백준 1152] 단어의 개수 (C#, C++) - soo:bak"
 date: "2023-05-21 15:49:00 +0900"
 description: 문자열 다루기를 주제로 하는 백준 1152번 알고리즘 문제를 C# 과 C++ 로 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 1152
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 1152, 백준 1152번, BOJ 1152, CountOfWords, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

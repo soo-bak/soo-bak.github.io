@@ -3,6 +3,14 @@ layout: single
 title: "[백준 9310] Arithmetic and Geometric Sums (C#, C++) - soo:bak"
 date: "2023-08-29 11:59:00 +0900"
 description: 수학, 구현 등을 주제로 하는 백준 9310번 문제를 C++ C# 으로 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 9310
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 9310, 백준 9310번, BOJ 9310, ArithmeticGeometricSums, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

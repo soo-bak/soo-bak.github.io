@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 32369] 양파 실험 (C#, C++) - soo:bak"
 date: "2025-12-24 12:30:00 +0900"
-description: 매일 성장과 역할 교대 규칙을 시뮬레이션하는 문제
+description: "백준 32369번 C#, C++ 풀이 - 매일 성장과 역할 교대 규칙을 시뮬레이션하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 32369
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 32369, 백준 32369번, BOJ 32369, OnionExperiment, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

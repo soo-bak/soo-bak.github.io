@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 29614] 학점계산프로그램 (C#, C++) - soo:bak"
 date: "2025-12-25 16:05:00 +0900"
-description: 등급 문자열을 해석해 평균 학점을 구하는 문제
+description: "백준 29614번 C#, C++ 풀이 - 등급 문자열을 해석해 평균 학점을 구하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 29614
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 29614, 백준 29614번, BOJ 29614, GradeCalculator, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

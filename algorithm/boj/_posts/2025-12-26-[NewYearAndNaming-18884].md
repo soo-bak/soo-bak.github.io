@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 18884] New Year and Naming (C#, C++) - soo:bak"
 date: "2025-12-26 01:06:08 +0900"
-description: 두 문자열 순환을 합쳐 연도 이름을 출력하는 문제
+description: "백준 18884번 C#, C++ 풀이 - 두 문자열 순환을 합쳐 연도 이름을 출력하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 18884
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 18884, 백준 18884번, BOJ 18884, NewYearAndNaming, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

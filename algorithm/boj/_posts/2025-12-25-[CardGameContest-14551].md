@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 14551] Card Game Contest (C#, C++) - soo:bak"
 date: "2025-12-25 16:05:00 +0900"
-description: 각 게임의 선택 개수를 곱해 참여 방법 수를 구하는 문제
+description: "백준 14551번 C#, C++ 풀이 - 각 게임의 선택 개수를 곱해 참여 방법 수를 구하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 14551
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 14551, 백준 14551번, BOJ 14551, CardGameContest, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

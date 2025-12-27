@@ -3,6 +3,14 @@ layout: single
 title: "[백준 2587] 대표값2 (C#, C++) - soo:bak"
 date: "2025-04-17 00:00:00 +0900"
 description: 5개의 자연수에 대해 평균과 중앙값을 계산하는 백준 2587번 대표값2 문제의 C# 및 C++ 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 2587
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 2587, 백준 2587번, BOJ 2587, averageAndMedian, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

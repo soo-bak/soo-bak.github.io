@@ -3,6 +3,14 @@ layout: single
 title: "[백준 11944] NN (C#, C++) - soo:bak"
 date: "2025-04-17 01:09:35 +0900"
 description: 숫자 N을 N번 반복하여 출력하되 최대 길이를 제한하는 문자열 처리 문제인 백준 11944번 NN 문제의 C# 및 C++ 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 11944
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 11944, 백준 11944번, BOJ 11944, repeatNumCut, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

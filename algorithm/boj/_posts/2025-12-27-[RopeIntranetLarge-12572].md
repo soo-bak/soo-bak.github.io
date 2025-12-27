@@ -3,6 +3,14 @@ layout: single
 title: "[백준 12572] Rope Intranet (Large) (C#, C++) - soo:bak"
 date: "2025-12-27 00:12:00 +0900"
 description: 전선을 정렬한 뒤 역순 쌍을 세어 교차 개수를 구하는 백준 12572번 Rope Intranet (Large) 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 12572
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 12572, 백준 12572번, BOJ 12572, RopeIntranetLarge, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

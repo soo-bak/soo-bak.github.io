@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 8965] Circular Sequence (C#, C++) - soo:bak"
 date: "2025-12-27 05:35:00 +0900"
-description: 원형 DNA 서열에서 사전순으로 가장 작은 선형 서열을 찾는 문제
+description: "백준 8965번 C#, C++ 풀이 - 원형 DNA 서열에서 사전순으로 가장 작은 선형 서열을 찾는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 8965
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 8965, 백준 8965번, BOJ 8965, CircularSequence, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

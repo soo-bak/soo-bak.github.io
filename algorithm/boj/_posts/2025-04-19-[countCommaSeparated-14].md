@@ -3,6 +3,14 @@ layout: single
 title: "[백준 10821] 정수의 개수 (C#, C++) - soo:bak"
 date: "2025-04-19 00:16:10 +0900"
 description: 콤마로 구분된 정수의 개수를 계산하여 출력하는 백준 10821번 정수의 개수 문제의 C# 및 C++ 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 10821
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 10821, 백준 10821번, BOJ 10821, countCommaSeparated, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

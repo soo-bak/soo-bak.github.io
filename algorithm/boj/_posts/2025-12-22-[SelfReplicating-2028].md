@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 2028] 자기복제수 (C#, C++) - soo:bak"
 date: "2025-12-22 00:03:00 +0900"
-description: 제곱수의 끝자리가 원래 수와 같은지 확인하는 문제
+description: "백준 2028번 C#, C++ 풀이 - 제곱수의 끝자리가 원래 수와 같은지 확인하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 2028
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 2028, 백준 2028번, BOJ 2028, SelfReplicating, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

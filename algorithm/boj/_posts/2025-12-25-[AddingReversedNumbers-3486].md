@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 3486] Adding Reversed Numbers (C#, C++) - soo:bak"
 date: "2025-12-25 14:56:00 +0900"
-description: 두 수를 뒤집어 더한 뒤 다시 뒤집는 구현 문제
+description: "백준 3486번 C#, C++ 풀이 - 두 수를 뒤집어 더한 뒤 다시 뒤집는 구현 문제"
+tags:
+  - 백준
+  - BOJ
+  - 3486
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 3486, 백준 3486번, BOJ 3486, AddingReversedNumbers, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

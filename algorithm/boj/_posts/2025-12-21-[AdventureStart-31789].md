@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 31789] 모험의 시작 (C#, C++) - soo:bak"
 date: "2025-12-21 21:51:00 +0900"
-description: 예산 X 이내에서 공격력 S보다 큰 무기가 있는지 판단하는 문제
+description: "백준 31789번 C#, C++ 풀이 - 예산 X 이내에서 공격력 S보다 큰 무기가 있는지 판단하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 31789
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 31789, 백준 31789번, BOJ 31789, AdventureStart, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

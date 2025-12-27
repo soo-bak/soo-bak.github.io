@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 16175] General Election (C#, C++) - soo:bak"
 date: "2025-12-20 12:12:00 +0900"
-description: 지역별 득표수를 합산해 최다 득표 후보를 찾는 문제
+description: "백준 16175번 C#, C++ 풀이 - 지역별 득표수를 합산해 최다 득표 후보를 찾는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 16175
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 16175, 백준 16175번, BOJ 16175, GeneralElection, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

@@ -3,6 +3,14 @@ layout: single
 title: "[백준 9299] Math Tutoring (C#, C++) - soo:bak"
 date: "2023-06-24 10:10:00 +0900"
 description: 수학, 미분, 도함수 등을 주제로 하는 백준 9299번 문제를 C++ C# 으로 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 9299
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 9299, 백준 9299번, BOJ 9299, MathTutoring, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

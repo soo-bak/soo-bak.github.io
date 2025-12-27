@@ -3,6 +3,14 @@ layout: single
 title: "[백준 10180] Ship Selection (C#, C++) - soo:bak"
 date: "2023-02-11 11:36:00 +0900"
 description: 수학을 주제로한 백준 10180번 문제를 C# 과 C++ 로 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 10180
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 10180, 백준 10180번, BOJ 10180, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

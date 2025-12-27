@@ -3,6 +3,14 @@ layout: single
 title: "[백준 6845] Federal Voting Age (C#, C++) - soo:bak"
 date: "2023-07-31 16:37:00 +0900"
 description: 수학, 조건 분기, 구현 등을 주제로 하는 백준 6845번 문제를 C++ C# 으로 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 6845
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 6845, 백준 6845번, BOJ 6845, FedralVotingAge, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

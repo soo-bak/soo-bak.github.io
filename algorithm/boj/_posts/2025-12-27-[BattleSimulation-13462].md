@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 13462] Battle Simulation (C#, C++) - soo:bak"
 date: "2025-12-27 08:35:00 +0900"
-description: 몬스터의 공격 문자열을 보고 대응 문자열을 생성하는 시뮬레이션 문제
+description: "백준 13462번 C#, C++ 풀이 - 몬스터의 공격 문자열을 보고 대응 문자열을 생성하는 시뮬레이션 문제"
+tags:
+  - 백준
+  - BOJ
+  - 13462
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 13462, 백준 13462번, BOJ 13462, BattleSimulation, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

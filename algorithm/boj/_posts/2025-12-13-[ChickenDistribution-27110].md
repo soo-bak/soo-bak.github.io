@@ -3,6 +3,14 @@ layout: single
 title: "[백준 27110] 특식 배부 (C#, C++) - soo:bak"
 date: "2025-12-13 22:20:00 +0900"
 description: 각 치킨 종류별 주문량 N과 선호 인원 A,B,C가 주어질 때, min(선호, N)을 합산해 원하는 치킨을 받는 최대 인원을 구하는 백준 27110번 특식 배부 문제의 C#/C++ 풀이
+tags:
+  - 백준
+  - BOJ
+  - 27110
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 27110, 백준 27110번, BOJ 27110, ChickenDistribution, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

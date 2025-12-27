@@ -3,6 +3,14 @@ layout: single
 title: "[백준 9507] Generations of Tribbles (C#, C++) - soo:bak"
 date: "2025-04-29 05:22:00 +0900"
 description: 기존 피보나치 수열을 확장하여 앞선 네 항의 합을 이용하는 변형 수열을 계산하는 백준 9507번 Generations of Tribbles 문제의 C# 및 C++ 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 9507
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 9507, 백준 9507번, BOJ 9507, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

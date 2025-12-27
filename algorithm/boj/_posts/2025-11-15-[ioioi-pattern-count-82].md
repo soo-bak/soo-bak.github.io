@@ -3,6 +3,14 @@ layout: single
 title: "[백준 5525] IOIOI (C#, C++) - soo:bak"
 date: "2025-11-15 02:20:00 +0900"
 description: 문자열을 한 번 스캔하며 반복된 IOI 패턴을 센 뒤 PN 등장 횟수를 계산하는 백준 5525번 IOIOI 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 5525
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 5525, 백준 5525번, BOJ 5525, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

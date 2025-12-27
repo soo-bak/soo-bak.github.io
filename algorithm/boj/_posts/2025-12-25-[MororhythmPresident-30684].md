@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 30684] 모르고리즘 회장 정하기 (C#, C++) - soo:bak"
 date: "2025-12-25 16:05:00 +0900"
-description: 길이가 3인 이름 중 사전순으로 가장 앞선 이름을 찾는 문제
+description: "백준 30684번 C#, C++ 풀이 - 길이가 3인 이름 중 사전순으로 가장 앞선 이름을 찾는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 30684
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 30684, 백준 30684번, BOJ 30684, MororhythmPresident, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

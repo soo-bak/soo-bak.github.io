@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 34010] e-코너 시스템 테스트 (Easy) (C#, C++) - soo:bak"
 date: "2025-12-26 00:47:49 +0900"
-description: 최단 경로를 유지하며 피봇턴을 최대로 하는 값을 구하는 문제
+description: "백준 34010번 C#, C++ 풀이 - 최단 경로를 유지하며 피봇턴을 최대로 하는 값을 구하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 34010
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 34010, 백준 34010번, BOJ 34010, ECornerSystemTestEasy, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

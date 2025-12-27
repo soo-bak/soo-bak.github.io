@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 13410] 거꾸로 구구단 (C#, C++) - soo:bak"
 date: "2025-12-24 22:35:00 +0900"
-description: 구구단 결과를 뒤집어 최댓값을 구하는 문제
+description: "백준 13410번 C#, C++ 풀이 - 구구단 결과를 뒤집어 최댓값을 구하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 13410
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 13410, 백준 13410번, BOJ 13410, ReverseGugudan, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

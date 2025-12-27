@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 32432] Attention to the Meeting (C#, C++) - soo:bak"
 date: "2025-12-24 12:30:00 +0900"
-description: 회의 시간 제한에서 한 사람당 발언 시간을 계산하는 문제
+description: "백준 32432번 C#, C++ 풀이 - 회의 시간 제한에서 한 사람당 발언 시간을 계산하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 32432
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 32432, 백준 32432번, BOJ 32432, AttentionToTheMeeting, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

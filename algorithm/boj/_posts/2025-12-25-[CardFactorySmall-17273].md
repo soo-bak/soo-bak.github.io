@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 17273] 카드 공장 (Small) (C#, C++) - soo:bak"
 date: "2025-12-25 16:05:00 +0900"
-description: 조건에 따라 카드의 앞뒷면을 뒤집고 합을 구하는 문제
+description: "백준 17273번 C#, C++ 풀이 - 조건에 따라 카드의 앞뒷면을 뒤집고 합을 구하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 17273
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 17273, 백준 17273번, BOJ 17273, CardFactorySmall, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

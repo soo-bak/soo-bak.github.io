@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 8713] Znak działania (C#, C++) - soo:bak"
 date: "2025-12-27 05:45:00 +0900"
-description: 두 정수 사이에 +, -, * 중 최댓값을 만드는 연산을 선택하는 문제
+description: "백준 8713번 C#, C++ 풀이 - 두 정수 사이에 +, -, * 중 최댓값을 만드는 연산을 선택하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 8713
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 8713, 백준 8713번, BOJ 8713, OperationSign, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

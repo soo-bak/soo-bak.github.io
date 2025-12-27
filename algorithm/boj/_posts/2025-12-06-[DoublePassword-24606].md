@@ -3,6 +3,14 @@ layout: single
 title: "[백준 24606] Double Password (C#, C++) - soo:bak"
 date: "2025-12-06 22:10:00 +0900"
 description: 두 4자리 비밀번호에서 자리별로 선택 가능한 숫자 수를 곱해 로그인 가능한 경우의 수를 구하는 백준 24606번 Double Password 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 24606
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 24606, 백준 24606번, BOJ 24606, DoublePassword, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 24510] 시간복잡도를 배운 도도 (C#, C++) - soo:bak"
 date: "2025-12-24 22:35:00 +0900"
-description: 각 줄에서 for와 while의 등장 횟수를 세어 최댓값을 구하는 문제
+description: "백준 24510번 C#, C++ 풀이 - 각 줄에서 for와 while의 등장 횟수를 세어 최댓값을 구하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 24510
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 24510, 백준 24510번, BOJ 24510, DodoTimeComplexity, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

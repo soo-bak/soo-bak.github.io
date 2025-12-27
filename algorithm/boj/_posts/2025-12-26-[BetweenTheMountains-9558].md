@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 9558] Between the Mountains (C#, C++) - soo:bak"
 date: "2025-12-26 04:50:00 +0900"
-description: 두 배열에서 차이가 최소인 값을 찾는 문제
+description: "백준 9558번 C#, C++ 풀이 - 두 배열에서 차이가 최소인 값을 찾는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 9558
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 9558, 백준 9558번, BOJ 9558, BetweenTheMountains, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

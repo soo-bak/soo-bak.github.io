@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 9070] 장보기 (C#, C++) - soo:bak"
 date: "2025-12-25 16:05:00 +0900"
-description: 가성비가 가장 좋은 맛살의 가격을 선택하는 문제
+description: "백준 9070번 C#, C++ 풀이 - 가성비가 가장 좋은 맛살의 가격을 선택하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 9070
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 9070, 백준 9070번, BOJ 9070, GroceryShopping, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

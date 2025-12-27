@@ -3,6 +3,14 @@ layout: single
 title: "[백준 5157] Bailout Bonus (C#, C++) - soo:bak"
 date: "2023-05-28 07:03:00 +0900"
 description: 수학과 게산을 주제로 하는 백준 5157번 알고리즘 문제를 C# 과 C++ 로 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 5157
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 5157, 백준 5157번, BOJ 5157, BailoutBonus, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

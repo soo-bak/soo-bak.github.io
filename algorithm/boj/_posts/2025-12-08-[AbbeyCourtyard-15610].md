@@ -3,6 +3,14 @@ layout: single
 title: "[백준 15610] Abbey Courtyard (C#, C++) - soo:bak"
 date: "2025-12-08 01:55:00 +0900"
 description: 면적이 a인 정사각형의 둘레를 구해 전선 길이를 계산하는 백준 15610번 Abbey Courtyard 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 15610
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 15610, 백준 15610번, BOJ 15610, AbbeyCourtyard, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

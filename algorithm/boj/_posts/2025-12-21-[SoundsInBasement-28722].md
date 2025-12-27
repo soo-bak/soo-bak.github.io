@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 28722] Звуки в подвале (C#, C++) - soo:bak"
 date: "2025-12-21 21:51:00 +0900"
-description: 문자열의 양끝 색이 다르면 Win, 같으면 Lose를 출력하는 문제
+description: "백준 28722번 C#, C++ 풀이 - 문자열의 양끝 색이 다르면 Win, 같으면 Lose를 출력하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 28722
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 28722, 백준 28722번, BOJ 28722, SoundsInBasement, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

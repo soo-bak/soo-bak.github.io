@@ -3,6 +3,14 @@ layout: single
 title: "[백준 6778] Which Alien? (C#, C++) - soo:bak"
 date: "2025-11-21 23:47:00 +0900"
 description: 더듬이·눈 개수 조건을 만족하는 외계종을 판별하는 백준 6778번 Which Alien? 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 6778
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 6778, 백준 6778번, BOJ 6778, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

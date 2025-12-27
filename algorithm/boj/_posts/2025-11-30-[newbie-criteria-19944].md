@@ -3,6 +3,14 @@ layout: single
 title: "[백준 19944] 뉴비의 기준은 뭘까? (C#, C++) - soo:bak"
 date: "2025-11-30 01:48:00 +0900"
 description: 학년 N과 M이 주어질 때 M학년을 NEWBIE, OLDBIE, TLE로 분류하는 백준 19944번 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 19944
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 19944, 백준 19944번, BOJ 19944, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

@@ -3,6 +3,14 @@ layout: single
 title: "[백준 21983] Basalt Breakdown (C#, C++) - soo:bak"
 date: "2024-01-02 08:07:00 +0900"
 description: 수학, 기하학, 사칙연산 을 주제로 하는 백준 21983번 문제를 C++ C# 으로 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 21983
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 21983, 백준 21983번, BOJ 21983, BasaltBreakdown, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

@@ -3,6 +3,14 @@ layout: single
 title: "[백준 16088] Finding Your Coach (C#, C++) - soo:bak"
 date: "2023-03-20 12:25:00 +0900"
 description: 시뮬레이션을 주제로 하는 백준 16088번 알고리즘 문제를 C# 과 C++ 로 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 16088
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 16088, 백준 16088번, BOJ 16088, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

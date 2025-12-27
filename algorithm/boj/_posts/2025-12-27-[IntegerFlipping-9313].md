@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 9313] Integer Flipping (C#, C++) - soo:bak"
 date: "2025-12-27 05:55:00 +0900"
-description: 32비트 부호 없는 정수를 비트 반전(역순)한 값을 출력하는 문제
+description: "백준 9313번 C#, C++ 풀이 - 32비트 부호 없는 정수를 비트 반전(역순)한 값을 출력하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 9313
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 9313, 백준 9313번, BOJ 9313, IntegerFlipping, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

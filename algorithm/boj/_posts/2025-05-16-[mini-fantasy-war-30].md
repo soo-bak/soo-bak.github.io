@@ -3,6 +3,14 @@ layout: single
 title: "[백준 12790] Mini Fantasy War (C#, C++) - soo:bak"
 date: "2025-05-16 21:01:00 +0900"
 description: 기본 능력치와 장비 보정을 합산하여 최종 전투력을 계산하는 백준 12790번 Mini Fantasy War 문제의 C# 및 C++ 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 12790
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 12790, 백준 12790번, BOJ 12790, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

@@ -3,6 +3,14 @@ layout: single
 title: "[백준 5347] LCM (C#, C++) - soo:bak"
 date: "2025-04-19 01:12:43 +0900"
 description: 두 정수의 최소공배수를 계산하는 수학적 알고리즘을 구현한 백준 5347번 LCM 문제의 C# 및 C++ 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 5347
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 5347, 백준 5347번, BOJ 5347, lcmMultiple, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

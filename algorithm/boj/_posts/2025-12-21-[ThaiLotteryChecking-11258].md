@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 11258] Thai Lottery Checking (C#, C++) - soo:bak"
 date: "2025-12-21 20:42:00 +0900"
-description: 태국 복권 당첨 번호 6줄을 받아 각 티켓의 총 상금을 계산하는 문자열 매칭 문제
+description: "백준 11258번 C#, C++ 풀이 - 태국 복권 당첨 번호 6줄을 받아 각 티켓의 총 상금을 계산하는 문자열 매칭 문제"
+tags:
+  - 백준
+  - BOJ
+  - 11258
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 11258, 백준 11258번, BOJ 11258, ThaiLotteryChecking, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

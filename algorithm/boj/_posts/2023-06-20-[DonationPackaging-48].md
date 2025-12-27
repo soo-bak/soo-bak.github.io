@@ -3,6 +3,14 @@ layout: single
 title: "[백준 11795] Donation Packaging (C#, C++) - soo:bak"
 date: "2023-06-20 08:40:00 +0900"
 description: 구현과 수학, 시뮬레이션을 주제로 하는 백준 11795번 문제를 C++ C# 으로 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 11795
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 11795, 백준 11795번, BOJ 11795, DonationPackaging, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

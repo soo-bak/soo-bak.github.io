@@ -3,6 +3,14 @@ layout: single
 title: "[백준 5635] 생일 (C#, C++) - soo:bak"
 date: "2025-04-14 05:59:25 +0900"
 description: 생년월일 비교를 통해 가장 어린 사람과 가장 나이 많은 사람을 구하는 백준 5635번 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 5635
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 5635, 백준 5635번, BOJ 5635, birthdayCompare, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

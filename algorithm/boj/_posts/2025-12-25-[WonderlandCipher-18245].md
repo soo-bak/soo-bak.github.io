@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 18245] 이상한 나라의 암호 (C#, C++) - soo:bak"
 date: "2025-12-25 16:05:00 +0900"
-description: i번째 줄을 i칸씩 건너뛰며 읽어 해석한 결과를 출력하는 문제
+description: "백준 18245번 C#, C++ 풀이 - i번째 줄을 i칸씩 건너뛰며 읽어 해석한 결과를 출력하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 18245
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 18245, 백준 18245번, BOJ 18245, WonderlandCipher, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

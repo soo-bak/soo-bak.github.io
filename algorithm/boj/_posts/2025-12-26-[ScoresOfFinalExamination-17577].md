@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 17577] Scores of Final Examination (C#, C++) - soo:bak"
 date: "2025-12-26 03:08:00 +0900"
-description: 학생별 총점을 계산해 최대값을 찾는 문제
+description: "백준 17577번 C#, C++ 풀이 - 학생별 총점을 계산해 최대값을 찾는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 17577
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 17577, 백준 17577번, BOJ 17577, ScoresOfFinalExamination, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

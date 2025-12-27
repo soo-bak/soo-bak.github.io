@@ -3,6 +3,14 @@ layout: single
 title: "[백준 2703] Cryptoquote (C++, C#) - soo:bak"
 date: "2025-05-05 18:09:00 +0900"
 description: 대문자 알파벳 변환 규칙에 따라 암호화된 문장을 복호화하는 문자열 처리 문제, 백준 2703번 Cryptoquote 문제의 C++ 및 C# 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 2703
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 2703, 백준 2703번, BOJ 2703, cryptoquote, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

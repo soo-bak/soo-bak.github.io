@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 5238] Stacked Floating Mountains (C#, C++) - soo:bak"
 date: "2025-12-27 14:05:00 +0900"
-description: 주어진 수열이 일반화된 피보나치 수열인지 판별하는 문제
+description: "백준 5238번 C#, C++ 풀이 - 주어진 수열이 일반화된 피보나치 수열인지 판별하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 5238
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 5238, 백준 5238번, BOJ 5238, StackedFloatingMountains, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

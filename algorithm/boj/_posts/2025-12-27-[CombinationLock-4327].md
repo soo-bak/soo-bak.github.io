@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 4327] Combination Lock (C#, C++) - soo:bak"
 date: "2025-12-27 08:05:00 +0900"
-description: 자물쇠 다이얼을 여는 데 필요한 총 회전 각도를 구하는 문제
+description: "백준 4327번 C#, C++ 풀이 - 자물쇠 다이얼을 여는 데 필요한 총 회전 각도를 구하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 4327
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 4327, 백준 4327번, BOJ 4327, CombinationLock, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

@@ -3,6 +3,14 @@ layout: single
 title: "[백준 3679] 단순 다각형 (C#, C++) - soo:bak"
 date: "2025-12-08 01:35:00 +0900"
 description: 최좌하단 기준으로 극각 정렬 후 마지막 collinear 구간을 뒤집어 단순 다각형을 만드는 백준 3679번 단순 다각형 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 3679
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 3679, 백준 3679번, BOJ 3679, SimplePolygon, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

@@ -3,6 +3,14 @@ layout: single
 title: "[백준 23234] The World Responds (C#, C++) - soo:bak"
 date: "2025-11-21 23:42:00 +0900"
 description: 입력 없이 The world says hello!를 출력하는 백준 23234번 The World Responds 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 23234
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 23234, 백준 23234번, BOJ 23234, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

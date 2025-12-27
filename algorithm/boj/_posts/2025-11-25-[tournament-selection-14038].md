@@ -3,6 +3,14 @@ layout: single
 title: "[백준 14038] Tournament Selection (C#, C++) - soo:bak"
 date: "2025-11-25 00:15:00 +0900"
 description: 6경기 결과에서 승리 수를 세어 그룹을 결정하는 단순 분기 문제인 백준 14038번 Tournament Selection의 C# 및 C++ 풀이
+tags:
+  - 백준
+  - BOJ
+  - 14038
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 14038, 백준 14038번, BOJ 14038, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

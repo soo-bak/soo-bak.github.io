@@ -3,6 +3,14 @@ layout: single
 title: "[백준 18813] Divisionals Spelling (C#, C++) - soo:bak"
 date: "2025-12-21 09:00:00 +0900"
 description: 대회 문제 A..(m개)로 중복 없는 단어를 만들 수 있는지 판단해 가능한 단어 수를 세는 문제
+tags:
+  - 백준
+  - BOJ
+  - 18813
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 18813, 백준 18813번, BOJ 18813, DivisionalsSpelling, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

@@ -3,6 +3,14 @@ layout: single
 title: "[백준 1193] 분수찾기 (C#, C++) - soo:bak"
 date: "2023-05-23 07:28:00 +0900"
 description: 수학과 일반항, 규칙 찾기를 주제로 하는 백준 1193번 알고리즘 문제를 C# 과 C++ 로 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 1193
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 1193, 백준 1193번, BOJ 1193, FindingFraction, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

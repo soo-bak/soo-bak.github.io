@@ -3,6 +3,14 @@ layout: single
 title: "[백준 1026] 보물 (C#, C++) - soo:bak"
 date: "2025-04-19 19:00:42 +0900"
 description: 정렬을 통해 최소 곱의 합을 만드는 백준 1026번 보물 문제의 C# 및 C++ 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 1026
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 1026, 백준 1026번, BOJ 1026, minimumScalarProduct, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 32860] 수수수수퍼노바 (C#, C++) - soo:bak"
 date: "2025-12-25 16:05:00 +0900"
-description: 초신성 관측 순서를 표기 규칙에 맞게 변환하는 문제
+description: "백준 32860번 C#, C++ 풀이 - 초신성 관측 순서를 표기 규칙에 맞게 변환하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 32860
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 32860, 백준 32860번, BOJ 32860, SuperSuperSupernova, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

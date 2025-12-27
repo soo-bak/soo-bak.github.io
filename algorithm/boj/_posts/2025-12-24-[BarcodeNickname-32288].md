@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 32288] 바코드 닉네임 (C#, C++) - soo:bak"
 date: "2025-12-24 12:30:00 +0900"
-description: 문자열에서 l과 I의 대소문자를 서로 뒤집어 출력하는 문제
+description: "백준 32288번 C#, C++ 풀이 - 문자열에서 l과 I의 대소문자를 서로 뒤집어 출력하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 32288
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 32288, 백준 32288번, BOJ 32288, BarcodeNickname, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

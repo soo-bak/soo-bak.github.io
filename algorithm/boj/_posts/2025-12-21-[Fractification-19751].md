@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 19751] Fractification (C#, C++) - soo:bak"
 date: "2025-12-21 20:42:00 +0900"
-description: 네 수의 순서를 바꿔 a/b+c/d 값을 최소화하는 순열을 찾는 문제
+description: "백준 19751번 C#, C++ 풀이 - 네 수의 순서를 바꿔 a/b+c/d 값을 최소화하는 순열을 찾는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 19751
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 19751, 백준 19751번, BOJ 19751, Fractification, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

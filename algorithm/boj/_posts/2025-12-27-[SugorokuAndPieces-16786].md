@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 16786] すごろくと駒 (Sugoroku and Pieces) (C#, C++) - soo:bak"
 date: "2025-12-27 05:25:00 +0900"
-description: 한 칸씩 전진하는 규칙으로 말을 이동시키는 시뮬레이션 문제
+description: "백준 16786번 C#, C++ 풀이 - 한 칸씩 전진하는 규칙으로 말을 이동시키는 시뮬레이션 문제"
+tags:
+  - 백준
+  - BOJ
+  - 16786
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 16786, 백준 16786번, BOJ 16786, SugorokuAndPieces, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

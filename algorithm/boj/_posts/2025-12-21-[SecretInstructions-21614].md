@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 21614] Secret Instructions (C#, C++) - soo:bak"
 date: "2025-12-21 20:42:00 +0900"
-description: 다섯 자리 코드에서 방향 규칙을 해석해 좌우와 이동 칸수를 출력하는 문제
+description: "백준 21614번 C#, C++ 풀이 - 다섯 자리 코드에서 방향 규칙을 해석해 좌우와 이동 칸수를 출력하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 21614
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 21614, 백준 21614번, BOJ 21614, SecretInstructions, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

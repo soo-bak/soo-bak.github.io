@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 34619] 소대 배정 (C#, C++) - soo:bak"
 date: "2025-12-27 13:55:00 +0900"
-description: k번째 입소자가 배정될 중대와 소대를 구하는 문제
+description: "백준 34619번 C#, C++ 풀이 - k번째 입소자가 배정될 중대와 소대를 구하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 34619
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 34619, 백준 34619번, BOJ 34619, PlatoonAssignment, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

@@ -3,6 +3,14 @@ layout: single
 title: "[백준 1037] 약수 (C#, C++) - soo:bak"
 date: "2025-04-14 02:58:39 +0900"
 description: 진약수의 개념과 활용을 통해 원래의 수를 계산하는 백준 1037번 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 1037
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 1037, 백준 1037번, BOJ 1037, divisorProduct, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

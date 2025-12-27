@@ -3,6 +3,14 @@ layout: single
 title: "[백준 5928] Contest Timing (C#, C++) - soo:bak"
 date: "2025-12-13 05:01:00 +0900"
 description: 2011-11-11 11:11을 기준으로 종료 시각까지의 경과 분을 계산하고, 이전이면 -1을 출력하는 백준 5928번 Contest Timing 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 5928
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 5928, 백준 5928번, BOJ 5928, ContestTiming, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

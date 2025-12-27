@@ -3,6 +3,14 @@ layout: single
 title: "[백준 24736] Football Scoring (C#, C++) - soo:bak"
 date: "2025-12-13 05:01:00 +0900"
 description: 각 팀의 터치다운·필드골·세이프티·PAT·2점 전환 개수를 받아 미식축구 점수를 계산하는 백준 24736번 Football Scoring 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 24736
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 24736, 백준 24736번, BOJ 24736, FootballScoring, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

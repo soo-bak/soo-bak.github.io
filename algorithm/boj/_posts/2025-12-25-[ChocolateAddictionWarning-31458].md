@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 31458] !!초콜릿 중독 주의!! (C#, C++) - soo:bak"
 date: "2025-12-25 16:05:00 +0900"
-description: 0/1과 느낌표만 있는 수식을 규칙대로 계산하는 문제
+description: "백준 31458번 C#, C++ 풀이 - 0/1과 느낌표만 있는 수식을 규칙대로 계산하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 31458
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 31458, 백준 31458번, BOJ 31458, ChocolateAddictionWarning, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

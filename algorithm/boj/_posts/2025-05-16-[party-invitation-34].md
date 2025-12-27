@@ -3,6 +3,14 @@ layout: single
 title: "[백준 10104] Party Invitation (C#, C++) - soo:bak"
 date: "2025-05-16 19:15:00 +0900"
 description: 수학적 규칙에 따라 친구를 제거하며 남은 번호를 출력하는 백준 10104번 Party Invitation 문제의 C# 및 C++ 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 10104
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 10104, 백준 10104번, BOJ 10104, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

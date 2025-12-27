@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 9948] Have you had your birthday yet? (C#, C++) - soo:bak"
 date: "2025-12-26 01:03:01 +0900"
-description: 기준 날짜와 생일을 비교해 상태를 출력하는 문제
+description: "백준 9948번 C#, C++ 풀이 - 기준 날짜와 생일을 비교해 상태를 출력하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 9948
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 9948, 백준 9948번, BOJ 9948, HaveYouHadYourBirthdayYet, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

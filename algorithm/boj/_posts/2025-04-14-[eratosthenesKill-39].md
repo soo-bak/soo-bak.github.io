@@ -3,6 +3,14 @@ layout: single
 title: "[백준 2960] 에라토스테네스의 체 (C#, C++) - soo:bak"
 date: "2025-04-14 04:35:43 +0900"
 description: 소수를 체로 거르는 과정에서 K번째로 지워지는 수를 추적하는 백준 2960번 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 2960
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 2960, 백준 2960번, BOJ 2960, eratosthenesKill, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

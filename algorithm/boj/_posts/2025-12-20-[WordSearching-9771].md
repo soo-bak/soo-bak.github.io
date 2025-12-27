@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 9771] Word Searching (C#, C++) - soo:bak"
 date: "2025-12-20 16:02:00 +0900"
-description: 첫 줄 단어를 이후 모든 줄에서 부분 문자열로 몇 번 등장하는지(중복 허용) 세는 문제
+description: "백준 9771번 C#, C++ 풀이 - 첫 줄 단어를 이후 모든 줄에서 부분 문자열로 몇 번 등장하는지(중복 허용) 세는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 9771
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 9771, 백준 9771번, BOJ 9771, WordSearching, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

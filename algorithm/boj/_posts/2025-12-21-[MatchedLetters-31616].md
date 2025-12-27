@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 31616] 揃った文字 (Matched Letters) (C#, C++) - soo:bak"
 date: "2025-12-21 21:51:00 +0900"
-description: 문자열이 모두 같은 문자로 이루어졌는지 확인해 Yes/No를 출력하는 문제
+description: "백준 31616번 C#, C++ 풀이 - 문자열이 모두 같은 문자로 이루어졌는지 확인해 Yes/No를 출력하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 31616
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 31616, 백준 31616번, BOJ 31616, MatchedLetters, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

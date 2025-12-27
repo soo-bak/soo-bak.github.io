@@ -3,6 +3,14 @@ layout: single
 title: "[백준 9723] Right Triangle (C#, C++) - soo:bak"
 date: "2023-06-28 13:53:00 +0900"
 description: 수학, 피타고라스의 정리, 직각 삼각형 판별 등을 주제로 하는 백준 9723번 문제를 C++ C# 으로 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 9723
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 9723, 백준 9723번, BOJ 9723, RightTriangle, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

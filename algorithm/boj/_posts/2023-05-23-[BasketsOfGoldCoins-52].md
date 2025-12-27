@@ -3,6 +3,14 @@ layout: single
 title: "[백준 4850] Baskets of Gold Coins (C#, C++) - soo:bak"
 date: "2023-05-23 07:27:00 +0900"
 description: 그리디 알고리즘을 주제로 하는 백준 4580번 알고리즘 문제를 C# 과 C++ 로 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 4850
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 4850, 백준 4850번, BOJ 4850, BasketsOfGoldCoins, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

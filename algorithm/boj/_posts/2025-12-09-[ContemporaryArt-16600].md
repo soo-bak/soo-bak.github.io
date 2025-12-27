@@ -3,6 +3,14 @@ layout: single
 title: "[백준 16600] Contemporary Art (C#, C++) - soo:bak"
 date: "2025-12-09 13:05:00 +0900"
 description: 정사각형 넓이 a가 주어질 때 둘레 4√a를 구해 소수점 이하 6자리로 출력하는 백준 16600번 Contemporary Art 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 16600
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 16600, 백준 16600번, BOJ 16600, ContemporaryArt, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

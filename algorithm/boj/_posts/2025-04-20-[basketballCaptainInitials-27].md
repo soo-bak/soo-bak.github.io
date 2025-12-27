@@ -3,6 +3,14 @@ layout: single
 title: "[백준 1159] 농구 경기 (C#, C++) - soo:bak"
 date: "2025-04-20 03:58:00 +0900"
 description: 농구 선수들의 이름 중 첫 글자를 기준으로 5명 이상이 있는 알파벳을 찾아 출력하는 백준 1159번 농구 경기 문제의 C# 및 C++ 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 1159
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 1159, 백준 1159번, BOJ 1159, basketballCaptainInitials, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

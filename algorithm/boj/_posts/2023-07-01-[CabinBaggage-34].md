@@ -3,6 +3,14 @@ layout: single
 title: "[백준 9622] Cabin Baggage (C#, C++) - soo:bak"
 date: "2023-07-01 09:25:00 +0900"
 description: 수학, 사칙 연산, 구현, 조건 분기 등을 주제로 하는 백준 9622번 문제를 C++ C# 으로 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 9622
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 9622, 백준 9622번, BOJ 9622, CabinBaggage, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

@@ -3,6 +3,14 @@ layout: single
 title: "[백준 13496] The Merchant of Venice (C#, C++) - soo:bak"
 date: "2025-12-13 13:02:00 +0900"
 description: 도착 가능 거리 내 선박의 화물 가치를 합산해 상환 가능한 두캇을 구하는 백준 13496번 The Merchant of Venice 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 13496
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 13496, 백준 13496번, BOJ 13496, MerchantOfVenice, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

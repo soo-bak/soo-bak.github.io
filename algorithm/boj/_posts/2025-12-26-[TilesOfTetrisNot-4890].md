@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 4890] Tiles of Tetris, NOT! (C#, C++) - soo:bak"
 date: "2025-12-26 00:31:33 +0900"
-description: 직사각형 타일로 가장 작은 정사각형을 만들 때 필요한 개수를 구하는 문제
+description: "백준 4890번 C#, C++ 풀이 - 직사각형 타일로 가장 작은 정사각형을 만들 때 필요한 개수를 구하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 4890
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 4890, 백준 4890번, BOJ 4890, TilesOfTetrisNot, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

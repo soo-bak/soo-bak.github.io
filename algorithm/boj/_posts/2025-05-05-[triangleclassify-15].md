@@ -3,6 +3,14 @@ layout: single
 title: "[백준 9366] 삼각형 분류 (C#, C++) - soo:bak"
 date: "2025-05-05 03:13:00 +0900"
 description: 세 변의 길이에 따라 삼각형의 종류를 분류하고, 조건을 만족하지 않으면 invalid를 출력하는 백준 9366번 문제의 C# 및 C++ 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 9366
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 9366, 백준 9366번, BOJ 9366, triangleclassify, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

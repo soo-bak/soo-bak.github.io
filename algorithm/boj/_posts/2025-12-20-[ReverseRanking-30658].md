@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 30658] Os últimos serão os primeiros (C#, C++) - soo:bak"
 date: "2025-12-20 12:12:00 +0900"
-description: 1차 성적 순서를 뒤집어 2차 예상 순서를 출력하는 문제
+description: "백준 30658번 C#, C++ 풀이 - 1차 성적 순서를 뒤집어 2차 예상 순서를 출력하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 30658
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 30658, 백준 30658번, BOJ 30658, ReverseRanking, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

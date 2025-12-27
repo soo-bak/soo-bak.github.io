@@ -3,6 +3,14 @@ layout: single
 title: "[백준 6856] Roll the Dice (C#, C++) - soo:bak"
 date: "2023-08-02 08:30:00 +0900"
 description: 수학, 경우의 수, 완전 탐색(브루트 포스), 구현 등을 주제로 하는 백준 6856번 문제를 C++ C# 으로 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 6856
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 6856, 백준 6856번, BOJ 6856, RollTheDice, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

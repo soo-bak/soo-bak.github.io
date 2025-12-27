@@ -3,6 +3,14 @@ layout: single
 title: "[백준 3765] Celebrity jeopardy (C#, C++) - soo:bak"
 date: "2025-12-14 09:03:00 +0900"
 description: 입력된 식을 그대로 출력하는 초단순 구현 문제인 백준 3765번 Celebrity jeopardy 풀이
+tags:
+  - 백준
+  - BOJ
+  - 3765
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 3765, 백준 3765번, BOJ 3765, CelebrityJeopardy, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

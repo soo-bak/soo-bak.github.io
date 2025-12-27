@@ -3,6 +3,14 @@ layout: single
 title: "[백준 26209] Intercepting Information (C#, C++) - soo:bak"
 date: "2023-05-08 22:28:00 +0900"
 description: 비트에 대한 이해와 시뮬레이션을 주제로 하는 백준 26209번 알고리즘 문제를 C# 과 C++ 로 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 26209
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 26209, 백준 26209번, BOJ 26209, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

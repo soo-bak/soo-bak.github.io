@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 18309] Extreme Temperatures (C#, C++) - soo:bak"
 date: "2025-12-21 20:42:00 +0900"
-description: 여러 줄의 측정 데이터에서 전체 최저·최고 기온을 찾는 문제
+description: "백준 18309번 C#, C++ 풀이 - 여러 줄의 측정 데이터에서 전체 최저·최고 기온을 찾는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 18309
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 18309, 백준 18309번, BOJ 18309, ExtremeTemperatures, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

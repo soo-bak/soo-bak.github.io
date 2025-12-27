@@ -3,6 +3,14 @@ layout: single
 title: "[백준 6889] Smile with Similes (C#, C++) - soo:bak"
 date: "2023-08-03 09:42:00 +0900"
 description: 문자열, 구현 등을 주제로 하는 백준 6889번 문제를 C++ C# 으로 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 6889
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 6889, 백준 6889번, BOJ 6889, SmileWithSmiles, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

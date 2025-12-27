@@ -3,6 +3,14 @@ layout: single
 title: "[백준 2557] Hello World (C#, C++) - soo:bak"
 date: "2023-05-10 09:43:00 +0900"
 description: 간단한 입 출력을 주제로 하는 백준 2557번 알고리즘 문제를 C# 과 C++ 로 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 2557
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 2557, 백준 2557번, BOJ 2557, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

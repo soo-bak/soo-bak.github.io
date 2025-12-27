@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 27621] Sum of Three Cubes (C#, C++) - soo:bak"
 date: "2025-12-22 00:03:00 +0900"
-description: 0~49에 대한 미리 알려진 해를 사용해 세 정수의 세제곱 합을 출력하는 문제
+description: "백준 27621번 C#, C++ 풀이 - 0~49에 대한 미리 알려진 해를 사용해 세 정수의 세제곱 합을 출력하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 27621
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 27621, 백준 27621번, BOJ 27621, SumOfThreeCubes, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

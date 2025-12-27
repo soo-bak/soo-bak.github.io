@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 30019] 강의실 예약 시스템 (C#, C++) - soo:bak"
 date: "2025-12-25 16:05:00 +0900"
-description: 강의실별 마지막 종료 시각으로 예약 수락 여부를 판단하는 문제
+description: "백준 30019번 C#, C++ 풀이 - 강의실별 마지막 종료 시각으로 예약 수락 여부를 판단하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 30019
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 30019, 백준 30019번, BOJ 30019, ClassroomReservationSystem, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

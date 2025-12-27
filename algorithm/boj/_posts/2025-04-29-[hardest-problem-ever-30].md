@@ -3,6 +3,14 @@ layout: single
 title: "[백준 9971] The Hardest Problem Ever (C#, C++) - soo:bak"
 date: "2025-04-29 05:30:00 +0900"
 description: 시저 암호를 응용하여 5칸 왼쪽으로 이동해 복호화하는 백준 9971번 The Hardest Problem Ever 문제의 C# 및 C++ 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 9971
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 9971, 백준 9971번, BOJ 9971, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

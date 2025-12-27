@@ -3,6 +3,14 @@ layout: single
 title: "[백준 5987] String Function Encoding (C#, C++) - soo:bak"
 date: "2025-12-27 00:55:00 +0900"
 description: 문자열 변환 함수를 반복 적용하는 백준 5987번 String Function Encoding 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 5987
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 5987, 백준 5987번, BOJ 5987, StringFunctionEncoding, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

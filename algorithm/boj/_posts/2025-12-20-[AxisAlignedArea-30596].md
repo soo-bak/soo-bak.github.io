@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 30596] Axis-Aligned Area (C#, C++) - soo:bak"
 date: "2025-12-20 16:02:00 +0900"
-description: 네 막대를 축에 평행하게 놓아 만들 수 있는 최대 직사각형 넓이를 구하는 문제
+description: "백준 30596번 C#, C++ 풀이 - 네 막대를 축에 평행하게 놓아 만들 수 있는 최대 직사각형 넓이를 구하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 30596
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 30596, 백준 30596번, BOJ 30596, AxisAlignedArea, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

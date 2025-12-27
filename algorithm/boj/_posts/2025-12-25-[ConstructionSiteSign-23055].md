@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 23055] 공사장 표지판 (C#, C++) - soo:bak"
 date: "2025-12-25 16:05:00 +0900"
-description: 테두리와 대각선을 별로 채워 N×N 표지판을 출력하는 문제
+description: "백준 23055번 C#, C++ 풀이 - 테두리와 대각선을 별로 채워 N×N 표지판을 출력하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 23055
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 23055, 백준 23055번, BOJ 23055, ConstructionSiteSign, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

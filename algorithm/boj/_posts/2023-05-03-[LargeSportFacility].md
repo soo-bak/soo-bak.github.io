@@ -3,6 +3,14 @@ layout: single
 title: "[백준 16099] Larger Sport Facility (C#, C++) - soo:bak"
 date: "2023-05-03 19:33:00 +0900"
 description: 수학과 시뮬레이션을 주제로 하는 백준 16099번 알고리즘 문제를 C# 과 C++ 로 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 16099
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 16099, 백준 16099번, BOJ 16099, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

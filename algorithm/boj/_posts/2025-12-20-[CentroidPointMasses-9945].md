@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 9945] Centroid of Point Masses (C#, C++) - soo:bak"
 date: "2025-12-20 16:02:00 +0900"
-description: 점 질량의 질량중심 좌표를 여러 테스트케이스에 대해 구하는 문제
+description: "백준 9945번 C#, C++ 풀이 - 점 질량의 질량중심 좌표를 여러 테스트케이스에 대해 구하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 9945
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 9945, 백준 9945번, BOJ 9945, CentroidPointMasses, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

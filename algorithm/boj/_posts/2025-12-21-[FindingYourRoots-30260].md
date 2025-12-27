@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 30260] Finding Your Roots (C#, C++) - soo:bak"
 date: "2025-12-21 09:00:00 +0900"
-description: 단방향 부모 관계에서 한 개체의 조상 깊이를 따라가 세는 문제
+description: "백준 30260번 C#, C++ 풀이 - 단방향 부모 관계에서 한 개체의 조상 깊이를 따라가 세는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 30260
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 30260, 백준 30260번, BOJ 30260, FindingYourRoots, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

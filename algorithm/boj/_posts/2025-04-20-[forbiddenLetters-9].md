@@ -3,6 +3,14 @@ layout: single
 title: "[백준 2789] 유학 금지 (C#, C++) - soo:bak"
 date: "2025-04-20 01:11:00 +0900"
 description: 특정 문자열에 포함된 알파벳을 제거하고 출력하는 백준 2789번 유학 금지 문제의 C# 및 C++ 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 2789
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 2789, 백준 2789번, BOJ 2789, forbiddenLetters, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

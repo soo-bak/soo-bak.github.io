@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 25813] Changing Strings (C#, C++) - soo:bak"
 date: "2025-12-20 16:02:00 +0900"
-description: 문자열에서 좌측 U와 우측 F 사이를 규칙에 따라 U,C,F와 하이픈으로 변환하는 문제
+description: "백준 25813번 C#, C++ 풀이 - 문자열에서 좌측 U와 우측 F 사이를 규칙에 따라 U,C,F와 하이픈으로 변환하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 25813
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 25813, 백준 25813번, BOJ 25813, ChangingStrings, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

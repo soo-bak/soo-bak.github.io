@@ -3,6 +3,14 @@ layout: single
 title: "[백준 15858] Simple Arithmetic (C#, C++) - soo:bak"
 date: "2025-12-19 22:47:00 +0900"
 description: a·b/c를 1e-6 오차 내로 출력하기 위해 정밀 부동소수로 계산하는 백준 15858번 Simple Arithmetic 문제의 C#/C++ 풀이
+tags:
+  - 백준
+  - BOJ
+  - 15858
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 15858, 백준 15858번, BOJ 15858, SimpleArithmetic, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

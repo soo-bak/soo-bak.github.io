@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 19155] Copying Homework (C#, C++) - soo:bak"
 date: "2025-12-26 01:00:35 +0900"
-description: 각 값을 반대쪽 값으로 치환해 조건을 만족하는 순열을 만드는 문제
+description: "백준 19155번 C#, C++ 풀이 - 각 값을 반대쪽 값으로 치환해 조건을 만족하는 순열을 만드는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 19155
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 19155, 백준 19155번, BOJ 19155, CopyingHomework, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

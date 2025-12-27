@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 6609] 모기곱셈 (C#, C++) - soo:bak"
 date: "2025-12-25 16:05:00 +0900"
-description: 모기 성장 규칙을 N주 반복해 성충 수를 구하는 문제
+description: "백준 6609번 C#, C++ 풀이 - 모기 성장 규칙을 N주 반복해 성충 수를 구하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 6609
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 6609, 백준 6609번, BOJ 6609, MosquitoMultiplication, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

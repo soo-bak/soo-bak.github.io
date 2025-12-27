@@ -3,6 +3,14 @@ layout: single
 title: "[백준 17903] Counting Clauses (C#, C++) - soo:bak"
 date: "2025-12-13 13:02:00 +0900"
 description: 절 수가 8 이상이면 satisfactory, 미만이면 unsatisfactory를 출력하는 백준 17903번 Counting Clauses 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 17903
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 17903, 백준 17903번, BOJ 17903, CountingClauses, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

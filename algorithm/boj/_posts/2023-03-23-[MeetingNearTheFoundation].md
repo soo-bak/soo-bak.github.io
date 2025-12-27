@@ -3,6 +3,14 @@ layout: single
 title: "[백준 27194] Meeting Near the Fountain (C#, C++) - soo:bak"
 date: "2023-03-23 15:36:00 +0900"
 description: 시간 계산과 수학을 주제로 하는 백준 27194번 알고리즘 문제를 C# 과 C++ 로 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 27194
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 27194, 백준 27194번, BOJ 27194, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

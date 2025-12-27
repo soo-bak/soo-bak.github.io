@@ -3,6 +3,14 @@ layout: single
 title: "[백준 17010] Time to Decompress (C#, C++) - soo:bak"
 date: "2025-11-21 23:43:00 +0900"
 description: 각 줄의 숫자만큼 문자를 반복해 압축을 해제하는 백준 17010번 Time to Decompress 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 17010
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 17010, 백준 17010번, BOJ 17010, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

@@ -3,6 +3,14 @@ layout: single
 title: "[백준 11549] Identifying tea (C#, C++) - soo:bak"
 date: "2025-11-26 23:00:00 +0900"
 description: 실제 차 종류와 5명의 답안을 비교해 맞힌 사람 수를 세는 백준 11549번 Identifying tea 문제의 C# 및 C++ 풀이
+tags:
+  - 백준
+  - BOJ
+  - 11549
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 11549, 백준 11549번, BOJ 11549, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

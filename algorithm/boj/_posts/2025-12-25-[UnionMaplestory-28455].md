@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 28455] Union Maplestory (C#, C++) - soo:bak"
 date: "2025-12-25 16:05:00 +0900"
-description: 상위 42명의 레벨 합과 상승 능력치 합을 구하는 문제
+description: "백준 28455번 C#, C++ 풀이 - 상위 42명의 레벨 합과 상승 능력치 합을 구하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 28455
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 28455, 백준 28455번, BOJ 28455, UnionMaplestory, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

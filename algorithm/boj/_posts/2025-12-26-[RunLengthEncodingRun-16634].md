@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 16634] Run-Length Encoding, Run! (C#, C++) - soo:bak"
 date: "2025-12-26 02:44:00 +0900"
-description: 문자열을 RLE로 인코딩/디코딩하는 문제
+description: "백준 16634번 C#, C++ 풀이 - 문자열을 RLE로 인코딩/디코딩하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 16634
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 16634, 백준 16634번, BOJ 16634, RunLengthEncodingRun, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

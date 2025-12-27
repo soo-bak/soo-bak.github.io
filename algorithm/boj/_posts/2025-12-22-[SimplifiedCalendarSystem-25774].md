@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 25774] Simplified Calendar System (C#, C++) - soo:bak"
 date: "2025-12-22 00:03:00 +0900"
-description: 단순 달력에서 두 날짜의 일수 차로 요일을 계산하는 문제
+description: "백준 25774번 C#, C++ 풀이 - 단순 달력에서 두 날짜의 일수 차로 요일을 계산하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 25774
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 25774, 백준 25774번, BOJ 25774, SimplifiedCalendarSystem, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

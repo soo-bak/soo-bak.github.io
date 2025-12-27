@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 31048] Last Factorial Digit (C#, C++) - soo:bak"
 date: "2025-12-24 12:30:00 +0900"
-description: N!의 마지막 자릿수를 출력하는 문제
+description: "백준 31048번 C#, C++ 풀이 - N!의 마지막 자릿수를 출력하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 31048
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 31048, 백준 31048번, BOJ 31048, LastFactorialDigit, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

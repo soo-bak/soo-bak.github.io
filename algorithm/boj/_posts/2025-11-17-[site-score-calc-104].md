@@ -3,6 +3,14 @@ layout: single
 title: "[백준 20254] Site Score (C#, C++) - soo:bak"
 date: "2025-11-17 23:12:00 +0900"
 description: 사이트 점수 공식 56UR + 24TR + 14UO + 6TO를 그대로 적용하는 백준 20254번 Site Score 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 20254
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 20254, 백준 20254번, BOJ 20254, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

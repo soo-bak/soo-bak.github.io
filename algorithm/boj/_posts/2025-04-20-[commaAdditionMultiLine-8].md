@@ -3,6 +3,14 @@ layout: single
 title: "[백준 10823] 더하기 2 (C#, C++) - soo:bak"
 date: "2025-04-20 03:05:00 +0900"
 description: 여러 줄에 걸쳐 입력된 콤마 구분 숫자들을 모두 합산하는 백준 10823번 더하기 2 문제의 C# 및 C++ 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 10823
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 10823, 백준 10823번, BOJ 10823, commaAdditionMultiLine, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

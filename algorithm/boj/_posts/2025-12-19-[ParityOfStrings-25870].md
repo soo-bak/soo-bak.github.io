@@ -3,6 +3,14 @@ layout: single
 title: "[백준 25870] Parity of Strings (C#, C++) - soo:bak"
 date: "2025-12-19 22:47:00 +0900"
 description: 모든 문자의 등장 횟수가 짝수면 0, 모두 홀수면 1, 그렇지 않으면 2를 출력하는 단순 카운팅 문제
+tags:
+  - 백준
+  - BOJ
+  - 25870
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 25870, 백준 25870번, BOJ 25870, ParityOfStrings, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

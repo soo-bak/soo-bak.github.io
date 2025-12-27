@@ -3,6 +3,14 @@ layout: single
 title: "[백준 11104] Fridge of Your Dreams (C#, C++) - soo:bak"
 date: "2025-05-02 19:19:00 +0900"
 description: 24비트 이진수 문자열을 입력받아 10진수로 변환하는 문제인 백준 11104번 Fridge of Your Dreams 문제의 C# 및 C++ 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 11104
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 11104, 백준 11104번, BOJ 11104, fridgeofdreams, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

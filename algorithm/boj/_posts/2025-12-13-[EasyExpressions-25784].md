@@ -3,6 +3,14 @@ layout: single
 title: "[백준 25784] Easy-to-Solve Expressions (C#, C++) - soo:bak"
 date: "2025-12-13 05:01:00 +0900"
 description: 세 수 중 하나가 나머지 두 수의 합이면 1, 곱이면 2, 아니면 3을 출력하는 백준 25784번 Easy-to-Solve Expressions 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 25784
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 25784, 백준 25784번, BOJ 25784, EasyExpressions, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

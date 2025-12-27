@@ -3,6 +3,14 @@ layout: single
 title: "[백준 1292] 쉽게 푸는 문제 (C#, C++) - soo:bak"
 date: "2025-04-14 06:08:09 +0900"
 description: 숫자 패턴을 구성하고 특정 구간 합을 구하는 백준 1292번 쉽게 푸는 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 1292
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 1292, 백준 1292번, BOJ 1292, simplePatternSum, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

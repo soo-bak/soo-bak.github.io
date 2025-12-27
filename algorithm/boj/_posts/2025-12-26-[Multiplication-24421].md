@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 24421] 掛け算 (Multiplication) (C#, C++) - soo:bak"
 date: "2025-12-26 02:05:00 +0900"
-description: 순서를 유지한 세 수의 곱을 세는 문제
+description: "백준 24421번 C#, C++ 풀이 - 순서를 유지한 세 수의 곱을 세는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 24421
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 24421, 백준 24421번, BOJ 24421, Multiplication, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

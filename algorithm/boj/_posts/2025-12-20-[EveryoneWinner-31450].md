@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 31450] Everyone is a winner (C#, C++) - soo:bak"
 date: "2025-12-20 16:02:00 +0900"
-description: 메달 수를 아이들 수로 정확히 나눌 수 있는지 판별하는 문제
+description: "백준 31450번 C#, C++ 풀이 - 메달 수를 아이들 수로 정확히 나눌 수 있는지 판별하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 31450
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 31450, 백준 31450번, BOJ 31450, EveryoneWinner, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

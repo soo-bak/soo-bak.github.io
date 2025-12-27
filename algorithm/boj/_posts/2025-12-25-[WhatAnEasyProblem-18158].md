@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 18158] What an Easy Problem (C#, C++) - soo:bak"
 date: "2025-12-25 23:40:59 +0900"
-description: 심리전 발언에 맞춰 항상 지는 손을 반환하는 함수 구현 문제
+description: "백준 18158번 C#, C++ 풀이 - 심리전 발언에 맞춰 항상 지는 손을 반환하는 함수 구현 문제"
+tags:
+  - 백준
+  - BOJ
+  - 18158
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 18158, 백준 18158번, BOJ 18158, WhatAnEasyProblem, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

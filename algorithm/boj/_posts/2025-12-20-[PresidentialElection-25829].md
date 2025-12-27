@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 25829] Presidential Election (C#, C++) - soo:bak"
 date: "2025-12-20 16:02:00 +0900"
-description: 주별 득표로 전체 득표와 선거인단 승자를 판정해 동일 승자인 경우를 출력하는 문제
+description: "백준 25829번 C#, C++ 풀이 - 주별 득표로 전체 득표와 선거인단 승자를 판정해 동일 승자인 경우를 출력하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 25829
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 25829, 백준 25829번, BOJ 25829, PresidentialElection, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

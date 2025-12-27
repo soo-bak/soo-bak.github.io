@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 9151] Starship Hakodate-maru (C#, C++) - soo:bak"
 date: "2025-12-27 03:45:00 +0900"
-description: 주어진 값 이하에서 큐브 수와 사면체 수의 합으로 만들 수 있는 최댓값을 구하는 문제
+description: "백준 9151번 C#, C++ 풀이 - 주어진 값 이하에서 큐브 수와 사면체 수의 합으로 만들 수 있는 최댓값을 구하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 9151
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 9151, 백준 9151번, BOJ 9151, StarshipHakodate, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

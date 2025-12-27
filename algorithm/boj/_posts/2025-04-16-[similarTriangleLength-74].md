@@ -3,6 +3,14 @@ layout: single
 title: "[백준 16478] 원의 반지름 (C#, C++) - soo:bak"
 date: "2025-04-16 02:14:00 +0900"
 description: 닮은 삼각형의 변 비례식을 이용해 선분의 길이를 계산하는 백준 16478번 원의 반지름 문제의 C# 및 C++ 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 16478
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 16478, 백준 16478번, BOJ 16478, similarTriangleLength, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

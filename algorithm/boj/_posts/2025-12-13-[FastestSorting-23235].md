@@ -3,6 +3,14 @@ layout: single
 title: "[백준 23235] The Fastest Sorting Algorithm In The World (C#, C++) - soo:bak"
 date: "2025-12-13 13:02:00 +0900"
 description: 입력이 이미 정렬됐다고 가정하는 문제에서 각 테스트케이스마다 출력하는 백준 23235번 The Fastest Sorting Algorithm In The World 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 23235
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 23235, 백준 23235번, BOJ 23235, FastestSorting, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

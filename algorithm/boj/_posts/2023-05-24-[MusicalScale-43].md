@@ -3,6 +3,14 @@ layout: single
 title: "[백준 2920] 음계 (C#, C++) - soo:bak"
 date: "2023-05-24 20:23:00 +0900"
 description: 비교와 탐색, 정렬 등을 주제로 하는 백준 2920번 알고리즘 문제를 C# 과 C++ 로 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 2920
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 2920, 백준 2920번, BOJ 2920, MusicalScale, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

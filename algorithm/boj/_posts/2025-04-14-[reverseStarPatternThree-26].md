@@ -3,6 +3,14 @@ layout: single
 title: "[백준 2440] 별 찍기 - 3 (C#, C++) - soo:bak"
 date: "2025-04-14 05:21:16 +0900"
 description: 간단한 반복문을 통해 역삼각형 형태의 별 출력을 구현하는 백준 2440번 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 2440
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 2440, 백준 2440번, BOJ 2440, reverseStarPatternThree, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

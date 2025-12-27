@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 16648] Accumulator Battery (C#, C++) - soo:bak"
 date: "2025-12-25 16:05:00 +0900"
-description: 배터리 소모 속도를 역산해 남은 시간을 계산하는 문제
+description: "백준 16648번 C#, C++ 풀이 - 배터리 소모 속도를 역산해 남은 시간을 계산하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 16648
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 16648, 백준 16648번, BOJ 16648, AccumulatorBattery, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

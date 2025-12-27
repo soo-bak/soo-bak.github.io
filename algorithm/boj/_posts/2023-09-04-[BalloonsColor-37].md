@@ -3,6 +3,14 @@ layout: single
 title: "[백준 9635] Balloons Colors (C#, C++) - soo:bak"
 date: "2023-09-04 11:26:00 +0900"
 description: 수학, 사칙연산, 구현 등을 주제로 하는 백준 9635번 문제를 C++ C# 으로 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 9635
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 9635, 백준 9635번, BOJ 9635, BalloonsColor, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

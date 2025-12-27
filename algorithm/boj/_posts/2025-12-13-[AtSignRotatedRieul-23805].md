@@ -3,6 +3,14 @@ layout: single
 title: "[백준 23805] 골뱅이 찍기 - 돌아간 ㄹ (C#, C++) - soo:bak"
 date: "2025-12-13 17:01:00 +0900"
 description: 세 블록을 N배 확장해 돌아간 ㄹ 모양을 출력하는 백준 23805번 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 23805
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 23805, 백준 23805번, BOJ 23805, AtSignRotatedRieul, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

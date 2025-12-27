@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 13587] huaauhahhuahau (C#, C++) - soo:bak"
 date: "2025-12-27 11:05:00 +0900"
-description: 문자열에서 모음만 추출해 회문인지 판별하는 문제
+description: "백준 13587번 C#, C++ 풀이 - 문자열에서 모음만 추출해 회문인지 판별하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 13587
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 13587, 백준 13587번, BOJ 13587, huaauhahhuahau, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

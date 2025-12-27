@@ -3,6 +3,14 @@ layout: single
 title: "[백준 21335] Another Eruption (C#, C++) - soo:bak"
 date: "2025-12-13 00:03:00 +0900"
 description: 넓이 a인 원형 가스 확산 영역의 둘레 2π√(a/π)를 구해 소수점 6자리로 출력하는 백준 21335번 Another Eruption 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 21335
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 21335, 백준 21335번, BOJ 21335, AnotherEruption, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

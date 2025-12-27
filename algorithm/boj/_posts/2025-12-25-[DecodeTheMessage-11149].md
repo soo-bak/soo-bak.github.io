@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 11149] Decode the Message (C#, C++) - soo:bak"
 date: "2025-12-25 16:05:00 +0900"
-description: 단어 합의 27 나머지로 메시지를 복원하는 문제
+description: "백준 11149번 C#, C++ 풀이 - 단어 합의 27 나머지로 메시지를 복원하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 11149
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 11149, 백준 11149번, BOJ 11149, DecodeTheMessage, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

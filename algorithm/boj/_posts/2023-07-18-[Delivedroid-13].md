@@ -3,6 +3,14 @@ layout: single
 title: "[백준 28248] Deliv-e-droid (C#, C++) - soo:bak"
 date: "2023-07-18 06:07:00 +0900"
 description: 수학, 조건문, 사칙연산 등을 주제로 하는 백준 28248번 문제를 C++ C# 으로 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 28248
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 28248, 백준 28248번, BOJ 28248, Delivedroid, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

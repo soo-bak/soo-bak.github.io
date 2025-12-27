@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 25527] Counting Peaks of Infection (C#, C++) - soo:bak"
 date: "2025-12-20 16:02:00 +0900"
-description: 일일 확진자 수에서 양옆보다 큰 날의 개수를 세는 문제
+description: "백준 25527번 C#, C++ 풀이 - 일일 확진자 수에서 양옆보다 큰 날의 개수를 세는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 25527
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 25527, 백준 25527번, BOJ 25527, CountingPeaksOfInfection, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 5768] Divide and Conquer (C#, C++) - soo:bak"
 date: "2025-12-27 04:55:00 +0900"
-description: 구간 [M, N]에서 약수 개수가 최대인 수 X와 그 약수 개수 Y를 찾는 문제
+description: "백준 5768번 C#, C++ 풀이 - 구간 [M, N]에서 약수 개수가 최대인 수 X와 그 약수 개수 Y를 찾는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 5768
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 5768, 백준 5768번, BOJ 5768, DivideAndConquer, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 20001] 고무오리 디버깅 (C#, C++) - soo:bak"
 date: "2025-12-24 22:35:00 +0900"
-description: 문제 수를 스택처럼 관리해 디버깅 결과를 판별하는 문제
+description: "백준 20001번 C#, C++ 풀이 - 문제 수를 스택처럼 관리해 디버깅 결과를 판별하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 20001
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 20001, 백준 20001번, BOJ 20001, RubberDuckDebugging, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

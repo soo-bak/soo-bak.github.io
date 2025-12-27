@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 15121] Star Arrangements (C#, C++) - soo:bak"
 date: "2025-12-27 03:15:00 +0900"
-description: 두 줄의 별 개수 x,y로 번갈아 배치할 때 별 총합이 S가 되는 모든 패턴을 찾는 문제
+description: "백준 15121번 C#, C++ 풀이 - 두 줄의 별 개수 x,y로 번갈아 배치할 때 별 총합이 S가 되는 모든 패턴을 찾는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 15121
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 15121, 백준 15121번, BOJ 15121, StarArrangements, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

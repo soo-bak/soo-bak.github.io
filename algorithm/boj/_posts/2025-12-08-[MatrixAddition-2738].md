@@ -3,6 +3,14 @@ layout: single
 title: "[백준 2738] 행렬 덧셈 (C#, C++) - soo:bak"
 date: "2025-12-08 03:50:00 +0900"
 description: 두 N×M 행렬을 더해 결과를 출력하는 백준 2738번 행렬 덧셈 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 2738
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 2738, 백준 2738번, BOJ 2738, MatrixAddition, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

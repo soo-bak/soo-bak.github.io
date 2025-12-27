@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 14790] Tidy Numbers (Small) (C#, C++) - soo:bak"
 date: "2025-12-25 16:05:00 +0900"
-description: 마지막 tidy 수를 찾아 출력하는 문제
+description: "백준 14790번 C#, C++ 풀이 - 마지막 tidy 수를 찾아 출력하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 14790
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 14790, 백준 14790번, BOJ 14790, TidyNumbersSmall, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

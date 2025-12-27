@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 29918] Leiutaja number üks (C#, C++) - soo:bak"
 date: "2025-12-21 21:51:00 +0900"
-description: 10주 뒤 최대 경쟁자보다 1개 더 많기 위해 필요한 추가 개수를 계산하는 문제
+description: "백준 29918번 C#, C++ 풀이 - 10주 뒤 최대 경쟁자보다 1개 더 많기 위해 필요한 추가 개수를 계산하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 29918
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 29918, 백준 29918번, BOJ 29918, LeiutajaNumberUks, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

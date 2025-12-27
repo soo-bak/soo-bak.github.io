@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 32621] 동아리비 횡령 (C#, C++) - soo:bak"
 date: "2025-12-26 00:25:12 +0900"
-description: 같은 수를 더한 꼴인지 판별해 결과를 출력하는 문제
+description: "백준 32621번 C#, C++ 풀이 - 같은 수를 더한 꼴인지 판별해 결과를 출력하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 32621
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 32621, 백준 32621번, BOJ 32621, ClubFeeEmbezzlement, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

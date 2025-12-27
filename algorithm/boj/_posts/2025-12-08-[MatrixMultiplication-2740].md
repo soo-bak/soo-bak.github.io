@@ -3,6 +3,14 @@ layout: single
 title: "[백준 2740] 행렬 곱셈 (C#, C++) - soo:bak"
 date: "2025-12-08 03:30:00 +0900"
 description: N×M, M×K 행렬을 곱해 N×K 결과를 출력하는 백준 2740번 행렬 곱셈 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 2740
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 2740, 백준 2740번, BOJ 2740, MatrixMultiplication, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

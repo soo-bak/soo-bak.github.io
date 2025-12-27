@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 29738] Goodbye, Code Jam (C#, C++) - soo:bak"
 date: "2025-12-20 12:12:00 +0900"
-description: 마지막 등수 N에 따라 참가자가 머문 라운드를 판별하는 문제
+description: "백준 29738번 C#, C++ 풀이 - 마지막 등수 N에 따라 참가자가 머문 라운드를 판별하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 29738
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 29738, 백준 29738번, BOJ 29738, GoodbyeCodeJam, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 5715] Jingle Composing (C#, C++) - soo:bak"
 date: "2025-12-27 12:35:00 +0900"
-description: 슬래시로 구분된 마디 중 길이가 1이 되는 개수를 세는 문제
+description: "백준 5715번 C#, C++ 풀이 - 슬래시로 구분된 마디 중 길이가 1이 되는 개수를 세는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 5715
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 5715, 백준 5715번, BOJ 5715, JingleComposing, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

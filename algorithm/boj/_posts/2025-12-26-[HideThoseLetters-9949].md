@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 9949] Hide those Letters (C#, C++) - soo:bak"
 date: "2025-12-26 00:30:09 +0900"
-description: 두 글자를 대소문자 구분 없이 밑줄로 바꾸는 문제
+description: "백준 9949번 C#, C++ 풀이 - 두 글자를 대소문자 구분 없이 밑줄로 바꾸는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 9949
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 9949, 백준 9949번, BOJ 9949, HideThoseLetters, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

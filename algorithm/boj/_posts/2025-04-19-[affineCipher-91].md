@@ -3,6 +3,14 @@ layout: single
 title: "[백준 11575] Affine Cipher (C#, C++) - soo:bak"
 date: "2025-04-19 22:51:00 +0900"
 description: "아핀 암호 공식을 이용하여 입력된 문자열을 암호화하는 방식의 구현 문제인 백준 11575번 Affine Cipher 문제의 C# 및 C++ 풀이 및 해설"
+tags:
+  - 백준
+  - BOJ
+  - 11575
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 11575, 백준 11575번, BOJ 11575, affineCipher, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

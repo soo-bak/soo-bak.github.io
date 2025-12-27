@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 18415] キャピタリゼーション (C#, C++) - soo:bak"
 date: "2025-12-25 16:05:00 +0900"
-description: 문자열에서 joi를 찾아 JOI로 바꾸는 문제
+description: "백준 18415번 C#, C++ 풀이 - 문자열에서 joi를 찾아 JOI로 바꾸는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 18415
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 18415, 백준 18415번, BOJ 18415, Capitalization, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

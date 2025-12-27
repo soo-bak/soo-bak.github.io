@@ -3,6 +3,14 @@ layout: single
 title: "[백준 14215] 세 막대 (C#, C++) - soo:bak"
 date: "2025-04-16 02:04:00 +0900"
 description: 삼각형을 만들 수 없는 경우 가장 긴 변을 줄여 최대 둘레를 만드는 문제인 백준 14215번 세 막대 문제의 C# 및 C++ 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 14215
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 14215, 백준 14215번, BOJ 14215, triangleMaxPerimeter, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

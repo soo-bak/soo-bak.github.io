@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 30792] gahui and sousenkyo 2 (C#, C++) - soo:bak"
 date: "2025-12-21 21:51:00 +0900"
-description: 지지 캐릭터의 득표 수보다 높은 득표 수를 센 뒤 등수를 출력하는 문제
+description: "백준 30792번 C#, C++ 풀이 - 지지 캐릭터의 득표 수보다 높은 득표 수를 센 뒤 등수를 출력하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 30792
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 30792, 백준 30792번, BOJ 30792, GahuiAndSousenkyo2, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

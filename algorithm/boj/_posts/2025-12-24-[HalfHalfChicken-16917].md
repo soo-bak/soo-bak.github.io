@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 16917] 양념 반 후라이드 반 (C#, C++) - soo:bak"
 date: "2025-12-24 22:35:00 +0900"
-description: 반반 치킨을 적절히 섞어 최소 비용을 구하는 문제
+description: "백준 16917번 C#, C++ 풀이 - 반반 치킨을 적절히 섞어 최소 비용을 구하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 16917
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 16917, 백준 16917번, BOJ 16917, HalfHalfChicken, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

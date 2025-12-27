@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 32587] Dragged-out Duel (C#, C++) - soo:bak"
 date: "2025-12-24 12:30:00 +0900"
-description: 가위바위보 결과를 라운드별로 비교해 승패를 결정하는 문제
+description: "백준 32587번 C#, C++ 풀이 - 가위바위보 결과를 라운드별로 비교해 승패를 결정하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 32587
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 32587, 백준 32587번, BOJ 32587, DraggedOutDuel, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

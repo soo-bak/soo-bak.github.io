@@ -3,6 +3,14 @@ layout: single
 title: "[백준 2693] N번째 큰 수 (C#, C++) - soo:bak"
 date: "2025-04-14 06:20:02 +0900"
 description: 정렬을 통해 배열에서 3번째로 큰 수를 추출하는 백준 2693번 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 2693
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 2693, 백준 2693번, BOJ 2693, thirdLargest, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

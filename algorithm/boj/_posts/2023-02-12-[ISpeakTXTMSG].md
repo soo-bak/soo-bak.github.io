@@ -3,6 +3,14 @@ layout: single
 title: "[백준 6841] I Speak TXTMSG (C#, C++) - soo:bak"
 date: "2023-02-12 08:31:00 +0900"
 description: 문자열 파싱을 주제로한 백준 6841번 문제를 C# 과 C++ 로 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 6841
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 6841, 백준 6841번, BOJ 6841, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

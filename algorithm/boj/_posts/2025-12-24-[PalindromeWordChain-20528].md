@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 20528] 끝말잇기 (C#, C++) - soo:bak"
 date: "2025-12-24 22:35:00 +0900"
-description: 모든 팰린드롬 문자열의 첫 글자가 같은지 확인하는 문제
+description: "백준 20528번 C#, C++ 풀이 - 모든 팰린드롬 문자열의 첫 글자가 같은지 확인하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 20528
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 20528, 백준 20528번, BOJ 20528, PalindromeWordChain, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

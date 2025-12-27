@@ -3,6 +3,14 @@ layout: single
 title: "[백준 11055] 가장 큰 증가하는 부분 수열 (C#, C++) - soo:bak"
 date: "2025-12-09 13:20:00 +0900"
 description: 증가하는 부분 수열들의 합 중 최댓값을 O(N^2) DP로 구하는 백준 11055번 가장 큰 증가하는 부분 수열 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 11055
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 11055, 백준 11055번, BOJ 11055, MaxIncreasingSubsequenceSum, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

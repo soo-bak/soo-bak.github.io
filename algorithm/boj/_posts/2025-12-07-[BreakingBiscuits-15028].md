@@ -3,6 +3,14 @@ layout: single
 title: "[백준 15028] Breaking Biscuits (C#, C++) - soo:bak"
 date: "2025-12-07 00:10:00 +0900"
 description: 볼록 다각형의 최소 폭을 구해 필요한 머그 지름을 계산하는 백준 15028번 Breaking Biscuits 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 15028
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 15028, 백준 15028번, BOJ 15028, BreakingBiscuits, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

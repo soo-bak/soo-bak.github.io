@@ -3,6 +3,14 @@ layout: single
 title: "[백준 10569] 다면체 (C#, C++) - soo:bak"
 date: "2025-04-14 20:25:24 +0900"
 description: 오일러의 정리를 활용하여 면의 개수를 계산하는 백준 10569번 다면체 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 10569
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 10569, 백준 10569번, BOJ 10569, polyhedronFormula, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

@@ -3,6 +3,14 @@ layout: single
 title: "[백준 31428] 엘리스 트랙 매칭 (C#, C++) - soo:bak"
 date: "2024-03-04 02:08:00 +0900"
 description: 구현, 문자열 등을 주제로 하는 백준 31428번 문제를 C++ C# 으로 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 31428
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 31428, 백준 31428번, BOJ 31428, aliceTrackMatching, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

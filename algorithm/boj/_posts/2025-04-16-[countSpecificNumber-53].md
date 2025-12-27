@@ -3,6 +3,14 @@ layout: single
 title: "[백준 10807] 개수 세기 (C#, C++) - soo:bak"
 date: "2025-04-16 02:02:00 +0900"
 description: 배열 내에서 특정 정수의 개수를 세는 단순 카운팅 문제인 백준 10807번 개수 세기 문제의 C# 및 C++ 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 10807
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 10807, 백준 10807번, BOJ 10807, countSpecificNumber, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 25985] Fastestest Function (C#, C++) - soo:bak"
 date: "2025-12-21 21:51:00 +0900"
-description: 최적화 전후 전체 비중 x, y로부터 함수가 얼마나 빨라졌는지 비율을 계산하는 문제
+description: "백준 25985번 C#, C++ 풀이 - 최적화 전후 전체 비중 x, y로부터 함수가 얼마나 빨라졌는지 비율을 계산하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 25985
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 25985, 백준 25985번, BOJ 25985, FastestestFunction, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

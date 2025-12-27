@@ -3,6 +3,14 @@ layout: single
 title: "[백준 31520] Champernowne Verification (C#, C++) - soo:bak"
 date: "2025-12-21 21:51:00 +0900"
 description: 정수 n이 1부터 k까지 이어 붙인 챔퍼나운 수인지 확인해 맞으면 k, 아니면 -1을 출력하는 문제
+tags:
+  - 백준
+  - BOJ
+  - 31520
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 31520, 백준 31520번, BOJ 31520, ChampernowneVerification, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

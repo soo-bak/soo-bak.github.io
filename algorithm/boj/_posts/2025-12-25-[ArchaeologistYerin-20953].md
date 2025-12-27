@@ -3,6 +3,14 @@ layout: single
 title: "[백준 20953] 고고학자 예린 (C#, C++) - soo:bak"
 date: "2025-12-25 16:05:00 +0900"
 description: 삼중 반복문의 반복 횟수를 수식으로 계산하는 백준 20953번 고고학자 예린 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 20953
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 20953, 백준 20953번, BOJ 20953, ArchaeologistYerin, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

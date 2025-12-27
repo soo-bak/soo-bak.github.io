@@ -3,6 +3,14 @@ layout: single
 title: "[백준 17626] Four Squares (C#, C++) - soo:bak"
 date: "2025-11-17 23:03:00 +0900"
 description: 1부터 n까지의 최소 제곱수 합을 DP로 구해 네 개 이하의 제곱수로 표현하는 백준 17626번 Four Squares 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 17626
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 17626, 백준 17626번, BOJ 17626, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

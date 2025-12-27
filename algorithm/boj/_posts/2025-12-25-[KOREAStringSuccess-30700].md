@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 30700] KOREA 문자열 만들기 성공 (C#, C++) - soo:bak"
 date: "2025-12-25 16:05:00 +0900"
-description: 삭제로 만들 수 있는 가장 긴 KOREA 반복 문자열의 길이를 구하는 문제
+description: "백준 30700번 C#, C++ 풀이 - 삭제로 만들 수 있는 가장 긴 KOREA 반복 문자열의 길이를 구하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 30700
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 30700, 백준 30700번, BOJ 30700, KOREAStringSuccess, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 23103] Academic Distance (C#, C++) - soo:bak"
 date: "2025-12-19 22:47:00 +0900"
-description: 주어진 교실 좌표를 순서대로 이동할 때의 맨해튼 거리 합을 구하는 문제
+description: "백준 23103번 C#, C++ 풀이 - 주어진 교실 좌표를 순서대로 이동할 때의 맨해튼 거리 합을 구하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 23103
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 23103, 백준 23103번, BOJ 23103, AcademicDistance, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

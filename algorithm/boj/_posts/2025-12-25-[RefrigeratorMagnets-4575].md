@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 4575] Refrigerator Magnets (C#, C++) - soo:bak"
 date: "2025-12-25 16:05:00 +0900"
-description: 중복 알파벳이 없는 문장만 출력하는 문제
+description: "백준 4575번 C#, C++ 풀이 - 중복 알파벳이 없는 문장만 출력하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 4575
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 4575, 백준 4575번, BOJ 4575, RefrigeratorMagnets, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

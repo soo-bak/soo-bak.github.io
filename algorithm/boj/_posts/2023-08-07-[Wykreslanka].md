@@ -3,6 +3,14 @@ layout: single
 title: "[백준 8721] Wykreślanka (C#, C++) - soo:bak"
 date: "2023-08-07 15:11:00 +0900"
 description: 수학, 구현 등을 주제로 하는 백준 8721번 문제를 C++ C# 으로 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 8721
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 8721, 백준 8721번, BOJ 8721, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

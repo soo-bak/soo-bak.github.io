@@ -3,6 +3,14 @@ layout: single
 title: "[백준 15151] Incomplete Book (C#, C++) - soo:bak"
 date: "2025-12-06 17:52:00 +0900"
 description: 첫 책부터 두 배씩 늘어나는 소요 일수로 완성 가능한 최대 책 수를 구하는 백준 15151번 Incomplete Book 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 15151
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 15151, 백준 15151번, BOJ 15151, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

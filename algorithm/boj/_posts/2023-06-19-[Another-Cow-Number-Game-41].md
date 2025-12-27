@@ -3,6 +3,14 @@ layout: single
 title: "[백준 6190] Another Cow Number Game (C#, C++) - soo:bak"
 date: "2023-06-19 08:33:00 +0900"
 description: 구현과 수학, 사칙연산을 주제로 하는 백준 6190번 문제를 C++ C# 으로 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 6190
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 6190, 백준 6190번, BOJ 6190, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 30957] 빅데이터 vs 정보보호 vs 인공지능 (C#, C++) - soo:bak"
 date: "2025-12-20 16:02:00 +0900"
-description: B, S, A 응답을 집계해 최다 관심 분야를 출력하는 문제
+description: "백준 30957번 C#, C++ 풀이 - B, S, A 응답을 집계해 최다 관심 분야를 출력하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 30957
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 30957, 백준 30957번, BOJ 30957, BigdataVsSecurityVsAI, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

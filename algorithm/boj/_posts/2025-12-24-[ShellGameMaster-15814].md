@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 15814] 야바위 대장 (C#, C++) - soo:bak"
 date: "2025-12-24 22:35:00 +0900"
-description: 주어진 인덱스 쌍을 순서대로 swap하는 문자열 처리 문제
+description: "백준 15814번 C#, C++ 풀이 - 주어진 인덱스 쌍을 순서대로 swap하는 문자열 처리 문제"
+tags:
+  - 백준
+  - BOJ
+  - 15814
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 15814, 백준 15814번, BOJ 15814, ShellGameMaster, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

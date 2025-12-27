@@ -3,6 +3,14 @@ layout: single
 title: "[백준 9584] Fraud Busters (C#, C++) - soo:bak"
 date: "2025-05-16 21:00:00 +0900"
 description: 차량 번호판 일부가 가려진 상태에서 가능한 모든 일치 코드를 필터링하는 백준 9584번 Fraud Busters 문제의 C# 및 C++ 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 9584
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 9584, 백준 9584번, BOJ 9584, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

@@ -3,6 +3,14 @@ layout: single
 title: "[백준 17487] 타자 연습 (C#, C++) - soo:bak"
 date: "2025-12-25 16:05:00 +0900"
 description: QWERTY 기준 왼손/오른손 키 입력 횟수를 계산하는 백준 17487번 타자 연습 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 17487
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 17487, 백준 17487번, BOJ 17487, TypingPractice, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

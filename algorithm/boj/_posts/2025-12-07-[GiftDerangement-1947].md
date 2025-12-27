@@ -3,6 +3,14 @@ layout: single
 title: "[백준 1947] 선물 전달 (C#, C++) - soo:bak"
 date: "2025-12-07 02:45:00 +0900"
 description: N명이 자기 선물을 받지 않도록 교환하는 경우의 수를 구하는 백준 1947번 선물 전달 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 1947
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 1947, 백준 1947번, BOJ 1947, GiftDerangement, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

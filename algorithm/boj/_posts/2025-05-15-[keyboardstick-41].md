@@ -3,6 +3,14 @@ layout: single
 title: "[백준 7120] String (C#, C++) - soo:bak"
 date: "2025-05-15 09:31:00 +0900"
 description: 연속된 동일 문자를 제거하여 원래 문자열을 복원하는 백준 7120번 String 문제의 C# 및 C++ 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 7120
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 7120, 백준 7120번, BOJ 7120, keyboardstick, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

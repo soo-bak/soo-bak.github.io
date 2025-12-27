@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 30204] 병영외 급식 (C#, C++) - soo:bak"
 date: "2025-12-25 14:56:00 +0900"
-description: 전체 인원 합이 X로 나누어떨어지는지 확인하는 문제
+description: "백준 30204번 C#, C++ 풀이 - 전체 인원 합이 X로 나누어떨어지는지 확인하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 30204
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 30204, 백준 30204번, BOJ 30204, BarracksCatering, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

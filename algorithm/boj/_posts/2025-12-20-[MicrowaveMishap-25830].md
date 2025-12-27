@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 25830] Microwave Mishap (C#, C++) - soo:bak"
 date: "2025-12-20 16:02:00 +0900"
-description: 분:초를 시간:분으로 잘못 해석했을 때 초과 조리 시간을 구하는 문제
+description: "백준 25830번 C#, C++ 풀이 - 분:초를 시간:분으로 잘못 해석했을 때 초과 조리 시간을 구하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 25830
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 25830, 백준 25830번, BOJ 25830, MicrowaveMishap, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 11113] The Traveling Orienteerer (C#, C++) - soo:bak"
 date: "2025-12-25 16:05:00 +0900"
-description: 경로의 연속한 점 거리 합을 반올림해 출력하는 문제
+description: "백준 11113번 C#, C++ 풀이 - 경로의 연속한 점 거리 합을 반올림해 출력하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 11113
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 11113, 백준 11113번, BOJ 11113, TheTravelingOrienteerer, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

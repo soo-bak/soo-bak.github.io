@@ -3,6 +3,14 @@ layout: single
 title: "[백준 4153] 직각삼각형 (C#, C++) - soo:bak"
 date: "2023-05-23 09:28:00 +0900"
 description: 수학과 피타고라스의 정리, 삼각형을 주제로 하는 백준 4153번 알고리즘 문제를 C# 과 C++ 로 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 4153
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 4153, 백준 4153번, BOJ 4153, RightAngledTriangle, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

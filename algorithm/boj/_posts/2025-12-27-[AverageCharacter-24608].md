@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 24608] Average Character (C#, C++) - soo:bak"
 date: "2025-12-27 09:35:00 +0900"
-description: 문자열의 ASCII 코드 평균을 계산해 해당 문자로 출력하는 문제
+description: "백준 24608번 C#, C++ 풀이 - 문자열의 ASCII 코드 평균을 계산해 해당 문자로 출력하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 24608
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 24608, 백준 24608번, BOJ 24608, AverageCharacter, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

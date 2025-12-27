@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 11531] ACM 대회 채점 (C#, C++) - soo:bak"
 date: "2025-12-25 16:05:00 +0900"
-description: 제출 로그를 바탕으로 해결 수와 페널티 합을 계산하는 문제
+description: "백준 11531번 C#, C++ 풀이 - 제출 로그를 바탕으로 해결 수와 페널티 합을 계산하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 11531
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 11531, 백준 11531번, BOJ 11531, ACMContestScoring, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

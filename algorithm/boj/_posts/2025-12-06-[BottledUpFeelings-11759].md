@@ -3,6 +3,14 @@ layout: single
 title: "[백준 11759] Bottled-Up Feelings (C#, C++) - soo:bak"
 date: "2025-12-06 20:55:00 +0900"
 description: 두 용기 부피를 사용해 전체 용량을 정확히 채우되 병 개수를 최소화하는 백준 11759번 Bottled-Up Feelings 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 11759
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 11759, 백준 11759번, BOJ 11759, BottledUpFeelings, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

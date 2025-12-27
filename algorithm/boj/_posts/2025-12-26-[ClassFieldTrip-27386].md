@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 27386] Class Field Trip (C#, C++) - soo:bak"
 date: "2025-12-26 02:38:00 +0900"
-description: 두 정렬된 문자열을 합쳐 정렬된 결과를 만드는 문제
+description: "백준 27386번 C#, C++ 풀이 - 두 정렬된 문자열을 합쳐 정렬된 결과를 만드는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 27386
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 27386, 백준 27386번, BOJ 27386, ClassFieldTrip, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

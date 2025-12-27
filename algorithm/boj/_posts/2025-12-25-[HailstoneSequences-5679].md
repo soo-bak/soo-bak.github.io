@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 5679] Hailstone Sequences (C#, C++) - soo:bak"
 date: "2025-12-25 16:05:00 +0900"
-description: 하일스톤 수열에서 최댓값을 찾는 문제
+description: "백준 5679번 C#, C++ 풀이 - 하일스톤 수열에서 최댓값을 찾는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 5679
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 5679, 백준 5679번, BOJ 5679, HailstoneSequences, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

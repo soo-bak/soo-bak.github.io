@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 27326] 二人三脚 (Three-Legged Race) (C#, C++) - soo:bak"
 date: "2025-12-20 12:12:00 +0900"
-description: 2N-1명의 소속 팀 정보가 주어질 때 마지막 학생의 팀 번호를 찾는 문제
+description: "백준 27326번 C#, C++ 풀이 - 2N-1명의 소속 팀 정보가 주어질 때 마지막 학생의 팀 번호를 찾는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 27326
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 27326, 백준 27326번, BOJ 27326, ThreeLeggedRace, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 27329] Repeating String (C#, C++) - soo:bak"
 date: "2025-12-20 16:02:00 +0900"
-description: 문자열이 같은 절반 두 개로 이뤄져 있는지 판별하는 문제
+description: "백준 27329번 C#, C++ 풀이 - 문자열이 같은 절반 두 개로 이뤄져 있는지 판별하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 27329
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 27329, 백준 27329번, BOJ 27329, RepeatingString, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

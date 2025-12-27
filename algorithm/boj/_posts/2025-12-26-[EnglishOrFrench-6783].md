@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 6783] English or French? (C#, C++) - soo:bak"
 date: "2025-12-26 02:31:00 +0900"
-description: t와 s의 등장 횟수를 비교하는 문제
+description: "백준 6783번 C#, C++ 풀이 - t와 s의 등장 횟수를 비교하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 6783
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 6783, 백준 6783번, BOJ 6783, EnglishOrFrench, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 23175] Histogram Sequence 3 (C#, C++) - soo:bak"
 date: "2025-12-25 23:54:01 +0900"
-description: 높이 수열에서 블록 길이를 복원해 원래 수열을 출력하는 문제
+description: "백준 23175번 C#, C++ 풀이 - 높이 수열에서 블록 길이를 복원해 원래 수열을 출력하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 23175
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 23175, 백준 23175번, BOJ 23175, HistogramSequence3, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

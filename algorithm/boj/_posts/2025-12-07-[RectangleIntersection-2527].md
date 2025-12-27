@@ -3,6 +3,14 @@ layout: single
 title: "[백준 2527] 직사각형 (C#, C++) - soo:bak"
 date: "2025-12-07 02:25:00 +0900"
 description: 두 직사각형의 교차 형태를 겹치는 구간 길이로 판별하는 백준 2527번 직사각형 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 2527
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 2527, 백준 2527번, BOJ 2527, RectangleIntersection, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

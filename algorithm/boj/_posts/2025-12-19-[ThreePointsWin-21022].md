@@ -3,6 +3,14 @@ layout: single
 title: "[백준 21022] Three Points for a Win (C#, C++) - soo:bak"
 date: "2025-12-19 22:47:00 +0900"
 description: 경기 결과 a[i], b[i]를 비교해 승리 3점, 무승부 1점, 패배 0점을 합산하는 단순 구현 문제
+tags:
+  - 백준
+  - BOJ
+  - 21022
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 21022, 백준 21022번, BOJ 21022, ThreePointsWin, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

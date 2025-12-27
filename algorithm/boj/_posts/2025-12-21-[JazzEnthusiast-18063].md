@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 18063] Jazz Enthusiast (C#, C++) - soo:bak"
 date: "2025-12-21 20:42:00 +0900"
-description: 곡 길이와 크로스페이드 시간을 이용해 전체 청취 시간을 계산하는 문제
+description: "백준 18063번 C#, C++ 풀이 - 곡 길이와 크로스페이드 시간을 이용해 전체 청취 시간을 계산하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 18063
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 18063, 백준 18063번, BOJ 18063, JazzEnthusiast, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

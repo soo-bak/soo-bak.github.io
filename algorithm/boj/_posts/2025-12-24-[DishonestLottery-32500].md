@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 32500] Dishonest Lottery (C#, C++) - soo:bak"
 date: "2025-12-24 12:30:00 +0900"
-description: 등장 횟수가 20%를 초과하는 번호를 찾는 문제
+description: "백준 32500번 C#, C++ 풀이 - 등장 횟수가 20%를 초과하는 번호를 찾는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 32500
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 32500, 백준 32500번, BOJ 32500, DishonestLottery, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

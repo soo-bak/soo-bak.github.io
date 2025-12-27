@@ -3,6 +3,14 @@ layout: single
 title: "[백준 10757] 큰 수 A+B (C#, C++) - soo:bak"
 date: "2023-05-23 09:38:00 +0900"
 description: 수학과 BigInteger 자료형과 같은 큰 수 연산을 주제로 하는 백준 10757번 알고리즘 문제를 C# 과 C++ 로 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 10757
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 10757, 백준 10757번, BOJ 10757, BigNumAPlusB, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 9783] Easy Encryption (C#, C++) - soo:bak"
 date: "2025-12-21 09:00:00 +0900"
-description: 문자별 매핑과 숫자 앞 # 규칙에 따라 문자열을 암호화하는 문제
+description: "백준 9783번 C#, C++ 풀이 - 문자별 매핑과 숫자 앞 # 규칙에 따라 문자열을 암호화하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 9783
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 9783, 백준 9783번, BOJ 9783, EasyEncryption, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

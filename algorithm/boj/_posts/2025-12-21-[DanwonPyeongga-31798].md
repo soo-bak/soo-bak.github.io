@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 31798] 단원평가 (C#, C++) - soo:bak"
 date: "2025-12-21 20:42:00 +0900"
-description: a+b=c^2 관계에서 하나의 빈칸을 채워 양의 정수를 구하는 문제
+description: "백준 31798번 C#, C++ 풀이 - a+b=c^2 관계에서 하나의 빈칸을 채워 양의 정수를 구하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 31798
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 31798, 백준 31798번, BOJ 31798, DanwonPyeongga, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

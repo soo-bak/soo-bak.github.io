@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 31609] 現れている数字 (Appearing Numbers) (C#, C++) - soo:bak"
 date: "2025-12-22 00:03:00 +0900"
-description: 수열에 등장한 0~9를 오름차순으로 출력하는 문제
+description: "백준 31609번 C#, C++ 풀이 - 수열에 등장한 0~9를 오름차순으로 출력하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 31609
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 31609, 백준 31609번, BOJ 31609, AppearingNumbers, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 25840] Sharing Birthdays (C#, C++) - soo:bak"
 date: "2025-12-20 15:33:00 +0900"
-description: 주어진 생일 목록에서 서로 다른 날짜의 개수를 세는 문제
+description: "백준 25840번 C#, C++ 풀이 - 주어진 생일 목록에서 서로 다른 날짜의 개수를 세는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 25840
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 25840, 백준 25840번, BOJ 25840, SharingBirthdays, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

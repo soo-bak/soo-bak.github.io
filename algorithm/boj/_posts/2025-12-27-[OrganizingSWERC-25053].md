@@ -3,6 +3,14 @@ layout: single
 title: "[백준 25053] Organizing SWERC (C#, C++) - soo:bak"
 date: "2025-12-27 07:45:00 +0900"
 description: 난이도 1~10별 최고 미적 점수를 더하거나 부족하면 MOREPROBLEMS을 출력하는 문제
+tags:
+  - 백준
+  - BOJ
+  - 25053
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 25053, 백준 25053번, BOJ 25053, OrganizingSWERC, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

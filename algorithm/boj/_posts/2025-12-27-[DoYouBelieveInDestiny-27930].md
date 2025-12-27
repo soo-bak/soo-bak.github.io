@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 27930] 당신은 운명을 믿나요? (C#, C++) - soo:bak"
 date: "2025-12-27 15:15:00 +0900"
-description: 문자열에서 YONSEI와 KOREA 중 먼저 완성되는 부분수열을 찾는 문제
+description: "백준 27930번 C#, C++ 풀이 - 문자열에서 YONSEI와 KOREA 중 먼저 완성되는 부분수열을 찾는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 27930
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 27930, 백준 27930번, BOJ 27930, DoYouBelieveInDestiny, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

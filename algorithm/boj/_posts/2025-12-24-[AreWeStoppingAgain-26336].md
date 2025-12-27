@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 26336] Are We Stopping Again? (C#, C++) - soo:bak"
 date: "2025-12-24 12:30:00 +0900"
-description: 주행 거리에서 주유/식사 정차 횟수를 합집합으로 계산하는 문제
+description: "백준 26336번 C#, C++ 풀이 - 주행 거리에서 주유/식사 정차 횟수를 합집합으로 계산하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 26336
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 26336, 백준 26336번, BOJ 26336, AreWeStoppingAgain, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

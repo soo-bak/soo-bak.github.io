@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 3943] 헤일스톤 수열 (C#, C++) - soo:bak"
 date: "2025-12-24 12:30:00 +0900"
-description: 헤일스톤 수열을 진행하며 최댓값을 구하는 문제
+description: "백준 3943번 C#, C++ 풀이 - 헤일스톤 수열을 진행하며 최댓값을 구하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 3943
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 3943, 백준 3943번, BOJ 3943, HailstoneSequence, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

@@ -3,6 +3,14 @@ layout: single
 title: "[백준 12836] 가계부 (Easy) (C#, C++) - soo:bak"
 date: "2025-12-25 16:05:00 +0900"
 description: 누적합을 이용하여 수입/지출 추가와 구간 합을 처리하는 백준 12836번 가계부 (Easy) 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 12836
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 12836, 백준 12836번, BOJ 12836, AccountBookEasy, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

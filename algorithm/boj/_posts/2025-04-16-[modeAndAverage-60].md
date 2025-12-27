@@ -3,6 +3,14 @@ layout: single
 title: "[백준 2592] 대표값 (C#, C++) - soo:bak"
 date: "2025-04-16 02:12:00 +0900"
 description: 10개의 정수에 대해 평균과 최빈값을 구하는 백준 2592번 대표값 문제의 C# 및 C++ 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 2592
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 2592, 백준 2592번, BOJ 2592, modeAndAverage, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

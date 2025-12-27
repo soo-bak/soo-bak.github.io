@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 25755] 거울반사 (C#, C++) - soo:bak"
 date: "2025-12-25 16:05:00 +0900"
-description: 배열을 방향에 맞게 뒤집고 숫자를 대응시켜 출력하는 문제
+description: "백준 25755번 C#, C++ 풀이 - 배열을 방향에 맞게 뒤집고 숫자를 대응시켜 출력하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 25755
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 25755, 백준 25755번, BOJ 25755, MirrorReflection, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

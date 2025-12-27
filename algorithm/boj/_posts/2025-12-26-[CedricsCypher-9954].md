@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 9954] Cedric's Cypher (C#, C++) - soo:bak"
 date: "2025-12-26 00:56:05 +0900"
-description: 마지막 문자로 이동량을 알아내 평문을 복원하는 문제
+description: "백준 9954번 C#, C++ 풀이 - 마지막 문자로 이동량을 알아내 평문을 복원하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 9954
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 9954, 백준 9954번, BOJ 9954, CedricsCypher, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

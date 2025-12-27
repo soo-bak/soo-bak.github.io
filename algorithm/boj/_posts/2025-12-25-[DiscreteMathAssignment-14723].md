@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 14723] 이산수학 과제 (C#, C++) - soo:bak"
 date: "2025-12-25 14:56:00 +0900"
-description: 대각선 순서로 열거되는 유리수에서 N번째 항을 구하는 문제
+description: "백준 14723번 C#, C++ 풀이 - 대각선 순서로 열거되는 유리수에서 N번째 항을 구하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 14723
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 14723, 백준 14723번, BOJ 14723, DiscreteMathAssignment, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

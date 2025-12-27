@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 11007] Inverse Move-to-Front Transform (C#, C++) - soo:bak"
 date: "2025-12-26 01:01:26 +0900"
-description: 인덱스 수열로부터 원래 문자열을 복원하는 문제
+description: "백준 11007번 C#, C++ 풀이 - 인덱스 수열로부터 원래 문자열을 복원하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 11007
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 11007, 백준 11007번, BOJ 11007, InverseMoveToFrontTransform, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

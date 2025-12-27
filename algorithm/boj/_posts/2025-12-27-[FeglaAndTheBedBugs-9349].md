@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 9349] Fegla and the Bed Bugs (C#, C++) - soo:bak"
 date: "2025-12-27 11:15:00 +0900"
-description: N칸에 K마리 벌레를 놓을 때 인접 벌레 사이 최소 빈칸을 최대로 하는 값 계산
+description: "백준 9349번 C#, C++ 풀이 - N칸에 K마리 벌레를 놓을 때 인접 벌레 사이 최소 빈칸을 최대로 하는 값 계산"
+tags:
+  - 백준
+  - BOJ
+  - 9349
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 9349, 백준 9349번, BOJ 9349, FeglaAndTheBedBugs, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

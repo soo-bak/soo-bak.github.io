@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 7513] 준살 프로그래밍 대회 (C#, C++) - soo:bak"
 date: "2025-12-26 01:23:25 +0900"
-description: 단어 목록과 인덱스 순서로 비밀번호를 만드는 문제
+description: "백준 7513번 C#, C++ 풀이 - 단어 목록과 인덱스 순서로 비밀번호를 만드는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 7513
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 7513, 백준 7513번, BOJ 7513, JunsalProgrammingContest, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

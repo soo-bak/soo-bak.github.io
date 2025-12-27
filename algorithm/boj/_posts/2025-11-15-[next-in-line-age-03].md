@@ -3,6 +3,14 @@ layout: single
 title: "[백준 6749] Next in line (C#, C++) - soo:bak"
 date: "2025-11-15 01:05:00 +0900"
 description: 등차수열 관계를 이용해 막내와 둘째를 보고 첫째 나이를 구하는 백준 6749번 Next in line 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 6749
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 6749, 백준 6749번, BOJ 6749, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

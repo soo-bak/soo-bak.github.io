@@ -3,6 +3,14 @@ layout: single
 title: "[백준 4118] Fred's Lotto Tickets (C#, C++) - soo:bak"
 date: "2025-12-06 21:50:00 +0900"
 description: 여러 장의 로또 티켓이 1부터 49까지 모든 번호를 포함하는지 판정하는 백준 4118번 Fred's Lotto Tickets 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 4118
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 4118, 백준 4118번, BOJ 4118, FredsLottoTickets, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

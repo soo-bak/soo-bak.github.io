@@ -3,6 +3,14 @@ layout: single
 title: "[백준 4181] Convex Hull (C#, C++) - soo:bak"
 date: "2025-12-07 03:45:00 +0900"
 description: 볼록 껍질에 속하는 점들을 반시계 방향 순서로 정렬하는 백준 4181번 Convex Hull 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 4181
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 4181, 백준 4181번, BOJ 4181, ConvexHullSort, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

@@ -3,6 +3,14 @@ layout: single
 title: "[백준 5949] Adding Commas (C#, C++) - soo:bak"
 date: "2023-06-11 21:55:00 +0900"
 description: 문자열 다루기와 구현을 주제로 하는 백준 5949번 문제를 C++ C# 으로 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 5949
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 5949, 백준 5949번, BOJ 5949, AddingCommas, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

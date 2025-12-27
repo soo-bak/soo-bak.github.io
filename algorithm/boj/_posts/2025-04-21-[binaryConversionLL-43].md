@@ -3,6 +3,14 @@ layout: single
 title: "[백준 10829] 이진수 변환 (C#, C++) - soo:bak"
 date: "2025-04-21 00:03:00 +0900"
 description: long long 정수를 이진수로 변환하여 앞에서부터 출력하는 백준 10829번 이진수 변환 문제의 C# 및 C++ 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 10829
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 10829, 백준 10829번, BOJ 10829, binaryConversionLL, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

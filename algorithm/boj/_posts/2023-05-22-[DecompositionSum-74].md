@@ -3,6 +3,14 @@ layout: single
 title: "[백준 2231] 분해합 (C#, C++) - soo:bak"
 date: "2023-05-22 16:58:00 +0900"
 description: 자연수의 생성자와 수학을 주제로 하는 백준 2231번 알고리즘 문제를 C# 과 C++ 로 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 2231
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 2231, 백준 2231번, BOJ 2231, DecompositionSum, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

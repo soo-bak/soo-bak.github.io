@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 24420] ピアノコンクール (Piano Competition) (C#, C++) - soo:bak"
 date: "2025-12-25 23:49:24 +0900"
-description: 최고점과 최저점을 제외한 나머지 점수 합을 구하는 문제
+description: "백준 24420번 C#, C++ 풀이 - 최고점과 최저점을 제외한 나머지 점수 합을 구하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 24420
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 24420, 백준 24420번, BOJ 24420, PianoCompetition, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

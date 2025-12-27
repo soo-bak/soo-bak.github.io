@@ -3,6 +3,14 @@ layout: single
 title: "[백준 9019] DSLR (C#, C++) - soo:bak"
 date: "2025-11-15 01:35:00 +0900"
 description: 0~9999 레지스터를 BFS로 탐색해 최소 명령어(D,S,L,R)를 찾는 백준 9019번 DSLR 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 9019
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 9019, 백준 9019번, BOJ 9019, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

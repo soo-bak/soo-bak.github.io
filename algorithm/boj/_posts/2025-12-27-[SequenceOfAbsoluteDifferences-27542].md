@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 27542] 絶対階差数列 (Sequence of Absolute Differences) (C#, C++) - soo:bak"
 date: "2025-12-27 10:55:00 +0900"
-description: 인접한 값의 절대차로 수열을 줄여나가 마지막에 남는 값을 구하는 문제
+description: "백준 27542번 C#, C++ 풀이 - 인접한 값의 절대차로 수열을 줄여나가 마지막에 남는 값을 구하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 27542
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 27542, 백준 27542번, BOJ 27542, SequenceOfAbsoluteDifferences, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

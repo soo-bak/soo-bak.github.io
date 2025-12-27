@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 31655] International Dates (C#, C++) - soo:bak"
 date: "2025-12-21 09:00:00 +0900"
-description: 월/일/연도 혹은 일/월/연도 표현인지 판별해 지역을 구분하는 문제
+description: "백준 31655번 C#, C++ 풀이 - 월/일/연도 혹은 일/월/연도 표현인지 판별해 지역을 구분하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 31655
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 31655, 백준 31655번, BOJ 31655, InternationalDates, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

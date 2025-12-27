@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 5100] Jean and Joe’s Clothes (C#, C++) - soo:bak"
 date: "2025-12-27 13:25:00 +0900"
-description: 의류 사이즈에 따라 주인별 개수를 집계하는 문제
+description: "백준 5100번 C#, C++ 풀이 - 의류 사이즈에 따라 주인별 개수를 집계하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 5100
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 5100, 백준 5100번, BOJ 5100, JeanAndJoesClothes, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

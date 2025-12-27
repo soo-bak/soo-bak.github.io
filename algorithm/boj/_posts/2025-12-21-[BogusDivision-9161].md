@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 9161] Sir Bedavere’s Bogus Division Solutions (C#, C++) - soo:bak"
 date: "2025-12-21 20:42:00 +0900"
-description: 분자 끝자리와 분모 앞자리를 지워도 값이 같은 세 자리 수 분수 쌍을 나열하는 문제
+description: "백준 9161번 C#, C++ 풀이 - 분자 끝자리와 분모 앞자리를 지워도 값이 같은 세 자리 수 분수 쌍을 나열하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 9161
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 9161, 백준 9161번, BOJ 9161, BogusDivision, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

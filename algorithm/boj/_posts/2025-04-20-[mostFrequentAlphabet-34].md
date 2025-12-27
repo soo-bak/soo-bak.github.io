@@ -3,6 +3,14 @@ layout: single
 title: "[백준 1371] 가장 많은 글자 (C#, C++) - soo:bak"
 date: "2025-04-20 22:15:00 +0900"
 description: 여러 줄의 입력에서 가장 많이 등장한 소문자를 계산하여 출력하는 백준 1371번 가장 많은 글자 문제의 C# 및 C++ 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 1371
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 1371, 백준 1371번, BOJ 1371, mostFrequentAlphabet, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

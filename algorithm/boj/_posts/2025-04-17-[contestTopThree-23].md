@@ -3,6 +3,14 @@ layout: single
 title: "[백준 5576] 콘테스트 (C#, C++) - soo:bak"
 date: "2025-04-17 00:24:43 +0900"
 description: 10개의 점수 중 상위 3개의 합을 구하여 출력하는 백준 5576번 콘테스트 문제의 C# 및 C++ 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 5576
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 5576, 백준 5576번, BOJ 5576, contestTopThree, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

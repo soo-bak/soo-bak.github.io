@@ -3,6 +3,14 @@ layout: single
 title: "[백준 1408] 24 (C#, C++) - soo:bak"
 date: "2025-04-14 20:48:58 +0900"
 description: 현재 시각과 설정된 시각 사이의 차이를 구하는 백준 1408번 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 1408
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 1408, 백준 1408번, BOJ 1408, timeUntilTarget, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

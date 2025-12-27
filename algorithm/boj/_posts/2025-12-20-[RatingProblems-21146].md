@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 21146] Rating Problems (C#, C++) - soo:bak"
 date: "2025-12-20 15:33:00 +0900"
-description: 남은 심사위원 점수가 최소/최대로 들어올 때 가능한 전체 평균의 범위를 구하는 문제
+description: "백준 21146번 C#, C++ 풀이 - 남은 심사위원 점수가 최소/최대로 들어올 때 가능한 전체 평균의 범위를 구하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 21146
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 21146, 백준 21146번, BOJ 21146, RatingProblems, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

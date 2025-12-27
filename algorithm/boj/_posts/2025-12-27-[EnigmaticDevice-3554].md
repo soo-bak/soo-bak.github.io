@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 3554] Enigmatic Device (C#, C++) - soo:bak"
 date: "2025-12-27 14:01:00 +0900"
-description: 구간 제곱 연산과 구간 합 쿼리를 처리하는 시뮬레이션 문제
+description: "백준 3554번 C#, C++ 풀이 - 구간 제곱 연산과 구간 합 쿼리를 처리하는 시뮬레이션 문제"
+tags:
+  - 백준
+  - BOJ
+  - 3554
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 3554, 백준 3554번, BOJ 3554, EnigmaticDevice, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

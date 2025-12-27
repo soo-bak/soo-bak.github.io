@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 25773] Number Maximization (C#, C++) - soo:bak"
 date: "2025-12-25 16:05:00 +0900"
-description: 주어진 숫자의 자릿수를 내림차순으로 정렬해 최대값을 만드는 문제
+description: "백준 25773번 C#, C++ 풀이 - 주어진 숫자의 자릿수를 내림차순으로 정렬해 최대값을 만드는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 25773
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 25773, 백준 25773번, BOJ 25773, NumberMaximization, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

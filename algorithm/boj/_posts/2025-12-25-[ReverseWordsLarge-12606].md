@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 12606] Reverse Words (Large) (C#, C++) - soo:bak"
 date: "2025-12-25 16:05:00 +0900"
-description: 문장을 단어 단위로 뒤집어 출력하는 문제
+description: "백준 12606번 C#, C++ 풀이 - 문장을 단어 단위로 뒤집어 출력하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 12606
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 12606, 백준 12606번, BOJ 12606, ReverseWordsLarge, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

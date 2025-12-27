@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 30272] Atsitiktinių skaičių generatorius (C#, C++) - soo:bak"
 date: "2025-12-21 20:42:00 +0900"
-description: 8×9 픽셀로 주어진 숫자 패턴을 사전 매핑으로 복원해 생성된 수를 출력하는 문제
+description: "백준 30272번 C#, C++ 풀이 - 8×9 픽셀로 주어진 숫자 패턴을 사전 매핑으로 복원해 생성된 수를 출력하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 30272
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 30272, 백준 30272번, BOJ 30272, RandomNumberGenerator, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

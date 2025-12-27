@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 25246] Brexiting and Brentering (C#, C++) - soo:bak"
 date: "2025-12-20 16:02:00 +0900"
-description: 주어진 이름에서 마지막 모음 이후를 잘라내고 ntry를 붙이는 문제
+description: "백준 25246번 C#, C++ 풀이 - 주어진 이름에서 마지막 모음 이후를 잘라내고 ntry를 붙이는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 25246
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 25246, 백준 25246번, BOJ 25246, BrexitingBrentering, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

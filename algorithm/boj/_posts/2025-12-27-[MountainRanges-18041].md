@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 18041] Mountain Ranges (C#, C++) - soo:bak"
 date: "2025-12-27 07:35:00 +0900"
-description: 인접 고도 차이가 X 이내인 최장 연속 구간의 길이를 구하는 문제
+description: "백준 18041번 C#, C++ 풀이 - 인접 고도 차이가 X 이내인 최장 연속 구간의 길이를 구하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 18041
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 18041, 백준 18041번, BOJ 18041, MountainRanges, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

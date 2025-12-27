@@ -3,6 +3,14 @@ layout: single
 title: "[백준 1654] 랜선 자르기 (C#, C++) - soo:bak"
 date: "2023-05-31 21:16:00 +0900"
 description: 이분 탐색을 주제로 하는 백준 1654번 알고리즘 문제를 C# 과 C++ 로 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 1654
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 1654, 백준 1654번, BOJ 1654, CuttingLines, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

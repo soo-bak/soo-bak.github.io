@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 14648] 쿼리 맛보기 (C#, C++) - soo:bak"
 date: "2025-12-25 14:56:00 +0900"
-description: 구간 합을 계산하고 필요 시 원소를 교환하는 쿼리 처리 문제
+description: "백준 14648번 C#, C++ 풀이 - 구간 합을 계산하고 필요 시 원소를 교환하는 쿼리 처리 문제"
+tags:
+  - 백준
+  - BOJ
+  - 14648
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 14648, 백준 14648번, BOJ 14648, QueryIntroduction, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

@@ -3,6 +3,14 @@ layout: single
 title: "[백준 31922] 이 대회는 이제 제 겁니다 (C#, C++) - soo:bak"
 date: "2025-12-21 21:51:00 +0900"
 description: Division 1 우승 상금 A와 shake! 우승 상금 C의 합 또는 Division 2 상금 P 중 최댓값을 구하는 백준 31922번 문제에 대한 C# 및 C++ 설명
+tags:
+  - 백준
+  - BOJ
+  - 31922
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 31922, 백준 31922번, BOJ 31922, ThisContestIsMine, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

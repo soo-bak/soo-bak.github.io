@@ -3,6 +3,14 @@ layout: single
 title: "[백준 6811] Old Fishin’ Hole (C#, C++) - soo:bak"
 date: "2025-12-27 10:45:00 +0900"
 description: 주어진 점수 한도 내에서 갈색송어, 노던파이크, 옐로피컬을 잡는 모든 조합과 개수를 출력하는 문제
+tags:
+  - 백준
+  - BOJ
+  - 6811
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 6811, 백준 6811번, BOJ 6811, OldFishinHole, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

@@ -3,6 +3,14 @@ layout: single
 title: "[백준 22279] Quality-Adjusted Life-Year (C#, C++) - soo:bak"
 date: "2023-09-07 12:13:00 +0900"
 description: 수학, 사칙 연산, 구현 등을 주제로 하는 백준 22279번 문제를 C++ C# 으로 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 22279
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 22279, 백준 22279번, BOJ 22279, QualityAdjusted, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

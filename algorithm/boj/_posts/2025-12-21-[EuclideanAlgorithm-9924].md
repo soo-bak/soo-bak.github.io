@@ -3,6 +3,14 @@ layout: single
 title: "[백준 9924] The Euclidean Algorithm (C#, C++) - soo:bak"
 date: "2025-12-21 21:51:00 +0900"
 description: 뺄셈 기반 유클리드 알고리듬에서 최대공약수에 도달하기까지의 반복 횟수를 세는 백준 9924번 문제에 대한 C# 및 C++ 설명
+tags:
+  - 백준
+  - BOJ
+  - 9924
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 9924, 백준 9924번, BOJ 9924, EuclideanAlgorithm, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

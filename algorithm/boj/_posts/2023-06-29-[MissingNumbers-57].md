@@ -3,6 +3,14 @@ layout: single
 title: "[백준 17588] Missing Numbers (C#, C++) - soo:bak"
 date: "2023-06-29 07:50:00 +0900"
 description: 탐색, 비교 등을 주제로 하는 백준 17588번 문제를 C++ C# 으로 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 17588
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 17588, 백준 17588번, BOJ 17588, MissingNumbers, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

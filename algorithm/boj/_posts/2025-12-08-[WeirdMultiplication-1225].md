@@ -3,6 +3,14 @@ layout: single
 title: "[백준 1225] 이상한 곱셈 (C#, C++) - soo:bak"
 date: "2025-12-08 04:30:00 +0900"
 description: 두 수의 각 자리를 모두 곱해 더한 값을 구하는 백준 1225번 이상한 곱셈 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 1225
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 1225, 백준 1225번, BOJ 1225, WeirdMultiplication, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

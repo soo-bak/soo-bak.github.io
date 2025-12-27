@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 21280] Confused Lecturer (C#, C++) - soo:bak"
 date: "2025-12-20 16:02:00 +0900"
-description: 직전 주 일정만 믿고 출석하는 교수의 빈 강의실/결강 횟수를 합산하는 문제
+description: "백준 21280번 C#, C++ 풀이 - 직전 주 일정만 믿고 출석하는 교수의 빈 강의실/결강 횟수를 합산하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 21280
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 21280, 백준 21280번, BOJ 21280, ConfusedLecturer, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

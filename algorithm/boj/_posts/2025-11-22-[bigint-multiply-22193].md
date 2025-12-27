@@ -3,6 +3,14 @@ layout: single
 title: "[백준 22193] Multiply (C#, C++) - soo:bak"
 date: "2025-11-22 03:10:00 +0900"
 description: 최대 5만 자리 두 정수의 곱을 arbitrary precision으로 계산하는 백준 22193번 Multiply 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 22193
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 22193, 백준 22193번, BOJ 22193, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

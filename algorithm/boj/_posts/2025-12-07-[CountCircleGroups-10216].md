@@ -3,6 +3,14 @@ layout: single
 title: "[백준 10216] Count Circle Groups (C#, C++) - soo:bak"
 date: "2025-12-07 01:15:00 +0900"
 description: 통신 범위가 겹치는 진영들의 그룹 수를 구하는 백준 10216번 Count Circle Groups 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 10216
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 10216, 백준 10216번, BOJ 10216, CountCircleGroups, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

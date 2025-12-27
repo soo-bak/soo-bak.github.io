@@ -3,6 +3,14 @@ layout: single
 title: "[백준 1764] 듣보잡 (C#, C++) - soo:bak"
 date: "2025-04-21 01:18:00 +0900"
 description: 듣도 보도 못한 사람들의 교집합을 구해 사전 순으로 출력하는 백준 1764번 듣보잡 문제의 C# 및 C++ 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 1764
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 1764, 백준 1764번, BOJ 1764, unknownListeners, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

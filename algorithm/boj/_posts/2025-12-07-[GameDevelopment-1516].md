@@ -3,6 +3,14 @@ layout: single
 title: "[백준 1516] 게임 개발 (C#, C++) - soo:bak"
 date: "2025-12-07 02:30:00 +0900"
 description: DFS와 메모이제이션으로 각 건물의 최소 완성 시간을 구하는 백준 1516번 게임 개발 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 1516
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 1516, 백준 1516번, BOJ 1516, GameDevelopment, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

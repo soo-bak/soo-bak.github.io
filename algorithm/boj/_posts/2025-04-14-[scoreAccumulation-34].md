@@ -3,6 +3,14 @@ layout: single
 title: "[백준 2506] 점수계산 (C#, C++) - soo:bak"
 date: "2025-04-14 07:27:30 +0900"
 description: 연속된 정답 보너스 점수를 계산하는 백준 2506번 점수계산 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 2506
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 2506, 백준 2506번, BOJ 2506, scoreAccumulation, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

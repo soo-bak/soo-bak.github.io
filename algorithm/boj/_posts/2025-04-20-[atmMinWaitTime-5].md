@@ -3,6 +3,14 @@ layout: single
 title: "[백준 11399] ATM (C#, C++) - soo:bak"
 date: "2025-04-20 04:21:00 +0900"
 description: 사람들의 인출 시간을 오름차순으로 정렬해 전체 대기 시간의 합을 최소화하는 백준 11399번 ATM 문제의 C# 및 C++ 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 11399
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 11399, 백준 11399번, BOJ 11399, atmMinWaitTime, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

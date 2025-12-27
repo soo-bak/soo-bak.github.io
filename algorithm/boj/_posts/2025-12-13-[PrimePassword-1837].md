@@ -3,6 +3,14 @@ layout: single
 title: "[백준 1837] 암호제작 (C#, C++) - soo:bak"
 date: "2025-12-13 17:01:00 +0900"
 description: 큰 수 문자열 P에 대해 K 미만의 소수로 나누어 떨어지는지 검사해 GOOD/BAD를 판정하는 백준 1837번 암호제작 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 1837
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 1837, 백준 1837번, BOJ 1837, PrimePassword, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

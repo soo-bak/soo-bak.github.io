@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 3417] Vigenère Cipher Encryption (C#, C++) - soo:bak"
 date: "2025-12-26 00:42:46 +0900"
-description: 키를 반복하며 평문을 시프트해 암호문을 만드는 문제
+description: "백준 3417번 C#, C++ 풀이 - 키를 반복하며 평문을 시프트해 암호문을 만드는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 3417
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 3417, 백준 3417번, BOJ 3417, VigenereCipherEncryption, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

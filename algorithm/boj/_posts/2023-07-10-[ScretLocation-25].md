@@ -3,6 +3,14 @@ layout: single
 title: "[백준 5340] Secret Location (C#, C++) - soo:bak"
 date: "2023-07-10 09:17:00 +0900"
 description: 문자열, 파싱, 구현 등을 주제로 하는 백준 5340번 문제를 C++ C# 으로 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 5340
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 5340, 백준 5340번, BOJ 5340, ScretLocation, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

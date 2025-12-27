@@ -3,6 +3,14 @@ layout: single
 title: "[백준 14542] Outer Triangle Sum (C#, C++) - soo:bak"
 date: "2025-12-25 16:05:00 +0900"
 description: 삼각형 외곽에 있는 수들의 합을 구하는 백준 14542번 Outer Triangle Sum 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 14542
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 14542, 백준 14542번, BOJ 14542, OuterTriangleSum, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

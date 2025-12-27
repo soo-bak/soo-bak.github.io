@@ -3,6 +3,14 @@ layout: single
 title: "[백준 30569] Last One Standing (C#, C++) - soo:bak"
 date: "2024-03-03 21:38:00 +0900"
 description: 수학, 구현, 사칙연산, 시뮬레이션 등을 주제로 하는 백준 30569번 문제를 C++ C# 으로 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 30569
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 30569, 백준 30569번, BOJ 30569, lastOneStanding, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

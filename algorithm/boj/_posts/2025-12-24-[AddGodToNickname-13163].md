@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 13163] 닉네임에 갓 붙이기 (C#, C++) - soo:bak"
 date: "2025-12-24 12:30:00 +0900"
-description: 첫 음절을 god으로 바꾸고 나머지 음절을 붙이는 문제
+description: "백준 13163번 C#, C++ 풀이 - 첫 음절을 god으로 바꾸고 나머지 음절을 붙이는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 13163
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 13163, 백준 13163번, BOJ 13163, AddGodToNickname, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

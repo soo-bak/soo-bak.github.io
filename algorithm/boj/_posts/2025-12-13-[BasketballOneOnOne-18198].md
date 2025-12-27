@@ -3,6 +3,14 @@ layout: single
 title: "[백준 18198] Basketball One-on-One (C#, C++) - soo:bak"
 date: "2025-12-13 13:02:00 +0900"
 description: 점수 기록 문자열을 순서대로 누적해 최종 득점이 높은 쪽을 출력하는 백준 18198번 Basketball One-on-One 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 18198
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 18198, 백준 18198번, BOJ 18198, BasketballOneOnOne, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

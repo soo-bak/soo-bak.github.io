@@ -3,6 +3,14 @@ layout: single
 title: "[백준 28454] Gift Expire Date (C#, C++) - soo:bak"
 date: "2023-08-19 11:09:00 +0900"
 description: 문자열, 날짜 계산, 구현 등을 주제로 하는 백준 28454번 문제를 C++ C# 으로 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 28454
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 28454, 백준 28454번, BOJ 28454, GiftExpireDate, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

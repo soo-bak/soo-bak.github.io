@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 13456] Richard Hamming (C#, C++) - soo:bak"
 date: "2025-12-21 20:42:00 +0900"
-description: 두 벡터의 해밍 거리를 여러 테스트케이스에 대해 계산하는 문제
+description: "백준 13456번 C#, C++ 풀이 - 두 벡터의 해밍 거리를 여러 테스트케이스에 대해 계산하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 13456
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 13456, 백준 13456번, BOJ 13456, RichardHamming, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

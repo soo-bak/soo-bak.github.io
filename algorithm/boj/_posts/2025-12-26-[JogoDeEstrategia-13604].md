@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 13604] Jogo de Estratégia (C#, C++) - soo:bak"
 date: "2025-12-26 01:11:06 +0900"
-description: 점수 합이 최대인 마지막 플레이어를 찾는 문제
+description: "백준 13604번 C#, C++ 풀이 - 점수 합이 최대인 마지막 플레이어를 찾는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 13604
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 13604, 백준 13604번, BOJ 13604, JogoDeEstrategia, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

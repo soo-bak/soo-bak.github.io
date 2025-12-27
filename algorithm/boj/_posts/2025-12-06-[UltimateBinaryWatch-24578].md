@@ -3,6 +3,14 @@ layout: single
 title: "[백준 24578] Ultimate Binary Watch (C#, C++) - soo:bak"
 date: "2025-12-06 21:40:00 +0900"
 description: 4자리 시각의 각 자리를 4비트로 표현해 LED 시계를 출력하는 백준 24578번 Ultimate Binary Watch 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 24578
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 24578, 백준 24578번, BOJ 24578, UltimateBinaryWatch, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

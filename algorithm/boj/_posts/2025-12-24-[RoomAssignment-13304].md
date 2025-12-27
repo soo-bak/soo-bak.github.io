@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 13304] 방 배정 (C#, C++) - soo:bak"
 date: "2025-12-24 22:35:00 +0900"
-description: 학년/성별 조건에 맞춰 최소 방 개수를 구하는 문제
+description: "백준 13304번 C#, C++ 풀이 - 학년/성별 조건에 맞춰 최소 방 개수를 구하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 13304
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 13304, 백준 13304번, BOJ 13304, RoomAssignment, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

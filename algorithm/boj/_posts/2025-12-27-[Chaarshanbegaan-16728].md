@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 16728] Chaarshanbegaan at Cafebazaar (C#, C++) - soo:bak"
 date: "2025-12-27 03:35:00 +0900"
-description: 다트 좌표로부터 거리 구간별 점수를 합산하는 문제
+description: "백준 16728번 C#, C++ 풀이 - 다트 좌표로부터 거리 구간별 점수를 합산하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 16728
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 16728, 백준 16728번, BOJ 16728, Chaarshanbegaan, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

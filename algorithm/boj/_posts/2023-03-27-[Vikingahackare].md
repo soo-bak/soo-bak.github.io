@@ -3,6 +3,14 @@ layout: single
 title: "[백준 26906] Vikingahackare (C#, C++) - soo:bak"
 date: "2023-03-27 16:31:00 +0900"
 description: 구현과 이진수를 다루는 것을 주제로 하는 백준 26906번 알고리즘 문제를 C# 과 C++ 로 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 26906
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 26906, 백준 26906번, BOJ 26906, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

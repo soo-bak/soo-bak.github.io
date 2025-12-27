@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 11434] Ampelmännchen (C#, C++) - soo:bak"
 date: "2025-12-21 20:42:00 +0900"
-description: 각 품목마다 서독/동독 버전 중 행복 총합이 큰 쪽을 선택해 최대 행복을 구하는 문제
+description: "백준 11434번 C#, C++ 풀이 - 각 품목마다 서독/동독 버전 중 행복 총합이 큰 쪽을 선택해 최대 행복을 구하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 11434
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 11434, 백준 11434번, BOJ 11434, Ampelmaennchen, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

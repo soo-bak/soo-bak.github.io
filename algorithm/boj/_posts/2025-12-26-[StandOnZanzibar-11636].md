@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 11636] Stand on Zanzibar (C#, C++) - soo:bak"
 date: "2025-12-26 01:04:14 +0900"
-description: 연속 연도의 최대 번식치를 넘는 증가량을 합산하는 문제
+description: "백준 11636번 C#, C++ 풀이 - 연속 연도의 최대 번식치를 넘는 증가량을 합산하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 11636
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 11636, 백준 11636번, BOJ 11636, StandOnZanzibar, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

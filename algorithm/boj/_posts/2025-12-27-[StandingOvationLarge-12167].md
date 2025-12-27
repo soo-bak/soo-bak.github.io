@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 12167] Standing Ovation (Large) (C#, C++) - soo:bak"
 date: "2025-12-27 07:15:00 +0900"
-description: 큰 Smax에서도 최소 친구 수를 구해 모두 기립박수하게 만드는 문제
+description: "백준 12167번 C#, C++ 풀이 - 큰 Smax에서도 최소 친구 수를 구해 모두 기립박수하게 만드는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 12167
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 12167, 백준 12167번, BOJ 12167, StandingOvationLarge, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

@@ -3,6 +3,14 @@ layout: single
 title: "[백준 15460] My Cow Ate My Homework (C#, C++) - soo:bak"
 date: "2025-12-20 16:02:00 +0900"
 description: suffix의 합과 최솟값으로 각 K별 제거 후 평균을 구해 최대 평균을 만드는 K들을 찾는 문제
+tags:
+  - 백준
+  - BOJ
+  - 15460
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 15460, 백준 15460번, BOJ 15460, MyCowAteMyHomework, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

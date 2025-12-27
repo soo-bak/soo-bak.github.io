@@ -3,6 +3,14 @@ layout: single
 title: "[백준 2875] 대회 or 인턴 (C#, C++) - soo:bak"
 date: "2025-12-08 03:15:00 +0900"
 description: 여2 남1 팀 구성과 인턴 K명을 고려해 최대 팀 수를 구하는 백준 2875번 대회 or 인턴 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 2875
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 2875, 백준 2875번, BOJ 2875, ContestOrIntern, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

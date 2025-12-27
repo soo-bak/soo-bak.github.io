@@ -3,6 +3,14 @@ layout: single
 title: "[백준 24569] Fergusonball Ratings (C#, C++) - soo:bak"
 date: "2025-12-06 21:10:00 +0900"
 description: 점수와 파울을 이용해 선수별 별점이 40을 넘는지 세고 골드 팀 여부를 판단하는 백준 24569번 Fergusonball Ratings 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 24569
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 24569, 백준 24569번, BOJ 24569, FergusonballRatings, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

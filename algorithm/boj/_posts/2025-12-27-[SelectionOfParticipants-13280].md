@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 13280] Selection of Participants of an Experiment (C#, C++) - soo:bak"
 date: "2025-12-27 03:05:00 +0900"
-description: 점수 차이가 가장 작은 두 학생을 찾아 차이를 출력하는 문제
+description: "백준 13280번 C#, C++ 풀이 - 점수 차이가 가장 작은 두 학생을 찾아 차이를 출력하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 13280
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 13280, 백준 13280번, BOJ 13280, SelectionOfParticipants, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

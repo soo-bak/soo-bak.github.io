@@ -3,6 +3,14 @@ layout: single
 title: "[백준 6784] Multiple Choice (C#, C++) - soo:bak"
 date: "2023-07-26 23:15:00 +0900"
 description: 구현, 수학, 문자열 등을 주제로 하는 백준 6784번 문제를 C++ C# 으로 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 6784
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 6784, 백준 6784번, BOJ 6784, MultiChoice, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

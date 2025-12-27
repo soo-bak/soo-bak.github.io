@@ -3,6 +3,14 @@ layout: single
 title: "[백준 1085] 직사각형에서 탈출 (C#, C++) - soo:bak"
 date: "2023-05-23 09:21:00 +0900"
 description: 수학과 사각형의 개념을 주제로 하는 백준 1085번 알고리즘 문제를 C# 과 C++ 로 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 1085
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 1085, 백준 1085번, BOJ 1085, EscapingFromRect, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

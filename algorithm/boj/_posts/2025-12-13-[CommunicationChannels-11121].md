@@ -3,6 +3,14 @@ layout: single
 title: "[백준 11121] Communication Channels (C#, C++) - soo:bak"
 date: "2025-12-13 13:02:00 +0900"
 description: 전송 전후 비트 문자열이 동일한지 비교해 OK/ERROR를 출력하는 백준 11121번 Communication Channels 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 11121
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 11121, 백준 11121번, BOJ 11121, CommunicationChannels, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

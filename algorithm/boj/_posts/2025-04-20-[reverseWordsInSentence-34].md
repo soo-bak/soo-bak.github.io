@@ -3,6 +3,14 @@ layout: single
 title: "[백준 9093] 단어 뒤집기 (C#, C++) - soo:bak"
 date: "2025-04-20 22:33:00 +0900"
 description: 문장 속 단어들의 순서를 유지한 채 각 단어만 뒤집어서 출력하는 백준 9093번 단어 뒤집기 문제의 C# 및 C++ 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 9093
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 9093, 백준 9093번, BOJ 9093, reverseWordsInSentence, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

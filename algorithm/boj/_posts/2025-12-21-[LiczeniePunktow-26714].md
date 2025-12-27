@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 26714] Liczenie punktów (C#, C++) - soo:bak"
 date: "2025-12-21 21:51:00 +0900"
-description: 문자열을 10등분해 각 구간이 모두 T인지 확인하고 점수를 합산하는 문제
+description: "백준 26714번 C#, C++ 풀이 - 문자열을 10등분해 각 구간이 모두 T인지 확인하고 점수를 합산하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 26714
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 26714, 백준 26714번, BOJ 26714, LiczeniePunktow, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

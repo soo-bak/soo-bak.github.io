@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 23334] Olympic Ranking (C#, C++) - soo:bak"
 date: "2025-12-27 06:05:00 +0900"
-description: 금-은-동 순 사전식 비교로 최고 순위 국가를 찾는 문제
+description: "백준 23334번 C#, C++ 풀이 - 금-은-동 순 사전식 비교로 최고 순위 국가를 찾는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 23334
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 23334, 백준 23334번, BOJ 23334, OlympicRanking, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

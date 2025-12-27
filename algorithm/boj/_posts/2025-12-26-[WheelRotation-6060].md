@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 6060] Wheel Rotation (C#, C++) - soo:bak"
 date: "2025-12-26 01:19:48 +0900"
-description: 벨트 연결 정보를 따라 마지막 풀리의 회전 방향을 구하는 문제
+description: "백준 6060번 C#, C++ 풀이 - 벨트 연결 정보를 따라 마지막 풀리의 회전 방향을 구하는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 6060
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 6060, 백준 6060번, BOJ 6060, WheelRotation, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

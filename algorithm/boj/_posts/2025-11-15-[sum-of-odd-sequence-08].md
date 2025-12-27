@@ -3,6 +3,14 @@ layout: single
 title: "[백준 9713] Sum of Odd Sequence (C#, C++) - soo:bak"
 date: "2025-11-15 01:50:00 +0900"
 description: 1부터 N까지 홀수를 더하는 합을 테스트 케이스마다 계산하는 백준 9713번 Sum of Odd Sequence 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 9713
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 9713, 백준 9713번, BOJ 9713, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

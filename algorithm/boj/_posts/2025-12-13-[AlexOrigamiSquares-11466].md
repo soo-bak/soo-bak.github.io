@@ -3,6 +3,14 @@ layout: single
 title: "[백준 11466] Alex Origami Squares (C#, C++) - soo:bak"
 date: "2025-12-13 00:03:00 +0900"
 description: 한 장의 h×w 직사각형에서 축을 맞춘 정사각형 세 개를 자를 때 만들 수 있는 최대 한 변 길이를 경우 나눠 구하는 백준 11466번 Alex Origami Squares 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 11466
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 11466, 백준 11466번, BOJ 11466, AlexOrigamiSquares, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

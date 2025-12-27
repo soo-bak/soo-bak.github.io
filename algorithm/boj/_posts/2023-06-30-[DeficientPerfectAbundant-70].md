@@ -3,6 +3,14 @@ layout: single
 title: "[백준 6975] Deficient, Perfect, and Abundant (C#, C++) - soo:bak"
 date: "2023-06-30 14:56:00 +0900"
 description: 수학, 약수, 구현, 조건 분기 등을 주제로 하는 백준 6975번 문제를 C++ C# 으로 풀이 및 해설
+tags:
+  - 백준
+  - BOJ
+  - 6975
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 6975, 백준 6975번, BOJ 6975, DeficientPerfectAbundant, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

@@ -2,7 +2,15 @@
 layout: single
 title: "[백준 28225] Flower Festival (C#, C++) - soo:bak"
 date: "2025-12-21 21:51:00 +0900"
-description: 차량들의 위치와 속도로 가장 먼저 도착하는 차 번호를 찾는 문제
+description: "백준 28225번 C#, C++ 풀이 - 차량들의 위치와 속도로 가장 먼저 도착하는 차 번호를 찾는 문제"
+tags:
+  - 백준
+  - BOJ
+  - 28225
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 28225, 백준 28225번, BOJ 28225, FlowerFestival, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

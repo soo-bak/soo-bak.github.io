@@ -3,6 +3,14 @@ layout: single
 title: "[백준 23375] Arm Coordination (C#, C++) - soo:bak"
 date: "2025-12-13 00:03:00 +0900"
 description: 원의 중심과 반지름이 주어질 때 이를 덮는 최소 축정렬 정사각형의 네 꼭짓점을 출력하는 백준 23375번 Arm Coordination 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 23375
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 23375, 백준 23375번, BOJ 23375, ArmCoordination, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

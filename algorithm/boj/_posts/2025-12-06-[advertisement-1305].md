@@ -3,6 +3,14 @@ layout: single
 title: "[백준 1305] 광고 (C#, C++) - soo:bak"
 date: "2025-12-06 12:51:00 +0900"
 description: KMP의 접두사 배열로 반복 주기를 구해 가능한 광고 길이의 최솟값을 찾는 백준 1305번 광고 문제의 C#/C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 1305
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 1305, 백준 1305번, BOJ 1305, advertisement, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크

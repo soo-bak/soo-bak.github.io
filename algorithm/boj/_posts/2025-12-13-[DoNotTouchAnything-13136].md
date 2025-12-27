@@ -3,6 +3,14 @@ layout: single
 title: "[백준 13136] Do Not Touch Anything (C#, C++) - soo:bak"
 date: "2025-12-13 05:01:00 +0900"
 description: R×C 좌석을 N×N 감시 범위의 CCTV로 덮을 때 필요한 최소 대수를 올림 나눗셈으로 구하는 백준 13136번 Do Not Touch Anything 문제의 C# 및 C++ 풀이와 해설
+tags:
+  - 백준
+  - BOJ
+  - 13136
+  - C#
+  - C++
+  - 알고리즘
+keywords: "백준 13136, 백준 13136번, BOJ 13136, DoNotTouchAnything, C# 풀이, C++ 풀이, 알고리즘"
 ---
 
 ## 문제 링크
