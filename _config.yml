@@ -99,7 +99,7 @@ social:
 analytics:
   provider: "google-gtag" # false (default), "google", "google-universal", "google-gtag", "custom"
   google:
-    tracking_id:
+    tracking_id: "G-CXT7KC3JZW"
     measurement_id: "G-CXT7KC3JZW"
     stream_id: "3884454692"
     anonymize_ip: # true, false (default)
