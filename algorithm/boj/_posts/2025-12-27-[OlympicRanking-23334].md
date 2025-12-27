@@ -39,8 +39,12 @@ class Program {
       var b = int.Parse(parts[2]);
       var name = parts[3];
 
-      if (g > bg || (g == bg && (s > bs || (s == bs && b > bb))))
-        bg = g; bs = s; bb = b; bestName = name;
+      if (g > bg || (g == bg && (s > bs || (s == bs && b > bb)))) {
+        bg = g;
+        bs = s;
+        bb = b;
+        bestName = name;
+      }
     }
     Console.WriteLine(bestName);
   }
@@ -65,8 +69,12 @@ int main() {
     cin >> g >> s >> b;
     getline(cin >> ws, name);
 
-    if (g > bg || (g == bg && (s > bs || (s == bs && b > bb))))
-      bg = g; bs = s; bb = b; bestName = name;
+    if (g > bg || (g == bg && (s > bs || (s == bs && b > bb)))) {
+      bg = g;
+      bs = s;
+      bb = b;
+      bestName = name;
+    }
   }
   cout << bestName << "\n";
 
