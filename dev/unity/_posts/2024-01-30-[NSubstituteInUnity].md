@@ -28,10 +28,14 @@ keywords: "Unity NSubstitute, 단위 테스트, TDD, 모킹, 게임 개발, C#, 
 <br>
 
 ```c#
+using System;
+
 // IEnemy 인터페이스 정의
 public interface IEnemy {
-  void TakeDamage(int amount);
+  int Health { get; set; }
+  int TakeDamage(int amount);
   void AttackPlayer();
+  event EventHandler Died;
 }
 
 // Player 클래스
@@ -42,9 +46,16 @@ public class Player {
     this.enemy = enemy;
   }
 
-  public void AttackEnemy() {
-    // 적 공격 로직
-    enemy.TakeDamage(10);
+  public int AttackEnemy() {
+    return enemy.TakeDamage(10);
+  }
+
+  public int AttackEnemy(int damage) {
+    return enemy.TakeDamage(damage);
+  }
+
+  public int GetEnemyHealth() {
+    return enemy.Health;
   }
 }
 ```
@@ -60,7 +71,7 @@ public class Player {
 <br>
 
 ```c#
-IEnemy = fakeEnemy = Substitute.For<IEnemy>();
+IEnemy fakeEnemy = Substitute.For<IEnemy>();
 ```
 <br><br>
 <b>2. 의존성 주입</b><br>
@@ -76,9 +87,9 @@ Player player = new Player(fakeEnemy);
 <br><br>
 <b>3. 메서드 호출 검증</b><br>
 <br>
-이제 `Player` 클래스의 `AttackEnemy()` 메서드를 호출하고, 특정 동작이 예상되로 수행되었는지 검증한다.<br>
+이제 `Player` 클래스의 `AttackEnemy()` 메서드를 호출하고, 특정 동작이 예상대로 수행되었는지 검증한다.<br>
 <br>
-에를 들어, `AttackEnemy()` 메서드가 내부에서 `enemy.TakeDamage(10)` 을 호출하는지를 확인하려면 다음과 같이 검증할 수 있다 : <br>
+예를 들어, `AttackEnemy()` 메서드가 내부에서 `enemy.TakeDamage(10)` 을 호출하는지를 확인하려면 다음과 같이 검증할 수 있다 : <br>
 <br>
 
 ```c#
@@ -89,7 +100,7 @@ player.AttackEnemy();
 fakeEnemy.Received().TakeDamage(10);
 ```
 <br><br>
-<b>4. 동작 설명</b><br>
+<b>4. 동작 설정</b><br>
 <br>
 가짜 객체의 메서드 호출 동작을 설정하려면, `When` 과 `Do` 메서드를 사용한다.<br>
 <br>
@@ -183,10 +194,10 @@ public void Player_AttackEnemy_CorrectMethodCallOrder() {
   // Act : 플레이어가 적을 공격함
   player.AttackEnemy();
 
-  // Assert : 적(가짜 객체)이 TakeDamage 메서드를 10의 인수로 호출했는지 검증
+  // Assert : 메서드 호출 순서 검증
   Received.InOrder(() => {
     fakeEnemy.AttackPlayer();
-    fakeEnemy.TakeDamge(10);
+    fakeEnemy.TakeDamage(10);
   });
 }
 ```
@@ -203,8 +214,8 @@ public void Player_AttackEnemy_ThrowsException() {
 
   // Arrange : 가짜 적(Enemy) 객체 생성
   IEnemy fakeEnemy = Substitute.For<IEnemy>();
-  fakeEnemy.When(e => e.TakeDamage(Arg.Any<int>()))
-    .Do(e => { throw new Exception("Damage failed!"); });
+  fakeEnemy.TakeDamage(Arg.Any<int>())
+    .Returns(x => { throw new Exception("Damage failed!"); });
   Player player = new Player(fakeEnemy);
 
   // Act & Assert : 특정 동작이 예외를 던지는지 검증
@@ -275,8 +286,8 @@ public void Player_TakeDamage_ReturnsDifferentValuesBasedOnInput() {
   Player player = new Player(fakeEnemy);
 
   // Act & Assert
-  int damage1 = player.TakeDamage(5);
-  int damage2 = player.TakeDamage(10);
+  int damage1 = player.AttackEnemy(5);
+  int damage2 = player.AttackEnemy(10);
 
   // 다른 입력에 따른 반환값 검증
   Assert.AreEqual(10, damage1);
@@ -314,14 +325,14 @@ public void Player_AttackEnemy_CallsMethodWithSpecificArgument() {
 
 ```c#
 [Test]
-public void Player_AttackEnemy_ReturnsEnemyHealth() {
+public void Player_GetEnemyHealth_ReturnsEnemyHealth() {
 
   // Arrange : 가짜 적(Enemy) 객체 생성
   IEnemy fakeEnemy = Substitute.For<IEnemy>();
   fakeEnemy.Health.Returns(100); // 체력 프로퍼티 설정
   Player player = new Player(fakeEnemy);
 
-  // Act : 플레이어가 적을 공격함
+  // Act : 적의 체력 조회
   int enemyHealth = player.GetEnemyHealth();
 
   // Assert : 프로퍼티 반환 값 검증
@@ -337,18 +348,16 @@ public void Player_AttackEnemy_ReturnsEnemyHealth() {
 
 ```c#
 [Test]
-public void Player_AttackEnemy_RaisesEvent() {
+public void Enemy_Died_RaisesEvent() {
 
   // Arrange : 가짜 적(Enemy) 객체 생성
   IEnemy fakeEnemy = Substitute.For<IEnemy>();
   bool eventRaised = false;
-    // 이벤트 핸들러 설정
+
+  // 이벤트 핸들러 등록
   fakeEnemy.Died += (sender, args) => eventRaised = true;
-  Player player = new Player(fakeEnemy);
 
-
-  // Act : 플레이어가 적을 공격하고 적의 사망 이벤트 발생
-  player.AttackEnemy();
+  // Act : 이벤트 발생 시뮬레이션
   fakeEnemy.Died += Raise.Event();
 
   // Assert : 이벤트가 발생하고 핸들러가 호출되는지 검증
@@ -372,20 +381,20 @@ public void Player_AttackEnemy_ModifiesValue() {
   int health = 100;
 
   // 메서드 호출 시 동작 설정
-  fakeEnemy.TakeDamage(Arg.Any<int>()).Returns(x =>
-  {
-      health -= x.ArgAt<int>(0); // 인수를 받아서 값을 변경
-      return x.ArgAt<int>(0); // 변경된 값을 반환
+  fakeEnemy.TakeDamage(Arg.Any<int>()).Returns(x => {
+    int damage = x.ArgAt<int>(0);
+    health -= damage;
+    return damage;
   });
 
-    Player player = new Player(fakeEnemy);
+  Player player = new Player(fakeEnemy);
 
-    // Act : 플레이어가 적을 공격함
-    int damageDealt = player.AttackEnemy();
+  // Act : 플레이어가 적을 공격함
+  int damageDealt = player.AttackEnemy();
 
-    // Assert : 메서드 호출 후 값이 변경되었는지 검증
-    Assert.AreEqual(90, health); // 100 - 10
-    Assert.AreEqual(10, damageDealt);
+  // Assert : 메서드 호출 후 값이 변경되었는지 검증
+  Assert.AreEqual(90, health); // 100 - 10
+  Assert.AreEqual(10, damageDealt);
 }
 ```
 <br><br><br>
@@ -397,11 +406,12 @@ public void Player_AttackEnemy_ModifiesValue() {
 
 ```c#
 [Test]
-public void Player_AttackEnemy_ThrowsExceptionBasedOnCondition() {
+public void Player_AttackEnemy_ThrowsExceptionForNegativeDamage() {
 
   // Arrange : 가짜 적(Enemy) 객체 생성
   IEnemy fakeEnemy = Substitute.For<IEnemy>();
-  fakeEnemy.When(e => e.TakeDamage(Arg.Is<int>(x => x < 0))).Do(e => throw new ArgumentException("Negative damage is not allowed!"));
+  fakeEnemy.TakeDamage(Arg.Is<int>(x => x < 0))
+    .Returns(x => { throw new ArgumentException("Negative damage is not allowed!"); });
   Player player = new Player(fakeEnemy);
 
   // Act & Assert : 특정 조건에 따라 예외를 던지는지 검증
@@ -410,26 +420,23 @@ public void Player_AttackEnemy_ThrowsExceptionBasedOnCondition() {
 ```
 <br><br><br>
 
-### 예시 12. 메서드 호출 횟수 범위 검증
+### 예시 12. 메서드가 호출되지 않았는지 검증
 <br>
-<b> 메서드가 특정 횟수 범위 내에서 호출되는지 검증</b>
+<b> 특정 조건에서 메서드가 호출되지 않았음을 검증</b>
 <br>
 
 ```c#
 [Test]
-public void Player_AttackEnemy_CallsMethodMultipleTimesInRange() {
+public void Player_DoesNotAttack_WhenNotCalled() {
 
   // Arrange : 가짜 적(Enemy) 객체 생성
   IEnemy fakeEnemy = Substitute.For<IEnemy>();
   Player player = new Player(fakeEnemy);
 
-  // Act : 플레이어가 임의 횟수만큼 적을 공격함
-  player.AttackEnemy();
-  player.AttackEnemy();
-  player.AttackEnemy();
+  // Act : 아무 동작도 하지 않음
 
-  // Assert : 메서드 호출 횟수 범위 검증 (1부터 5회 사이)
-  fakeEnemy.Received(1, 5).TakeDamage(10);
+  // Assert : TakeDamage가 호출되지 않았는지 검증
+  fakeEnemy.DidNotReceive().TakeDamage(Arg.Any<int>());
 }
 ```
 <br><br><br>
@@ -448,62 +455,60 @@ public void Player_AttackEnemy_ReturnsDynamicValue() {
   fakeEnemy.TakeDamage(Arg.Any<int>()).Returns(x => x.ArgAt<int>(0) * 2); // 인자에 따라 반환값 동적 설정
   Player player = new Player(fakeEnemy);
 
-  // Act & Assert : 메서드 호출 시 동적으로 반환값이 설정되는지 검증
-  int damage1 = player.AttackEnemy(5); // 5 * 2 = 10
-  int damage2 = player.AttackEnemy(8); // 8 * 2 = 16
+  // Act : 메서드 호출 시 동적으로 반환값이 설정되는지 검증
+  int damage1 = player.AttackEnemy(5);  // 5 * 2 = 10
+  int damage2 = player.AttackEnemy(8);  // 8 * 2 = 16
 
+  // Assert
   Assert.AreEqual(10, damage1);
   Assert.AreEqual(16, damage2);
 }
 ```
 <br><br><br>
 
-### 예시 14. 가짜 객체의 메서드 호출 동작 지연 검증
+### 예시 14. 메서드 호출 횟수가 최소 N회 이상인지 검증
 <br>
-<b> 메서드 호출 동작을 지연시키는 예시,<br>
-메서드 호출 후 일정 시간이 지난 후 동작이 수행되도록 설정 후 검증</b>
+<b> 메서드가 특정 횟수 이상 호출되었는지 검증</b>
 <br>
 
 ```c#
 [Test]
-public void Player_AttackEnemy_DelayedMethodCall() {
+public void Player_AttackEnemy_CallsMethodAtLeastTwice() {
 
   // Arrange : 가짜 적(Enemy) 객체 생성
   IEnemy fakeEnemy = Substitute.For<IEnemy>();
-  fakeEnemy.TakeDamage(Arg.Any<int>()).Returns(Task.Delay(1000).ContinueWith(_ => 10)); // 1초 후에 반환값 반환
   Player player = new Player(fakeEnemy);
 
-  // Act : 플레이어가 적을 공격하고 1초 동안 대기
-  var damageTask = player.AttackEnemyAsync();
-  await Task.Delay(1000); // 1초 대기
+  // Act : 플레이어가 적을 여러 번 공격함
+  player.AttackEnemy();
+  player.AttackEnemy();
+  player.AttackEnemy();
 
-  // Assert : 메서드 호출 동작이 지연되어 반환값을 올바르게 반환하는지 검증
-  int damage = await damageTask;
-  Assert.AreEqual(10, damage);
+  // Assert : 메서드가 최소 2회 이상 호출되었는지 검증
+  fakeEnemy.ReceivedWithAnyArgs(Quantity.AtLeastOne()).TakeDamage(default);
+  // 또는 정확한 횟수 검증
+  fakeEnemy.Received(3).TakeDamage(10);
 }
 ```
 <br><br><br>
 
-### 예시 15. 가짜 객체의 메서드 호출 횟수 조건 검증
+### 예시 15. 순차적 반환값 설정
 <br>
-<b> 메서드 호출 횟수에 대한 조건을 설정하여 검증하는 예시입니다. 메소드가 특정 횟수 이상 호출되는지 검증</b>
+<b> 메서드가 호출될 때마다 다른 값을 순차적으로 반환하도록 설정</b>
 <br>
 
 ```c#
 [Test]
-public void Player_AttackEnemy_CallsMethodMultipleTimes() {
+public void Player_AttackEnemy_ReturnsSequentialValues() {
 
-// Arrange : 가짜 적(Enemy) 객체 생성
+  // Arrange : 가짜 적(Enemy) 객체 생성
   IEnemy fakeEnemy = Substitute.For<IEnemy>();
+  fakeEnemy.TakeDamage(Arg.Any<int>()).Returns(10, 20, 30); // 순차적 반환값 설정
   Player player = new Player(fakeEnemy);
 
-  // Act : 플레이어가 적을 공격함 여러 번
-  player.AttackEnemy();
-  player.AttackEnemy();
-  player.AttackEnemy();
-
-  // Assert : 메소드 호출 횟수 조건 검증 (최소 2회 이상)
-  fakeEnemy.ReceivedWithAnyArgs(2).TakeDamage(Arg.Any<int>());
+  // Act & Assert : 호출할 때마다 다른 값 반환
+  Assert.AreEqual(10, player.AttackEnemy());
+  Assert.AreEqual(20, player.AttackEnemy());
+  Assert.AreEqual(30, player.AttackEnemy());
 }
 ```
-<br><br><br>
