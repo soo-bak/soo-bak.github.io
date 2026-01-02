@@ -46,7 +46,7 @@ keywords: "AAA 패턴, Arrange Act Assert, TDD, 테스트 주도 개발, 단위 
 <br>
 즉, 테스트하려는 동작을 실제로 수행하는 부분이다.<br>
 <br>
-이 단계에서는 `Arragne` 단계에서 준비한 환경과 데이터를 사용하여 테스트 대상 코드를 호출하고, 그 결과를 얻는다.<br>
+이 단계에서는 `Arrange` 단계에서 준비한 환경과 데이터를 사용하여 테스트 대상 코드를 호출하고, 그 결과를 얻는다.<br>
 <br><br>
 
 예를 들어, '정수 덧셈 함수' 를 테스트하는 경우, 이 함수를 호출하고 그 값을 얻어내는 것이 `Act` 단계에 해당한다.<br>
@@ -96,9 +96,7 @@ keywords: "AAA 패턴, Arrange Act Assert, TDD, 테스트 주도 개발, 단위 
 <br>
 
 ```c++
-#include <iostream>
-
-using namespace std;
+#include <gtest/gtest.h>
 
 // 정수 덧셈 함수
 int add(int a, int b) {
@@ -106,7 +104,7 @@ int add(int a, int b) {
 }
 
 // 테스트 케이스 작성
-void testAddition() {
+TEST(CalculatorTest, AddTwoPositiveNumbers) {
   // Arrange
   int num1 = 5;
   int num2 = 3;
@@ -115,16 +113,7 @@ void testAddition() {
   int result = add(num1, num2);
 
   // Assert
-  if (result == 8)
-    cout << "테스트 통과!" << endl;
-  else
-    cout << "테스트 실패!" << endl;
-}
-
-int main() {
-  testAddition();
-
-  return 0;
+  EXPECT_EQ(8, result);
 }
 ```
 
@@ -133,7 +122,7 @@ int main() {
 <br>
 
 ```c#
-using System;
+using NUnit.Framework;
 
 // 정수 덧셈 함수
 public class Calculator {
@@ -143,8 +132,11 @@ public class Calculator {
 }
 
 // 테스트 케이스 작성
-public class TestCalculator {
-  public static void TestAddition() {
+[TestFixture]
+public class CalculatorTests {
+
+  [Test]
+  public void Add_TwoPositiveNumbers_ReturnsSum() {
     // Arrange
     int num1 = 5;
     int num2 = 3;
@@ -153,14 +145,7 @@ public class TestCalculator {
     int result = Calculator.Add(num1, num2);
 
     // Assert
-    if (result == 8)
-      Console.WriteLine("테스트 통과!");
-    else
-      Console.WriteLine("테스트 실패!");
-  }
-
-  public static void Main() {
-    TestAddition();
+    Assert.AreEqual(8, result);
   }
 }
 ```
@@ -173,14 +158,12 @@ public class TestCalculator {
 <br>
 
 ```c++
-#include <iostream>
-#include <vector>
-
-using namespace std;
+#include <gtest/gtest.h>
+#include <string>
 
 // 간단한 문자열 뒤집기 함수
-string reverseString(const string& input) {
-  string reversed;
+std::string reverseString(const std::string& input) {
+  std::string reversed;
   for (int i = input.length() - 1; i >= 0; --i)
     reversed += input[i];
 
@@ -188,23 +171,16 @@ string reverseString(const string& input) {
 }
 
 // 테스트 케이스 작성
-void testReverseString() {
+TEST(StringManipulatorTest, ReverseString_ValidInput) {
   // Arrange
-  string input = "Hello, World!";
-  string expected = "!dlroW ,olleH";
+  std::string input = "Hello, World!";
+  std::string expected = "!dlroW ,olleH";
 
   // Act
-  string result = reverseString(input);
+  std::string result = reverseString(input);
 
   // Assert
-  if (result == expected) cout << "테스트 통과!" << endl;
-  else cout << "테스트 실패!" << endl;
-}
-
-int main() {
-  testReverseString();
-
-  return 0;
+  EXPECT_EQ(expected, result);
 }
 ```
 
@@ -214,6 +190,7 @@ int main() {
 
 ```c#
 using System;
+using NUnit.Framework;
 
 // 간단한 문자열 뒤집기 함수
 public class StringManipulator {
@@ -225,8 +202,11 @@ public class StringManipulator {
 }
 
 // 테스트 케이스 작성
-public class TestStringManipulator {
-  public static void TestReverseString() {
+[TestFixture]
+public class StringManipulatorTests {
+
+  [Test]
+  public void ReverseString_ValidInput_ReturnsReversedString() {
     // Arrange
     string input = "Hello, World!";
     string expected = "!dlroW ,olleH";
@@ -235,14 +215,7 @@ public class TestStringManipulator {
     string result = StringManipulator.ReverseString(input);
 
     // Assert
-    if (result == expected)
-      Console.WriteLine("테스트 통과!");
-    else
-      Console.WRiteLine("테스트 실패!");
-  }
-
-  public static void Main() {
-    TestReverseString();
+    Assert.AreEqual(expected, result);
   }
 }
 ```

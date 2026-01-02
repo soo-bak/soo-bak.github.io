@@ -1,6 +1,6 @@
 ---
 layout: single
-title: "테스트 주도 개발(TDD, Test-Driven Developement) 기본 - soo:bak"
+title: "테스트 주도 개발(TDD, Test-Driven Development) 기본 - soo:bak"
 date: "2024-01-29 23:33:00 +0900"
 description: "테스트 주도 개발(TDD)의 핵심 개념인 Red-Green-Refactor 주기, 장단점, 적용 방법을 설명합니다."
 tags:
@@ -89,7 +89,7 @@ keywords: "TDD, 테스트 주도 개발, Test-Driven Development, Red-Green-Refa
 <br>
 그러나, 장기적으로는 시간을 절약하고 코드의 품질을 높이는 데 도움이 된다.<br>
 <br><br>
-<b>3. 복잡한 시나링오에서의 어려움</b><br>
+<b>3. 복잡한 시나리오에서의 어려움</b><br>
 <br>
 매우 복잡한 시스템이나 상호작용이 많은 경우에는, 테스트 케이스 작성과 유지가 어려울 수 있다.<br>
 <br><br><br>
@@ -103,9 +103,9 @@ keywords: "TDD, 테스트 주도 개발, Test-Driven Development, Red-Green-Refa
 <br><br>
 <b>2. 테스트 케이스 작성</b><br>
 <br>
-요구사항을 기반으로로 실패하는 테스트 케이스를 작성한다.<br>
+요구사항을 기반으로 실패하는 테스트 케이스를 작성한다.<br>
 <br>
-이때, 테스트 케이스는 가능한 작은 단위로 분활되어야 한다.<br>
+이때, 테스트 케이스는 가능한 작은 단위로 분할되어야 한다.<br>
 <br><br>
 <b>3. 코드 작성</b><br>
 <br>
