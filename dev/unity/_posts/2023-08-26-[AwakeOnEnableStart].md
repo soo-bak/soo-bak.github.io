@@ -24,7 +24,7 @@ keywords: "Unity Awake, Start, OnEnable, 초기화, Order of Execution, Unity �
 <br><br>
 
 ## Awake()
-`Awake()` 메서드는 `MonoBehavior` 에서 제공하는 기본 이벤트 메서드로, 인스턴스 객체가 `Load` 됐을 때 호출된다. <br>
+`Awake()` 메서드는 `MonoBehaviour` 에서 제공하는 기본 이벤트 메서드로, 인스턴스 객체가 `Load` 됐을 때 호출된다. <br>
 <br>
 가장 큰 특징은 인스턴스 객체에 대해서 가장 먼저 호출된다는 점, 그리고 단 한번만 호출된다는 점이다. <br>
 <br>
@@ -63,7 +63,7 @@ keywords: "Unity Awake, Start, OnEnable, 초기화, Order of Execution, Unity �
 <br><br><br>
 
 ## OnEnable()
-`OnEnable()` 메서드 또한 `MonoBehavior` 에서 제공하는 기본 이벤트 메서드로, 인스턴스 객체가 '활성화' 될 때 호출된다. <br>
+`OnEnable()` 메서드 또한 `MonoBehaviour` 에서 제공하는 기본 이벤트 메서드로, 인스턴스 객체가 '활성화' 될 때 호출된다. <br>
 <br>
 즉, `OnEnable()` 메서드는 객체의 활성화 및 비활성화 과정 중에서 중요한 역할을 한다. <br>
 (객체의 비활성화 시점에서는 `OnDisable()` 메서드가 호출된다.)<br>
@@ -99,7 +99,7 @@ keywords: "Unity Awake, Start, OnEnable, 초기화, Order of Execution, Unity �
 <br><br><br>
 
 ## Start()
-`Start()` 메서드 또한 `MonoBehavior` 에서 제공하는 기본 이벤트 메서드이며,<br>
+`Start()` 메서드 또한 `MonoBehaviour` 에서 제공하는 기본 이벤트 메서드이며,<br>
 <br>
 객체가 '활성화된 후' `Update()` 메서드에서의 '첫 번째 프레임이 업데이트 되기 전' 에 한 번만 호출된다. <br>
 <br>
@@ -132,7 +132,7 @@ keywords: "Unity Awake, Start, OnEnable, 초기화, Order of Execution, Unity �
 
 - <b>게임 로직을 시작하기 전의 마지막 설정 작업에 적합</b>
 
-- `Start()` <b>메서드 내에서의 초기화 작업 중 무거운 연산은 가능한 최소화하거나, 별도로 분산시키는 것이 적합<b><br>
+- `Start()` <b>메서드 내에서의 초기화 작업 중 무거운 연산은 가능한 최소화하거나, 별도로 분산시키는 것이 적합</b><br>
 
 <br><br><br>
 
