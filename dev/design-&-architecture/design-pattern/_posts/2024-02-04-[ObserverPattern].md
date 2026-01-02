@@ -19,7 +19,7 @@ keywords: "관찰자 패턴, Observer Pattern, 발행-구독, Publish-Subscribe,
 <br>
 한 객체의 상태 변화를 관찰하고 있는 다른 객체들, 즉, '관찰자' 들에게 상태 변화를 자동으로 통지하는 방식이다.<br>
 <br>
-주로 분산 이벤트 핸들링 시스템에서, 이벤트가 발생했을 때 여러 객체에게 알려할 경우에 사용한다.<br>
+주로 분산 이벤트 핸들링 시스템에서, 이벤트가 발생했을 때 여러 객체에게 알려야 할 경우에 사용한다.<br>
 <br>
 '발행-구독 모델(Publish-Subscribe Model)' 이라고도 불리며,<br>
 <br>
@@ -99,7 +99,7 @@ public class HealthManager {
 
 public class HealthDisplay {
   public HealthDisplay(HealthManager healthManager) {
-    HealthManager.OnHealthChanged += UpdateHealthDispaly;
+    healthManager.OnHealthChanged += UpdateHealthDisplay;
   }
 
   private void UpdateHealthDisplay(int health) {
@@ -115,7 +115,7 @@ public class HealthDisplay {
 ```c#
 using System;
 
-public class GameManger {
+public class GameManager {
   public event Action<string> OnGameEvent;
 
   public void TriggerEvent(string eventName) {
@@ -124,7 +124,7 @@ public class GameManger {
 }
 
 public class AchievementSystem {
-  public AchievementSystem(GameManager gameManger) {
+  public AchievementSystem(GameManager gameManager) {
     gameManager.OnGameEvent += CheckForAchievement;
   }
 

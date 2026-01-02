@@ -39,7 +39,7 @@ Ray(t) = Origin + t * Direction <br>
 <br>
 모든 활용은 위의 기본적인 레이의 수식으로부터 시작된다. <br>
 <br>
-예를 들어, 레이를 통해 가상의 구를 그리거나, 구와와의 상호작용 여부 등을 판별하려면 다음과 같이 수식을 풀어나간다. <br>
+예를 들어, 레이를 통해 가상의 구를 그리거나, 구와의 상호작용 여부 등을 판별하려면 다음과 같이 수식을 풀어나간다. <br>
 <br>
 (P - C) ⋅ (P - C) = r<sup>2</sup> <br>
 <br>
@@ -53,7 +53,7 @@ Ray(t) = Origin + t * Direction <br>
 <br>
 (Origin + t * Direction - C) ⋅ (Origin + t * Direction - C) = r<sup>2</sup> <br>
 <br>
-이 때, (Origin + t * Direction - C) 벡터를 Diff(t) = Origin + t * DIrection - C 라 하면, <br>
+이 때, (Origin + t * Direction - C) 벡터를 Diff(t) = Origin + t * Direction - C 라 하면, <br>
 <br>
 내적의 정의에 따라 Diff(t) ⋅ Diff(t) = |Diff(t)|<sup>2</sup> 이 되므로, <br>
 <br>

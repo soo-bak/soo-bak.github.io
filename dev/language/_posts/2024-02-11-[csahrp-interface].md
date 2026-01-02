@@ -38,7 +38,7 @@ interface IInterfaceName {
   void Method();
 
   // 이벤트 정의
-  event EventHanlder Event;
+  event EventHandler Event;
 }
 ```
 <br>
@@ -55,7 +55,7 @@ interface IInterfaceName {
 class MyClass : IInterfaceName {
   public int Property { get; set; }
 
-  public void Method {
+  public void Method() {
     // 메서드 구현
   }
 
@@ -127,7 +127,7 @@ public interface ILogger {
 아래와 같은 코드는 컴파일 에러를 발생시킨다.
 
 ```c#
-ILogger logger = new Ilogger();
+ILogger logger = new ILogger();
 ```
 <br>
 

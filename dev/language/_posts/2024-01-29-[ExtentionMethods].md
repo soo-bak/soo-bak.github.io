@@ -27,7 +27,7 @@ keywords: "C# 확장 메서드, Extension Methods, LINQ, 지연 실행, Lazy Eva
 <br>
 - 메서드 자체도 정적이어야 한다.<br>
 <br>
-- 첫 번쨰 매개변수에는 `this` 키워드를 사용하여, 확장하고자 하는 타입을 지정해야 한다.<br>
+- 첫 번째 매개변수에는 `this` 키워드를 사용하여, 확장하고자 하는 타입을 지정해야 한다.<br>
 <br><br><br>
 
 ## 확장 메서드 작성 예시
@@ -36,7 +36,7 @@ keywords: "C# 확장 메서드, Extension Methods, LINQ, 지연 실행, Lazy Eva
 ```c#
 public static class EnumerableExtensions {
   public static string StringJoin<T>(this IEnumerable<T> collection, string seperator) {
-    return string.Join(seperator, collections);
+    return string.Join(seperator, collection);
   }
 }
 ```
@@ -45,7 +45,7 @@ public static class EnumerableExtensions {
 <br><br><br>
 
 ## 확장 메서드의 사용
-확장 메서드를 사용하괴 위해서는 해당 메서드가 정의된 정적 클래스를 포함하고 있는 명칭 공간을 `using` 지시어를 통해 포함시켜야 한다.<br>
+확장 메서드를 사용하기 위해서는 해당 메서드가 정의된 정적 클래스를 포함하고 있는 명칭 공간을 `using` 지시어를 통해 포함시켜야 한다.<br>
 <br>
 그 후, 기존 타입의 인스턴스에 대해 마치 인스턴스 메서드인 것 처럼 확장 메서드를 호출할 수 있다.<br>
 <br>
@@ -76,7 +76,7 @@ var oddNumbers = numbers.Where(n => n % 2 != 0);
 var squaredNumbers = numbers.Select(n => n * n);
 
 // 원소 정렬
-var sortedNumbers = numbres.OrderByDescending(n => n);
+var sortedNumbers = numbers.OrderByDescending(n => n);
 
 // 합계 계산
 var sumOfNumbers = numbers.Sum();

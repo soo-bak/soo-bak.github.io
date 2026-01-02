@@ -96,7 +96,7 @@ class Program {
 
     obj.Display();
     obj.Display(101);
-    obj.Display("SOOBAK);
+    obj.Display("SOOBAK");
   }
 }
 ```
