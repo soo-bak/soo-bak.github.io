@@ -62,7 +62,7 @@ keywords: "Unity Update, FixedUpdate, LateUpdate, Time.deltaTime, 물리 연산,
 ### Update() 와 Time.deltaTime
 게임 내에서 동작하는 많은 요소들은 프레임과 프레임 간의 시간 간격에 따라서 일정하게 조절되어야 한다. <br>
 <br>
-에를 들어서, 캐릭터가 일정 속도로 움직여야 한다면, 그 속도는 프레임 간의 시간에 따라서 조절되어야 한다. <br>
+예를 들어서, 캐릭터가 일정 속도로 움직여야 한다면, 그 속도는 프레임 간의 시간에 따라서 조절되어야 한다. <br>
 <br>
 이 때, `Time.deltaTime` 을 활용하면, 프레임률이 떨어질 때나 프레임률이 높아질 때 모두 동일한 속도로 캐릭터가 움직일 수 있도록 해줄 수 있다.<br>
 <br>
@@ -99,7 +99,7 @@ keywords: "Unity Update, FixedUpdate, LateUpdate, Time.deltaTime, 물리 연산,
 ### FixedUpdate() 호출 주기
 `FixedUpdate()` 는 설정에서 지정된 고정된 간격, 즉 "Fixed Timestep"에 따라 호출된다. <br>
 <br>
-기본값은 약 `0.02`초 (`50fps`) 이다. (이 값은 `Time.fixedDeltaTime` 으로 조절할 수 있다.)<br>
+기본값은 약 `0.02`초 (초당 50회 호출) 이다. (이 값은 `Time.fixedDeltaTime` 으로 조절할 수 있다.)<br>
 <br>
 `Update()` 메서드는 프레임률에 따라서 호출 주기가 달라지게 되므로, 물리 연산에 사용하게 되면 일관되지 않은 결과를 가져올 수 있다. <br>
 <br>
@@ -121,7 +121,7 @@ keywords: "Unity Update, FixedUpdate, LateUpdate, Time.deltaTime, 물리 연산,
 - <b>제한된 호출 빈도</b> : `Update()` 메서드와 다르게 매 프레임마다 호출되는 것이 아니기 때문에, 사용자 입력이나 빠른 반응이 필요한 로직에는 적합하지 않다. <br>
 <br>
 
-### FixedUpdate() 와 Upate() 의 비교
+### FixedUpdate() 와 Update() 의 비교
 - <b>입력 지연</b> : 만약, `FixedUpdate()` 에서 사용자의 입력을 처리한다면, 입력 지연이 발생할 수 있다. <br>
 이는 플레이어의 반응성을 해칠 수 있기 때문에, 사용자 입력은 `Update()` 메서드 내에서 처리하는 것이 좋다. <br>
 - <b>물리 버그</b> : `Update()` 메서드 내에서 물리 연산을 처리하면 프레임률 변화에 따른 예상치 못한 물리 버그가 발생할 수 있다. <br>
@@ -145,7 +145,7 @@ keywords: "Unity Update, FixedUpdate, LateUpdate, Time.deltaTime, 물리 연산,
 따라서, 일정한 호출주기를 가진 `FixedUpdate()` 메서드 내에서 예측 가능하고 일관성 있게 물리 연산을 처리해야 한다.<br>
 
 <br>
-또한, 만약 `Update()` 메서드 내에서의 애니에메이션 상태 관리와 `FixedUpdate()` 의 물리 연산이 충돌하는 경우, <br>
+또한, 만약 `Update()` 메서드 내에서의 애니메이션 상태 관리와 `FixedUpdate()` 의 물리 연산이 충돌하는 경우, <br>
 <br>
 두 함수간의 호출 주기 차이로 인해 문제가 발생할 수 있다. <br>
 <br>
@@ -171,7 +171,7 @@ keywords: "Unity Update, FixedUpdate, LateUpdate, Time.deltaTime, 물리 연산,
 ```
 <br><br>
 
-### FixedUpdate() 와 Upate() 의 연동
+### FixedUpdate() 와 Update() 의 연동
 - <b>데이터 동기화</b> : `Update()` 메서드 내에서 수집된 사용자의 입력 데이터나 게임의 상태를 `FixedUpdate()` 에서 사용해야 될 때가 있다. <br>
 이럴때는, 두 함수 사이에서 데이터를 동기화 하는 방법이 필요하다.
 즉, 사용자의 입력은 `Update()` 메서드 내에서 받지만, 이를 기반으로한 물리 연산은 `FixedUpdate()` 에서 수행해야 한다.<br>
@@ -260,7 +260,7 @@ keywords: "Unity Update, FixedUpdate, LateUpdate, Time.deltaTime, 물리 연산,
   void LateUpdate() {
     // 카메라 추적 로직
     Vector3 desiredPosition = target.position + cameraOffset;
-    Vector3 smoothedPosition = Vector3.Lerp(cam.transform.position, desiredPosition, smoothSpeed);
+    Vector3 smoothedPosition = Vector3.Lerp(cam.transform.position, desiredPosition, smoothSpeed * Time.deltaTime);
     cam.transform.position = smoothedPosition;
   }
 ```
