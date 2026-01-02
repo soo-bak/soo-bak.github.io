@@ -82,7 +82,7 @@ int countUntilCycle(int start) {
 이 구조는 일반적인 `순열 반복 구조(permutation cycle)`로 이해할 수 있으며, 초기값에 따라 길이와 반복 구간이 달라질 수 있습니다.
 
 
-> 참고 : [순열 반복 구조(Permutation Cycle)의 개념과 알고리듬적 활용 - soo:bak](https://soo-bak.github.io/algorithm/theory/middle-square-algorithm/)
+> 참고 : [순열 반복 구조(Permutation Cycle)의 개념과 알고리듬적 활용 - soo:bak](https://soo-bak.github.io/algorithm/theory/permutation-cycle/)
 
 
 ---

@@ -6,7 +6,7 @@ description: 벨만 포드 알고리즘의 개념과 원리를 설명합니다. 
 ---
 
 ## 개념
-  - `시작 노드` 에서 그래프의 `다른 모든 노드` 로 가는 최단 경로는 구하는 알고리즘
+  - `시작 노드` 에서 그래프의 `다른 모든 노드` 로 가는 최단 경로를 구하는 알고리즘
 <br><br>
 
 ## 특징
@@ -106,7 +106,7 @@ description: 벨만 포드 알고리즘의 개념과 원리를 설명합니다. 
     for (auto e : edges) {
       int from, to, w;
       tie(from, to, w) = e;
-      if (dist[from] = INF) continue ;
+      if (dist[from] == INF) continue ;
       dist[to] = min(dist[to], dist[from] + w);
     }
   }
@@ -123,7 +123,7 @@ description: 벨만 포드 알고리즘의 개념과 원리를 설명합니다. 
     ```c++
     typedef long long ll;
 
-    vecotr<ll> dist(NODE_MAX, INF);
+    vector<ll> dist(NODE_MAX, INF);
     bool isNegCycle = false;
     /* 만약, n 번째 단계에서 거리값이 줄었다면,
        그래프에 음수 사이클이 존재하는 경우일 수도 있으므로
@@ -139,7 +139,7 @@ description: 벨만 포드 알고리즘의 개념과 원리를 설명합니다. 
         if (dist[from] == INF) continue ;
         if (dist[to] > dist[from] + w) {
           isDecreased = true;
-          if (i == cntNode) isNegative = true;
+          if (i == cntNode) isNegCycle = true;
           else dist[to] = min(dist[to], dist[from] + w);
         }
       }
