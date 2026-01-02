@@ -62,7 +62,7 @@ int fibonacci(int n) {
 
 #### 재귀 + 메모이제이션 (Top-down DP)
 
-중복 계산을 방지하기 위해 메모이제이션을 적용한 방법입니다.
+중복 계산을 방지하기 위해 [메모이제이션](https://soo-bak.github.io/algorithm/theory/dynamic-programming/)을 적용한 방법입니다.
 
 ```cpp
 #include <bits/stdc++.h>

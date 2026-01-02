@@ -287,7 +287,7 @@ int main() {
 
 <br>
 **최단 경로**
-- Dijkstra 알고리듬: 현재까지의 최단 거리가 가장 짧은 정점 선택
+- [Dijkstra 알고리듬](https://soo-bak.github.io/algorithm/theory/Dijkstra/): 현재까지의 최단 거리가 가장 짧은 정점 선택
 
 <br>
 **데이터 압축**
