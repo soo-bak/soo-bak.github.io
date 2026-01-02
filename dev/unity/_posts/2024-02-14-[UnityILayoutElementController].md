@@ -16,11 +16,11 @@ keywords: "Unity ILayoutElement, ILayoutController, LayoutGroup, ContentSizeFitt
 
 `Unity` 에서 `ILayoutElement` 와 `ILayoutController` 인터페이스는 `Unity` 의 `UI` 시스템인 `UGUI` 에서 레이아웃을 관리하는 데 사용된다.<br>
 <br>
-이 인터페이스들은 `Unity` 엔진 내부의 `C#` 인터페이스로 정의되어있으며, `Unity` 의 소스 코드가 공개적으로 제공되지 않기 때문에,<br>
+이 인터페이스들은 `Unity` 엔진 내부의 `C#` 인터페이스로 정의되어있으며,<br>
 <br>
-정확한 코드 구현을 알 수는 없지만,<br>
+`UGUI` 의 소스 코드는 [GitHub](https://github.com/Unity-Technologies/uGUI)에 공개되어 있어 직접 확인할 수 있다.<br>
 <br>
-공식 사이트에 공개된 매뉴얼을 바탕으로 기본적인 목적과 메서드의 선언과 원형에 대해서는 파악할 수 있다.<br>
+공식 매뉴얼과 소스 코드를 바탕으로 기본적인 목적과 메서드의 선언에 대해 살펴보자.<br>
 <br>
 <br>
 <br>

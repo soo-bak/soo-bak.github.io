@@ -249,7 +249,7 @@ public interface IObservable<T> {
 <br>
 이 과정은 `IObservable<T>` 의 `Subscribe` 메서드를 호출함으로써 수행된다.<br>
 <br>
-구독을 통해 `IObservable<T>` 는 `IObservable<T>` 에게 `데이터 스트림` 의 변화를 알릴 수 있게 된다.<br>
+구독을 통해 `IObservable<T>` 는 `IObserver<T>` 에게 `데이터 스트림` 의 변화를 알릴 수 있게 된다.<br>
 <br>
 `Subscribe` 메서드는 `IDisposable` 인터페이스를 구현하는 객체를 반환하여, 구독자가 필요할 때 언제든지 구독을 해제할 수 있는 방법을 제공한다.<br>
 <br>
