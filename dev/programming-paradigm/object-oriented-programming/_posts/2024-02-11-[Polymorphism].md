@@ -3,6 +3,7 @@ layout: single
 title: "다형성(Polymorphism) - soo:bak"
 date: "2024-02-12 00:29:00 +0900"
 description: "객체지향의 핵심 개념인 다형성을 설명합니다. 오버로딩과 오버라이딩의 차이, C++/C# 예제를 다룹니다."
+pin: true
 tags:
   - OOP
   - 다형성

@@ -3,6 +3,7 @@ layout: single
 title: "Unity 와 코루틴(Coroutine) - soo:bak"
 date: "2023-08-05 05:40:00 +0900"
 description: "Unity 코루틴의 개념, 동작 원리, yield return과 IEnumerator, async/await와의 비교, 비동기와 병렬의 차이를 정확하게 설명합니다."
+pin: true
 tags:
   - Unity
   - 코루틴

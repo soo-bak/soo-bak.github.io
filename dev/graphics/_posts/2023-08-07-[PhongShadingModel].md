@@ -3,6 +3,7 @@ layout: single
 title: "Phong Shading - soo:bak"
 date: "2023-08-07 00:33:00 +0900"
 description: "Phong Shading 광원 모델의 개념과 Unity에서의 구현 방법을 설명합니다. Ambient, Diffuse, Specular 반사를 통한 입체감 표현 기법입니다."
+pin: true
 tags:
   - 그래픽스
   - 셰이딩
