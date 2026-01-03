@@ -2,66 +2,82 @@
 layout: default
 ---
 
-<div class="board-home">
-  {% comment %} ========== ALGORITHM ========== {% endcomment %}
-  {% assign algo_posts = site.posts | where_exp: "post", "post.path contains 'algorithm/'" | sort: "date" | reverse %}
-  {% include board/section.html
-     category_name="ALGORITHM"
-     category_url="/algorithm/"
-     category_icon="📊"
-     posts=algo_posts
-     max_posts=5
-     show_subcategory=true %}
+{% if page.header.overlay_color or page.header.overlay_image or page.header.image %}
+  {% include page__hero.html %}
+{% elsif page.header.video.id and page.header.video.provider %}
+  {% include page__hero_video.html %}
+{% endif %}
 
-  {% comment %} ========== GAME DESIGN ========== {% endcomment %}
-  {% assign game_posts = site.posts | where_exp: "post", "post.path contains 'game-design/'" | sort: "date" | reverse %}
-  {% include board/section.html
-     category_name="GAME DESIGN"
-     category_url="/game-design/"
-     category_icon="🎮"
-     posts=game_posts
-     max_posts=5
-     show_subcategory=true %}
+<div id="main" role="main">
+  {% include sidebar.html %}
 
-  {% comment %} ========== DEV ========== {% endcomment %}
-  {% assign dev_posts = site.posts | where_exp: "post", "post.path contains 'dev/'" | sort: "date" | reverse %}
-  {% include board/section.html
-     category_name="DEV"
-     category_url="/dev/"
-     category_icon="💻"
-     posts=dev_posts
-     max_posts=5
-     show_subcategory=true %}
+  <div class="archive">
+    {% unless page.header.overlay_color or page.header.overlay_image %}
+      <h1 id="page-title" class="page__title">{{ page.title }}</h1>
+    {% endunless %}
 
-  {% comment %} ========== LIBRARY ========== {% endcomment %}
-  {% assign library_posts = site.posts | where_exp: "post", "post.path contains 'library/'" | sort: "date" | reverse %}
-  {% include board/section.html
-     category_name="LIBRARY"
-     category_url="/library/"
-     category_icon="📚"
-     posts=library_posts
-     max_posts=5
-     show_subcategory=true %}
+    <div class="board-home">
+      {% comment %} ========== ALGORITHM ========== {% endcomment %}
+      {% assign algo_posts = site.posts | where_exp: "post", "post.path contains 'algorithm/'" | sort: "date" | reverse %}
+      {% include board/section.html
+         category_name="ALGORITHM"
+         category_url="/algorithm/"
+         category_icon="📊"
+         posts=algo_posts
+         max_posts=5
+         show_subcategory=true %}
 
-  {% comment %} ========== DAILY LIFE ========== {% endcomment %}
-  {% assign daily_posts = site.posts | where_exp: "post", "post.path contains 'daily-life/'" | sort: "date" | reverse %}
-  {% include board/section.html
-     category_name="DAILY LIFE"
-     category_url="/daily-life/"
-     category_icon="🌸"
-     posts=daily_posts
-     max_posts=5
-     show_subcategory=true %}
+      {% comment %} ========== GAME DESIGN ========== {% endcomment %}
+      {% assign game_posts = site.posts | where_exp: "post", "post.path contains 'game-design/'" | sort: "date" | reverse %}
+      {% include board/section.html
+         category_name="GAME DESIGN"
+         category_url="/game-design/"
+         category_icon="🎮"
+         posts=game_posts
+         max_posts=5
+         show_subcategory=true %}
 
-  {% comment %} ========== NOTE ========== {% endcomment %}
-  {% assign note_posts = site.posts | where_exp: "post", "post.path contains 'note/'" | sort: "date" | reverse %}
-  {% if note_posts.size > 0 %}
-  {% include board/section.html
-     category_name="NOTE"
-     category_url="/note/"
-     category_icon="📝"
-     posts=note_posts
-     max_posts=5
-     show_subcategory=false %}
-  {% endif %}
+      {% comment %} ========== DEV ========== {% endcomment %}
+      {% assign dev_posts = site.posts | where_exp: "post", "post.path contains 'dev/'" | sort: "date" | reverse %}
+      {% include board/section.html
+         category_name="DEV"
+         category_url="/dev/"
+         category_icon="💻"
+         posts=dev_posts
+         max_posts=5
+         show_subcategory=true %}
+
+      {% comment %} ========== LIBRARY ========== {% endcomment %}
+      {% assign library_posts = site.posts | where_exp: "post", "post.path contains 'library/'" | sort: "date" | reverse %}
+      {% include board/section.html
+         category_name="LIBRARY"
+         category_url="/library/"
+         category_icon="📚"
+         posts=library_posts
+         max_posts=5
+         show_subcategory=true %}
+
+      {% comment %} ========== DAILY LIFE ========== {% endcomment %}
+      {% assign daily_posts = site.posts | where_exp: "post", "post.path contains 'daily-life/'" | sort: "date" | reverse %}
+      {% include board/section.html
+         category_name="DAILY LIFE"
+         category_url="/daily-life/"
+         category_icon="🌸"
+         posts=daily_posts
+         max_posts=5
+         show_subcategory=true %}
+
+      {% comment %} ========== NOTE ========== {% endcomment %}
+      {% assign note_posts = site.posts | where_exp: "post", "post.path contains 'note/'" | sort: "date" | reverse %}
+      {% if note_posts.size > 0 %}
+      {% include board/section.html
+         category_name="NOTE"
+         category_url="/note/"
+         category_icon="📝"
+         posts=note_posts
+         max_posts=5
+         show_subcategory=false %}
+      {% endif %}
+    </div>
+  </div>
 </div>
