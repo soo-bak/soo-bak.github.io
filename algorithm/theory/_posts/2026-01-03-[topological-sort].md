@@ -3,6 +3,9 @@ layout: single
 title: "위상 정렬(Topological Sort)의 원리와 구현 - soo:bak"
 date: "2026-01-03 07:00:00 +0900"
 description: 방향 비순환 그래프(DAG)의 정점들을 선행 관계에 따라 정렬하는 위상 정렬의 원리, DFS와 BFS(Kahn) 구현 방법을 다룹니다
+tags:
+  - 그래프
+  - 위상정렬
 ---
 
 ## 위상 정렬이란?

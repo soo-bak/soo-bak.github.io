@@ -3,6 +3,10 @@ layout: single
 title: "강한 연결 요소(Strongly Connected Components)의 원리와 구현 - soo:bak"
 date: "2026-01-03 11:00:00 +0900"
 description: 방향 그래프에서 서로 도달 가능한 정점들의 최대 집합인 강한 연결 요소를 찾는 Kosaraju, Tarjan 알고리듬을 다룹니다
+tags:
+  - 그래프
+  - SCC
+  - 강한연결요소
 ---
 
 ## 강한 연결 요소란?

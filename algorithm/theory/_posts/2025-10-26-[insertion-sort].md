@@ -3,6 +3,9 @@ layout: single
 title: "삽입 정렬(Insertion Sort)의 원리와 구현 - soo:bak"
 date: "2025-10-26 02:00:00 +0900"
 description: 카드 정렬처럼 직관적인 삽입 정렬의 원리, 구현 방법, 시간 복잡도, 활용 사례를 다룹니다
+tags:
+  - 정렬
+  - 삽입정렬
 ---
 
 ## 삽입 정렬이란?

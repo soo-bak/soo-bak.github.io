@@ -3,6 +3,9 @@ layout: single
 title: "Middle-Square 방식 난수 생성 알고리듬의 원리와 한계 - soo:bak"
 date: "2025-04-22 22:03:00 +0900"
 description: 중간 네 자리를 추출하는 방식으로 난수를 생성하는 Middle-Square 메서드 기법의 작동 방식과 알고리듬적 원리, 그리고 그 한계에 대해 설명한 글
+tags:
+  - 수학
+  - 구현
 ---
 
 ## Middle-Square 방식이란?

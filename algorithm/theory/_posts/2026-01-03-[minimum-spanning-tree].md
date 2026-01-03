@@ -3,6 +3,10 @@ layout: single
 title: "최소 신장 트리(Minimum Spanning Tree)의 원리와 구현 - soo:bak"
 date: "2026-01-03 06:00:00 +0900"
 description: 그래프의 모든 정점을 최소 비용으로 연결하는 최소 신장 트리의 개념, Kruskal과 Prim 알고리듬의 원리와 구현을 다룹니다
+tags:
+  - 그래프
+  - 최소스패닝트리
+  - MST
 ---
 
 ## 최소 신장 트리란?

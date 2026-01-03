@@ -1,0 +1,46 @@
+{% comment %}
+  태그 기반 관련 BOJ 문제 풀이 자동 링크
+  - 알고리즘 이론 페이지에서 태그를 분석하여 관련 BOJ 문제 풀이 표시
+  - theory 포스트의 태그와 일치하는 BOJ 포스트를 최대 5개까지 표시
+{% endcomment %}
+
+{% assign matched_boj = "" | split: "" %}
+{% assign max_posts = 5 %}
+
+{% for post in site.posts %}
+  {% if post.path contains 'algorithm/boj' %}
+    {% for theory_tag in page.tags %}
+      {% if post.tags contains theory_tag %}
+        {% unless matched_boj contains post %}
+          {% if matched_boj.size < max_posts %}
+            {% assign matched_boj = matched_boj | push: post %}
+          {% endif %}
+        {% endunless %}
+        {% break %}
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+  {% if matched_boj.size >= max_posts %}
+    {% break %}
+  {% endif %}
+{% endfor %}
+
+{% if matched_boj.size > 0 %}
+<div class="related-boj">
+  <h4 class="related-boj__title"><i class="fas fa-code"></i> 관련 문제 풀이</h4>
+  <ul class="related-boj__list">
+    {% for boj in matched_boj %}
+    <li>
+      <a href="{{ boj.url | relative_url }}" class="related-boj__link">
+        {{ boj.title | remove: " - soo:bak" }}
+      </a>
+    </li>
+    {% endfor %}
+  </ul>
+  {% if page.tags.size > 0 %}
+  <p class="related-boj__more">
+    <a href="/tags/#{{ page.tags[0] | slugify }}">더 많은 문제 보기 &rarr;</a>
+  </p>
+  {% endif %}
+</div>
+{% endif %}

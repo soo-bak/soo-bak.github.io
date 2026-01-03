@@ -3,6 +3,10 @@ layout: single
 title: "확장 유클리드 알고리듬(Extended Euclidean Algorithm)의 원리와 구현 - soo:bak"
 date: "2026-01-03 16:00:00 +0900"
 description: GCD를 구하면서 베주 항등식의 계수를 함께 찾는 확장 유클리드 알고리듬의 원리와 활용을 다룹니다
+tags:
+  - 수학
+  - 정수론
+  - 확장유클리드
 ---
 
 ## 확장 유클리드 알고리듬이란?

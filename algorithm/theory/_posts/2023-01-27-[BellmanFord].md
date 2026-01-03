@@ -3,6 +3,10 @@ layout: single
 title: "벨만 포드 알고리듬 (Bellman-Ford algorithm) - soo:bak"
 date: "2023-01-27 18:45:00 +0900"
 description: 벨만 포드 알고리듬의 개념과 원리를 설명합니다. 음수 가중치 간선이 있는 그래프에서 최단 경로를 구하는 방법과 시간 복잡도 O(nm)에 대해 다룹니다.
+tags:
+  - 그래프
+  - 최단경로
+  - 벨만포드
 ---
 
 ## 개념

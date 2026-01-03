@@ -3,6 +3,10 @@ layout: single
 title: "스택과 큐 - 기본 자료구조의 원리 - soo:bak"
 date: "2025-12-27 01:30:00 +0900"
 description: 스택의 LIFO 원리와 큐의 FIFO 원리, 각각의 구현 방법과 활용 예시를 통해 기본 자료구조를 설명합니다.
+tags:
+  - 자료구조
+  - 스택
+  - 큐
 ---
 
 ## 스택(Stack)이란?

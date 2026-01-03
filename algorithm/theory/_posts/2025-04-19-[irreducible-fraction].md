@@ -3,6 +3,10 @@ layout: single
 title: "기약 분수(irreducible fraction)의 알고리듬적 접근 - soo:bak"
 date: "2025-04-19 01:30:00 +0900"
 description: 분수의 약분 과정을 최대공약수 기반으로 구현하고 기약분수로 만드는 알고리듬적 접근을 설명한 글
+tags:
+  - 수학
+  - 정수론
+  - 기약분수
 ---
 
 ## 기약분수란?

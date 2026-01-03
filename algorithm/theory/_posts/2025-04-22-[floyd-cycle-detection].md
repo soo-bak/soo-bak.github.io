@@ -1,8 +1,11 @@
 ---
 layout: single
-title: "플로이드의 토끼와 거북이 알고리듬(Floyd’s Cycle Detection)의 원리와 구현 - soo:bak"
+title: "플로이드의 토끼와 거북이 알고리듬(Floyd's Cycle Detection)의 원리와 구현 - soo:bak"
 date: "2025-04-22 23:53:00 +0900"
 description: 순환 구조를 가진 수열이나 연결 리스트에서 사이클의 존재를 판별하고 주기를 찾는 데 사용되는 토끼와 거북이 알고리듬의 원리와 구현 방법에 대한 자세한 설명
+tags:
+  - 그래프
+  - 사이클
 ---
 
 ## 개요

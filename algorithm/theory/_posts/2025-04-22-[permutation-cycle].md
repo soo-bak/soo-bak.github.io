@@ -3,6 +3,9 @@ layout: single
 title: "순열 반복 구조(Permutation Cycle)의 개념과 알고리듬적 활용 - soo:bak"
 date: "2025-04-22 23:10:00 +0900"
 description: 특정 상태가 반복되며 발생하는 순열 사이클 구조의 개념과 그를 기반으로 한 알고리듬 문제 해결 방식을 정리한 글
+tags:
+  - 수학
+  - 순열
 ---
 
 ## 순열 반복 구조란?

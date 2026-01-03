@@ -3,6 +3,9 @@ layout: single
 title: "계수 정렬(Counting Sort)의 원리와 구현 - soo:bak"
 date: "2026-01-03 09:00:00 +0900"
 description: 비교 없이 원소의 개수를 세어 정렬하는 계수 정렬 알고리듬의 원리, 구현 방법, 시간 복잡도를 다룹니다
+tags:
+  - 정렬
+  - 계수정렬
 ---
 
 ## 계수 정렬이란?

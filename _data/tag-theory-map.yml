@@ -200,3 +200,79 @@ lis:
 순열:
   title: "순열의 순환"
   url: "/algorithm/theory/permutation-cycle/"
+
+버블정렬:
+  title: "버블 정렬"
+  url: "/algorithm/theory/bubble-sort/"
+
+선택정렬:
+  title: "선택 정렬"
+  url: "/algorithm/theory/selection-sort/"
+
+계수정렬:
+  title: "계수 정렬"
+  url: "/algorithm/theory/counting-sort/"
+
+기수정렬:
+  title: "기수 정렬"
+  url: "/algorithm/theory/radix-sort/"
+
+동전교환:
+  title: "동전 교환 문제"
+  url: "/algorithm/theory/coin-change/"
+
+배낭문제:
+  title: "배낭 문제 (Knapsack)"
+  url: "/algorithm/theory/knapsack/"
+
+LCS:
+  title: "최장 공통 부분 수열 (LCS)"
+  url: "/algorithm/theory/longest-common-subsequence/"
+
+최소스패닝트리:
+  title: "최소 스패닝 트리"
+  url: "/algorithm/theory/minimum-spanning-tree/"
+
+MST:
+  title: "최소 스패닝 트리"
+  url: "/algorithm/theory/minimum-spanning-tree/"
+
+위상정렬:
+  title: "위상 정렬"
+  url: "/algorithm/theory/topological-sort/"
+
+SCC:
+  title: "강한 연결 요소 (SCC)"
+  url: "/algorithm/theory/strongly-connected-components/"
+
+강한연결요소:
+  title: "강한 연결 요소 (SCC)"
+  url: "/algorithm/theory/strongly-connected-components/"
+
+트라이:
+  title: "트라이 (Trie)"
+  url: "/algorithm/theory/trie/"
+
+해시:
+  title: "해시 테이블"
+  url: "/algorithm/theory/hash-table/"
+
+해시테이블:
+  title: "해시 테이블"
+  url: "/algorithm/theory/hash-table/"
+
+연결리스트:
+  title: "연결 리스트"
+  url: "/algorithm/theory/linked-list/"
+
+선형탐색:
+  title: "선형 탐색"
+  url: "/algorithm/theory/linear-search/"
+
+모듈러:
+  title: "모듈러 연산"
+  url: "/algorithm/theory/modular-arithmetic/"
+
+확장유클리드:
+  title: "확장 유클리드 알고리듬"
+  url: "/algorithm/theory/extended-euclidean/"

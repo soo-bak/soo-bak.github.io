@@ -3,6 +3,9 @@ layout: single
 title: "선택 정렬(Selection Sort)의 원리와 구현 - soo:bak"
 date: "2026-01-03 03:00:00 +0900"
 description: 배열에서 최솟값을 찾아 맨 앞으로 이동시키는 선택 정렬 알고리듬의 원리, 구현 방법, 특징을 다룹니다
+tags:
+  - 정렬
+  - 선택정렬
 ---
 
 ## 선택 정렬이란?

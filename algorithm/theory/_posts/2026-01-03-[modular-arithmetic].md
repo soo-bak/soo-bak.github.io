@@ -3,6 +3,10 @@ layout: single
 title: "모듈러 연산(Modular Arithmetic)의 원리와 활용 - soo:bak"
 date: "2026-01-03 14:00:00 +0900"
 description: 나머지 연산의 성질, 모듈러 덧셈/뺄셈/곱셈, 거듭제곱, 역원 계산 방법을 다룹니다
+tags:
+  - 수학
+  - 정수론
+  - 모듈러
 ---
 
 ## 모듈러 연산이란?

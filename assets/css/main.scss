@@ -56,3 +56,67 @@
     }
   }
 }
+
+// Custom: Related BOJ Links (green accent)
+.related-boj {
+  margin: 1.5em 0;
+  padding: 1em 1.2em;
+  background-color: rgba(0, 255, 136, 0.06);
+  border-left: 4px solid #00ff88;
+  border-radius: 4px;
+
+  &__title {
+    margin: 0 0 0.5em 0;
+    font-size: 0.9em;
+    font-weight: 600;
+    color: #00ff88;
+
+    i {
+      margin-right: 0.4em;
+      color: #00ff88;
+    }
+  }
+
+  &__list {
+    margin: 0;
+    padding-left: 1.2em;
+    list-style: none;
+
+    li {
+      margin: 0.3em 0;
+      padding-left: 0;
+
+      &::before {
+        content: "→";
+        margin-right: 0.5em;
+        color: #00ff88;
+      }
+    }
+  }
+
+  &__link {
+    color: #fff6fb;
+    text-decoration: none;
+    border-bottom: 1px dotted rgba(0, 255, 136, 0.5);
+    transition: all 0.2s ease;
+
+    &:hover {
+      color: #00ff88;
+      border-bottom-style: solid;
+    }
+  }
+
+  &__more {
+    margin: 0.8em 0 0 0;
+    font-size: 0.85em;
+
+    a {
+      color: #00ff88;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}

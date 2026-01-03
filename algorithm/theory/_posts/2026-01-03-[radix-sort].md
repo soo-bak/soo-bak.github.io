@@ -3,6 +3,9 @@ layout: single
 title: "기수 정렬(Radix Sort)의 원리와 구현 - soo:bak"
 date: "2026-01-03 10:00:00 +0900"
 description: 자릿수별로 정렬을 반복하여 전체를 정렬하는 기수 정렬 알고리듬의 원리, LSD/MSD 방식, 구현 방법을 다룹니다
+tags:
+  - 정렬
+  - 기수정렬
 ---
 
 ## 기수 정렬이란?
