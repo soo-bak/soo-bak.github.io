@@ -7,23 +7,29 @@ description: 나머지 연산의 성질, 모듈러 덧셈/뺄셈/곱셈, 거듭�
 
 ## 모듈러 연산이란?
 
-**모듈러 연산(Modular Arithmetic)**은 나머지 연산을 체계적으로 다루는 수학 분야입니다.
+알고리듬 문제를 풀다 보면 "답을 $$10^9 + 7$$로 나눈 나머지를 출력하시오"라는 조건을 자주 보게 됩니다.
+
+수가 너무 커지면 일반적인 자료형으로 표현할 수 없기 때문에, 나머지 연산을 활용하여 값을 관리하게 됩니다.
 
 <br>
+
+**모듈러 연산(Modular Arithmetic)**은 이러한 나머지 연산을 체계적으로 다루는 수학 분야입니다.
 
 $$a \equiv b \pmod{m}$$
 
-$$a$$를 $$m$$으로 나눈 나머지가 $$b$$와 같다는 의미입니다.
+위 식은 $$a$$를 $$m$$으로 나눈 나머지가 $$b$$와 같다는 의미입니다.
 
 <br>
 
-**예시**:
-- $$17 \equiv 2 \pmod{5}$$ (17 = 5×3 + 2)
-- $$-3 \equiv 4 \pmod{7}$$ (-3 = 7×(-1) + 4)
+예를 들어:
+- $$17 \equiv 2 \pmod{5}$$ (17 = 5 * 3 + 2)
+- $$-3 \equiv 4 \pmod{7}$$ (-3 = 7 * (-1) + 4)
 
-<br>
+---
 
-## 기본 연산
+## 기본 연산의 성질
+
+모듈러 연산에서는 덧셈, 뺄셈, 곱셈에 대해 다음과 같은 분배 법칙이 성립합니다.
 
 <br>
 
@@ -49,7 +55,7 @@ long long modSub(long long a, long long b, long long m) {
 }
 ```
 
-**주의**: 음수가 될 수 있으므로 $$+m$$을 더합니다.
+뺄셈의 경우 결과가 음수가 될 수 있으므로 $$m$$을 더해줍니다.
 
 <br>
 
@@ -63,17 +69,19 @@ long long modMul(long long a, long long b, long long m) {
 }
 ```
 
-**주의**: 오버플로우 방지를 위해 `long long` 사용
+곱셈에서는 오버플로우가 발생할 수 있으므로 `long long` 타입을 사용합니다.
 
-<br>
+---
 
 ## 모듈러 거듭제곱
 
+$$a^n \mod m$$을 계산해야 할 때, $$n$$이 크다면 단순 반복으로는 시간이 오래 걸립니다.
+
+분할 정복을 이용하면 $$O(\log n)$$ 시간에 계산할 수 있습니다.
+
 <br>
 
-$$a^n \mod m$$을 효율적으로 계산하는 방법입니다.
-
-### 분할 정복 방식
+### 원리
 
 $$
 a^n = \begin{cases}
@@ -82,6 +90,12 @@ a^n = \begin{cases}
 a \times (a^{n/2})^2 & \text{if } n \text{ is odd}
 \end{cases}
 $$
+
+지수를 절반씩 줄여가며 계산하므로 반복 횟수가 $$\log n$$에 비례합니다.
+
+<br>
+
+### 구현
 
 ```cpp
 long long modPow(long long a, long long n, long long m) {
@@ -100,8 +114,6 @@ long long modPow(long long a, long long n, long long m) {
 }
 ```
 
-**시간 복잡도**: $$O(\log n)$$
-
 <br>
 
 ### 사용 예시
@@ -114,19 +126,27 @@ cout << modPow(2, 10, 1000) << "\n";  // 24
 cout << modPow(3, 100, 1000000007) << "\n";
 ```
 
-<br>
+---
 
 ## 모듈러 역원
 
+나눗셈의 경우 곱셈처럼 단순히 분배할 수 없습니다.
+
+대신 **모듈러 역원**을 이용합니다.
+
 <br>
 
-$$a$$의 모듈러 역원은 $$a \times a^{-1} \equiv 1 \pmod{m}$$을 만족하는 $$a^{-1}$$입니다.
+$$a$$의 모듈러 역원 $$a^{-1}$$은 다음을 만족하는 수입니다:
+
+$$a \times a^{-1} \equiv 1 \pmod{m}$$
+
+역원이 존재하려면 $$\gcd(a, m) = 1$$이어야 합니다. 즉, $$a$$와 $$m$$이 서로소여야 합니다.
 
 <br>
 
-### 페르마의 소정리
+### 페르마의 소정리를 이용한 방법
 
-$$m$$이 **소수**이고 $$\gcd(a, m) = 1$$이면:
+$$m$$이 소수이고 $$\gcd(a, m) = 1$$일 때, 페르마의 소정리에 의해:
 
 $$a^{m-1} \equiv 1 \pmod{m}$$
 
@@ -140,11 +160,13 @@ long long modInverse(long long a, long long m) {
 }
 ```
 
+> 참고 : 이 방법은 $$m$$이 소수일 때만 사용할 수 있습니다.
+
 <br>
 
-### 확장 유클리드 알고리듬
+### 확장 유클리드 알고리듬을 이용한 방법
 
-$$m$$이 소수가 아닐 때 사용:
+$$m$$이 소수가 아닐 때는 확장 유클리드 알고리듬을 사용합니다.
 
 ```cpp
 long long extGcd(long long a, long long b, long long& x, long long& y) {
@@ -166,17 +188,19 @@ long long modInverseExt(long long a, long long m) {
   long long x, y;
   long long g = extGcd(a, m, x, y);
 
-  if (g != 1) return -1;  // 역원 없음
+  if (g != 1) return -1;  // 역원이 존재하지 않음
 
   return (x % m + m) % m;
 }
 ```
 
-<br>
+> 참고 : [유클리드 호제법(Euclidean Algorithm)과 최대공약수 - soo:bak](https://soo-bak.github.io/algorithm/theory/gcd-euclidean-explained/)
+
+---
 
 ## 모듈러 나눗셈
 
-<br>
+역원을 이용하면 나눗셈을 곱셈으로 바꿀 수 있습니다.
 
 $$\frac{a}{b} \mod m = a \times b^{-1} \mod m$$
 
@@ -186,17 +210,17 @@ long long modDiv(long long a, long long b, long long m) {
 }
 ```
 
-**주의**: $$b$$와 $$m$$이 서로소여야 역원이 존재합니다.
+---
 
-<br>
+## 실전 활용 예시
 
-## 실전 활용
+### 이항 계수 계산
 
-<br>
+조합 $$\binom{n}{r}$$을 큰 수에 대해 구할 때 모듈러 연산이 필수입니다.
 
-### 1. 이항 계수 (nCr)
+$$\binom{n}{r} = \frac{n!}{r!(n-r)!}$$
 
-큰 수의 조합을 구할 때:
+팩토리얼과 그 역원을 미리 계산해두면 $$O(1)$$에 조합을 구할 수 있습니다.
 
 ```cpp
 const long long MOD = 1000000007;
@@ -224,44 +248,9 @@ long long nCr(int n, int r) {
 
 <br>
 
-### 2. 피보나치 수열
+### 문자열 해싱
 
-```cpp
-long long fib(long long n, long long m) {
-  if (n <= 1) return n;
-
-  vector<vector<long long>> M = {{1, 1}, {1, 0}};
-  vector<vector<long long>> result = {{1, 0}, {0, 1}};
-
-  auto matMul = [&](vector<vector<long long>>& A,
-                    vector<vector<long long>>& B) {
-    vector<vector<long long>> C(2, vector<long long>(2, 0));
-    for (int i = 0; i < 2; i++) {
-      for (int j = 0; j < 2; j++) {
-        for (int k = 0; k < 2; k++) {
-          C[i][j] = (C[i][j] + A[i][k] * B[k][j]) % m;
-        }
-      }
-    }
-    return C;
-  };
-
-  n--;
-  while (n > 0) {
-    if (n & 1) result = matMul(result, M);
-    M = matMul(M, M);
-    n >>= 1;
-  }
-
-  return result[0][0];
-}
-```
-
-<br>
-
-### 3. 해시 계산
-
-문자열 해싱:
+문자열 비교를 빠르게 하기 위한 해시 계산에도 모듈러 연산이 사용됩니다.
 
 ```cpp
 long long polyHash(const string& s, long long base, long long mod) {
@@ -277,47 +266,42 @@ long long polyHash(const string& s, long long base, long long mod) {
 }
 ```
 
-<br>
+---
 
-## 자주 쓰는 MOD 값
+## 자주 사용되는 MOD 값
 
-<br>
+알고리듬 문제에서 $$10^9 + 7$$이 가장 많이 사용됩니다.
 
-| 값 | 설명 |
-|---|------|
-| $$10^9 + 7$$ | 가장 흔한 소수 MOD |
-| $$10^9 + 9$$ | 해싱에 자주 사용 |
-| $$998244353$$ | NTT에 사용 ($$2^{23} \times 7 \times 17 + 1$$) |
-
-<br>
-
-$$10^9 + 7$$이 자주 쓰이는 이유:
-- 소수이므로 페르마 정리 적용 가능
-- `int` 두 개 곱해도 `long long` 범위 내
+이 값이 자주 쓰이는 이유는 다음과 같습니다:
+- 소수이므로 페르마의 소정리를 적용할 수 있음
+- `int` 범위의 두 수를 곱해도 `long long` 범위를 넘지 않음
 - 외우기 쉬움
 
 <br>
 
-## 주의사항
+그 외에 $$10^9 + 9$$는 해싱에, $$998244353$$은 NTT(Number Theoretic Transform)에 자주 사용됩니다.
 
-<br>
+---
 
-**1. 오버플로우**
+## 주의할 점
+
+### 오버플로우
 
 ```cpp
-// 위험: a * b가 long long 범위 초과 가능
+// 위험: a * b가 long long 범위를 초과할 수 있음
 long long result = a * b % m;
 
-// 안전: 먼저 mod 적용
+// 안전: 먼저 mod를 적용
 long long result = (a % m) * (b % m) % m;
 ```
 
 <br>
 
-**2. 음수 처리**
+### 음수 처리
+
+C++에서 음수를 양수로 나눈 나머지는 음수가 될 수 있습니다.
 
 ```cpp
-// C++에서 음수 % 양수 = 음수 가능
 int x = -7 % 5;  // -2
 
 // 양수로 만들기
@@ -326,33 +310,29 @@ int x = ((-7 % 5) + 5) % 5;  // 3
 
 <br>
 
-**3. 역원 존재 조건**
+### 역원 존재 조건
 
 $$\gcd(a, m) = 1$$일 때만 역원이 존재합니다.
 
-<br>
+특히 $$m$$이 소수일 때는 $$a$$가 $$m$$의 배수가 아니면 항상 역원이 존재합니다.
+
+---
 
 ## 마무리
 
-모듈러 연산은 큰 수를 다루는 알고리듬 문제에서 필수적인 기법입니다.
+모듈러 연산은 큰 수를 다루는 알고리듬 문제에서 기본이 되는 기법입니다.
+
+덧셈, 뺄셈, 곱셈은 각각 mod를 분배할 수 있고, 나눗셈은 역원을 곱하는 방식으로 처리합니다.
+
+거듭제곱은 분할 정복으로 $$O(\log n)$$에 계산할 수 있으며, 역원은 페르마의 소정리나 확장 유클리드 알고리듬으로 구합니다.
 
 <br>
 
-**핵심 포인트**
-- **기본 연산**: 덧셈, 뺄셈, 곱셈에 mod 분배
-- **거듭제곱**: $$O(\log n)$$ 분할 정복
-- **역원**: 페르마 정리 또는 확장 유클리드
-- **나눗셈**: 역원을 곱하는 방식으로 계산
+**관련 글**:
+- [유클리드 호제법(Euclidean Algorithm)과 최대공약수 - soo:bak](https://soo-bak.github.io/algorithm/theory/gcd-euclidean-explained/)
 
 <br>
 
-### 관련 글
-- [유클리드 알고리듬(Euclidean Algorithm) - soo:bak](https://soo-bak.github.io/algorithm/theory/euclidean-algorithm/)
-- [확장 유클리드 알고리듬(Extended Euclidean Algorithm) - soo:bak](https://soo-bak.github.io/algorithm/theory/extended-euclidean/)
-
-<br>
-
-### 관련 문제
+**관련 문제**:
 - [[백준 11401] 이항 계수 3](https://www.acmicpc.net/problem/11401)
 - [[백준 11444] 피보나치 수 6](https://www.acmicpc.net/problem/11444)
-
