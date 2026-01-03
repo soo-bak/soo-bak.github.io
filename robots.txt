@@ -1,3 +1,12 @@
 User-agent: *
 Allow: /
+
+# Disallow non-content paths
+Disallow: /assets/js/
+Disallow: /assets/css/
+Disallow: /page*/
+Disallow: /tags/
+Disallow: /categories/
+
+# Sitemap location
 Sitemap: https://soo-bak.github.io/sitemap.xml
