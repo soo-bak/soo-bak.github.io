@@ -351,17 +351,17 @@ int main() {
 그리디 알고리듬은 매 순간의 최선 선택을 통해 빠르고 간단하게 최적해를 구하는 알고리듬입니다.
 
 <br>
-**핵심 포인트**
-- **탐욕적 선택 속성**과 **최적 부분 구조**를 만족할 때 최적해 보장
-- 대부분 **정렬 + 선택** 구조로 구현되며, 시간 복잡도는 $$O(n \log n)$$
-- 조건을 만족하지 않으면 최적해를 보장하지 못하므로, **적용 가능 여부를 먼저 확인**해야 함
+
+탐욕적 선택 속성과 최적 부분 구조를 만족할 때 최적해가 보장되며, 대부분 정렬 후 선택하는 구조로 구현됩니다.
+
+조건을 만족하지 않으면 최적해를 보장하지 못하므로, 적용 전에 반례를 고려하여 해당 문제가 그리디로 해결 가능한지 판단하는 것이 중요합니다.
 
 <br>
-그리디 알고리듬을 적용하기 전에는 반례를 고려하여, 해당 문제가 그리디로 해결 가능한지 판단하는 것이 중요합니다.
 
 만약 그리디로 최적해를 보장할 수 없다면, [백트래킹](https://soo-bak.github.io/algorithm/theory/backTracking/)이나 [동적 계획법](https://soo-bak.github.io/algorithm/theory/dynamic-programming/)을 고려해야 합니다.
 
 <br>
-### 관련 글
+
+**관련 글**:
 - [백트래킹(Backtracking)의 원리와 구현 - soo:bak](https://soo-bak.github.io/algorithm/theory/backTracking/)
 - [동적 계획법(Dynamic Programming)의 원리와 구현 - soo:bak](https://soo-bak.github.io/algorithm/theory/dynamic-programming/)
