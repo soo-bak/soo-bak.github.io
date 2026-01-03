@@ -126,6 +126,26 @@
   <link rel="next" href="{{ paginator.next_page_path | absolute_url }}">
 {% endif %}
 
+{% comment %} WebSite Schema with SearchAction {% endcomment %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": {{ site.title | jsonify }},
+  "url": {{ '/' | absolute_url | jsonify }},
+  "description": {{ site.description | jsonify }},
+  "inLanguage": "ko-KR",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": {
+      "@type": "EntryPoint",
+      "urlTemplate": "{{ '/' | absolute_url }}search?q={search_term_string}"
+    },
+    "query-input": "required name=search_term_string"
+  }
+}
+</script>
+
 <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -231,6 +251,9 @@
 {% endif %}
 {% if site.baidu_site_verification %}
   <meta name="baidu-site-verification" content="{{ site.baidu_site_verification }}">
+{% endif %}
+{% if site.daum_site_verification %}
+  <meta name="verify-v1" content="{{ site.daum_site_verification }}">
 {% endif %}
 
 <link rel="alternate" type="application/rss+xml" href="{{ site.url }}/feed.xml" title="{{ site.title }} Feed">
