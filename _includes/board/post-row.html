@@ -4,6 +4,7 @@
   Parameters:
     - post: 포스트 객체
     - show_subcategory: 하위 분류 라벨 표시 여부 (true/false)
+    - show_pinned_style: 핀 스타일 적용 여부 (true/false)
 {% endcomment %}
 
 {% if include.show_subcategory %}
@@ -16,7 +17,7 @@
   {% endif %}
 {% endif %}
 
-<li class="board__post-row{% if include.post.pin %} board__post-row--pinned{% endif %}">
+<li class="board__post-row{% if include.show_pinned_style and include.post.pin %} board__post-row--pinned{% endif %}">
   {% if include.show_subcategory and subcategory_label %}
   <span class="board__subcategory">[{{ subcategory_label }}]</span>
   {% endif %}

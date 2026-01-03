@@ -7,115 +7,85 @@
 @import "minimal-mistakes/skins/{{ site.minimal_mistakes_skin | default: 'default' }}"; // skin
 @import "minimal-mistakes"; // main partials
 
-// Custom: Related Theory Links (cyan accent)
+// ============================================
+// Custom: Related Links (이론-BOJ 양방향 링크)
+// ============================================
+
 .related-theory {
   margin: 1.5em 0;
   padding: 1em 1.2em;
-  background-color: rgba(0, 212, 255, 0.06);
-  border-left: 4px solid #00d4ff;
-  border-radius: 4px;
+  background: rgba(#00d4ff, 0.03);
+  border-left: 2px solid #00d4ff;
 
   &__title {
     margin: 0 0 0.5em 0;
-    font-size: 0.9em;
+    font-size: 0.8em;
     font-weight: 600;
     color: #00d4ff;
-
-    i {
-      margin-right: 0.4em;
-      color: #00d4ff;
-    }
   }
 
   &__list {
     margin: 0;
-    padding-left: 1.2em;
+    padding: 0;
     list-style: none;
 
     li {
       margin: 0.3em 0;
-      padding-left: 0;
-
-      &::before {
-        content: "→";
-        margin-right: 0.5em;
-        color: #00d4ff;
-      }
     }
   }
 
   &__link {
-    color: #fff6fb;
+    color: rgba(#f9fffb, 0.85);
     text-decoration: none;
-    border-bottom: 1px dotted rgba(0, 212, 255, 0.5);
-    transition: all 0.2s ease;
 
     &:hover {
       color: #00d4ff;
-      border-bottom-style: solid;
     }
   }
 }
 
-// Custom: Related BOJ Links (green accent)
 .related-boj {
   margin: 1.5em 0;
   padding: 1em 1.2em;
-  background-color: rgba(0, 255, 136, 0.06);
-  border-left: 4px solid #00ff88;
-  border-radius: 4px;
+  background: rgba(#73f38f, 0.03);
+  border-left: 2px solid #73f38f;
 
   &__title {
     margin: 0 0 0.5em 0;
-    font-size: 0.9em;
+    font-size: 0.8em;
     font-weight: 600;
-    color: #00ff88;
-
-    i {
-      margin-right: 0.4em;
-      color: #00ff88;
-    }
+    color: #73f38f;
   }
 
   &__list {
     margin: 0;
-    padding-left: 1.2em;
+    padding: 0;
     list-style: none;
 
     li {
       margin: 0.3em 0;
-      padding-left: 0;
-
-      &::before {
-        content: "→";
-        margin-right: 0.5em;
-        color: #00ff88;
-      }
     }
   }
 
   &__link {
-    color: #fff6fb;
+    color: rgba(#f9fffb, 0.85);
     text-decoration: none;
-    border-bottom: 1px dotted rgba(0, 255, 136, 0.5);
-    transition: all 0.2s ease;
 
     &:hover {
-      color: #00ff88;
-      border-bottom-style: solid;
+      color: #73f38f;
     }
   }
 
   &__more {
     margin: 0.8em 0 0 0;
-    font-size: 0.85em;
+    font-size: 0.8em;
 
     a {
-      color: #00ff88;
+      color: rgba(#73f38f, 0.6);
       text-decoration: none;
 
       &:hover {
-        text-decoration: underline;
+        color: #73f38f;
       }
     }
   }
@@ -124,48 +94,53 @@
 // ============================================
 // Custom: Board Style Layout (게시판 스타일)
 // ============================================
+// Neon 테마 색상
+// - Cyan: 카테고리 헤더
+// - Magenta: 인기글
+// - Green: 링크 호버
+// ============================================
 
-// 색상 변수
-$board-border: rgba(255, 255, 255, 0.1);
-$board-bg: rgba(0, 0, 0, 0.2);
-$board-header-bg: rgba(0, 212, 255, 0.08);
-$board-pinned-bg: rgba(255, 200, 0, 0.05);
-$accent-cyan: #00d4ff;
-$accent-green: #00ff88;
-$accent-yellow: #ffc800;
-$text-primary: #fff6fb;
-$text-secondary: rgba(255, 255, 255, 0.7);
-$text-muted: rgba(255, 255, 255, 0.5);
+$neon-yellow: #e9c062;    // 카테고리 제목
+$neon-cyan: #00d4ff;      // 분류 라벨 [이론]
+$neon-magenta: #ff2d95;   // 인기글
+$neon-green: #73f38f;     // 링크 호버
+$bg: #101413;
+$text: #f9fffb;
+$dim: rgba(#f9fffb, 0.4);
+$border: rgba(#fff, 0.08);
 
-// 메인 페이지 게시판 컨테이너
+// ============================================
+// 메인 페이지
+// ============================================
+
 .board-home {
   max-width: 100%;
 }
 
-// 게시판 섹션
 .board__section {
   margin-bottom: 2rem;
-  background-color: $board-bg;
-  border: 1px solid $board-border;
-  border-radius: 8px;
-  overflow: hidden;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid $border;
+
+  &:last-child {
+    border-bottom: none;
+  }
 }
 
-// 섹션 헤더
 .board__section-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding: 0.8rem 1.2rem;
-  background-color: $board-header-bg;
-  border-bottom: 1px solid $board-border;
+  align-items: baseline;
+  margin-bottom: 1rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid $border;
 }
 
 .board__section-title {
   margin: 0;
   font-size: 1.1rem;
-  font-weight: 600;
-  color: $accent-cyan;
+  font-weight: 700;
+  color: $neon-green;
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -177,12 +152,11 @@ $text-muted: rgba(255, 255, 255, 0.5);
 
 .board__more-link {
   font-size: 0.85rem;
-  color: $text-secondary;
+  color: $dim;
   text-decoration: none;
-  transition: color 0.2s ease;
 
   &:hover {
-    color: $accent-cyan;
+    color: $neon-green;
   }
 
   i {
@@ -190,39 +164,40 @@ $text-muted: rgba(255, 255, 255, 0.5);
   }
 }
 
-// 섹션 컨텐츠
 .board__section-content {
   padding: 0;
 }
 
-// 인기 글 섹션
+// 인기 글
 .board__pinned {
-  padding: 0.8rem 1.2rem;
-  background-color: $board-pinned-bg;
-  border-bottom: 1px solid $board-border;
+  margin-bottom: 0.8rem;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid rgba($neon-magenta, 0.3);
+  border-radius: 6px;
+  background: rgba($neon-magenta, 0.03);
 }
 
 .board__pinned-title {
-  margin: 0 0 0.5rem 0;
+  margin: 0 0 0.3rem 0;
   font-size: 0.85rem;
   font-weight: 600;
-  color: $accent-yellow;
+  color: $neon-magenta;
 
   i {
     margin-right: 0.4rem;
   }
 }
 
-// 최신 글 섹션
+// 최신 글
 .board__recent {
-  padding: 0.8rem 1.2rem;
+  padding: 0;
 }
 
 .board__recent-title {
-  margin: 0 0 0.5rem 0;
+  margin: 0 0 0.3rem 0;
   font-size: 0.85rem;
   font-weight: 600;
-  color: $text-secondary;
+  color: rgba($text, 0.9);
 }
 
 // 포스트 목록
@@ -230,23 +205,15 @@ $text-muted: rgba(255, 255, 255, 0.5);
   margin: 0;
   padding: 0;
   list-style: none;
-
-  &--pinned {
-    .board__post-row {
-      &::before {
-        color: $accent-yellow;
-      }
-    }
-  }
 }
 
-// 포스트 한 줄
+// 포스트 행
 .board__post-row {
   display: flex;
   align-items: center;
-  padding: 0.4rem 0;
+  padding: 0.25rem 0;
   font-size: 0.9rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid rgba(#fff, 0.03);
 
   &:last-child {
     border-bottom: none;
@@ -255,13 +222,13 @@ $text-muted: rgba(255, 255, 255, 0.5);
   &::before {
     content: "•";
     margin-right: 0.6rem;
-    color: $text-muted;
+    color: $dim;
   }
 
   &--pinned {
-    &::before {
-      content: "📌";
-      font-size: 0.75rem;
+    .board__post-title {
+      color: $text;
+      font-weight: 500;
     }
   }
 }
@@ -273,23 +240,22 @@ $text-muted: rgba(255, 255, 255, 0.5);
   padding: 0.1rem 0.4rem;
   font-size: 0.75rem;
   font-weight: 500;
-  color: $accent-cyan;
-  background-color: rgba(0, 212, 255, 0.1);
+  color: $neon-cyan;
+  background-color: rgba($neon-cyan, 0.1);
   border-radius: 3px;
 }
 
 // 포스트 제목
 .board__post-title {
   flex: 1;
-  color: $text-primary;
+  color: rgba($text, 0.9);
   text-decoration: none;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  transition: color 0.2s ease;
 
   &:hover {
-    color: $accent-cyan;
+    color: $neon-green;
   }
 }
 
@@ -298,31 +264,28 @@ $text-muted: rgba(255, 255, 255, 0.5);
   flex-shrink: 0;
   margin-left: 1rem;
   font-size: 0.8rem;
-  color: $text-muted;
+  color: $dim;
 }
 
 // ============================================
-// 카테고리 페이지 게시판 스타일
+// 카테고리 페이지
 // ============================================
 
 .category-board {
   max-width: 100%;
 }
 
-// 카테고리 헤더
 .category-board__header {
-  margin-bottom: 1.5rem;
-  padding: 1.2rem 1.5rem;
-  background-color: $board-header-bg;
-  border: 1px solid $board-border;
-  border-radius: 8px;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid $border;
 }
 
 .category-board__title {
   margin: 0 0 0.3rem 0;
   font-size: 1.5rem;
   font-weight: 700;
-  color: $accent-cyan;
+  color: $neon-green;
   display: flex;
   align-items: center;
   gap: 0.6rem;
@@ -336,29 +299,25 @@ $text-muted: rgba(255, 255, 255, 0.5);
   margin-left: auto;
   font-size: 0.9rem;
   font-weight: 400;
-  color: $text-secondary;
+  color: $dim;
 }
 
 .category-board__description {
   margin: 0;
   font-size: 0.9rem;
-  color: $text-secondary;
+  color: $dim;
 }
 
 // 하위 분류 탭
 .category-board__tabs {
   margin-bottom: 1.5rem;
-  padding: 1rem 1.2rem;
-  background-color: $board-bg;
-  border: 1px solid $board-border;
-  border-radius: 8px;
 }
 
 .category-board__tabs-title {
   margin: 0 0 0.8rem 0;
   font-size: 0.9rem;
   font-weight: 600;
-  color: $text-secondary;
+  color: $dim;
 
   i {
     margin-right: 0.4rem;
@@ -368,7 +327,7 @@ $text-muted: rgba(255, 255, 255, 0.5);
 .category-board__tabs-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.8rem;
+  gap: 0.5rem;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -381,49 +340,44 @@ $text-muted: rgba(255, 255, 255, 0.5);
     gap: 0.4rem;
     padding: 0.4rem 0.8rem;
     font-size: 0.85rem;
-    color: $text-primary;
+    color: rgba($text, 0.7);
     text-decoration: none;
-    background-color: rgba(255, 255, 255, 0.05);
-    border: 1px solid $board-border;
+    background: transparent;
+    border: 1px solid $border;
     border-radius: 4px;
     transition: all 0.2s ease;
 
     &:hover {
-      background-color: rgba(0, 212, 255, 0.1);
-      border-color: $accent-cyan;
-      color: $accent-cyan;
+      color: $neon-green;
+      border-color: rgba($neon-green, 0.4);
     }
   }
 
   &--active a {
-    background-color: rgba(0, 212, 255, 0.15);
-    border-color: $accent-cyan;
-    color: $accent-cyan;
+    color: $neon-green;
+    border-color: $neon-green;
   }
 }
 
 .category-board__tab-count {
   font-size: 0.75rem;
-  color: $text-muted;
+  color: $dim;
 }
 
-// 카테고리 컨텐츠 (인기글 + 전체글)
+// 카테고리 컨텐츠
 .category-board__content {
-  background-color: $board-bg;
-  border: 1px solid $board-border;
-  border-radius: 8px;
-  overflow: hidden;
+  background: transparent;
 }
 
 .category-board__all-posts {
-  padding: 1rem 1.2rem;
+  padding: 0;
 }
 
 .category-board__all-title {
   margin: 0 0 0.8rem 0;
   font-size: 0.9rem;
   font-weight: 600;
-  color: $text-secondary;
+  color: $dim;
   display: flex;
   align-items: center;
 
@@ -432,37 +386,98 @@ $text-muted: rgba(255, 255, 255, 0.5);
   }
 }
 
-// 반응형 디자인
+.category-board__pagination {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid $border;
+  text-align: center;
+}
+
+.pagination__pages {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.pagination__btn {
+  min-width: 2rem;
+  padding: 0.4rem 0.6rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: $dim;
+  background: transparent;
+  border: 1px solid $border;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    color: $neon-green;
+    border-color: $neon-green;
+  }
+
+  &--active {
+    color: $neon-green;
+    border-color: $neon-green;
+    background: rgba($neon-green, 0.1);
+  }
+
+  &--prev,
+  &--next {
+    font-size: 1rem;
+  }
+}
+
+.pagination__ellipsis {
+  padding: 0 0.3rem;
+  color: $dim;
+}
+
+.category-board__pagination-info {
+  margin: 0.8rem 0 0 0;
+  font-size: 0.75rem;
+  color: $dim;
+}
+
+// ============================================
+// 반응형
+// ============================================
+
 @media (max-width: 768px) {
-  .board__section-header {
-    padding: 0.6rem 1rem;
+  .board__section {
+    margin-bottom: 2rem;
   }
 
   .board__section-title {
-    font-size: 1rem;
+    font-size: 0.75rem;
   }
 
   .board__post-row {
     flex-wrap: wrap;
-    padding: 0.5rem 0;
+    padding: 0.6rem 0;
   }
 
   .board__post-date {
     width: 100%;
-    margin-left: 1.2rem;
-    margin-top: 0.2rem;
+    margin-left: 0;
+    margin-top: 0.3rem;
   }
 
   .board__subcategory {
-    font-size: 0.7rem;
+    font-size: 0.65rem;
+  }
+
+  .category-board__title {
+    font-size: 1.2rem;
   }
 
   .category-board__tabs-list {
-    gap: 0.5rem;
+    gap: 0.4rem;
   }
 
   .category-board__tab a {
-    padding: 0.3rem 0.6rem;
-    font-size: 0.8rem;
+    padding: 0.35rem 0.7rem;
+    font-size: 0.75rem;
   }
 }

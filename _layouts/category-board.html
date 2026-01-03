@@ -51,7 +51,13 @@ layout: default
     {% endcase %}
 
     {% comment %} 현재 카테고리의 포스트 필터링 {% endcomment %}
-    {% assign filter_path = page.url | remove: "/index.html" | append: "/" | remove_first: "/" %}
+    {% comment %} page.url: /daily-life/ → filter_path: daily-life/ {% endcomment %}
+    {% assign filter_path = page.url | remove: "/index.html" | remove_first: "/" %}
+    {% unless filter_path == "" %}
+      {% unless filter_path contains "/" %}
+        {% assign filter_path = filter_path | append: "/" %}
+      {% endunless %}
+    {% endunless %}
     {% assign category_posts = "" | split: "" %}
 
     {% for post in site.posts %}
@@ -139,28 +145,83 @@ layout: default
 
         {% comment %} 전체 글 목록 {% endcomment %}
         <div class="category-board__all-posts">
-          <h4 class="category-board__all-title"><i class="fas fa-list"></i> 전체 글</h4>
+          <h4 class="category-board__all-title"><i class="fas fa-list"></i> 전체 글 ({{ post_count }})</h4>
 
-          {% comment %} 페이지네이션 계산 {% endcomment %}
-          {% assign posts_per_page = 20 %}
-          {% assign total_pages = post_count | divided_by: posts_per_page %}
-          {% assign remainder = post_count | modulo: posts_per_page %}
-          {% if remainder > 0 %}
-            {% assign total_pages = total_pages | plus: 1 %}
-          {% endif %}
-
-          <ul class="board__post-list">
-            {% for post in category_posts limit: posts_per_page %}
+          <ul class="board__post-list" id="post-list">
+            {% for post in category_posts %}
               {% include board/post-row.html post=post show_subcategory=show_subcategory %}
             {% endfor %}
           </ul>
 
-          {% if post_count > posts_per_page %}
-          <div class="category-board__pagination">
-            <p class="category-board__pagination-info">
-              총 {{ post_count }}개 글 중 1-{{ posts_per_page }}개 표시
-            </p>
+          {% if post_count > 20 %}
+          <div class="category-board__pagination" id="pagination">
+            <div class="pagination__pages" id="pagination-pages"></div>
+            <p class="category-board__pagination-info" id="pagination-info"></p>
           </div>
+
+          <script>
+          (function() {
+            var postsPerPage = 20;
+            var currentPage = 1;
+            var postList = document.getElementById('post-list');
+            var posts = postList.querySelectorAll('.board__post-row');
+            var totalPosts = posts.length;
+            var totalPages = Math.ceil(totalPosts / postsPerPage);
+            var paginationPages = document.getElementById('pagination-pages');
+            var paginationInfo = document.getElementById('pagination-info');
+
+            function showPosts() {
+              var start = (currentPage - 1) * postsPerPage;
+              var end = start + postsPerPage;
+              posts.forEach(function(post, index) {
+                if (index >= start && index < end) {
+                  post.style.display = 'flex';
+                } else {
+                  post.style.display = 'none';
+                }
+              });
+              var showStart = start + 1;
+              var showEnd = Math.min(end, totalPosts);
+              paginationInfo.textContent = '총 ' + totalPosts + '개 글 중 ' + showStart + '-' + showEnd + '개 표시';
+              renderPagination();
+            }
+
+            function renderPagination() {
+              var html = '';
+              if (currentPage > 1) {
+                html += '<button class="pagination__btn pagination__btn--prev" data-page="' + (currentPage - 1) + '">‹</button>';
+              }
+              var startPage = Math.max(1, currentPage - 2);
+              var endPage = Math.min(totalPages, currentPage + 2);
+              if (startPage > 1) {
+                html += '<button class="pagination__btn" data-page="1">1</button>';
+                if (startPage > 2) html += '<span class="pagination__ellipsis">...</span>';
+              }
+              for (var i = startPage; i <= endPage; i++) {
+                var activeClass = i === currentPage ? ' pagination__btn--active' : '';
+                html += '<button class="pagination__btn' + activeClass + '" data-page="' + i + '">' + i + '</button>';
+              }
+              if (endPage < totalPages) {
+                if (endPage < totalPages - 1) html += '<span class="pagination__ellipsis">...</span>';
+                html += '<button class="pagination__btn" data-page="' + totalPages + '">' + totalPages + '</button>';
+              }
+              if (currentPage < totalPages) {
+                html += '<button class="pagination__btn pagination__btn--next" data-page="' + (currentPage + 1) + '">›</button>';
+              }
+              paginationPages.innerHTML = html;
+            }
+
+            paginationPages.addEventListener('click', function(e) {
+              if (e.target.matches('.pagination__btn')) {
+                currentPage = parseInt(e.target.dataset.page);
+                showPosts();
+                postList.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }
+            });
+
+            showPosts();
+          })();
+          </script>
           {% endif %}
         </div>
       </div>

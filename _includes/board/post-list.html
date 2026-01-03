@@ -18,7 +18,7 @@
     {% endif %}
 
     {% if count < limit %}
-      {% include board/post-row.html post=post show_subcategory=include.show_subcategory %}
+      {% include board/post-row.html post=post show_subcategory=include.show_subcategory show_pinned_style=false %}
       {% assign count = count | plus: 1 %}
     {% else %}
       {% break %}

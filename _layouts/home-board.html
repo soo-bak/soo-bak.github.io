@@ -12,18 +12,13 @@ layout: default
   {% include sidebar.html %}
 
   <div class="archive">
-    {% unless page.header.overlay_color or page.header.overlay_image %}
-      <h1 id="page-title" class="page__title">{{ page.title }}</h1>
-    {% endunless %}
-
     <div class="board-home">
-      {% comment %} ========== ALGORITHM ========== {% endcomment %}
-      {% assign algo_posts = site.posts | where_exp: "post", "post.path contains 'algorithm/'" | sort: "date" | reverse %}
+      {% comment %} ========== DAILY LIFE ========== {% endcomment %}
+      {% assign daily_posts = site.posts | where_exp: "post", "post.path contains 'daily-life/'" | sort: "date" | reverse %}
       {% include board/section.html
-         category_name="ALGORITHM"
-         category_url="/algorithm/"
-         category_icon="📊"
-         posts=algo_posts
+         category_name="DAILY LIFE"
+         category_url="/daily-life/"
+         posts=daily_posts
          max_posts=5
          show_subcategory=true %}
 
@@ -32,8 +27,16 @@ layout: default
       {% include board/section.html
          category_name="GAME DESIGN"
          category_url="/game-design/"
-         category_icon="🎮"
          posts=game_posts
+         max_posts=5
+         show_subcategory=true %}
+
+      {% comment %} ========== ALGORITHM ========== {% endcomment %}
+      {% assign algo_posts = site.posts | where_exp: "post", "post.path contains 'algorithm/'" | sort: "date" | reverse %}
+      {% include board/section.html
+         category_name="ALGORITHM"
+         category_url="/algorithm/"
+         posts=algo_posts
          max_posts=5
          show_subcategory=true %}
 
@@ -42,7 +45,6 @@ layout: default
       {% include board/section.html
          category_name="DEV"
          category_url="/dev/"
-         category_icon="💻"
          posts=dev_posts
          max_posts=5
          show_subcategory=true %}
@@ -52,18 +54,7 @@ layout: default
       {% include board/section.html
          category_name="LIBRARY"
          category_url="/library/"
-         category_icon="📚"
          posts=library_posts
-         max_posts=5
-         show_subcategory=true %}
-
-      {% comment %} ========== DAILY LIFE ========== {% endcomment %}
-      {% assign daily_posts = site.posts | where_exp: "post", "post.path contains 'daily-life/'" | sort: "date" | reverse %}
-      {% include board/section.html
-         category_name="DAILY LIFE"
-         category_url="/daily-life/"
-         category_icon="🌸"
-         posts=daily_posts
          max_posts=5
          show_subcategory=true %}
 
@@ -73,7 +64,6 @@ layout: default
       {% include board/section.html
          category_name="NOTE"
          category_url="/note/"
-         category_icon="📝"
          posts=note_posts
          max_posts=5
          show_subcategory=false %}

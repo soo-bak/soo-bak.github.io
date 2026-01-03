@@ -23,7 +23,7 @@
   <h4 class="board__pinned-title"><i class="fas fa-thumbtack"></i> 인기 글</h4>
   <ul class="board__post-list board__post-list--pinned">
     {% for post in pinned_posts %}
-      {% include board/post-row.html post=post show_subcategory=include.show_subcategory %}
+      {% include board/post-row.html post=post show_subcategory=include.show_subcategory show_pinned_style=true %}
     {% endfor %}
   </ul>
 </div>

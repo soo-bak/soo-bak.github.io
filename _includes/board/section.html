@@ -24,7 +24,7 @@
 <section class="board__section">
   <div class="board__section-header">
     <h2 class="board__section-title">
-      <span class="board__section-icon">{{ include.category_icon }}</span>
+      {% if include.category_icon %}<span class="board__section-icon">{{ include.category_icon }}</span>{% endif %}
       {{ include.category_name }}
     </h2>
     <a href="{{ include.category_url | relative_url }}" class="board__more-link">더보기 <i class="fas fa-angle-right"></i></a>
@@ -35,7 +35,7 @@
 
     <div class="board__recent">
       <h4 class="board__recent-title">최신 글</h4>
-      {% include board/post-list.html posts=include.posts limit=max_posts show_subcategory=show_subcategory exclude_pinned=true %}
+      {% include board/post-list.html posts=include.posts limit=max_posts show_subcategory=show_subcategory exclude_pinned=false %}
     </div>
   </div>
 </section>
