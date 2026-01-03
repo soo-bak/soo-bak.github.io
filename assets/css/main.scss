@@ -130,10 +130,11 @@ $border: rgba(#fff, 0.08);
 .board__section-header {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: center;
   margin-bottom: 1rem;
-  padding-bottom: 0.6rem;
-  border-bottom: 1px solid $border;
+  padding: 0.6rem 0.8rem;
+  background: rgba($neon-green, 0.06);
+  border-radius: 4px;
 }
 
 .board__section-title {
