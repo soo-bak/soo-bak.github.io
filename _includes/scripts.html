@@ -27,3 +27,15 @@
     <script src="{{ script | relative_url }}"></script>
   {% endfor %}
 {% endif %}
+
+<!-- Native Lazy Loading for Images -->
+<script>
+(function() {
+  if ('loading' in HTMLImageElement.prototype) {
+    document.querySelectorAll('img:not([loading])').forEach(function(img) {
+      img.setAttribute('loading', 'lazy');
+      img.setAttribute('decoding', 'async');
+    });
+  }
+})();
+</script>
