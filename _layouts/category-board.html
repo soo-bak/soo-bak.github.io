@@ -32,24 +32,6 @@ layout: default
     {% assign current_path = page.url | remove: "/index.html" | remove: "/" %}
     {% assign path_parts = current_path | split: "/" %}
 
-    {% comment %} 카테고리 아이콘 매핑 {% endcomment %}
-    {% case path_parts[0] %}
-      {% when "algorithm" %}
-        {% assign cat_icon = "📊" %}
-      {% when "game-design" %}
-        {% assign cat_icon = "🎮" %}
-      {% when "dev" %}
-        {% assign cat_icon = "💻" %}
-      {% when "library" %}
-        {% assign cat_icon = "📚" %}
-      {% when "daily-life" %}
-        {% assign cat_icon = "🌸" %}
-      {% when "note" %}
-        {% assign cat_icon = "📝" %}
-      {% else %}
-        {% assign cat_icon = "📁" %}
-    {% endcase %}
-
     {% comment %} 현재 카테고리의 포스트 필터링 {% endcomment %}
     {% comment %} page.url: /daily-life/ → filter_path: daily-life/ {% endcomment %}
     {% assign filter_path = page.url | remove: "/index.html" | remove_first: "/" %}
@@ -110,7 +92,6 @@ layout: default
       {% comment %} 카테고리 헤더 {% endcomment %}
       {% include board/header.html
          title=page.title
-         icon=cat_icon
          description=page.description
          count=post_count %}
 
