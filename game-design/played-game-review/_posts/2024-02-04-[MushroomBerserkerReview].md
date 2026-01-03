@@ -3,6 +3,7 @@ layout: single
 title: "[후기] 버섯커 키우기 - soo:bak"
 date: "2024-02-04 14:38:00 +0900"
 description: "버섯커 키우기 게임 리뷰입니다. 방치형 게임의 램프 시스템, 커뮤니티 콘텐츠, BM 분석을 다룹니다."
+pin: true
 tags:
   - 게임 리뷰
   - 버섯커 키우기

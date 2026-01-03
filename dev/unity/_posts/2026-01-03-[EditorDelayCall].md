@@ -3,6 +3,7 @@ layout: single
 title: "Unity Editor 의 DelayCall 심층 분석 - soo:bak"
 date: "2026-01-03 09:00:00 +0900"
 description: "Unity Editor의 EditorApplication.delayCall 동작 원리, InitializeOnLoad와의 관계, 실제 오픈소스 컨트리뷰션 사례를 통한 활용법을 상세히 분석합니다."
+pin: true
 tags:
   - Unity
   - Editor

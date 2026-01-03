@@ -3,6 +3,7 @@ layout: single
 title: "에라토스테네스의 체 (Sieve of Eratosthenes) - soo:bak"
 date: "2023-05-28 23:26:00 +0900"
 description: 특정 범위 내의 모든 소수를 효율적으로 찾는 에라토스테네스의 체 알고리듬의 원리와 구현 방법을 다룹니다
+pin: true
 tags:
   - 수학
   - 정수론
