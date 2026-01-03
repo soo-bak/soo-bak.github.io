@@ -37,10 +37,8 @@
     </li>
     {% endfor %}
   </ul>
-  {% if page.tags.size > 0 %}
   <p class="related-boj__more">
-    <a href="/tags/#{{ page.tags[0] | slugify }}">더 많은 문제 보기 &rarr;</a>
+    <a href="/algorithm/boj/">더 많은 문제 보기 &rarr;</a>
   </p>
-  {% endif %}
 </div>
 {% endif %}
