@@ -1,0 +1,24 @@
+{% comment %}
+  카테고리 헤더 컴포넌트
+
+  Parameters:
+    - title: 카테고리 제목
+    - icon: 아이콘 (emoji)
+    - description: 카테고리 설명
+    - count: 포스트 수
+{% endcomment %}
+
+<div class="category-board__header">
+  <h1 class="category-board__title">
+    {% if include.icon %}
+    <span class="category-board__icon">{{ include.icon }}</span>
+    {% endif %}
+    {{ include.title }}
+    {% if include.count %}
+    <span class="category-board__count">총 {{ include.count }}글</span>
+    {% endif %}
+  </h1>
+  {% if include.description %}
+  <p class="category-board__description">{{ include.description }}</p>
+  {% endif %}
+</div>

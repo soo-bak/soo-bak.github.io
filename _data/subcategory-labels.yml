@@ -1,0 +1,31 @@
+# 하위 분류 한글 라벨 매핑
+# 포스트 경로의 하위 폴더명 -> 표시될 라벨
+
+# Algorithm
+theory: "이론"
+boj: "BOJ"
+
+# Game Design
+project-review: "프로젝트"
+played-game-review: "플레이"
+consideration: "고찰"
+
+# Library
+book: "책"
+lecture: "강의"
+
+# Daily Life
+happiness: "행복"
+appreciation: "감사"
+
+# Dev
+design-pattern: "패턴"
+object-oriented-programming: "OOP"
+reactive-programming: "반응형"
+graphics: "Graphics"
+unity: "Unity"
+language: "언어"
+test-driven-development: "TDD"
+design-&-architecture: "설계"
+programming-paradigm: "패러다임"
+methodology: "방법론"

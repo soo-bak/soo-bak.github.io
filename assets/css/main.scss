@@ -120,3 +120,349 @@
     }
   }
 }
+
+// ============================================
+// Custom: Board Style Layout (게시판 스타일)
+// ============================================
+
+// 색상 변수
+$board-border: rgba(255, 255, 255, 0.1);
+$board-bg: rgba(0, 0, 0, 0.2);
+$board-header-bg: rgba(0, 212, 255, 0.08);
+$board-pinned-bg: rgba(255, 200, 0, 0.05);
+$accent-cyan: #00d4ff;
+$accent-green: #00ff88;
+$accent-yellow: #ffc800;
+$text-primary: #fff6fb;
+$text-secondary: rgba(255, 255, 255, 0.7);
+$text-muted: rgba(255, 255, 255, 0.5);
+
+// 메인 페이지 게시판 컨테이너
+.board-home {
+  max-width: 100%;
+}
+
+// 게시판 섹션
+.board__section {
+  margin-bottom: 2rem;
+  background-color: $board-bg;
+  border: 1px solid $board-border;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+// 섹션 헤더
+.board__section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.8rem 1.2rem;
+  background-color: $board-header-bg;
+  border-bottom: 1px solid $board-border;
+}
+
+.board__section-title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: $accent-cyan;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.board__section-icon {
+  font-size: 1.2rem;
+}
+
+.board__more-link {
+  font-size: 0.85rem;
+  color: $text-secondary;
+  text-decoration: none;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: $accent-cyan;
+  }
+
+  i {
+    margin-left: 0.3rem;
+  }
+}
+
+// 섹션 컨텐츠
+.board__section-content {
+  padding: 0;
+}
+
+// 인기 글 섹션
+.board__pinned {
+  padding: 0.8rem 1.2rem;
+  background-color: $board-pinned-bg;
+  border-bottom: 1px solid $board-border;
+}
+
+.board__pinned-title {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: $accent-yellow;
+
+  i {
+    margin-right: 0.4rem;
+  }
+}
+
+// 최신 글 섹션
+.board__recent {
+  padding: 0.8rem 1.2rem;
+}
+
+.board__recent-title {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: $text-secondary;
+}
+
+// 포스트 목록
+.board__post-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  &--pinned {
+    .board__post-row {
+      &::before {
+        color: $accent-yellow;
+      }
+    }
+  }
+}
+
+// 포스트 한 줄
+.board__post-row {
+  display: flex;
+  align-items: center;
+  padding: 0.4rem 0;
+  font-size: 0.9rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &::before {
+    content: "•";
+    margin-right: 0.6rem;
+    color: $text-muted;
+  }
+
+  &--pinned {
+    &::before {
+      content: "📌";
+      font-size: 0.75rem;
+    }
+  }
+}
+
+// 하위 분류 라벨
+.board__subcategory {
+  flex-shrink: 0;
+  margin-right: 0.5rem;
+  padding: 0.1rem 0.4rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: $accent-cyan;
+  background-color: rgba(0, 212, 255, 0.1);
+  border-radius: 3px;
+}
+
+// 포스트 제목
+.board__post-title {
+  flex: 1;
+  color: $text-primary;
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: $accent-cyan;
+  }
+}
+
+// 포스트 날짜
+.board__post-date {
+  flex-shrink: 0;
+  margin-left: 1rem;
+  font-size: 0.8rem;
+  color: $text-muted;
+}
+
+// ============================================
+// 카테고리 페이지 게시판 스타일
+// ============================================
+
+.category-board {
+  max-width: 100%;
+}
+
+// 카테고리 헤더
+.category-board__header {
+  margin-bottom: 1.5rem;
+  padding: 1.2rem 1.5rem;
+  background-color: $board-header-bg;
+  border: 1px solid $board-border;
+  border-radius: 8px;
+}
+
+.category-board__title {
+  margin: 0 0 0.3rem 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: $accent-cyan;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.category-board__icon {
+  font-size: 1.4rem;
+}
+
+.category-board__count {
+  margin-left: auto;
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: $text-secondary;
+}
+
+.category-board__description {
+  margin: 0;
+  font-size: 0.9rem;
+  color: $text-secondary;
+}
+
+// 하위 분류 탭
+.category-board__tabs {
+  margin-bottom: 1.5rem;
+  padding: 1rem 1.2rem;
+  background-color: $board-bg;
+  border: 1px solid $board-border;
+  border-radius: 8px;
+}
+
+.category-board__tabs-title {
+  margin: 0 0 0.8rem 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: $text-secondary;
+
+  i {
+    margin-right: 0.4rem;
+  }
+}
+
+.category-board__tabs-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.category-board__tab {
+  a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+    color: $text-primary;
+    text-decoration: none;
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid $board-border;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background-color: rgba(0, 212, 255, 0.1);
+      border-color: $accent-cyan;
+      color: $accent-cyan;
+    }
+  }
+
+  &--active a {
+    background-color: rgba(0, 212, 255, 0.15);
+    border-color: $accent-cyan;
+    color: $accent-cyan;
+  }
+}
+
+.category-board__tab-count {
+  font-size: 0.75rem;
+  color: $text-muted;
+}
+
+// 카테고리 컨텐츠 (인기글 + 전체글)
+.category-board__content {
+  background-color: $board-bg;
+  border: 1px solid $board-border;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.category-board__all-posts {
+  padding: 1rem 1.2rem;
+}
+
+.category-board__all-title {
+  margin: 0 0 0.8rem 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: $text-secondary;
+  display: flex;
+  align-items: center;
+
+  i {
+    margin-right: 0.4rem;
+  }
+}
+
+// 반응형 디자인
+@media (max-width: 768px) {
+  .board__section-header {
+    padding: 0.6rem 1rem;
+  }
+
+  .board__section-title {
+    font-size: 1rem;
+  }
+
+  .board__post-row {
+    flex-wrap: wrap;
+    padding: 0.5rem 0;
+  }
+
+  .board__post-date {
+    width: 100%;
+    margin-left: 1.2rem;
+    margin-top: 0.2rem;
+  }
+
+  .board__subcategory {
+    font-size: 0.7rem;
+  }
+
+  .category-board__tabs-list {
+    gap: 0.5rem;
+  }
+
+  .category-board__tab a {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.8rem;
+  }
+}

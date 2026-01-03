@@ -1,0 +1,161 @@
+---
+layout: default
+---
+
+{% comment %}
+  카테고리 게시판 레이아웃
+
+  front matter에서 사용 가능한 변수:
+    - title: 카테고리 제목
+    - description: 카테고리 설명
+    - category_icon: 아이콘 (emoji)
+    - category_path: 포스트 경로 필터 (예: "algorithm/")
+{% endcomment %}
+
+{% comment %} 카테고리 경로 추출 {% endcomment %}
+{% assign current_path = page.url | remove: "/index.html" | remove: "/" %}
+{% assign path_parts = current_path | split: "/" %}
+
+{% comment %} 카테고리 아이콘 매핑 {% endcomment %}
+{% case path_parts[0] %}
+  {% when "algorithm" %}
+    {% assign cat_icon = "📊" %}
+  {% when "game-design" %}
+    {% assign cat_icon = "🎮" %}
+  {% when "dev" %}
+    {% assign cat_icon = "💻" %}
+  {% when "library" %}
+    {% assign cat_icon = "📚" %}
+  {% when "daily-life" %}
+    {% assign cat_icon = "🌸" %}
+  {% when "note" %}
+    {% assign cat_icon = "📝" %}
+  {% else %}
+    {% assign cat_icon = "📁" %}
+{% endcase %}
+
+{% comment %} 현재 카테고리의 포스트 필터링 {% endcomment %}
+{% assign filter_path = page.url | remove: "/index.html" | append: "/" | remove_first: "/" %}
+{% assign category_posts = "" | split: "" %}
+
+{% for post in site.posts %}
+  {% if post.path contains filter_path %}
+    {% assign category_posts = category_posts | push: post %}
+  {% endif %}
+{% endfor %}
+
+{% assign category_posts = category_posts | sort: "date" | reverse %}
+{% assign post_count = category_posts.size %}
+
+{% comment %} 하위 카테고리 찾기 {% endcomment %}
+{% assign subcategories = "" | split: "" %}
+{% assign current_url_normalized = page.url | remove: "index.html" %}
+
+{% comment %} navigation.yml에서 현재 카테고리의 하위 항목 찾기 {% endcomment %}
+{% for item in site.data.navigation.main-sidebar %}
+  {% assign item_url_normalized = item.url | append: "" %}
+  {% if item_url_normalized == current_url_normalized %}
+    {% if item.children %}
+      {% for child in item.children %}
+        {% assign child_filter = child.url | remove_first: "/" %}
+        {% assign child_count = 0 %}
+        {% for post in site.posts %}
+          {% if post.path contains child_filter %}
+            {% assign child_count = child_count | plus: 1 %}
+          {% endif %}
+        {% endfor %}
+        {% assign sub_item = "" | split: "" %}
+        {% assign sub_hash = child.title | prepend: "name:" %}
+        {% capture sub_obj %}{"name":"{{ child.title }}","url":"{{ child.url }}","count":{{ child_count }}}{% endcapture %}
+        {% assign subcategories = subcategories | push: child %}
+      {% endfor %}
+    {% endif %}
+  {% else %}
+    {% if item.children %}
+      {% for child in item.children %}
+        {% assign child_url_normalized = child.url | append: "" %}
+        {% if child_url_normalized == current_url_normalized %}
+          {% if child.children %}
+            {% for grandchild in child.children %}
+              {% assign subcategories = subcategories | push: grandchild %}
+            {% endfor %}
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+  {% endif %}
+{% endfor %}
+
+{% comment %} 하위 분류 표시 여부 결정 {% endcomment %}
+{% assign show_subcategory = false %}
+{% if subcategories.size > 0 %}
+  {% assign show_subcategory = true %}
+{% elsif path_parts.size == 1 %}
+  {% assign show_subcategory = true %}
+{% endif %}
+
+<div class="category-board">
+  {% comment %} 카테고리 헤더 {% endcomment %}
+  {% include board/header.html
+     title=page.title
+     icon=cat_icon
+     description=page.description
+     count=post_count %}
+
+  {% comment %} 하위 분류 탭 {% endcomment %}
+  {% if subcategories.size > 0 %}
+  <div class="category-board__tabs">
+    <h4 class="category-board__tabs-title"><i class="fas fa-folder-open"></i> 하위 분류</h4>
+    <ul class="category-board__tabs-list">
+      {% for sub in subcategories %}
+        {% assign sub_filter = sub.url | remove_first: "/" %}
+        {% assign sub_count = 0 %}
+        {% for post in site.posts %}
+          {% if post.path contains sub_filter %}
+            {% assign sub_count = sub_count | plus: 1 %}
+          {% endif %}
+        {% endfor %}
+      <li class="category-board__tab">
+        <a href="{{ sub.url | relative_url }}">
+          {{ sub.title }}
+          <span class="category-board__tab-count">{{ sub_count }}</span>
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
+  {% comment %} 컨텐츠 영역 {% endcomment %}
+  <div class="category-board__content">
+    {% comment %} 인기 글 {% endcomment %}
+    {% include board/pinned-posts.html posts=category_posts show_subcategory=show_subcategory %}
+
+    {% comment %} 전체 글 목록 {% endcomment %}
+    <div class="category-board__all-posts">
+      <h4 class="category-board__all-title"><i class="fas fa-list"></i> 전체 글</h4>
+
+      {% comment %} 페이지네이션 계산 {% endcomment %}
+      {% assign posts_per_page = 20 %}
+      {% assign total_pages = post_count | divided_by: posts_per_page %}
+      {% assign remainder = post_count | modulo: posts_per_page %}
+      {% if remainder > 0 %}
+        {% assign total_pages = total_pages | plus: 1 %}
+      {% endif %}
+
+      <ul class="board__post-list">
+        {% for post in category_posts limit: posts_per_page %}
+          {% include board/post-row.html post=post show_subcategory=show_subcategory %}
+        {% endfor %}
+      </ul>
+
+      {% if post_count > posts_per_page %}
+      <div class="category-board__pagination">
+        <p class="category-board__pagination-info">
+          총 {{ post_count }}개 글 중 1-{{ posts_per_page }}개 표시
+        </p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>

@@ -1,0 +1,27 @@
+{% comment %}
+  게시판 포스트 한 줄 컴포넌트
+
+  Parameters:
+    - post: 포스트 객체
+    - show_subcategory: 하위 분류 라벨 표시 여부 (true/false)
+{% endcomment %}
+
+{% if include.show_subcategory %}
+  {% assign path_parts = include.post.path | split: "/" %}
+  {% if path_parts.size >= 3 %}
+    {% assign subcategory_key = path_parts[1] %}
+    {% assign subcategory_label = site.data.subcategory-labels[subcategory_key] | default: subcategory_key %}
+  {% else %}
+    {% assign subcategory_label = nil %}
+  {% endif %}
+{% endif %}
+
+<li class="board__post-row{% if include.post.pin %} board__post-row--pinned{% endif %}">
+  {% if include.show_subcategory and subcategory_label %}
+  <span class="board__subcategory">[{{ subcategory_label }}]</span>
+  {% endif %}
+  <a href="{{ include.post.url | relative_url }}" class="board__post-title">
+    {{ include.post.title | remove: " - soo:bak" }}
+  </a>
+  <span class="board__post-date">{{ include.post.date | date: "%Y-%m-%d" }}</span>
+</li>

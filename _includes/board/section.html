@@ -1,0 +1,41 @@
+{% comment %}
+  게시판 섹션 컴포넌트 (메인 페이지용)
+
+  Parameters:
+    - category_name: 카테고리 이름
+    - category_url: 카테고리 링크
+    - category_icon: 아이콘 (emoji)
+    - posts: 해당 카테고리 포스트 배열
+    - max_posts: 표시할 최대 포스트 수 (기본값: 5)
+    - show_subcategory: 하위 분류 표시 여부 (기본값: true)
+{% endcomment %}
+
+{% assign max_posts = include.max_posts | default: 5 %}
+{% assign show_subcategory = include.show_subcategory | default: true %}
+
+{% comment %} 고정 글 수 계산 {% endcomment %}
+{% assign pinned_count = 0 %}
+{% for post in include.posts %}
+  {% if post.pin %}
+    {% assign pinned_count = pinned_count | plus: 1 %}
+  {% endif %}
+{% endfor %}
+
+<section class="board__section">
+  <div class="board__section-header">
+    <h2 class="board__section-title">
+      <span class="board__section-icon">{{ include.category_icon }}</span>
+      {{ include.category_name }}
+    </h2>
+    <a href="{{ include.category_url | relative_url }}" class="board__more-link">더보기 <i class="fas fa-angle-right"></i></a>
+  </div>
+
+  <div class="board__section-content">
+    {% include board/pinned-posts.html posts=include.posts show_subcategory=show_subcategory %}
+
+    <div class="board__recent">
+      <h4 class="board__recent-title">최신 글</h4>
+      {% include board/post-list.html posts=include.posts limit=max_posts show_subcategory=show_subcategory exclude_pinned=true %}
+    </div>
+  </div>
+</section>

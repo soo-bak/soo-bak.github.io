@@ -1,0 +1,27 @@
+{% comment %}
+  게시판 포스트 목록 컴포넌트
+
+  Parameters:
+    - posts: 포스트 배열
+    - limit: 표시할 최대 포스트 수 (기본값: 5)
+    - show_subcategory: 하위 분류 라벨 표시 여부 (true/false)
+    - exclude_pinned: 고정 글 제외 여부 (true/false)
+{% endcomment %}
+
+{% assign limit = include.limit | default: 5 %}
+{% assign count = 0 %}
+
+<ul class="board__post-list">
+  {% for post in include.posts %}
+    {% if include.exclude_pinned and post.pin %}
+      {% continue %}
+    {% endif %}
+
+    {% if count < limit %}
+      {% include board/post-row.html post=post show_subcategory=include.show_subcategory %}
+      {% assign count = count | plus: 1 %}
+    {% else %}
+      {% break %}
+    {% endif %}
+  {% endfor %}
+</ul>

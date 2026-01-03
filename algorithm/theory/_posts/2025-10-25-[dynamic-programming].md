@@ -3,6 +3,7 @@ layout: single
 title: "동적 계획법(Dynamic Programming)의 원리와 설계 - soo:bak"
 date: "2025-10-25 00:30:00 +0900"
 description: 동적 계획법의 핵심 개념인 최적 부분 구조와 중복 부분 문제, Top-down과 Bottom-up 구현 방식, 설계 과정을 상세히 설명한 글
+pin: true
 tags:
   - 다이나믹 프로그래밍
 ---

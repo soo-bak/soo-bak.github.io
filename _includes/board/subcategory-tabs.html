@@ -1,0 +1,25 @@
+{% comment %}
+  하위 분류 탭 컴포넌트
+
+  Parameters:
+    - subcategories: 하위 카테고리 배열 [{name, url, count}]
+    - current_url: 현재 페이지 URL (활성 탭 표시용)
+{% endcomment %}
+
+{% if include.subcategories.size > 0 %}
+<div class="category-board__tabs">
+  <h4 class="category-board__tabs-title"><i class="fas fa-folder-open"></i> 하위 분류</h4>
+  <ul class="category-board__tabs-list">
+    {% for sub in include.subcategories %}
+    <li class="category-board__tab{% if include.current_url == sub.url %} category-board__tab--active{% endif %}">
+      <a href="{{ sub.url | relative_url }}">
+        {{ sub.name }}
+        {% if sub.count %}
+        <span class="category-board__tab-count">{{ sub.count }}</span>
+        {% endif %}
+      </a>
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}

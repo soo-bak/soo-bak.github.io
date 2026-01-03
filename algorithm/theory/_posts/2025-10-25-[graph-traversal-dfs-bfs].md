@@ -3,6 +3,7 @@ layout: single
 title: "그래프 탐색 - DFS와 BFS - soo:bak"
 date: "2025-10-25 00:00:00 +0900"
 description: 그래프 탐색의 기본인 깊이 우선 탐색(DFS)과 너비 우선 탐색(BFS)의 원리, 구현 방법, 시간 복잡도를 상세히 설명한 글
+pin: true
 tags:
   - 그래프
   - DFS
