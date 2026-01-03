@@ -8,6 +8,21 @@
 @import "minimal-mistakes"; // main partials
 
 // ============================================
+// Custom: Reading Progress Bar
+// ============================================
+
+.reading-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 3px;
+  background: linear-gradient(90deg, #73f38f, #00d4ff);
+  z-index: 9999;
+  transition: width 0.1s ease-out;
+}
+
+// ============================================
 // Custom: Related Links (이론-BOJ 양방향 링크)
 // ============================================
 

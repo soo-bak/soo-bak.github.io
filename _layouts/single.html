@@ -1,6 +1,9 @@
 ---
 layout: default
 ---
+<!-- Reading Progress Bar -->
+<div class="reading-progress" id="reading-progress"></div>
+
 <script src="/assets/js/vendor/jquery/jquery-3.6.0.js"></script>
 <script src="/assets/js/plugins/jquery.magnific-popup.js"></script>
 <script src="/assets/js/magnific-popup-setting.js"></script>
@@ -131,3 +134,22 @@ layout: default
     {% endif %}
   {% endif %}
 </div>
+
+<!-- Reading Progress Bar Script -->
+<script>
+(function() {
+  var progressBar = document.getElementById('reading-progress');
+  if (!progressBar) return;
+
+  function updateProgress() {
+    var scrollTop = window.scrollY || document.documentElement.scrollTop;
+    var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    var progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    progressBar.style.width = Math.min(progress, 100) + '%';
+  }
+
+  window.addEventListener('scroll', updateProgress, { passive: true });
+  window.addEventListener('resize', updateProgress, { passive: true });
+  updateProgress();
+})();
+</script>
