@@ -39,3 +39,31 @@
   }
 })();
 </script>
+
+<!-- Code Copy Button -->
+<script>
+(function() {
+  document.querySelectorAll('div.highlight').forEach(function(block) {
+    var btn = document.createElement('button');
+    btn.className = 'code-copy-btn';
+    btn.textContent = 'Copy';
+    btn.type = 'button';
+
+    btn.addEventListener('click', function() {
+      var code = block.querySelector('code');
+      if (!code) return;
+
+      navigator.clipboard.writeText(code.innerText).then(function() {
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(function() {
+          btn.textContent = 'Copy';
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    });
+
+    block.appendChild(btn);
+  });
+})();
+</script>
