@@ -446,31 +446,91 @@ $border: rgba(#fff, 0.08);
 // ============================================
 
 @media (max-width: 768px) {
+  // 메인 페이지 섹션
   .board__section {
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+  }
+
+  .board__section-header {
+    padding: 0.5rem 0.6rem;
+    margin-bottom: 0.8rem;
   }
 
   .board__section-title {
+    font-size: 0.9rem;
+  }
+
+  .board__more-link {
     font-size: 0.75rem;
   }
 
+  // 포스트 목록
   .board__post-row {
     flex-wrap: wrap;
-    padding: 0.6rem 0;
+    padding: 0.5rem 0;
+    font-size: 0.85rem;
+
+    &::before {
+      margin-right: 0.4rem;
+    }
+  }
+
+  .board__post-title {
+    white-space: normal;
+    line-height: 1.4;
   }
 
   .board__post-date {
     width: 100%;
-    margin-left: 0;
-    margin-top: 0.3rem;
+    margin-left: 1rem;
+    margin-top: 0.2rem;
+    font-size: 0.7rem;
   }
 
   .board__subcategory {
     font-size: 0.65rem;
+    padding: 0.1rem 0.3rem;
+  }
+
+  // 인기 글
+  .board__pinned {
+    padding: 0.5rem 0.6rem;
+  }
+
+  .board__pinned-title {
+    font-size: 0.8rem;
+  }
+
+  .board__recent-title {
+    font-size: 0.8rem;
+  }
+
+  // 카테고리 페이지
+  .category-board__header {
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.8rem;
   }
 
   .category-board__title {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
+    flex-wrap: wrap;
+  }
+
+  .category-board__count {
+    font-size: 0.8rem;
+  }
+
+  .category-board__description {
+    font-size: 0.8rem;
+  }
+
+  .category-board__tabs {
+    margin-bottom: 1rem;
+  }
+
+  .category-board__tabs-title {
+    font-size: 0.8rem;
   }
 
   .category-board__tabs-list {
@@ -478,7 +538,58 @@ $border: rgba(#fff, 0.08);
   }
 
   .category-board__tab a {
-    padding: 0.35rem 0.7rem;
+    padding: 0.35rem 0.6rem;
     font-size: 0.75rem;
+  }
+
+  .category-board__all-title {
+    font-size: 0.8rem;
+  }
+
+  // 페이지네이션 - 터치 타겟 확대
+  .pagination__btn {
+    min-width: 2.2rem;
+    padding: 0.5rem 0.7rem;
+    font-size: 0.9rem;
+  }
+
+  .category-board__pagination-info {
+    font-size: 0.7rem;
+  }
+
+  // 관련 글 링크
+  .related-theory,
+  .related-boj {
+    margin: 1rem 0;
+    padding: 0.8rem 1rem;
+  }
+
+  .related-theory__title,
+  .related-boj__title {
+    font-size: 0.75rem;
+  }
+
+  .related-boj__more {
+    font-size: 0.75rem;
+  }
+}
+
+// 더 작은 화면
+@media (max-width: 480px) {
+  .board__section-title {
+    font-size: 0.85rem;
+  }
+
+  .board__post-row {
+    font-size: 0.8rem;
+  }
+
+  .category-board__title {
+    font-size: 1rem;
+  }
+
+  .category-board__tab a {
+    padding: 0.3rem 0.5rem;
+    font-size: 0.7rem;
   }
 }
