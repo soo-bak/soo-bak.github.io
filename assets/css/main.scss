@@ -151,9 +151,15 @@ $border: rgba(#fff, 0.08);
   font-size: 1.2rem;
 }
 
+.board__section-count {
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: rgba($neon-green, 0.5);
+}
+
 .board__more-link {
   font-size: 0.85rem;
-  color: $dim;
+  color: rgba($neon-green, 0.5);
   text-decoration: none;
 
   &:hover {

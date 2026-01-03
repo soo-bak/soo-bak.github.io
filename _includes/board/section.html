@@ -26,6 +26,7 @@
     <h2 class="board__section-title">
       {% if include.category_icon %}<span class="board__section-icon">{{ include.category_icon }}</span>{% endif %}
       {{ include.category_name }}
+      <span class="board__section-count">({{ include.posts.size }})</span>
     </h2>
     <a href="{{ include.category_url | relative_url }}" class="board__more-link">더보기 <i class="fas fa-angle-right"></i></a>
   </div>
