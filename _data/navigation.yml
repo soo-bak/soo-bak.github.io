@@ -73,6 +73,8 @@ main-sidebar:
         url: "/dev/language/"
       - title: "Graphics"
         url: "/dev/graphics/"
+      - title: "Network"
+        url: "/dev/network/"
       - title: "Unity"
         url: "/dev/unity/"
   - title: "LIBRARY"
