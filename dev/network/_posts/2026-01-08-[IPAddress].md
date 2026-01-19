@@ -503,4 +503,7 @@ IP 주소는 네트워크 통신의 기본이 되는 핵심 개념입니다.
 
 **관련 글**
 - [서브넷(Subnet)의 개념과 서브네팅](/dev/network/Subnet/)
+- [네트워크 통신의 원리 (1) - 전자기파와 신호 전송](/dev/network/NetworkCommunication-1/)
+- [네트워크 통신의 원리 (2) - 디지털 신호와 정보 전달](/dev/network/NetworkCommunication-2/)
+- [네트워크 통신의 원리 (3) - 프로토콜 스택과 데이터 흐름](/dev/network/NetworkCommunication-3/)
 
