@@ -246,7 +246,7 @@ TLS 1.3에서 AES-GCM이 필수입니다.
 
 <br>
 
-1976년, Whitfield Diffie와 Martin Hellman이 혁명적인 아이디어를 발표합니다.
+1976년, Whitfield Diffie와 Martin Hellman이 새로운 방식을 발표합니다.
 
 **공개키 암호화(Public Key Cryptography)**.
 
