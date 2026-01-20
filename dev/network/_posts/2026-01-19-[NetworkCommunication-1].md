@@ -606,4 +606,7 @@ C = 20 × 10⁶ × log₂(101)
 - [네트워크 보안의 원리 (3) - 네트워크 공격과 방어](/dev/network/NetworkSecurity-3/)
 - [HTTP의 진화 (1) - HTTP/1.0에서 HTTP/2까지](/dev/network/HTTPEvolution-1/)
 - [HTTP의 진화 (2) - HTTP/3과 QUIC, 그리고 WebSocket](/dev/network/HTTPEvolution-2/)
+- [DNS의 원리 (1) - DNS의 탄생과 계층 구조](/dev/network/DNS-1/)
+- [DNS의 원리 (2) - DNS 질의와 해석 과정](/dev/network/DNS-2/)
+- [DNS의 원리 (3) - DNS 보안과 현대적 발전](/dev/network/DNS-3/)
 
