@@ -52,7 +52,7 @@ ls | grep ".txt"  ← ls의 출력이 grep의 입력으로
 
 1983년, UC Berkeley의 BSD 4.2가 발표되었습니다.
 
-Bill Joy가 이끄는 팀이 DARPA의 지원을 받아 개발한 이 운영체제에는 혁신적인 네트워크 API가 포함되어 있었습니다.
+Bill Joy가 이끄는 팀이 DARPA의 지원을 받아 개발한 이 운영체제에는 새로운 네트워크 API가 포함되어 있었습니다.
 
 **Berkeley Sockets**입니다.
 
@@ -104,7 +104,7 @@ BSD Unix뿐 아니라 System V Unix, Linux, Windows(Winsock), macOS 등 거의 �
 
 **이것은 정확하지 않습니다.**
 
-IP:포트는 소켓의 일부일 뿐, 소켓 자체가 아닙니다.
+IP:포트는 소켓의 일부이지, 소켓 자체가 아닙니다.
 
 <br>
 
