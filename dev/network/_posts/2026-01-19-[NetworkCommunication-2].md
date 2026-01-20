@@ -314,7 +314,7 @@ NRZ의 또 다른 문제는 **DC 성분**입니다.
 
 ## 정보란 무엇인가
 
-1948년, 벨 연구소의 클로드 섀넌은 놀라운 질문을 던졌습니다.
+1948년, 벨 연구소의 클로드 섀넌은 근본적인 질문을 던졌습니다.
 
 **"정보"를 수학적으로 정의할 수 있을까?**
 
@@ -352,7 +352,7 @@ log₂(6) ≈ 2.58비트의 정보를 전달한 것입니다.
 
 "내일 해가 뜬다"는 거의 확실하므로 정보량이 낮습니다.
 
-"내일 눈이 온다"는 (여름이라면) 놀라운 사건이므로 정보량이 높습니다.
+"내일 눈이 온다"는 (여름이라면) 확률이 낮은 사건이므로 정보량이 높습니다.
 
 <br>
 
@@ -372,9 +372,7 @@ H = -Σ P(x) × log₂(P(x))
 
 <br>
 
-이것이 의미하는 바는 강력합니다.
-
-**영어 텍스트는 글자당 1.5비트 정도의 정보만 담고 있다.**
+**영어 텍스트는 글자당 1.5비트 정도의 정보만 담고 있습니다.**
 
 나머지는 중복(Redundancy)입니다.
 
@@ -392,11 +390,11 @@ H = -Σ P(x) × log₂(P(x))
 C = B × log₂(1 + S/N)
 ```
 
-[Part 1](/dev/network/NetworkCommunication-1/)에서 소개한 이 공식의 심오한 의미를 더 살펴봅시다.
+[Part 1](/dev/network/NetworkCommunication-1/)에서 소개한 이 공식의 의미를 더 살펴봅시다.
 
 <br>
 
-이 정리에는 두 가지 놀라운 주장이 담겨 있습니다.
+이 정리에는 두 가지 핵심 주장이 담겨 있습니다.
 
 **첫째**, C보다 낮은 어떤 전송 속도도 달성할 수 있습니다.
 
@@ -733,7 +731,7 @@ OFDMA는 먼저 넓은 주파수 대역을 수백~수천 개의 좁은 **부반�
 
 <br>
 
-OFDMA의 강점은 유연성입니다.
+OFDMA는 자원 할당이 유연합니다.
 
 채널 상태가 좋은 부반송파를 해당 사용자에게 할당할 수 있습니다.
 
@@ -790,4 +788,26 @@ OFDMA의 강점은 유연성입니다.
 - [DNS의 원리 (1) - DNS의 탄생과 계층 구조](/dev/network/DNS-1/)
 - [DNS의 원리 (2) - DNS 질의와 해석 과정](/dev/network/DNS-2/)
 - [DNS의 원리 (3) - DNS 보안과 현대적 발전](/dev/network/DNS-3/)
+- [NAT와 방화벽 (1) - NAT의 탄생과 주소 변환](/dev/network/NATFirewall-1/)
+- [NAT와 방화벽 (2) - 방화벽과 상태 추적](/dev/network/NATFirewall-2/)
+- [NAT와 방화벽 (3) - NAT 트래버설과 P2P](/dev/network/NATFirewall-3/)
+- [VPN과 터널링 (1) - 터널링의 원리](/dev/network/VPNTunnel-1/)
+- [VPN과 터널링 (2) - IPsec의 구조](/dev/network/VPNTunnel-2/)
+- [VPN과 터널링 (3) - 현대 VPN 기술](/dev/network/VPNTunnel-3/)
+- [로드 밸런싱 (1) - 로드 밸런싱의 원리](/dev/network/LoadBalancing-1/)
+- [로드 밸런싱 (2) - DNS 기반 로드 밸런싱](/dev/network/LoadBalancing-2/)
+- [로드 밸런싱 (3) - 고가용성 아키텍처](/dev/network/LoadBalancing-3/)
+- [컨테이너 네트워킹 (1) - 컨테이너 네트워크 기초](/dev/network/ContainerNetwork-1/)
+- [컨테이너 네트워킹 (2) - 오버레이 네트워크](/dev/network/ContainerNetwork-2/)
+- [컨테이너 네트워킹 (3) - Kubernetes 네트워킹](/dev/network/ContainerNetwork-3/)
+- [네트워크 성능 (1) - 지연 시간의 구성 요소](/dev/network/NetworkPerformance-1/)
+- [네트워크 성능 (2) - TCP 혼잡 제어 심화](/dev/network/NetworkPerformance-2/)
+- [네트워크 성능 (3) - 애플리케이션 레벨 최적화](/dev/network/NetworkPerformance-3/)
+- [실시간 통신 (1) - RTP와 실시간 전송](/dev/network/RealTimeCommunication-1/)
+- [실시간 통신 (2) - WebRTC 스택](/dev/network/RealTimeCommunication-2/)
+- [실시간 통신 (3) - 품질 관리와 적응](/dev/network/RealTimeCommunication-3/)
+- [네트워크 디버깅 (1) - 계층별 진단 도구](/dev/network/NetworkDebugging-1/)
+- [네트워크 디버깅 (2) - 패킷 분석](/dev/network/NetworkDebugging-2/)
+- [IoT 네트워킹 (1) - IoT 프로토콜](/dev/network/IoTNetworking-1/)
+- [IoT 네트워킹 (2) - LPWAN과 IoT 보안](/dev/network/IoTNetworking-2/)
 

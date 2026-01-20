@@ -26,7 +26,7 @@ tags:
 
 <br>
 
-1864년, 제임스 클러크 맥스웰은 놀라운 예측을 했습니다.
+1864년, 제임스 클러크 맥스웰은 중요한 예측을 했습니다.
 
 전기장의 변화가 자기장을 만들고, 자기장의 변화가 다시 전기장을 만든다면, 이 연쇄 반응이 공간을 통해 퍼져나갈 수 있다는 것이었습니다.
 
@@ -161,7 +161,7 @@ AM 라디오(파장 수백 미터)가 산 뒤에서도 들리는 이유입니다
 
 1 MHz 주변에서 0.5 MHz 폭을 쓰면 50%의 상대적 대역을 사용하는 것이지만, 1 GHz 주변에서 0.5 MHz 폭을 쓰면 0.05%만 사용하는 것입니다.
 
-높은 주파수 대역일수록 같은 비율의 대역폭이 절대적으로 더 넓습니다.
+높은 주파수 대역일수록 같은 비율의 대역폭이 절대 크기로 더 넓습니다.
 
 대역폭이 넓을수록 더 많은 정보를 전송할 수 있으므로, 고속 통신은 높은 주파수 대역을 사용하는 경향이 있습니다.
 
@@ -245,7 +245,7 @@ Wi-Fi가 2.4GHz와 5GHz 두 대역을 모두 지원하는 것은 이 트레이�
 
 빛이 유리 속을 진행하다가 공기와의 경계면을 만나면 어떻게 될까요?
 
-빛이 밀도가 높은 매질(유리)에서 낮은 매질(공기)로 나가려 할 때, 입사각이 일정 각도(**임계각**) 이상이면 빛이 전혀 빠져나가지 못하고 100% 반사됩니다.
+빛이 굴절률이 높은 매질(유리)에서 낮은 매질(공기)로 나가려 할 때, 입사각이 일정 각도(**임계각**) 이상이면 빛이 전혀 빠져나가지 못하고 100% 반사됩니다.
 
 이것이 **전반사(Total Internal Reflection)**입니다.
 
@@ -436,8 +436,6 @@ FM 라디오의 음질이 AM보다 좋은 물리적 이유입니다.
 
 <br>
 
-여기서 흥미로운 질문이 생깁니다.
-
 **위상을 더 많이 쓰면 어떨까요?**
 
 <br>
@@ -528,9 +526,7 @@ N: 잡음 전력
 
 <br>
 
-이 공식이 말하는 바는 심오합니다.
-
-주어진 대역폭과 신호 대 잡음비에서 **절대로 넘을 수 없는 최대 전송 속도**가 존재한다는 것입니다.
+이 공식은 주어진 대역폭과 신호 대 잡음비에서 **절대로 넘을 수 없는 최대 전송 속도**가 존재한다는 것을 의미합니다.
 
 어떤 기발한 변조 방식을 사용해도, 어떤 똑똑한 인코딩을 적용해도, 이 한계를 넘을 수 없습니다.
 
@@ -609,4 +605,26 @@ C = 20 × 10⁶ × log₂(101)
 - [DNS의 원리 (1) - DNS의 탄생과 계층 구조](/dev/network/DNS-1/)
 - [DNS의 원리 (2) - DNS 질의와 해석 과정](/dev/network/DNS-2/)
 - [DNS의 원리 (3) - DNS 보안과 현대적 발전](/dev/network/DNS-3/)
+- [NAT와 방화벽 (1) - NAT의 탄생과 주소 변환](/dev/network/NATFirewall-1/)
+- [NAT와 방화벽 (2) - 방화벽과 상태 추적](/dev/network/NATFirewall-2/)
+- [NAT와 방화벽 (3) - NAT 트래버설과 P2P](/dev/network/NATFirewall-3/)
+- [VPN과 터널링 (1) - 터널링의 원리](/dev/network/VPNTunnel-1/)
+- [VPN과 터널링 (2) - IPsec의 구조](/dev/network/VPNTunnel-2/)
+- [VPN과 터널링 (3) - 현대 VPN 기술](/dev/network/VPNTunnel-3/)
+- [로드 밸런싱 (1) - 로드 밸런싱의 원리](/dev/network/LoadBalancing-1/)
+- [로드 밸런싱 (2) - DNS 기반 로드 밸런싱](/dev/network/LoadBalancing-2/)
+- [로드 밸런싱 (3) - 고가용성 아키텍처](/dev/network/LoadBalancing-3/)
+- [컨테이너 네트워킹 (1) - 컨테이너 네트워크 기초](/dev/network/ContainerNetwork-1/)
+- [컨테이너 네트워킹 (2) - 오버레이 네트워크](/dev/network/ContainerNetwork-2/)
+- [컨테이너 네트워킹 (3) - Kubernetes 네트워킹](/dev/network/ContainerNetwork-3/)
+- [네트워크 성능 (1) - 지연 시간의 구성 요소](/dev/network/NetworkPerformance-1/)
+- [네트워크 성능 (2) - TCP 혼잡 제어 심화](/dev/network/NetworkPerformance-2/)
+- [네트워크 성능 (3) - 애플리케이션 레벨 최적화](/dev/network/NetworkPerformance-3/)
+- [실시간 통신 (1) - RTP와 실시간 전송](/dev/network/RealTimeCommunication-1/)
+- [실시간 통신 (2) - WebRTC 스택](/dev/network/RealTimeCommunication-2/)
+- [실시간 통신 (3) - 품질 관리와 적응](/dev/network/RealTimeCommunication-3/)
+- [네트워크 디버깅 (1) - 계층별 진단 도구](/dev/network/NetworkDebugging-1/)
+- [네트워크 디버깅 (2) - 패킷 분석](/dev/network/NetworkDebugging-2/)
+- [IoT 네트워킹 (1) - IoT 프로토콜](/dev/network/IoTNetworking-1/)
+- [IoT 네트워킹 (2) - LPWAN과 IoT 보안](/dev/network/IoTNetworking-2/)
 
