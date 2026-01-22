@@ -303,6 +303,29 @@ defaults:
       sidebar:
         nav: "main-sidebar"
 
+  # Exclude pagination pages and assets from sitemap
+  - scope:
+      path: ""
+      type: pages
+    values:
+      sitemap: true
+  - scope:
+      path: "page*/"
+    values:
+      sitemap: false
+  - scope:
+      path: "assets/**"
+    values:
+      sitemap: false
+  - scope:
+      path: "tags/**"
+    values:
+      sitemap: false
+  - scope:
+      path: "categories/**"
+    values:
+      sitemap: false
+
 head_scripts:
   - /assets/js/heads.min.js
   - /assets/js/head-customs.min.js
