@@ -483,7 +483,7 @@ C = 20 × 10⁶ × log₂(101)
 
 **심화 시리즈**
 - [소켓과 전송 계층 (1) - 소켓의 탄생과 추상화](/dev/network/SocketTransport-1/)
-- [소켓과 전송 계층 (2) - TCP 연결의 상태 기계](/dev/network/SocketTransport-2/)
+- [소켓과 전송 계층 (2) - TCP 연결의 상태 머신](/dev/network/SocketTransport-2/)
 - [소켓과 전송 계층 (3) - 멀티플렉싱과 패킷 흐름](/dev/network/SocketTransport-3/)
 - [무선 통신의 진화 (1) - 무선 채널의 물리적 특성](/dev/network/WirelessCommunication-1/)
 - [무선 통신의 진화 (2) - 셀룰러와 Wi-Fi의 발전](/dev/network/WirelessCommunication-2/)
