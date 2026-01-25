@@ -617,6 +617,6 @@ IP는 MTU에 맞춰 패킷을 단편화할 수 있지만, TCP의 MSS 협상으�
 
 **시리즈**
 - [소켓과 전송 계층 (1) - 소켓의 탄생과 추상화](/dev/network/SocketTransport-1/)
-- [소켓과 전송 계층 (2) - TCP 연결의 상태 기계](/dev/network/SocketTransport-2/)
+- [소켓과 전송 계층 (2) - TCP 연결의 상태 머신](/dev/network/SocketTransport-2/)
 - 소켓과 전송 계층 (3) - 멀티플렉싱과 패킷 흐름 (현재 글)
 

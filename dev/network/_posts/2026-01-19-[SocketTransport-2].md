@@ -1,6 +1,6 @@
 ---
 layout: single
-title: "소켓과 전송 계층 (2) - TCP 연결의 상태 기계 - soo:bak"
+title: "소켓과 전송 계층 (2) - TCP 연결의 상태 머신 - soo:bak"
 date: "2026-01-19 23:14:02 +0900"
 description: TCP의 11가지 상태, 3-Way/4-Way Handshake의 수학적 필요성, TIME_WAIT의 이유, 소켓 버퍼를 설명합니다.
 tags:
@@ -579,6 +579,6 @@ TIME_WAIT는 지연된 패킷과 손실된 ACK에 대비합니다.
 
 **시리즈**
 - [소켓과 전송 계층 (1) - 소켓의 탄생과 추상화](/dev/network/SocketTransport-1/)
-- 소켓과 전송 계층 (2) - TCP 연결의 상태 기계 (현재 글)
+- 소켓과 전송 계층 (2) - TCP 연결의 상태 머신 (현재 글)
 - [소켓과 전송 계층 (3) - 멀티플렉싱과 패킷 흐름](/dev/network/SocketTransport-3/)
 
