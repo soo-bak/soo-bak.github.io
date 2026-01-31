@@ -39,6 +39,7 @@ f(k)는 k에 대한 이차식으로 최대값이 가운데에서 발생하므로
 ### C#
 ```csharp
 using System;
+using System.Text;
 
 class Program {
   static long Area(long a, long b, long n, long k) {
@@ -48,18 +49,50 @@ class Program {
   }
 
   static void Main() {
-    int t = int.Parse(Console.ReadLine()!);
-    for (int _ = 0; _ < t; _++) {
-      var p = Console.ReadLine()!.Split();
-      long a = long.Parse(p[0]);
-      long b = long.Parse(p[1]);
-      long n = long.Parse(p[2]);
+    var scan = new FastScanner();
+    int t = scan.NextInt();
+    var sb = new StringBuilder(t * 3);
+    for (int i = 0; i < t; i++) {
+      long a = scan.NextLong();
+      long b = scan.NextLong();
+      long n = scan.NextLong();
 
-      long k0 = n / 2;
+      long k0 = n >> 1;
       long k1 = n - k0;
+      long ans = Area(a, b, n, k0);
+      long alt = Area(a, b, n, k1);
+      if (alt > ans) ans = alt;
 
-      long ans = Math.Max(Area(a, b, n, k0), Area(a, b, n, k1));
-      Console.WriteLine(ans);
+      sb.Append(ans).Append('\n');
+    }
+    Console.Write(sb.ToString());
+  }
+
+  class FastScanner {
+    private readonly byte[] buf = new byte[1 << 16];
+    private int len, ptr;
+
+    private int Read() {
+      if (ptr >= len) {
+        len = Console.OpenStandardInput().Read(buf, 0, buf.Length);
+        ptr = 0;
+        if (len == 0) return -1;
+      }
+      return buf[ptr++];
+    }
+
+    public int NextInt() {
+      int c; while ((c = Read()) <= 32 && c != -1) ;
+      int v = 0;
+      while (c > 32) { v = v * 10 + (c - '0'); c = Read(); }
+      return v;
+    }
+
+    public long NextLong() {
+      int c; while ((c = Read()) <= 32 && c != -1) ;
+      long v = 0;
+      while (c > 32) { v = v * 10 + (c - '0'); c = Read(); }
+      return v;
     }
   }
 }
