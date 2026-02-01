@@ -7,15 +7,17 @@
 ## 파이프라인 위치
 
 ```
-/edit-writing → ▶ /clarify-writing → /refine-style → /verify-facts → /deep-review
-  골격              이해                목소리          사실            독자 시뮬레이션
+/edit-writing → ▶ /clarify-writing → /refine-style → /smooth-flow → /verify-facts → /deep-review → /align-reference
+  골격              이해                목소리          흐름            사실             독자 시뮬레이션    레퍼런스 정렬
 ```
 
 이 스킬은 파이프라인의 **두 번째 단계**입니다:
 - 글의 뼈대 → `/edit-writing`
 - 톤, 리듬, 서사 → `/refine-style`
+- 읽기 흐름 → `/smooth-flow`
 - 사실관계 → `/verify-facts`
 - 독자 경험 통합 점검 → `/deep-review`
+- 레퍼런스 정렬 → `/align-reference`
 
 ## 인자
 - `$ARGUMENTS`: 수정할 파일 경로 (선택사항). 없으면 사용자에게 파일 또는 텍스트를 요청합니다.
