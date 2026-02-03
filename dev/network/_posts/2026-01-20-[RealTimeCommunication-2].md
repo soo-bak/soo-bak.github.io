@@ -14,15 +14,25 @@ tags:
 
 ## WebRTC는 브라우저에서 어떻게 P2P 통신하는가
 
-[Part 1](/dev/network/RealTimeCommunication-1/)에서 RTP의 기본을 살펴보았습니다.
+[Part 1](/dev/network/RealTimeCommunication-1/)에서 RTP가 실시간 미디어를 전송하는 원리를 살펴보았습니다.
 
-**WebRTC**는 브라우저에서 **플러그인 없이** 화상 통화, 음성 통화, 데이터 전송 등의 실시간 통신을 가능하게 합니다.
+<br>
+
+RTP는 미디어 전송에 특화된 프로토콜이지만, 이것만으로는 실시간 통신 애플리케이션을 만들 수 없습니다. 두 사용자가 어떻게 서로를 찾고, 방화벽 뒤의 상대방과 어떻게 직접 연결하며, 미디어 스트림은 어떻게 암호화할 것인지 — 실제 애플리케이션에는 RTP 위에 여러 계층의 프로토콜이 더 필요합니다.
+
+<br>
+
+**WebRTC(Web Real-Time Communication)**는 이 모든 것을 브라우저에서 **플러그인 없이** 해결합니다.
 
 ---
 
 ## WebRTC의 탄생
 
 2011년, Google이 GIPS(Global IP Solutions) 인수로 확보한 미디어 엔진을 기반으로 WebRTC 프로젝트를 오픈소스로 공개했습니다.
+
+<br>
+
+당시 브라우저에서 실시간 통신을 하려면 Flash나 Silverlight 같은 플러그인이 필수였습니다. 이는 보안 취약점과 성능 문제를 수반했고, 모바일 환경에서는 아예 동작하지 않는 경우도 많았습니다. Google은 이 문제를 브라우저 자체의 네이티브 기능으로 해결하고자 했습니다.
 
 <br>
 
@@ -157,6 +167,10 @@ WebRTC는 **시그널링 방법을 정의하지 않습니다**.
 
 <br>
 
+두 브라우저가 P2P로 연결되려면, 서로의 미디어 능력(코덱, 해상도 등)과 네트워크 주소를 먼저 알아야 합니다. 시그널링은 이 초기 메타데이터를 교환하는 준비 단계로, WebRTC 연결 자체가 수립되기 전에 별도의 채널을 통해 이루어집니다.
+
+<br>
+
 시그널링에서 교환하는 정보:
 - 세션 설정 정보 교환
 - SDP(Session Description Protocol) 교환
@@ -221,6 +235,10 @@ a=rtpmap:96 VP8/90000
 a=rtcp-fb:96 ccm fir
 a=rtcp-fb:96 nack
 ```
+
+<br>
+
+SDP는 사람이 읽을 수 있는 텍스트 형식이지만, 실제로는 기계가 파싱하여 미디어 세션의 파라미터를 협상하는 데 사용됩니다. Offer 측이 자신이 지원하는 코덱과 설정을 나열하면, Answer 측이 그중 자신도 지원하는 항목을 선택하여 응답합니다.
 
 <br>
 
@@ -293,6 +311,10 @@ peerConnection.onicecandidate = (event) => {
   }
 };
 ```
+
+<br>
+
+ICE는 가능한 모든 네트워크 경로를 후보(candidate)로 수집한 뒤, 우선순위에 따라 연결을 시도합니다. 직접 연결이 가능하면 host 후보를, NAT 뒤에 있으면 STUN으로 발견한 srflx 후보를, 모두 실패하면 TURN 릴레이를 사용합니다.
 
 <br>
 
@@ -403,7 +425,7 @@ RTP 패킷                    SRTP 패킷
 
 ---
 
-## 정리: 복잡하지만 강력하다
+## 마무리: 복잡하지만 강력하다
 
 WebRTC는 많은 기술을 통합합니다:
 
@@ -423,10 +445,15 @@ WebRTC는 많은 기술을 통합합니다:
 
 [Part 3](/dev/network/RealTimeCommunication-3/)에서는 네트워크 변화에 어떻게 적응하는지 살펴봅니다.
 
+<br>
+
 ---
 
 **관련 글**
 - [NAT와 방화벽 (3) - NAT 트래버설과 P2P 통신](/dev/network/NATFirewall-3/)
-- [실시간 통신 (1) - RTP와 실시간 전송](/dev/network/RealTimeCommunication-1/)
-- [실시간 통신 (3) - 품질 관리와 적응](/dev/network/RealTimeCommunication-3/)
 - [네트워크 보안의 원리 (2) - TLS와 인증서 체계](/dev/network/NetworkSecurity-2/)
+
+**시리즈**
+- [실시간 통신 (1) - RTP와 실시간 전송](/dev/network/RealTimeCommunication-1/)
+- 실시간 통신 (2) - WebRTC 스택 (현재 글)
+- [실시간 통신 (3) - 품질 관리와 적응](/dev/network/RealTimeCommunication-3/)

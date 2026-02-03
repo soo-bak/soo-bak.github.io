@@ -14,13 +14,17 @@ tags:
 
 ## 애플리케이션에서 네트워크 성능을 어떻게 개선하는가
 
-[Part 1](/dev/network/NetworkPerformance-1/)에서 지연의 구성 요소를,
-
-[Part 2](/dev/network/NetworkPerformance-2/)에서 TCP 혼잡 제어를 살펴보았습니다.
+[Part 1](/dev/network/NetworkPerformance-1/)에서 지연의 구성 요소를, [Part 2](/dev/network/NetworkPerformance-2/)에서 TCP 혼잡 제어를 살펴보았습니다.
 
 <br>
 
-이제 **애플리케이션 레벨**에서 할 수 있는 최적화를 알아봅니다.
+전파 지연은 빛의 속도가 정하고, 혼잡 제어는 커널이 관리합니다. 애플리케이션 개발자가 직접 바꿀 수 있는 부분은 아닙니다.
+
+그렇다면 애플리케이션 레벨에서 할 수 있는 일은 무엇일까요?
+
+<br>
+
+핵심은 **불필요한 왕복을 줄이는 것**입니다. TCP 연결 수립, TLS 핸드셰이크, HTTP 요청마다 RTT가 소모됩니다. 연결을 재사용하고, 요청 횟수를 줄이고, 필요한 데이터를 미리 가져오는 전략이 성능에 직접적인 영향을 미칩니다.
 
 ---
 
@@ -54,6 +58,8 @@ TCP 핸드셰이크 (1회)
 
 <br>
 
+Keep-Alive가 절약하는 비용은 구체적으로 계산할 수 있습니다. 서울에서 미국 서버까지 RTT가 100ms라면, 연결을 재사용하는 것만으로 요청당 200~300ms를 절약합니다. 리소스가 많은 웹 페이지에서 수십 번의 요청이 발생하므로, 절약 효과는 수 초에 달할 수 있습니다.
+
 핸드셰이크 비용 절감:
 - TCP 3-way 핸드셰이크: 1 RTT
 - TLS 핸드셰이크: 1-2 RTT
@@ -76,6 +82,8 @@ Content-Encoding: gzip
 ```
 
 <br>
+
+압축 방식은 호환성과 압축률 사이의 균형에 따라 선택합니다. Brotli는 gzip 대비 15~25% 더 나은 압축률을 보이지만 압축 시간이 더 걸리므로, 정적 콘텐츠는 Brotli로 미리 압축하고 동적 콘텐츠는 gzip을 사용하는 혼합 전략이 일반적입니다.
 
 주요 압축 방식:
 - **gzip**: 가장 널리 지원
@@ -124,6 +132,8 @@ HTTP/2:
 
 <br>
 
+HTTP/2는 다중화 외에도 여러 최적화를 포함합니다. 특히 HPACK 헤더 압축은 반복되는 쿠키, User-Agent 등의 헤더를 인덱스로 치환하여 헤더 크기를 크게 줄입니다. 요청 수가 많을수록 절약 효과가 누적됩니다.
+
 HTTP/2의 추가 기능:
 - **헤더 압축 (HPACK)**: 중복 헤더 제거
 - **서버 푸시**: 요청 전에 리소스 전송
@@ -155,6 +165,8 @@ HTTP/2도 TCP의 Head-of-Line Blocking 문제가 있어, 패킷 손실 시 모�
 ```
 
 <br>
+
+QUIC은 TCP+TLS가 별도로 처리하던 핸드셰이크를 하나로 통합하여 연결 설정 비용을 줄입니다. 또한 각 스트림을 전송 계층에서 독립적으로 관리하므로, 하나의 스트림에서 패킷 손실이 발생해도 나머지 스트림은 차단 없이 계속 전송됩니다. Wi-Fi에서 셀룰러로 전환할 때 연결이 끊기지 않는 연결 마이그레이션도 모바일 환경에서 큰 이점입니다.
 
 QUIC의 장점:
 - **스트림 독립성**: 한 스트림 손실이 다른 스트림에 영향 없음
@@ -358,6 +370,8 @@ TCP + TLS 연결을 미리 수립합니다.
 
 ### QUIC의 장점
 
+QUIC은 TCP의 신뢰성 메커니즘을 사용자 공간에서 재구현하면서, UDP의 유연성을 결합한 프로토콜입니다. 커널 업데이트 없이도 전송 프로토콜을 개선할 수 있다는 점이 배포와 발전 속도 면에서 유리합니다.
+
 - TCP의 신뢰성 + UDP의 유연성
 - 빠른 연결 설정
 - 모바일 로밍에 유리
@@ -456,7 +470,7 @@ console.log('DOM Content Loaded:', timing.domContentLoadedEventEnd);
 
 ---
 
-## 정리: 측정 없이 최적화 없다
+## 마무리: 측정 없이 최적화 없다
 
 애플리케이션 레벨 최적화 체크리스트:
 
@@ -496,10 +510,15 @@ console.log('DOM Content Loaded:', timing.domContentLoadedEventEnd);
                 - Peter Drucker
 ```
 
+<br>
+
 ---
 
 **관련 글**
-- [네트워크 성능과 최적화 (1) - 지연 시간의 구성 요소](/dev/network/NetworkPerformance-1/)
-- [네트워크 성능과 최적화 (2) - TCP 혼잡 제어 심화](/dev/network/NetworkPerformance-2/)
 - [HTTP의 발전 (1) - HTTP/0.9에서 HTTP/2까지](/dev/network/HTTPEvolution-1/)
 - [HTTP의 발전 (2) - HTTP/3과 QUIC](/dev/network/HTTPEvolution-2/)
+
+**시리즈**
+- [네트워크 성능과 최적화 (1) - 지연 시간의 구성 요소](/dev/network/NetworkPerformance-1/)
+- [네트워크 성능과 최적화 (2) - TCP 혼잡 제어 심화](/dev/network/NetworkPerformance-2/)
+- 네트워크 성능과 최적화 (3) - 애플리케이션 레벨 최적화 (현재 글)
