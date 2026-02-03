@@ -8,11 +8,12 @@
 ## 파이프라인 위치
 
 ```
-/edit-writing → /clarify-writing → /refine-style → /smooth-flow → /verify-facts → /deep-review → ▶ /align-reference
-  골격             이해               목소리          흐름            사실             독자 시뮬레이션     레퍼런스 정렬
+/equalize-baseline → /edit-writing → /clarify-writing → /refine-style → /smooth-flow → /verify-facts → /deep-review → ▶ /align-reference
+   기준선 보강          골격             이해               목소리          흐름            사실             독자 시뮬레이션     레퍼런스 정렬
 ```
 
 이 스킬은 파이프라인의 **일곱 번째(마지막) 단계**입니다:
+- 기준선 보강 → `/equalize-baseline`
 - 글의 뼈대 → `/edit-writing`
 - 독자의 이해 → `/clarify-writing`
 - 톤, 리듬, 서사 → `/refine-style`
@@ -21,7 +22,7 @@
 - 독자 경험 통합 점검 → `/deep-review`
 
 마지막인 이유:
-- 1~6단계가 글 내부 품질을 끌어올린 후, 레퍼런스 기준으로 남은 격차를 메움
+- 0단계가 기준선을 확보하고, 1~6단계가 글 내부 품질을 끌어올린 후, 레퍼런스 기준으로 남은 격차를 메움
 - 이전 단계의 수정 위에서 동작하므로 충돌 없음
 - 구조적 변경(`<br>` 제거 등)은 다른 스킬의 수정을 덮어쓸 위험이 있으므로 마지막이 적합
 

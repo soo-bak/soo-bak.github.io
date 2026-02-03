@@ -1,10 +1,10 @@
 # 글쓰기 전체 리뷰 파이프라인
 
-7단계 파이프라인을 순서대로 실행하여 글을 완전하게 수정합니다.
+8단계 파이프라인을 순서대로 실행하여 글을 완전하게 수정합니다.
 
 ```
-/edit-writing → /clarify-writing → /refine-style → /smooth-flow → /verify-facts → /deep-review → /align-reference
-   골격            이해               목소리          흐름           사실            독자 시뮬레이션    레퍼런스 정렬
+/equalize-baseline → /edit-writing → /clarify-writing → /refine-style → /smooth-flow → /verify-facts → /deep-review → /align-reference
+   기준선 보강          골격            이해               목소리          흐름           사실            독자 시뮬레이션    레퍼런스 정렬
 ```
 
 ## 인자
@@ -14,12 +14,13 @@
 
 ## 실행 절차
 
-아래 7개 커맨드 스킬을 `Skill` 도구로 **순서대로** 실행합니다.
+아래 8개 커맨드 스킬을 `Skill` 도구로 **순서대로** 실행합니다.
 각 단계는 이전 단계의 수정 결과 위에서 동작합니다.
 다음 단계는 반드시 이전 단계가 완료된 후 시작합니다.
 
 | 단계 | 스킬 | 역할 |
 |------|------|------|
+| 0 | `/equalize-baseline $ARGUMENTS` | 기준선 보강 — 설명 밀도, 도입부 연결, 마무리 형식 |
 | 1 | `/edit-writing $ARGUMENTS` | 골격 — 용어, 구조, 문장 |
 | 2 | `/clarify-writing $ARGUMENTS` | 이해 — 설명 완성도 |
 | 3 | `/refine-style $ARGUMENTS` | 목소리 — 톤, 리듬, 서사 |
@@ -49,6 +50,7 @@
 ### 단계별 요약
 | 단계 | 수정 건수 | 주요 변경 |
 |------|----------|----------|
+| 0. 기준선 보강 | N건 | ... |
 | 1. 골격 | N건 | ... |
 | 2. 이해 | N건 | ... |
 | 3. 목소리 | N건 | ... |
