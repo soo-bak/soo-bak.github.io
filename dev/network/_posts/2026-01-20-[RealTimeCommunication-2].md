@@ -14,13 +14,21 @@ tags:
 
 ## WebRTC는 브라우저에서 어떻게 P2P 통신하는가
 
-[Part 1](/dev/network/RealTimeCommunication-1/)에서 RTP가 실시간 미디어를 전송하는 원리를 살펴보았습니다. RTP는 미디어 전송에 특화된 프로토콜이지만, 이것만으로는 실시간 통신 애플리케이션을 만들 수 없습니다. 두 사용자가 어떻게 서로를 찾고, 방화벽 뒤의 상대방과 어떻게 직접 연결하며, 미디어 스트림은 어떻게 암호화할 것인지 — 실제 애플리케이션에는 RTP 위에 여러 계층의 프로토콜이 더 필요합니다. **WebRTC(Web Real-Time Communication)**는 이 모든 것을 브라우저에서 **플러그인 없이** 해결합니다.
+[Part 1](/dev/network/RealTimeCommunication-1/)에서 RTP가 실시간 미디어를 전송하는 원리를 살펴보았습니다.
+
+RTP는 미디어 전송에 특화된 프로토콜이지만, 이것만으로는 실시간 통신 애플리케이션을 만들 수 없습니다.
+
+두 사용자가 어떻게 서로를 찾고, 방화벽 뒤의 상대방과 어떻게 직접 연결하며, 미디어 스트림은 어떻게 암호화할 것인지 — 실제 애플리케이션에는 RTP 외에도 여러 프로토콜이 더 필요합니다.
+
+**WebRTC(Web Real-Time Communication)**는 이 프로토콜들과 브라우저 API를 하나로 묶은 표준입니다. 플러그인 없이 브라우저만으로 실시간 통신을 구현할 수 있게 합니다.
 
 ---
 
 ## WebRTC의 탄생
 
-2011년, Google이 GIPS(Global IP Solutions) 인수로 확보한 미디어 엔진을 기반으로 WebRTC 프로젝트를 오픈소스로 공개했습니다. 당시 브라우저에서 실시간 통신을 하려면 Flash나 Silverlight 같은 플러그인이 필수였습니다. 이는 보안 취약점과 성능 문제를 수반했고, 모바일 환경에서는 아예 동작하지 않는 경우도 많았습니다. Google은 이 문제를 브라우저 자체의 네이티브 기능으로 해결하고자 했습니다. 목표는 플러그인 없이 브라우저 API만으로 P2P 실시간 통신을 구현하는 것이었으며, 2021년에 W3C와 IETF 표준화가 완료되었습니다. 현재 모든 주요 브라우저에서 지원됩니다.
+2011년, Google이 GIPS(Global IP Solutions) 인수로 확보한 미디어 엔진을 기반으로 WebRTC 프로젝트를 오픈소스로 공개했습니다. 당시 브라우저에서 실시간 통신을 하려면 Flash나 Silverlight 같은 플러그인이 필수였습니다. 이는 보안 취약점과 성능 문제를 수반했고, 모바일 환경에서는 아예 동작하지 않는 경우도 많았습니다.
+
+Google은 이 문제를 브라우저 자체의 네이티브 기능으로 해결하고자 했습니다. 목표는 플러그인 없이 브라우저 API만으로 P2P 실시간 통신을 구현하는 것이었으며, 2021년에 W3C와 IETF 표준화가 완료되었습니다. 현재 모든 주요 브라우저에서 지원됩니다.
 
 ---
 
@@ -36,11 +44,13 @@ tags:
                           │
                           ▼
 ┌─────────────────────────────────────────────────────────────┐
-│                     내부 구성요소                           │
-├─────────────────┬───────────────────┬───────────────────────┤
-│ ICE/STUN/TURN   │ DTLS-SRTP         │ 코덱                  │
-│ (연결 설정)     │ (암호화)          │ (VP8, H.264, Opus)   │
-└─────────────────┴───────────────────┴───────────────────────┘
+│                     내부 프로토콜                            │
+├──────────────┬────────────┬────────────┬────────────────────┤
+│ ICE/STUN/TURN│ DTLS-SRTP  │ RTP/RTCP   │ SCTP              │
+│ (연결 설정)  │ (암호화)   │ (미디어)   │ (데이터 채널)     │
+├──────────────┴────────────┴────────────┴────────────────────┤
+│              코덱: VP8, H.264, Opus                         │
+└─────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -71,7 +81,11 @@ document.getElementById('localVideo').srcObject = stream;
 
 <br>
 
-이 코드를 실행하면 브라우저가 사용자에게 카메라와 마이크 접근 권한을 요청하고, 승인 시 MediaStream 객체를 반환합니다. 반환된 스트림을 video 엘리먼트에 연결하면 로컬 화면에 자신의 모습이 표시됩니다. 사용자 권한이 필요하며, 보안상의 이유로 HTTPS 환경에서만 동작합니다 (localhost는 예외). 이는 악의적인 웹사이트가 무단으로 사용자의 카메라나 마이크에 접근하는 것을 방지하기 위한 브라우저의 보안 정책입니다.
+이 코드를 실행하면 브라우저가 사용자에게 카메라와 마이크 접근 권한을 요청하고, 승인 시 MediaStream 객체를 반환합니다.
+
+반환된 스트림을 video 엘리먼트에 연결하면 로컬 화면에 자신의 모습이 표시됩니다. 사용자 권한이 필요하며, 보안상의 이유로 HTTPS 환경에서만 동작합니다 (localhost는 예외).
+
+이는 악의적인 웹사이트가 무단으로 사용자의 카메라나 마이크에 접근하는 것을 방지하기 위한 브라우저의 보안 정책입니다.
 
 ---
 
@@ -144,25 +158,24 @@ dataChannel.onmessage = (event) => {
 
 <br>
 
-내부적으로는 SCTP(Stream Control Transmission Protocol) 위에서 동작합니다. SCTP는 TCP처럼 신뢰성을 보장하면서도 UDP처럼 메시지 경계를 유지하는 전송 프로토콜입니다. RTCDataChannel은 이를 활용하여 신뢰성 있는 전송(ordered: true)과 빠른 비신뢰 전송(ordered: false) 중 선택할 수 있습니다.
+내부적으로는 SCTP(Stream Control Transmission Protocol) 위에서 동작합니다. TCP는 바이트 스트림이므로 보낸 데이터가 합쳐져 도착할 수 있고, 어디서 끊어야 할지 애플리케이션이 직접 판단해야 합니다. 반면 UDP는 보낸 메시지 단위를 그대로 보존하지만, 손실 시 재전송하지 않습니다.
+
+SCTP는 양쪽의 장점을 결합하여 TCP처럼 손실 시 재전송하면서도, UDP처럼 메시지 단위를 그대로 보존하여 전달합니다.
+
+RTCDataChannel은 이를 활용하여 신뢰성 있는 순서 보장 전송(ordered: true)과 빠른 비신뢰 전송(ordered: false) 중 선택할 수 있습니다.
 
 ---
 
 ## 시그널링: WebRTC가 정의하지 않는 것
 
-앞에서 미디어 캡처와 P2P 연결, 데이터 전송 API를 살펴봤습니다. 그런데 WebRTC는 한 가지를 의도적으로 표준화하지 않았습니다. 바로 **시그널링**입니다. 시그널링은 P2P 연결을 설정하기 전에 필요한 메타데이터를 교환하는 과정입니다. 두 브라우저가 P2P로 연결되려면, 서로의 미디어 능력(코덱, 해상도 등)과 네트워크 주소를 먼저 알아야 합니다. WebRTC가 시그널링을 표준화하지 않은 이유는, 애플리케이션마다 요구사항이 다르기 때문입니다. 채팅 앱은 WebSocket을, IoT 기기는 MQTT를, 게임은 커스텀 프로토콜을 사용할 수 있습니다.
+앞에서 미디어 캡처와 P2P 연결, 데이터 전송 API를 살펴봤습니다. 두 브라우저가 P2P로 연결되려면, 서로의 미디어 능력(코덱, 해상도 등)과 네트워크 주소를 먼저 알아야 합니다. 이 메타데이터를 교환하는 과정이 **시그널링**입니다.
 
-<br>
-
-시그널링에서 교환하는 정보:
-- 세션 설정 정보 교환
-- SDP(Session Description Protocol) 교환
-- ICE 후보 교환
+WebRTC는 시그널링을 의도적으로 표준화하지 않았습니다. 애플리케이션마다 요구사항이 다르기 때문입니다. 채팅 앱은 WebSocket을, IoT 기기는 MQTT를, 게임은 커스텀 프로토콜을 사용할 수 있습니다. 시그널링에서 교환하는 핵심 정보는 SDP(Session Description Protocol)와 ICE 후보입니다.
 
 <br>
 
 ```
-Alice                  시그널링 서버              Bob
+A                      시그널링 서버              B
   │                         │                      │
   │ ─── SDP Offer ────────► │ ─── SDP Offer ────► │
   │                         │                      │
@@ -170,78 +183,54 @@ Alice                  시그널링 서버              Bob
   │                         │                      │
   │ ─── ICE Candidate ────► │ ─── ICE Candidate ─►│
   │ ◄─── ICE Candidate ──── │ ◄── ICE Candidate ──│
-  │                         │                      │
-
-시그널링 서버 구현:
-- WebSocket
-- HTTP 폴링
-- 다른 메시지 시스템
 ```
 
-따라서 개발자는 WebSocket, HTTP 폴링 등의 방식으로 시그널링 서버를 직접 구현해야 합니다. 시그널링은 초기 연결 설정에만 사용되며, 일단 P2P 연결이 수립되면 이후 미디어 스트림은 시그널링 서버를 거치지 않고 직접 전송됩니다.
+개발자는 시그널링 서버를 직접 구현해야 합니다. 시그널링은 초기 연결 설정에만 사용되며, P2P 연결이 수립되면 이후 미디어는 시그널링 서버를 거치지 않고 직접 전송됩니다.
 
 ---
 
 ## SDP (Session Description Protocol)
 
-시그널링 과정에서 교환되는 핵심 정보가 바로 SDP입니다. SDP는 미디어 세션의 속성을 설명하는 텍스트 기반 형식입니다.
-
-<br>
+시그널링 과정에서 교환되는 핵심 정보가 SDP입니다. SDP는 미디어 세션의 속성을 텍스트로 기술하는 형식입니다. 실제 SDP의 주요 필드를 보면 어떤 정보가 오가는지 알 수 있습니다.
 
 ```
-v=0
-o=- 7614219274584779017 2 IN IP4 127.0.0.1
-s=-
-t=0 0
-a=group:BUNDLE 0 1
-a=msid-semantic: WMS stream
+m=audio 9 UDP/TLS/RTP/SAVPF 111   ← 오디오 미디어, 페이로드 타입 111
+a=rtpmap:111 opus/48000/2          ← 코덱: Opus, 48kHz, 스테레오
+a=ice-ufrag:abcd                   ← ICE 인증 정보
+a=fingerprint:sha-256 AB:CD:EF:...  ← DTLS 인증서 해시
 
-m=audio 9 UDP/TLS/RTP/SAVPF 111
-c=IN IP4 0.0.0.0
-a=rtcp:9 IN IP4 0.0.0.0
-a=ice-ufrag:abcd
-a=ice-pwd:1234567890abcdef
-a=fingerprint:sha-256 AB:CD:EF:...
-a=setup:actpass
-a=mid:0
-a=rtpmap:111 opus/48000/2
-a=fmtp:111 minptime=10;useinbandfec=1
-a=rtcp-fb:111 transport-cc
-
-m=video 9 UDP/TLS/RTP/SAVPF 96
-c=IN IP4 0.0.0.0
-a=rtcp:9 IN IP4 0.0.0.0
-a=mid:1
-a=rtpmap:96 VP8/90000
-a=rtcp-fb:96 ccm fir
-a=rtcp-fb:96 nack
+m=video 9 UDP/TLS/RTP/SAVPF 96    ← 비디오 미디어, 페이로드 타입 96
+a=rtpmap:96 VP8/90000              ← 코덱: VP8, 90kHz 클럭
+a=rtcp-fb:96 nack                  ← 패킷 손실 시 재전송 요청 지원
 ```
 
-SDP는 사람이 읽을 수 있는 텍스트 형식이지만, 실제로는 기계가 파싱하여 미디어 세션의 파라미터를 협상하는 데 사용됩니다. Offer 측이 자신이 지원하는 코덱과 설정을 나열하면, Answer 측이 그중 자신도 지원하는 항목을 선택하여 응답합니다. SDP에는 미디어 타입 (audio, video), 코덱 정보 (Opus, VP8 등), ICE 인증 정보, DTLS 핑거프린트, 대역폭 제한 등이 포함됩니다.
+Offer 측이 자신이 지원하는 코덱과 설정을 SDP에 나열하면, Answer 측이 그중 자신도 지원하는 항목을 선택하여 응답합니다.
 
 ---
 
 ## Offer/Answer 모델
 
-SDP가 미디어 세션 정보를 담는 형식이라면, Offer/Answer는 이를 교환하는 절차입니다. 두 브라우저가 서로 다른 코덱을 지원하거나, 네트워크 환경이 다를 수 있습니다. Offer/Answer 모델은 이러한 차이를 협상하여 양쪽이 모두 지원하는 설정을 찾습니다. 다음은 Alice와 Bob이 Offer와 Answer를 교환하여 P2P 연결을 협상하는 코드 흐름입니다.
+SDP가 미디어 세션 정보를 담는 형식이라면, Offer/Answer는 이를 교환하는 절차입니다. 두 브라우저가 서로 다른 코덱을 지원하거나, 네트워크 환경이 다를 수 있습니다. Offer/Answer 모델은 이러한 차이를 협상하여 양쪽이 모두 지원하는 설정을 찾습니다.
+
+다음은 A와 B가 Offer와 Answer를 교환하여 P2P 연결을 협상하는 코드 흐름입니다.
 
 <br>
 
 ```javascript
-// Alice (Offerer)
+// A (Offerer)
 const offer = await peerConnection.createOffer();
 await peerConnection.setLocalDescription(offer);
 
-// Alice → 시그널링 → Bob: offer 전송
+// A → 시그널링 → B: offer 전송
 
-// Bob (Answerer)
+// B (Answerer)
 await peerConnection.setRemoteDescription(offer);
 const answer = await peerConnection.createAnswer();
 await peerConnection.setLocalDescription(answer);
 
-// Bob → 시그널링 → Alice: answer 전송
+// B → 시그널링 → A: answer 전송
 
-// Alice
+// A
 await peerConnection.setRemoteDescription(answer);
 ```
 
@@ -268,7 +257,9 @@ await peerConnection.setRemoteDescription(answer);
 
 ## ICE와 연결 설정
 
-Offer/Answer로 미디어 협상은 끝났지만, 실제로 어떤 네트워크 경로로 연결할지는 아직 정해지지 않았습니다. 대부분의 사용자는 NAT나 방화벽 뒤에 있어 직접 연결이 불가능하므로, [NAT 트래버설](/dev/network/NATFirewall-3/)에서 ICE를 설명했듯이, WebRTC는 ICE(Interactive Connectivity Establishment)를 사용하여 최적의 연결 경로를 찾습니다. ICE는 가능한 모든 네트워크 경로를 후보(candidate)로 수집한 뒤, 우선순위에 따라 연결을 시도합니다.
+Offer/Answer로 미디어 협상은 끝났지만, 실제로 어떤 네트워크 경로로 연결할지는 아직 정해지지 않았습니다. 대부분의 사용자는 NAT나 방화벽 뒤에 있어 공인 IP를 직접 노출하지 않습니다.
+
+WebRTC는 **ICE(Interactive Connectivity Establishment)**를 사용하여 이 문제를 해결합니다([NAT와 방화벽 (3)](/dev/network/NATFirewall-3/)에서 ICE의 원리를 다룬 바 있습니다). ICE는 가능한 모든 네트워크 경로를 후보(candidate)로 수집한 뒤, 우선순위에 따라 연결을 시도합니다.
 
 ### ICE 후보 수집
 
@@ -288,52 +279,60 @@ peerConnection.onicecandidate = (event) => {
 };
 ```
 
-이벤트 핸들러는 새로운 후보가 발견될 때마다 호출되며, 모든 후보 수집이 끝나면 event.candidate가 null이 됩니다. 상대방은 받은 후보를 addIceCandidate() 메서드로 자신의 PeerConnection에 추가합니다. 직접 연결이 가능하면 host 후보(로컬 IP)를, NAT 뒤에 있으면 STUN으로 발견한 srflx 후보(공인 IP)를, 모두 실패하면 TURN 서버를 통한 relay 후보를 사용합니다.
+새로운 후보가 발견될 때마다 이벤트 핸들러가 호출되고, 모든 후보 수집이 끝나면 event.candidate가 null이 됩니다. 상대방은 받은 후보를 addIceCandidate()로 자신의 PeerConnection에 추가합니다.
+
+ICE가 수집하는 후보는 세 종류입니다.
+
+| 후보 유형 | 조건 | 경로 |
+|---|---|---|
+| host | 직접 연결 가능 | 로컬 IP |
+| srflx | NAT 뒤 | STUN으로 발견한 공인 IP |
+| relay | 직접 연결 모두 실패 | TURN 서버 중계 |
+
+ICE는 host → srflx → relay 순서로 시도하여, 가능한 한 직접 연결을 우선합니다.
 
 ### Trickle ICE
 
 기존 ICE는 모든 후보를 수집한 뒤에야 연결을 시도했기 때문에, 연결 설정에 수 초가 걸렸습니다. Trickle ICE는 이 대기 시간을 줄이기 위해 후보를 수집하면서 동시에 연결을 시도하는 기법입니다. 일부 후보만 있어도 SDP를 먼저 전송하고, 나머지 후보는 발견되는 즉시 추가로 전달하여 연결 시간을 단축합니다.
 
 ```
-기존 방식:
-모든 후보 수집 완료 → SDP 전송 → 연결 시도
+시간 ──────────────────────────────────────►
+
+기존 ICE:
+[후보 수집 ···············] → [SDP 전송] → [연결 시도]
 
 Trickle ICE:
-SDP 전송 (일부 후보) → 추가 후보 전송 → 동시에 연결 시도
-                                        (더 빠름)
+[SDP 전송] → [연결 시도 ···············]
+[후보 수집 ·········]  ↗ (발견 즉시 추가)
 ```
 
 ---
 
 ## DTLS-SRTP: 미디어 암호화
 
-ICE를 통해 P2P 연결이 수립되었습니다. 하지만 바로 미디어를 전송하면 안 됩니다. 인터넷을 통해 전송되는 모든 패킷은 중간에 도청될 수 있으므로, WebRTC는 보안을 위해 **모든 미디어를 암호화**합니다.
+ICE를 통해 P2P 연결이 수립되었지만, 미디어를 전송하기 전에 암호화가 필요합니다. 인터넷을 통해 전송되는 패킷은 중간에 도청될 수 있으므로, WebRTC는 **미디어를 암호화한 뒤 전송**합니다.
 
 ### DTLS (Datagram TLS)
 
-WebRTC는 UDP를 사용하지만, 암호화를 위해서는 키 교환이 필요합니다. 기존 TLS는 TCP 전용이므로, UDP 위에서 동작하는 DTLS(Datagram TLS)를 사용하여 키를 안전하게 교환합니다. DTLS는 TLS와 동일한 암호화 강도를 제공하면서도 UDP의 특성에 맞게 패킷 손실과 재정렬을 처리합니다.
+암호화에는 키 교환이 필요합니다. 기존 TLS는 TCP 전용이므로, WebRTC는 UDP 위에서 동작하는 DTLS(Datagram TLS)를 사용합니다. DTLS는 TLS와 동일한 암호화 강도를 제공하면서, UDP 환경에서 발생하는 패킷 손실과 재정렬을 처리합니다.
 
 ```
-DTLS 핸드셰이크:
 ┌─────────────┐                    ┌─────────────┐
 │   Peer A    │                    │   Peer B    │
 └──────┬──────┘                    └──────┬──────┘
-       │                                  │
        │ ── ClientHello ───────────────► │
-       │                                  │
        │ ◄─ ServerHello, Certificate ─── │
-       │                                  │
        │ ── Certificate, KeyExchange ──► │
-       │                                  │
-       │ ◄─ Finished ─────────────────── │
-       │                                  │
+       │ ◄─────────────── Finished ───── │
+       │ ── Finished ───────────────────►│
+       │         (암호화 키 공유 완료)     │
 ```
 
-SDP에 포함된 fingerprint 값으로 인증서를 검증하여 중간자 공격을 방지합니다. fingerprint는 DTLS 인증서의 해시 값으로, 시그널링 과정에서 미리 교환되므로 공격자가 인증서를 위조하더라도 해시 불일치로 탐지됩니다.
+양쪽이 Finished를 교환하면 키 공유가 완료됩니다. 이때 SDP에 포함된 fingerprint(DTLS 인증서의 해시 값)로 인증서를 검증합니다. fingerprint는 시그널링 과정에서 미리 교환되므로, 공격자가 인증서를 위조하더라도 해시 불일치로 탐지됩니다.
 
 ### SRTP (Secure RTP)
 
-DTLS로 키 교환이 완료되면, 이 키를 사용하여 실제 미디어 스트림을 암호화합니다. DTLS는 키 교환에만 사용되고, 이후 모든 RTP 패킷은 SRTP(Secure RTP)로 암호화됩니다. SRTP는 RTP 페이로드를 암호화하고 인증 태그를 추가하여 변조를 탐지합니다.
+DTLS는 키 교환에만 사용됩니다. 키 교환이 완료되면, 이후 RTP 패킷은 SRTP(Secure RTP)로 암호화하여 전송합니다. SRTP는 페이로드를 암호화하고, 헤더와 암호화된 페이로드 전체에 대한 인증 태그(Auth Tag)를 추가합니다. 헤더는 평문이지만 인증 태그가 헤더까지 포함하므로, 헤더가 변조되면 수신 측에서 탐지할 수 있습니다.
 
 ```
 RTP 패킷                    SRTP 패킷
@@ -352,44 +351,41 @@ RTP 패킷                    SRTP 패킷
 ## WebRTC 연결 과정 요약
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                    WebRTC 연결 단계                         │
-│                                                             │
-│  1. getUserMedia()로 미디어 캡처                            │
-│                      ↓                                      │
-│  2. RTCPeerConnection 생성                                  │
-│                      ↓                                      │
-│  3. createOffer() / setLocalDescription()                  │
-│                      ↓                                      │
-│  4. 시그널링으로 Offer 전송                                 │
-│                      ↓                                      │
-│  5. 상대방: setRemoteDescription() / createAnswer()        │
-│                      ↓                                      │
-│  6. 시그널링으로 Answer 전송                                │
-│                      ↓                                      │
-│  7. ICE 후보 교환                                           │
-│                      ↓                                      │
-│  8. DTLS 핸드셰이크                                         │
-│                      ↓                                      │
-│  9. SRTP 미디어 전송 시작                                   │
-│                                                             │
-└─────────────────────────────────────────────────────────────┘
+애플리케이션 (API)              네트워크
+
+1. getUserMedia()
+         ↓
+2. RTCPeerConnection 생성
+         ↓
+3. createOffer()
+   setLocalDescription()
+         ↓
+4. 시그널링으로 Offer 전송 ──────► ICE 후보 수집/교환 시작
+         ↓                         (Trickle ICE: 병렬 진행)
+5. 상대방: setRemoteDescription()
+           createAnswer()
+         ↓
+6. 시그널링으로 Answer 전송
+                                   ICE 연결 확립
+                                        ↓
+                                   DTLS 핸드셰이크
+                                        ↓
+                                   SRTP 미디어 전송 시작
 ```
 
 ---
 
 ## 마무리
 
-WebRTC는 많은 기술을 통합하여 브라우저에서의 실시간 통신을 가능하게 합니다:
-- **ICE/STUN/TURN**: NAT 트래버설로 방화벽 뒤의 사용자와도 연결
-- **DTLS**: UDP 위에서 안전한 키 교환
-- **SRTP**: 미디어 암호화로 도청 방지
-- **RTP/RTCP**: 실시간 미디어 전송과 품질 모니터링
-- **SDP**: 미디어 능력 협상
+이 글에서 살펴본 내용을 정리하면:
 
-브라우저 API가 이러한 복잡성을 추상화하므로, 개발자는 간단한 API만으로 실시간 통신을 구현할 수 있습니다. getUserMedia로 미디어를 캡처하고, RTCPeerConnection으로 P2P 연결을 설정하는 몇 줄의 코드만으로 화상 회의 애플리케이션을 만들 수 있습니다.
+- SDP로 미디어 능력을 협상하고, ICE/STUN/TURN으로 NAT 뒤의 상대방과 연결 경로를 확보합니다.
+- DTLS로 키를 교환한 뒤, SRTP로 RTP 패킷을 암호화하여 전송합니다.
+- getUserMedia, RTCPeerConnection, RTCDataChannel 세 API가 이 과정을 브라우저에서 다룰 수 있게 합니다.
 
-하지만 네트워크는 고정된 환경이 아닙니다. 사용자가 WiFi에서 LTE로 전환하거나, 대역폭이 갑자기 줄어들 수 있습니다. WebRTC는 이러한 변화에 어떻게 대응할까요?
+WebRTC는 단일 프로토콜이 아니라, 시그널링부터 암호화까지 여러 프로토콜과 API를 묶은 표준입니다. 개발자는 시그널링 서버를 직접 구현해야 하지만, 나머지 연결 설정과 미디어 전송은 브라우저가 처리합니다.
+
+네트워크는 고정된 환경이 아닙니다. 사용자가 WiFi에서 LTE로 전환하거나, 대역폭이 갑자기 줄어들 수 있습니다. WebRTC 연결이 수립된 후에도 이러한 변화에 지속적으로 적응해야 합니다.
 
 [Part 3](/dev/network/RealTimeCommunication-3/)에서는 네트워크 변화에 적응하는 품질 관리 메커니즘을 살펴봅니다.
 
