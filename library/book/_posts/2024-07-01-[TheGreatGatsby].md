@@ -68,9 +68,6 @@ It eluded us then, but that's no matter—tomorrow we will run faster, stretch o
 <br>
 <br>
 <br>
-<br>
-내가 따뜻한 '핫초코' 를 들고 창문에 그려진 성애를 보고 있을 때,<br>
-<br>
 첫 출석의 호명과 함께 나에게 질문해주신 교수님의 목소리가 생생히 떠오른다. <br>
 <br>
 <br>
@@ -83,7 +80,7 @@ It eluded us then, but that's no matter—tomorrow we will run faster, stretch o
 <br>
 아니면 앞으로의 수업 과정에서 내가 넘어야할 장애물들이 많다는 것을 전혀 모른 채,<br>
 <br>
-태연히 '핫초코' 에 손을 녹이는 데에만 집중하며 답하는 내 모습에 신기함을 느끼셔서 였을까?<br>
+태연히 답하는 내 모습에 신기함을 느끼셔서 였을까?<br>
 <br>
 <br>
 <br>
