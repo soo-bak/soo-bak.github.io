@@ -39,7 +39,6 @@ It eluded us then, but that's no matter—tomorrow we will run faster, stretch o
 <br>
 그 만큼, 내 인생에서 여러모로 소중하고, 의미있는 영향을 많이 받은 책이기 때문이다.<br>
 <br><br><br>
-이 책과의 첫 만남을 주선해준 사람은 계획을 잘 세우지 않던 과거의 `나` 이다.<br>
 <br><br>
 
 내가 다니고 있던 학교에는 영어와 관련된 학과가 다양했다.<br>
