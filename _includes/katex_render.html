@@ -1,13 +1,26 @@
 <script>
-  renderMathInElement(
-      document.body,
-      {
-          delimiters: [
-              {left: "$$", right: "$$", display: true},
-              {left: "\\[", right: "\\]", display: true},
-              {left: "$", right: "$", display: false},
-              {left: "\\(", right: "\\)", display: false}
-          ]
-      }
-  );
+document.addEventListener('DOMContentLoaded', function() {
+  // kramdown이 생성한 math/tex 스크립트 태그를 KaTeX으로 렌더링
+  document.querySelectorAll('script[type^="math/tex"]').forEach(function(el) {
+    var displayMode = el.type.indexOf('mode=display') > -1;
+    var container = document.createElement(displayMode ? 'div' : 'span');
+    if (displayMode) container.className = 'katex-display';
+    try {
+      katex.render(el.textContent, container, {displayMode: displayMode, throwOnError: false});
+    } catch (e) {
+      container.textContent = el.textContent;
+    }
+    el.parentNode.replaceChild(container, el);
+  });
+
+  // 텍스트 노드의 수식 구분자를 KaTeX으로 렌더링
+  renderMathInElement(document.body, {
+    delimiters: [
+      {left: "$$", right: "$$", display: true},
+      {left: "\\[", right: "\\]", display: true},
+      {left: "$", right: "$", display: false},
+      {left: "\\(", right: "\\)", display: false}
+    ]
+  });
+});
 </script>
