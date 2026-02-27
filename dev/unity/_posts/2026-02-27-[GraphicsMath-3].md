@@ -1,7 +1,7 @@
   ---
 layout: single
 title: "그래픽스 수학 (3) - 좌표 공간의 전환 - soo:bak"
-date: "2026-02-27 22:42:00 +0900"
+date: "2026-02-27 22:33:00 +0900"
 description: 오브젝트 공간, 월드 공간, 뷰 공간, 클립 공간, NDC, 화면 공간, MVP 행렬을 설명합니다.
 tags:
   - Unity
