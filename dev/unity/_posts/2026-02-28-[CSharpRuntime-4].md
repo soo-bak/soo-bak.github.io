@@ -447,21 +447,11 @@ async Task<string> LoadDataAsync(string path)
 
 <br>
 
-```
-비동기 vs 멀티스레드
-
-비동기 (async/await):
-  "작업 완료를 기다리는 동안 스레드를 블로킹하지 않는다"
-  → 같은 스레드에서 재개될 수도, 다른 스레드에서 재개될 수도 있다
-
-멀티스레드:
-  "여러 스레드에서 동시에 코드를 실행한다"
-  → 반드시 여러 스레드가 관여한다
-
-Unity에서:
-  await 후 → 메인 스레드에서 재개 (UnitySynchronizationContext)
-  Task.Run() 안 → 스레드 풀에서 실행 (멀티스레드)
-```
+|  | 비동기 (async/await) | 멀티스레드 |
+|---|---|---|
+| 핵심 원리 | 작업 완료를 기다리는 동안 스레드를 블로킹하지 않음 | 여러 스레드에서 동시에 코드를 실행 |
+| 스레드 동작 | 같은 스레드 또는 다른 스레드에서 재개 가능 | 반드시 여러 스레드가 관여 |
+| Unity에서 | `await` 후 → 메인 스레드에서 재개 (`UnitySynchronizationContext`) | `Task.Run()` → 스레드 풀에서 실행 |
 
 <br>
 
@@ -700,19 +690,12 @@ Unity 엔진의 API는 **메인 스레드에서만 호출할 수 있습니다**.
 
 <br>
 
-```
-Unity 메인 스레드 제약
-
-메인 스레드 (허용):
-  transform.position = newPos;      // 정상
-  gameObject.SetActive(true);       // 정상
-  Instantiate(prefab);              // 정상
-
-워커 스레드 (에러):
-  transform.position = newPos;      // UnityException!
-  gameObject.SetActive(true);       // UnityException!
-  Debug.Log("message");             // 예외적으로 허용
-```
+| API | 메인 스레드 | 워커 스레드 |
+|---|---|---|
+| `transform.position = newPos` | 정상 | UnityException |
+| `gameObject.SetActive(true)` | 정상 | UnityException |
+| `Instantiate(prefab)` | 정상 | UnityException |
+| `Debug.Log("message")` | 정상 | 허용 (thread-safe) |
 
 <br>
 
