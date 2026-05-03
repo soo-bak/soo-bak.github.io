@@ -1038,87 +1038,103 @@ Directional Light는 방향만 가진 광원이라 씬 전체에 영향을 줍�
 <br>
 
 <div style="text-align: center; margin: 1.5em 0;">
-<svg viewBox="0 0 520 290" xmlns="http://www.w3.org/2000/svg" style="max-width: 520px; width: 100%;">
+<svg viewBox="0 0 600 350" xmlns="http://www.w3.org/2000/svg" style="max-width: 600px; width: 100%;">
   <!-- Title -->
-  <text x="260" y="22" text-anchor="middle" fill="currentColor" font-family="sans-serif" font-size="13" font-weight="bold">Point/Spot Light의 Range와 비용</text>
-  <text x="260" y="40" text-anchor="middle" fill="currentColor" font-family="sans-serif" font-size="10" opacity="0.6">영향 영역은 Range²에 비례 — Range가 커지면 영역과 프래그먼트가 빠르게 증가</text>
+  <text x="300" y="22" text-anchor="middle" fill="currentColor" font-family="sans-serif" font-size="13" font-weight="bold">Point/Spot Light의 Range와 조명 계산 대상</text>
+  <text x="300" y="42" text-anchor="middle" fill="currentColor" font-family="sans-serif" font-size="10" opacity="0.65">같은 씬, 같은 라이트 위치에서 Range만 다르게 설정한 결과 (위에서 본 모습)</text>
 
-  <!-- ===== LEFT: Range = 50 ===== -->
-  <text x="145" y="65" text-anchor="middle" fill="currentColor" font-family="sans-serif" font-size="11" font-weight="bold">Range = 50</text>
-  <text x="145" y="80" text-anchor="middle" fill="currentColor" font-family="sans-serif" font-size="9" opacity="0.6">큰 Range · 넓은 영역</text>
+  <!-- Panel divider -->
+  <line x1="300" y1="62" x2="300" y2="298" stroke="currentColor" stroke-width="0.5" stroke-dasharray="3,3" opacity="0.25"/>
+
+  <!-- ===== LEFT PANEL: 넓은 Range ===== -->
+  <text x="160" y="80" text-anchor="middle" fill="currentColor" font-family="sans-serif" font-size="12" font-weight="bold">넓은 Range</text>
 
   <!-- Range circle -->
-  <circle cx="145" cy="160" r="80" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
+  <circle cx="160" cy="195" r="95" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.75"/>
 
-  <!-- Light source dot at center -->
-  <circle cx="145" cy="160" r="3" fill="currentColor"/>
+  <!-- Renderers (in-range: filled / out-of-range: dashed) -->
+  <rect x="58" y="163" width="14" height="14" rx="1.5" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="2,2" opacity="0.4"/>
+  <rect x="98" y="238" width="14" height="14" rx="1.5" fill="currentColor" fill-opacity="0.7" stroke="currentColor" stroke-width="1"/>
+  <rect x="128" y="138" width="14" height="14" rx="1.5" fill="currentColor" fill-opacity="0.7" stroke="currentColor" stroke-width="1"/>
+  <rect x="168" y="208" width="14" height="14" rx="1.5" fill="currentColor" fill-opacity="0.7" stroke="currentColor" stroke-width="1"/>
+  <rect x="193" y="163" width="14" height="14" rx="1.5" fill="currentColor" fill-opacity="0.7" stroke="currentColor" stroke-width="1"/>
+  <rect x="233" y="228" width="14" height="14" rx="1.5" fill="currentColor" fill-opacity="0.7" stroke="currentColor" stroke-width="1"/>
+  <rect x="83" y="253" width="14" height="14" rx="1.5" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="2,2" opacity="0.4"/>
+  <rect x="133" y="218" width="14" height="14" rx="1.5" fill="currentColor" fill-opacity="0.7" stroke="currentColor" stroke-width="1"/>
 
-  <!-- Range indicator: dashed line from center to edge -->
-  <line x1="145" y1="160" x2="225" y2="160" stroke="currentColor" stroke-width="0.8" stroke-dasharray="3,2" opacity="0.55"/>
-  <text x="180" y="154" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.65">R = 50</text>
-
-  <!-- Fragment dots inside circle (24 dots) -->
-  <g fill="currentColor" fill-opacity="0.7">
-    <circle cx="95" cy="130" r="2"/>
-    <circle cx="125" cy="110" r="2"/>
-    <circle cx="160" cy="105" r="2"/>
-    <circle cx="190" cy="115" r="2"/>
-    <circle cx="205" cy="140" r="2"/>
-    <circle cx="210" cy="165" r="2"/>
-    <circle cx="200" cy="195" r="2"/>
-    <circle cx="175" cy="215" r="2"/>
-    <circle cx="140" cy="220" r="2"/>
-    <circle cx="105" cy="210" r="2"/>
-    <circle cx="85" cy="185" r="2"/>
-    <circle cx="80" cy="160" r="2"/>
-    <circle cx="90" cy="140" r="2"/>
-    <circle cx="115" cy="130" r="2"/>
-    <circle cx="155" cy="130" r="2"/>
-    <circle cx="170" cy="150" r="2"/>
-    <circle cx="180" cy="175" r="2"/>
-    <circle cx="160" cy="200" r="2"/>
-    <circle cx="130" cy="200" r="2"/>
-    <circle cx="110" cy="180" r="2"/>
-    <circle cx="130" cy="165" r="2"/>
-    <circle cx="165" cy="175" r="2"/>
-    <circle cx="150" cy="195" r="2"/>
-    <circle cx="125" cy="145" r="2"/>
+  <!-- Light source -->
+  <g stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+    <line x1="148" y1="195" x2="153" y2="195"/>
+    <line x1="167" y1="195" x2="172" y2="195"/>
+    <line x1="160" y1="183" x2="160" y2="188"/>
+    <line x1="160" y1="202" x2="160" y2="207"/>
+    <line x1="151.5" y1="186.5" x2="155" y2="190"/>
+    <line x1="168.5" y1="203.5" x2="165" y2="200"/>
+    <line x1="151.5" y1="203.5" x2="155" y2="200"/>
+    <line x1="168.5" y1="186.5" x2="165" y2="190"/>
   </g>
+  <circle cx="160" cy="195" r="3" fill="currentColor"/>
 
-  <!-- Bottom label -->
-  <text x="145" y="252" text-anchor="middle" fill="currentColor" font-family="sans-serif" font-size="10" opacity="0.7">영역 ≈ π × 50² = 2500π</text>
-  <text x="145" y="268" text-anchor="middle" fill="currentColor" font-family="sans-serif" font-size="10" opacity="0.7">약 24개 프래그먼트 (예시)</text>
+  <!-- Range indicator -->
+  <line x1="160" y1="195" x2="255" y2="195" stroke="currentColor" stroke-width="0.8" stroke-dasharray="3,2" opacity="0.55"/>
+  <text x="207" y="190" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.7">Range</text>
 
-  <!-- ===== Divider ===== -->
-  <line x1="260" y1="60" x2="260" y2="270" stroke="currentColor" stroke-width="0.5" stroke-dasharray="3,3" opacity="0.3"/>
+  <!-- Summary -->
+  <text x="160" y="285" text-anchor="middle" fill="currentColor" font-family="sans-serif" font-size="10" font-weight="bold" opacity="0.85">조명 계산 후보가 늘어남</text>
+  <text x="160" y="301" text-anchor="middle" fill="currentColor" font-family="sans-serif" font-size="9" opacity="0.6">더 많은 렌더러·프래그먼트에서 라이트 합성</text>
 
-  <!-- ===== RIGHT: Range = 5 (실제 비율: 1/10 linear, 1/100 area) ===== -->
-  <text x="385" y="65" text-anchor="middle" fill="currentColor" font-family="sans-serif" font-size="11" font-weight="bold">Range = 5</text>
-  <text x="385" y="80" text-anchor="middle" fill="currentColor" font-family="sans-serif" font-size="9" opacity="0.6">작은 Range · 좁은 영역 (실제 비율)</text>
+  <!-- ===== RIGHT PANEL: 좁은 Range ===== -->
+  <text x="440" y="80" text-anchor="middle" fill="currentColor" font-family="sans-serif" font-size="12" font-weight="bold">좁은 Range</text>
 
-  <!-- Range circle (r=8, mathematically accurate 1/10 of left's r=80) -->
-  <circle cx="385" cy="160" r="8" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
+  <!-- Range circle -->
+  <circle cx="440" cy="195" r="40" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.75"/>
 
-  <!-- Light source dot at center -->
-  <circle cx="385" cy="160" r="2" fill="currentColor"/>
+  <!-- Renderers (same offsets from light center) -->
+  <rect x="338" y="163" width="14" height="14" rx="1.5" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="2,2" opacity="0.4"/>
+  <rect x="378" y="238" width="14" height="14" rx="1.5" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="2,2" opacity="0.4"/>
+  <rect x="408" y="138" width="14" height="14" rx="1.5" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="2,2" opacity="0.4"/>
+  <rect x="448" y="208" width="14" height="14" rx="1.5" fill="currentColor" fill-opacity="0.7" stroke="currentColor" stroke-width="1"/>
+  <rect x="473" y="163" width="14" height="14" rx="1.5" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="2,2" opacity="0.4"/>
+  <rect x="513" y="228" width="14" height="14" rx="1.5" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="2,2" opacity="0.4"/>
+  <rect x="363" y="253" width="14" height="14" rx="1.5" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="2,2" opacity="0.4"/>
+  <rect x="413" y="218" width="14" height="14" rx="1.5" fill="currentColor" fill-opacity="0.7" stroke="currentColor" stroke-width="1"/>
 
-  <!-- Single fragment dot for presence indicator (1/100 ratio of left's 24 dots ≈ 0.24, 1 token dot) -->
-  <circle cx="390" cy="161" r="1.5" fill="currentColor" fill-opacity="0.7"/>
+  <!-- Light source -->
+  <g stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+    <line x1="428" y1="195" x2="433" y2="195"/>
+    <line x1="447" y1="195" x2="452" y2="195"/>
+    <line x1="440" y1="183" x2="440" y2="188"/>
+    <line x1="440" y1="202" x2="440" y2="207"/>
+    <line x1="431.5" y1="186.5" x2="435" y2="190"/>
+    <line x1="448.5" y1="203.5" x2="445" y2="200"/>
+    <line x1="431.5" y1="203.5" x2="435" y2="200"/>
+    <line x1="448.5" y1="186.5" x2="445" y2="190"/>
+  </g>
+  <circle cx="440" cy="195" r="3" fill="currentColor"/>
 
-  <!-- Annotation: thin line + R = 5 label (external, since circle too small for internal indicator) -->
-  <line x1="395" y1="160" x2="425" y2="160" stroke="currentColor" stroke-width="0.5" opacity="0.4"/>
-  <text x="430" y="163" text-anchor="start" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.65">R = 5</text>
+  <!-- Range indicator -->
+  <line x1="440" y1="195" x2="480" y2="195" stroke="currentColor" stroke-width="0.8" stroke-dasharray="3,2" opacity="0.55"/>
+  <text x="460" y="190" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.7">Range</text>
 
-  <!-- Bottom label -->
-  <text x="385" y="252" text-anchor="middle" fill="currentColor" font-family="sans-serif" font-size="10" opacity="0.7">영역 ≈ π × 5² = 25π</text>
-  <text x="385" y="268" text-anchor="middle" fill="currentColor" font-family="sans-serif" font-size="10" opacity="0.7">프래그먼트도 1/100 수준</text>
+  <!-- Summary -->
+  <text x="440" y="285" text-anchor="middle" fill="currentColor" font-family="sans-serif" font-size="10" font-weight="bold" opacity="0.85">조명 계산 후보가 줄어듦</text>
+  <text x="440" y="301" text-anchor="middle" fill="currentColor" font-family="sans-serif" font-size="9" opacity="0.6">영향권 안의 렌더러만 라이트 합성</text>
 
-  <!-- Bottom note -->
-  <text x="260" y="285" text-anchor="middle" fill="currentColor" font-family="sans-serif" font-size="9" opacity="0.55">Range가 10배면 영역은 (50/5)² = 100배 — 라이트 1개라도 Range에 따라 비용이 크게 달라짐</text>
+  <!-- Legend -->
+  <g transform="translate(110 326)">
+    <rect x="0" y="-7" width="11" height="11" rx="1.5" fill="currentColor" fill-opacity="0.7" stroke="currentColor" stroke-width="1"/>
+    <text x="16" y="2" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.7">Range 안 — 조명 계산 대상 렌더러</text>
+  </g>
+  <g transform="translate(355 326)">
+    <rect x="0" y="-7" width="11" height="11" rx="1.5" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="2,2" opacity="0.45"/>
+    <text x="16" y="2" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.7">Range 밖 — 계산에서 제외</text>
+  </g>
 </svg>
 </div>
 
-이처럼 영향 영역이 Range²에 비례하므로, 라이트 수만으로는 실제 비용을 가늠하기 어렵습니다. Range가 50인 Point Light 하나의 영향 영역은 Range가 5인 Point Light 10개를 합친 것보다 더 넓고, 그만큼 더 많은 프래그먼트가 조명 계산을 거치게 됩니다. 결국 비용을 좌우하는 것은 라이트의 수가 아니라, 영향 받는 프래그먼트의 총 수입니다.
+Range는 단순히 라이트가 얼마나 멀리 닿는지를 정하는 값이 아니라, 조명 계산 후보가 되는 렌더러와 픽셀의 범위를 정하는 값입니다. Range를 필요 이상으로 크게 잡으면 실제로는 거의 보이지 않는 표면까지 라이트 영향권에 들어가고, 그만큼 조명 계산과 그림자 처리 후보도 늘어납니다.
+
+따라서 Point Light와 Spot Light는 연출에 필요한 범위까지만 좁히는 편이 좋습니다. 비용을 판단할 때도 라이트 개수만 보지 말고, 각 라이트가 화면에서 얼마나 넓은 영역에 영향을 주는지 함께 확인해야 합니다.
 
 <br>
 
