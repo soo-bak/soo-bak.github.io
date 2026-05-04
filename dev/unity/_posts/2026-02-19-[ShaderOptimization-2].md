@@ -1,25 +1,24 @@
 ---
 layout: single
-title: "셰이더 최적화 (2) - 셰이더 배리언트와 모바일 기법 - soo:bak"
+title: "셰이더 최적화 (2) - 셰이더 배리언트와 키워드 관리 - soo:bak"
 date: "2026-02-19 21:35:00 +0900"
-description: 셰이더 배리언트 폭증, 키워드 관리, 스트리핑, 모바일 셰이더 기법, Shader Graph 고려사항을 설명합니다.
+description: 셰이더 배리언트 폭증, 키워드 관리, 스트리핑, Shader Graph 고려사항을 설명합니다.
 tags:
   - Unity
   - 최적화
   - 셰이더
   - 배리언트
-  - 모바일
 ---
 
 ## 개별 셰이더에서 프로젝트 전체로
 
-[셰이더 최적화 (1) - 셰이더 성능의 원리](/dev/unity/ShaderOptimization-1/)에서는 셰이더 하나의 비용을 결정하는 요소들을 다루었습니다. ALU 연산 수, 텍스처 샘플링 횟수, 정밀도 선택이 프래그먼트 셰이더의 실행 시간을 좌우한다는 점을 확인했습니다.
+[셰이더 최적화 (1) - 셰이더 성능의 원리](/dev/unity/ShaderOptimization-1/)에서는 셰이더가 한 프래그먼트를 처리할 때 드는 비용을 살펴보았습니다. ALU 연산, 텍스처 샘플링, 정밀도 선택은 모두 셰이더 실행 시간에 직접 영향을 줍니다.
 
-<br>
+Unity는 하나의 셰이더 소스를 그대로 한 번만 컴파일하지 않습니다.
+키워드, 라이트 설정, 렌더링 옵션의 조합에 따라 같은 셰이더를 여러 버전으로 컴파일하며, 이렇게 만들어지는 개별 버전을 **셰이더 배리언트(Shader Variant)**라고 부릅니다.
 
-셰이더를 하나씩 놓고 보면 연산량이 성능의 핵심입니다.
-
-하지만 프로젝트 전체로 시야를 넓히면, 셰이더 **배리언트(Variant)** 수가 빌드 시간, 메모리, 로딩 속도에 큰 영향을 미칩니다. 셰이더 하나의 연산이 아무리 가볍더라도 배리언트가 수만 개로 불어나면 빌드 시간이 수십 분에서 수 시간으로 늘어나고, 셰이더 바이너리가 수백 MB의 메모리를 차지하게 됩니다.
+배리언트 수가 많아지면 런타임 셰이더 연산과는 다른 문제가 생깁니다. 빌드 시간이 길어지고, 포함해야 할 셰이더 바이너리가 늘어나며, 로딩 시간과 메모리 사용량도 증가합니다.
+이번 글에서는 이 배리언트가 왜 늘어나는지, 그리고 프로젝트에서 어떻게 줄일 수 있는지를 살펴봅니다.
 
 <br>
 
@@ -27,716 +26,793 @@ tags:
 
 ## 셰이더 배리언트란
 
+셰이더 배리언트는 같은 셰이더 소스에서 조건이 다른 실행 버전을 미리 만들어 둔 것입니다.
+예를 들어 포그를 켠 버전과 끈 버전, 노멀 맵을 사용하는 버전과 사용하지 않는 버전이 서로 다른 배리언트가 될 수 있습니다.
+
 ### 조건부 기능과 키워드
 
-셰이더에는 다양한 조건부 기능이 포함됩니다. 포그(Fog)를 적용할지 여부, 노멀 맵을 사용할지 여부, 그림자를 받을지 여부, 라이트맵을 사용할지 여부 등이 대표적입니다.
+셰이더에는 포그(Fog), 노멀 맵, 그림자, 라이트맵처럼 상황에 따라 켜고 끄는 기능이 많습니다.
+이런 기능을 셰이더 안에서 `if`문으로 처리하면 런타임 분기가 발생하고, GPU의 SIMD 실행 구조에서는 비효율적인 흐름이 생길 수 있습니다.
 
-이런 조건부 기능을 셰이더 코드 안에서 분기 처리하는 방식으로 구현하면, GPU에서 런타임 분기(branch)가 발생합니다.
+> GPU의 SIMD 실행 구조는 [GPU 아키텍처 (1) - GPU 병렬 처리와 렌더링 파이프라인](/dev/unity/GPUArchitecture-1/)에서, 런타임 분기가 일으키는 분기 발산과 그 비용은 [셰이더 최적화 (1)](/dev/unity/ShaderOptimization-1/)에서 자세히 다룹니다.
 
-[Part 1](/dev/unity/ShaderOptimization-1/)에서 다루었듯, GPU의 런타임 분기는 SIMD 구조 때문에 비효율적입니다.
+Unity는 이런 조건을 **컴파일 타임 분기**로 처리할 수 있게 합니다.
+조건부 기능마다 키워드(keyword)를 정의하고, 키워드 조합별로 별도의 셰이더 프로그램을 미리 컴파일하는 방식입니다.
 
-<br>
+이렇게 미리 만들어진 셰이더 프로그램 중에서, 런타임에는 머티리얼과 렌더링 설정에 맞는 배리언트가 선택됩니다.
+예를 들어 노멀 맵을 사용하는 머티리얼은 노멀 맵 코드가 포함된 배리언트를 사용하고, 노멀 맵을 사용하지 않는 머티리얼은 그 코드가 빠진 배리언트를 사용합니다.
 
-Unity의 셰이더 시스템은 이 문제를 **컴파일 타임 분기**로 해결합니다.
-
-조건부 기능마다 키워드(keyword)를 정의하고, 키워드 조합마다 별도의 셰이더 프로그램을 미리 컴파일하는 방식입니다. 이렇게 키워드 조합별로 생성되는 개별 셰이더 프로그램을 **셰이더 배리언트**라고 부릅니다.
-
-<br>
-
-```
-셰이더 소스 코드 (하나)
-┌────────────────────────────────────────────────────────┐
-│                                                        │
-│  #pragma multi_compile _ FOG_ON          (2가지 상태)  │
-│  #pragma multi_compile _ NORMAL_MAP_ON   (2가지 상태)  │
-│                                                        │
-│  ( _ 는 "키워드 없음", 즉 해당 기능 OFF)               │
-│                                                        │
-│  셰이더 로직...                                        │
-│  #if defined(FOG_ON)                                   │
-│      포그 계산                                         │
-│  #endif                                                │
-│  #if defined(NORMAL_MAP_ON)                            │
-│      노멀 맵 샘플링                                    │
-│  #endif                                                │
-│                                                        │
-└────────────────────────────────────────────────────────┘
-          │
-          │  컴파일: 2 × 2 = 배리언트 4개
-          ▼
-┌─────────────────────────────────────────────┐
-│  배리언트 1: FOG_OFF  + NORMAL_MAP_OFF      │
-│  배리언트 2: FOG_ON   + NORMAL_MAP_OFF      │
-│  배리언트 3: FOG_OFF  + NORMAL_MAP_ON       │
-│  배리언트 4: FOG_ON   + NORMAL_MAP_ON       │
-│                                             │
-│  각 배리언트는 독립적인 GPU 프로그램        │
-│  → 런타임 분기 없이 실행                    │
-└─────────────────────────────────────────────┘
-```
+그 결과 노멀 맵을 사용하지 않는 배리언트에서는 노멀 맵 샘플링 경로가 빠지고, 프래그먼트 셰이더가 해당 기능을 분기 처리하지 않아도 됩니다.
+반대로 키워드 조합이 많아질수록 미리 만들어야 하는 배리언트 수도 함께 늘어납니다.
 
 <br>
 
-각 배리언트에는 해당 기능 조합에 필요한 코드만 들어 있습니다. FOG_OFF + NORMAL_MAP_OFF 배리언트에는 포그 계산 코드와 노멀 맵 샘플링 코드가 아예 존재하지 않습니다.
+<div style="text-align: center; margin: 1.5em 0;">
+<svg viewBox="0 0 540 550" xmlns="http://www.w3.org/2000/svg" style="max-width: 540px; width: 100%;">
+  <!-- 타이틀 -->
+  <text x="270" y="20" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="currentColor">셰이더 소스 코드 (하나) → 배리언트 생성</text>
 
-런타임에는 현재 설정에 맞는 배리언트 하나를 선택하여 실행하므로, GPU에서 분기 비용이 발생하지 않습니다.
+  <!-- 소스 코드 박스 -->
+  <rect x="30" y="34" width="480" height="250" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
+  <text x="50" y="58" font-family="sans-serif" font-size="11" fill="currentColor" font-weight="bold">키워드 선언</text>
+  <text x="50" y="78" font-family="monospace" font-size="10" fill="currentColor">#pragma multi_compile _ FOG_ON</text>
+  <text x="380" y="78" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.55">(2가지 상태)</text>
+  <text x="50" y="96" font-family="monospace" font-size="10" fill="currentColor">#pragma multi_compile _ NORMAL_MAP_ON</text>
+  <text x="380" y="96" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.55">(2가지 상태)</text>
+
+  <text x="50" y="120" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.55">( _ 는 "키워드 없음", 즉 해당 기능 OFF )</text>
+
+  <!-- 구분선 -->
+  <line x1="50" y1="134" x2="490" y2="134" stroke="currentColor" stroke-width="0.5" opacity="0.2"/>
+
+  <text x="50" y="156" font-family="sans-serif" font-size="11" fill="currentColor" font-weight="bold">셰이더 로직</text>
+  <text x="50" y="176" font-family="monospace" font-size="10" fill="currentColor">#if defined(FOG_ON)</text>
+  <text x="70" y="194" font-family="monospace" font-size="10" fill="currentColor" opacity="0.6">포그 계산</text>
+  <text x="50" y="212" font-family="monospace" font-size="10" fill="currentColor">#endif</text>
+  <text x="50" y="232" font-family="monospace" font-size="10" fill="currentColor">#if defined(NORMAL_MAP_ON)</text>
+  <text x="70" y="250" font-family="monospace" font-size="10" fill="currentColor" opacity="0.6">노멀 맵 샘플링</text>
+  <text x="50" y="268" font-family="monospace" font-size="10" fill="currentColor">#endif</text>
+
+  <!-- 컴파일 화살표 -->
+  <line x1="270" y1="284" x2="270" y2="330" stroke="currentColor" stroke-width="1.5"/>
+  <polygon points="264,326 270,336 276,326" fill="currentColor"/>
+  <text x="290" y="312" font-family="sans-serif" font-size="11" fill="currentColor" font-weight="bold">컴파일: 2 × 2 = 배리언트 4개</text>
+
+  <!-- 배리언트 4개를 2×2 그리드로 -->
+  <rect x="30" y="342" width="235" height="40" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
+  <text x="147" y="367" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor">배리언트 1: FOG_OFF + NORMAL_MAP_OFF</text>
+
+  <rect x="275" y="342" width="235" height="40" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
+  <text x="392" y="367" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor">배리언트 2: FOG_ON + NORMAL_MAP_OFF</text>
+
+  <rect x="30" y="392" width="235" height="40" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
+  <text x="147" y="417" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor">배리언트 3: FOG_OFF + NORMAL_MAP_ON</text>
+
+  <rect x="275" y="392" width="235" height="40" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
+  <text x="392" y="417" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor">배리언트 4: FOG_ON + NORMAL_MAP_ON</text>
+
+  <!-- 하단 설명 -->
+  <rect x="70" y="455" width="400" height="50" rx="5" fill="currentColor" fill-opacity="0.03" stroke="currentColor" stroke-width="1"/>
+  <text x="270" y="476" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor">각 배리언트는 별도로 컴파일된 셰이더 프로그램</text>
+  <text x="270" y="493" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.6">해당 기능 조합에 맞는 버전이 런타임에 선택됨</text>
+</svg>
+</div>
+
+<br>
+
+위 예시에서는 FOG_ON과 NORMAL_MAP_ON 두 키워드가 각각 켜짐/꺼짐 상태를 가지므로, 2 × 2 = 4개의 배리언트가 만들어집니다.
+기능이 꺼진 배리언트에는 해당 계산 경로가 포함되지 않아 런타임 분기를 줄일 수 있지만, 키워드가 늘어날수록 조합 수도 빠르게 증가합니다.
 
 ---
 
 ## 배리언트 폭증(Variant Explosion)
 
-### 곱셈으로 늘어나는 조합
+배리언트 폭증은 키워드가 많아서 생기는 문제가 아니라, **키워드 조합**이 많아서 생기는 문제입니다.
+각 기능은 보통 켜짐/꺼짐 또는 여러 품질 단계 중 하나를 선택하는 형태이고, Unity는 이 선택 조합마다 별도의 배리언트를 만들 수 있습니다.
 
-배리언트의 수는 키워드 옵션 수의 **곱**으로 결정됩니다. 키워드가 하나 추가될 때마다 배리언트 수가 배수로 증가합니다.
+### 배리언트 수 계산
 
-<br>
-
-```
-키워드 조합과 배리언트 수
-
-키워드 A: 2개 옵션 (ON / OFF)
-키워드 B: 3개 옵션 (LOW / MEDIUM / HIGH)
-키워드 C: 2개 옵션 (ON / OFF)
-
-배리언트 수 = 2 × 3 × 2 = 12개
-```
+배리언트는 기능별 선택을 모두 조합해서 만들어집니다.
+포그를 켤지 끌지, 노멀 맵을 사용할지 말지, 그림자 품질을 어떤 단계로 둘지 같은 선택이 서로 곱해지는 구조입니다.
 
 <br>
 
-키워드 3개에서 12개라면 관리할 수 있지만, 실제 프로젝트에서는 키워드가 10개 이상으로 늘어나기 쉽습니다.
+| 기능 | 선택 가능한 상태 | 선택지 수 |
+|------|----------------|-----------|
+| Fog | OFF / ON | 2 |
+| Normal Map | OFF / ON | 2 |
+| Shadow Quality | LOW / MEDIUM / HIGH | 3 |
 
 <br>
 
-```
-각 키워드가 2개 옵션(ON/OFF)인 경우
+이 경우 가능한 조합은 `2 × 2 × 3 = 12개`입니다.
+Fog만 보면 2가지지만, 여기에 Normal Map의 2가지 상태가 곱해져 4가지가 되고, 다시 Shadow Quality의 3가지 상태가 곱해져 12가지가 됩니다.
 
-키워드 수    계산                배리언트 수
-────────────────────────────────────────
-    2       2 × 2                      4
-    3       2 × 2 × 2                  8
-    5       2⁵                        32
-   10       2¹⁰                    1,024
-   20       2²⁰                1,048,576
-```
+배리언트 수가 빠르게 늘어나는 이유는, 새 기능이 기존 조합 뒤에 단순히 몇 개를 더하는 것이 아니라 기존 조합 전체를 다시 나누기 때문입니다.
+예를 들어 위의 12개 조합에 ON/OFF 기능을 하나 더 추가하면 24개가 되고, 3단계 품질 옵션을 추가하면 36개가 됩니다.
 
 <br>
 
-Unity의 Built-in 키워드(포그, 라이트맵, 인스턴싱 등)와 프로젝트에서 추가하는 커스텀 키워드를 합치면 10~15개는 쉽게 도달합니다. 키워드 10개면 배리언트가 1,024개이고, 옵션이 3개 이상인 키워드가 섞이면 그 이상으로 늘어납니다.
+| 추가되는 조건 | 배수 | 12개 조합 기준 결과 |
+|--------------|------|------------------|
+| ON/OFF 기능 1개 | ×2 | 24개 |
+| 3단계 품질 옵션 1개 | ×3 | 36개 |
+| ON/OFF 기능 2개 | ×4 | 48개 |
+| ON/OFF 기능 5개 | ×32 | 384개 |
 
 <br>
+
+실제 프로젝트에서는 머티리얼에서 직접 켜는 키워드만 배리언트를 만드는 것이 아닙니다.
+포그 사용 여부, 라이트맵 사용 여부, 그림자 설정, GPU Instancing, 렌더 파이프라인의 품질 옵션도 셰이더 컴파일 조건에 포함될 수 있습니다.
+
+즉, 셰이더 코드가 짧더라도 프로젝트 설정과 머티리얼 옵션이 많이 열려 있으면 Unity가 준비해야 하는 배리언트 수가 크게 늘어날 수 있습니다.
 
 ### 배리언트 폭증의 영향
 
-배리언트 수가 많아지면 빌드 시간, 빌드 크기, 로딩 시간이 모두 증가합니다.
+배리언트는 단순한 목록이 아니라 실제로 컴파일되고, 빌드에 포함되며, 런타임에 로드될 수 있는 셰이더 프로그램입니다.
+따라서 배리언트 수가 많아지면 빌드 시간, 빌드 크기, 로딩 시간에 모두 영향을 줍니다.
 
 <br>
 
-```
-배리언트 폭증의 영향
+<div style="text-align: center; margin: 1.5em 0;">
+<svg viewBox="0 0 520 340" xmlns="http://www.w3.org/2000/svg" style="max-width: 520px; width: 100%;">
+  <!-- 타이틀 -->
+  <text x="260" y="20" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="currentColor">배리언트 폭증의 영향</text>
 
-(1) 빌드 시간
-    1,000개 배리언트 = 1,000번 컴파일
-    셰이더가 여러 개이면 배리언트 수도 합산
-    빌드 시간이 수 분에서 수 시간으로 증가
+  <!-- (1) 빌드 시간 -->
+  <rect x="30" y="38" width="460" height="82" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
+  <text x="50" y="58" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">(1) 빌드 시간</text>
+  <text x="50" y="78" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.6">컴파일해야 할 셰이더 조합 수 증가</text>
+  <text x="50" y="94" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.6">셰이더, 플랫폼, 품질 설정별로 비용 누적</text>
+  <text x="50" y="110" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.6">빌드 파이프라인의 셰이더 처리 시간이 길어짐</text>
 
-(2) 빌드 크기와 메모리
-    각 배리언트가 독립적인 바이너리로 빌드에 포함
-    설치 크기 증가 + 런타임 메모리 점유 증가
+  <!-- 화살표 1→2 -->
+  <line x1="260" y1="120" x2="260" y2="136" stroke="currentColor" stroke-width="1.5"/>
+  <polygon points="254,132 260,142 266,132" fill="currentColor"/>
 
-(3) 로딩 시간
-    씬 전환·머티리얼 변경 시 필요한 배리언트를 탐색·로드
-    첫 프레임에서 셰이더를 즉석 컴파일하며 순간 멈춤(히치) 발생 가능
-```
+  <!-- (2) 빌드 크기와 메모리 -->
+  <rect x="30" y="144" width="460" height="66" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
+  <text x="50" y="164" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">(2) 빌드 크기와 메모리</text>
+  <text x="50" y="184" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.6">빌드에 포함되는 셰이더 데이터 증가</text>
+  <text x="50" y="200" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.6">설치 크기와 런타임 메모리 사용량 증가 가능</text>
+
+  <!-- 화살표 2→3 -->
+  <line x1="260" y1="210" x2="260" y2="226" stroke="currentColor" stroke-width="1.5"/>
+  <polygon points="254,222 260,232 266,222" fill="currentColor"/>
+
+  <!-- (3) 로딩 시간 -->
+  <rect x="30" y="234" width="460" height="66" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
+  <text x="50" y="254" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">(3) 로딩 시간</text>
+  <text x="50" y="274" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.6">씬 전환이나 머티리얼 로딩 시 필요한 배리언트 준비</text>
+  <text x="50" y="290" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.6">처음 사용하는 배리언트에서 로딩 지연이나 히치 가능</text>
+</svg>
+</div>
 
 <br>
 
-모바일에서는 이 영향이 더 큽니다. 저사양 기기에서 수천 개의 배리언트를 메모리에 올리면 앱이 강제 종료될 수 있고, 처음 만나는 배리언트를 즉석에서 컴파일하면 그 프레임이 수십~수백 ms 지연되어 화면이 버벅입니다.
+따라서 배리언트 관리는 셰이더 코드의 실행 비용과는 별개의 최적화 축입니다. 프레임 안에서 실행되는 연산을 줄이는 것만큼, 빌드에 포함되는 셰이더 조합을 관리하는 일도 중요합니다.
 
 ---
 
 ## multi_compile과 shader_feature
 
+같은 키워드 조합이라도 어떤 `#pragma`로 선언했는지에 따라 빌드에 포함되는 범위가 달라집니다.
+이 차이를 이해하려면 `multi_compile`과 `shader_feature`를 구분해야 합니다.
+
 ### multi_compile
 
-`multi_compile`은 머티리얼의 실제 사용 여부와 관계없이, 정의된 키워드의 모든 조합을 빌드에 포함합니다.
+`multi_compile`은 선언된 선택지의 모든 조합을 빌드에 포함합니다.
+현재 씬이나 머티리얼에서 일부 조합만 사용하고 있어도, 런타임 전환 가능성을 위해 나머지 조합까지 빌드에 포함됩니다.
 
 <br>
 
 ```
-multi_compile의 동작
+#pragma multi_compile _ FEATURE_A_ON
+#pragma multi_compile _ FEATURE_B_ON
+#pragma multi_compile _ FEATURE_C_ON
 
-#pragma multi_compile _ FOG_ON
-#pragma multi_compile _ SHADOW_ON
-#pragma multi_compile _ LIGHTMAP_ON
+선택지:
+  Feature A = OFF / ON
+  Feature B = OFF / ON
+  Feature C = OFF / ON
 
-→ 2 × 2 × 2 = 8개 배리언트 모두 빌드에 포함
-
-씬의 머티리얼에서 실제로 사용하는 조합이 2개뿐이어도,
-나머지 6개 배리언트도 빌드에 포함됨
+가능한 조합 = 2 × 2 × 2 = 8개
 ```
 
 <br>
 
-`multi_compile`이 필요한 상황은 **런타임에 키워드를 동적으로 전환**하는 경우입니다. 포그를 런타임에 켜고 끄는 기능이 있다면, 포그 ON 배리언트와 포그 OFF 배리언트가 둘 다 빌드에 있어야 합니다.
+`_`는 해당 키워드가 꺼진 상태입니다. 위 예시에서는 기능 A, B, C가 각각 OFF/ON 두 상태를 가지므로 총 8개의 조합이 만들어집니다.
+`multi_compile`은 이 8개 조합을 현재 머티리얼 사용 여부와 관계없이 빌드에 포함합니다. 빌드 크기는 늘 수 있지만, 런타임에 코드나 품질 설정으로 키워드를 바꿔도 필요한 배리언트를 찾을 수 있습니다. 따라서 옵션 메뉴에서 포그를 켜고 끄는 기능처럼 실행 중 키워드 상태가 바뀌는 경우에는 `shader_feature`보다 `multi_compile`이 적합합니다.
 
 <br>
 
 ### shader_feature
 
-`shader_feature`는 **빌드 시점에 프로젝트의 머티리얼을 검사**하여, 실제로 사용되는 키워드 조합만 빌드에 포함합니다. 사용되지 않는 조합은 제외됩니다.
+`shader_feature`는 빌드에 포함할 배리언트를 실제로 사용되는 조합 위주로 좁히는 방식입니다. 사용되지 않는 `shader_feature` 배리언트는 최종 빌드에서 제외될 수 있습니다.
 
 <br>
 
 ```
-shader_feature의 동작
-
 #pragma shader_feature _ NORMAL_MAP_ON
 #pragma shader_feature _ EMISSION_ON
 
-가능한 배리언트: 4개
+선언상 가능한 조합:
+  Normal Map = OFF / ON
+  Emission   = OFF / ON
 
-씬의 머티리얼 검사:
-  머티리얼 A: NORMAL_MAP_ON + EMISSION_OFF  ← 사용됨
-  머티리얼 B: NORMAL_MAP_OFF + EMISSION_ON  ← 사용됨
+전체 조합 = 2 × 2 = 4개
 
-→ 사용되는 2개 배리언트만 빌드에 포함
-→ 나머지 2개는 제외 (빌드 크기 절약)
+실제로 사용 중인 머티리얼 조합:
+  머티리얼 A = NORMAL_MAP_ON  + EMISSION_OFF
+  머티리얼 B = NORMAL_MAP_OFF + EMISSION_ON
+
+빌드에 남는 조합 = 사용된 2개 조합
+사용되지 않은 조합 = 제외 가능
 ```
 
 <br>
 
-`shader_feature`는 빌드 크기를 줄이는 데 효과적이지만, **런타임에 키워드를 변경하면 해당 조합의 배리언트가 빌드에 없을 수 있습니다.** 빌드 시점에 머티리얼 A가 NORMAL_MAP_ON만 사용하고 있었다면, NORMAL_MAP_ON 배리언트만 빌드에 포함됩니다. 런타임에 코드로 EMISSION_ON을 추가해도 NORMAL_MAP_ON + EMISSION_ON 조합의 배리언트가 없으므로, Emission 효과가 적용되지 않습니다.
+이처럼 `shader_feature`는 머티리얼에서 실제로 쓰는 조합만 남길 수 있어, 불필요한 배리언트와 빌드 크기를 줄이는 데 유리합니다.
+
+대신 실행 중 키워드 상태를 바꾸는 기능에는 맞지 않을 수 있습니다. 예를 들어 빌드 시점에 `NORMAL_MAP_ON + EMISSION_ON` 조합이 사용되지 않았다면, 해당 배리언트는 빌드에서 빠질 수 있습니다. 이후 코드로 `EMISSION_ON`을 켜도 그 조합의 배리언트가 없으면 의도한 셰이더 경로를 사용할 수 없습니다.
 
 <br>
 
 ### 선택 기준
 
-핵심은 런타임에 키워드가 바뀌는지 여부입니다.
+실행 중에 키워드 상태가 바뀔 수 있으면 `multi_compile`을 사용합니다. 반대로 빌드 전에 사용할 조합이 정해져 있고 실행 중 바꾸지 않는 기능이라면 `shader_feature`를 우선 검토합니다.
 
 <br>
 
-```
-multi_compile vs shader_feature 선택
+<div style="text-align: center; margin: 1.5em 0;">
+<svg viewBox="0 0 540 280" xmlns="http://www.w3.org/2000/svg" style="max-width: 540px; width: 100%;">
+  <!-- 타이틀 -->
+  <text x="270" y="20" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="currentColor">multi_compile vs shader_feature 선택</text>
 
-multi_compile
-├ 런타임에 키워드를 동적으로 전환하는 경우
-├ Unity 엔진 내부 키워드 (포그, 조명 모드 등)
-└ 모든 조합이 빌드에 포함 → 빌드 크기 증가
+  <!-- 왼쪽: multi_compile -->
+  <rect x="20" y="40" width="240" height="220" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
+  <text x="140" y="64" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">multi_compile</text>
 
-shader_feature
-├ 머티리얼별로 고정된 기능 (노멀 맵, 이미션 등)
-├ 런타임에 키워드를 변경하지 않는 경우
-└ 사용되는 조합만 빌드에 포함 → 빌드 크기 절약
-```
+  <!-- 구분선 -->
+  <line x1="40" y1="74" x2="240" y2="74" stroke="currentColor" stroke-width="0.5" opacity="0.2"/>
+
+  <text x="40" y="96" font-family="sans-serif" font-size="10" fill="currentColor">실행 중 키워드 상태가</text>
+  <text x="40" y="112" font-family="sans-serif" font-size="10" fill="currentColor">바뀔 수 있는 경우</text>
+
+  <text x="40" y="138" font-family="sans-serif" font-size="10" fill="currentColor">코드나 품질 설정에서</text>
+  <text x="40" y="154" font-family="sans-serif" font-size="10" fill="currentColor">키워드를 전환하는 경우</text>
+
+  <!-- 결과 강조 -->
+  <rect x="35" y="172" width="210" height="36" rx="4" fill="currentColor" fill-opacity="0.04" stroke="currentColor" stroke-width="1" stroke-dasharray="4,3"/>
+  <text x="140" y="190" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor">모든 조합이 빌드에 포함</text>
+  <text x="140" y="204" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.55">전환에는 안전, 크기는 증가</text>
+
+  <!-- 화살표 (vs 표시) -->
+  <text x="270" y="155" text-anchor="middle" font-family="sans-serif" font-size="11" fill="currentColor" opacity="0.4">vs</text>
+
+  <!-- 오른쪽: shader_feature -->
+  <rect x="280" y="40" width="240" height="220" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
+  <text x="400" y="64" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">shader_feature</text>
+
+  <!-- 구분선 -->
+  <line x1="300" y1="74" x2="500" y2="74" stroke="currentColor" stroke-width="0.5" opacity="0.2"/>
+
+  <text x="300" y="96" font-family="sans-serif" font-size="10" fill="currentColor">빌드 전에 사용할 조합이</text>
+  <text x="300" y="112" font-family="sans-serif" font-size="10" fill="currentColor">정해지는 경우</text>
+
+  <text x="300" y="138" font-family="sans-serif" font-size="10" fill="currentColor">실행 중 키워드 상태를</text>
+  <text x="300" y="154" font-family="sans-serif" font-size="10" fill="currentColor">바꾸지 않는 경우</text>
+
+  <!-- 결과 강조 -->
+  <rect x="295" y="172" width="210" height="36" rx="4" fill="currentColor" fill-opacity="0.04" stroke="currentColor" stroke-width="1" stroke-dasharray="4,3"/>
+  <text x="400" y="190" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor">미사용 조합 제외 가능</text>
+  <text x="400" y="204" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.55">배리언트 수와 크기 감소</text>
+</svg>
+</div>
 
 <br>
 
-고정 키워드를 `multi_compile`로 선언하면 불필요한 배리언트가 빌드 크기를 늘리고, 동적 키워드를 `shader_feature`로 선언하면 런타임에 배리언트가 누락되어 렌더링이 깨집니다.
+실행 중 바뀌지 않는 조합을 `multi_compile`로 선언하면 사용하지 않는 배리언트까지 빌드에 남을 수 있습니다. 반대로 실행 중 바뀌는 조합을 `shader_feature`로 선언하면 필요한 배리언트가 빌드에서 제외되어, 런타임에 의도한 셰이더 경로를 사용할 수 없을 수 있습니다.
 
 ---
 
 ## 키워드 관리와 스트리핑
 
+배리언트 수를 줄이는 작업은 두 지점에서 이루어집니다. 하나는 키워드 조합 자체를 줄이는 것이고, 다른 하나는 빌드 과정에서 필요 없는 후보를 제거하는 것입니다.
+
 ### 사용하지 않는 키워드 제거
 
-배리언트 수를 줄이는 가장 직접적인 방법은 **키워드 자체를 줄이는 것**입니다.
+배리언트 수를 줄일 때는 먼저 키워드 자체를 줄이는 편이 효과적입니다. 사용하지 않는 키워드가 셰이더에 남아 있으면 그 키워드까지 포함해 배리언트 후보가 만들어지고, 이후 스트리핑 단계에서 걸러야 할 조합도 늘어납니다. ON/OFF 키워드 하나만 추가되어도 기존 조합마다 켜진 버전과 꺼진 버전이 나뉘기 때문입니다.
 
 <br>
 
 ```
-키워드 제거의 효과
+ON/OFF 키워드 기준
 
-제거 전: 키워드 10개 (각 2옵션)
-  배리언트 수 = 2^10 = 1,024
+키워드 10개:
+  가능한 조합 = 2^10 = 1,024
 
-키워드 2개 제거 후: 키워드 8개 (각 2옵션)
-  배리언트 수 = 2^8 = 256
+키워드 8개:
+  가능한 조합 = 2^8 = 256
 
-→ 키워드 2개 제거로 배리언트 75% 감소
+키워드 2개를 줄이면
+  후보 배리언트 공간 = 1,024개 → 256개
 ```
 
 <br>
 
-각 키워드가 2개 옵션이면, 키워드 하나를 제거할 때마다 전체 배리언트 수가 절반으로 줄어듭니다. 라이트맵이나 포그처럼 프로젝트에서 사용하지 않는 기능의 키워드가 대표적인 제거 대상입니다.
-
-<br>
+이처럼 키워드를 줄이면 스트리핑 이전 단계에서 만들어지는 배리언트 후보 수가 먼저 줄어듭니다.
+항상 켜져 있거나 항상 꺼져 있는 기능, 프로젝트에서 사용하지 않는 품질 단계, 특정 셰이더에 필요 없는 렌더링 옵션은 키워드로 분리하지 않는 편이 좋습니다.
+가능한 조합이 줄어들수록 빌드가 검사하고 컴파일해야 할 셰이더 프로그램도 함께 줄어듭니다.
 
 ### Unity의 셰이더 스트리핑(Shader Stripping)
 
-Unity는 빌드 시점에 프로젝트 설정과 씬 구성을 분석하여, 사용하지 않는 배리언트를 자동으로 제거하는 **셰이더 스트리핑** 기능을 제공합니다.
+앞 절의 키워드 정리는 셰이더 코드에서 불필요한 키워드 선언을 없애는 작업입니다. 이렇게 하면 해당 키워드가 만들던 조합 자체가 사라집니다. 반면 스트리핑은 셰이더에 남아 있는 `multi_compile`, `shader_feature`, 렌더 파이프라인 내부 키워드가 만든 후보 중 일부를 빌드에서 제외하는 작업입니다.
+
+따라서 남아 있는 모든 조합이 그대로 최종 빌드에 들어가는 것은 아닙니다. Unity는 프로젝트 설정과 사용 중인 머티리얼을 기준으로, 빌드에 필요하지 않다고 판단되는 배리언트를 제외합니다.
+
+이처럼 빌드에 포함할 배리언트를 줄이는 과정을 **셰이더 스트리핑**이라고 합니다. 프로젝트에서 포그를 사용하지 않으면 포그 관련 배리언트를 제외할 수 있고, `shader_feature`로 선언된 기능이 어떤 머티리얼에서도 쓰이지 않으면 그 조합도 빌드에서 빠질 수 있습니다.
 
 <br>
 
-```
-셰이더 스트리핑 과정
+<div style="text-align: center; margin: 1.5em 0;">
+<svg viewBox="0 0 520 520" xmlns="http://www.w3.org/2000/svg" style="max-width: 520px; width: 100%;">
+  <!-- 타이틀 -->
+  <text x="260" y="20" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="currentColor">셰이더 스트리핑 과정</text>
 
-셰이더 컴파일
-       │
-       ▼
-전체 배리언트 목록 생성
-       │
-       ▼
-스트리핑 단계
-├── (1) 자동 스트리핑
-│     ├ 프로젝트에서 사용하지 않는 라이트 모드 배리언트 제거
-│     ├ 비활성화된 기능(포그, 라이트맵 등)의 배리언트 제거
-│     └ URP: Built-in 셰이더 키워드 자동 스트리핑
-│
-├── (2) shader_feature에 의한 제외
-│     └ 머티리얼에서 사용하지 않는 조합 제외
-│
-└── (3) 커스텀 스트리핑 (IPreprocessShaders)
-      └ 개발자가 콜백으로 직접 배리언트 제거
-       │
-       ▼
-최종 배리언트만 빌드에 포함
-```
+  <!-- 남은 키워드 박스 -->
+  <rect x="120" y="34" width="280" height="36" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
+  <text x="260" y="49" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">셰이더에 남아 있는 키워드</text>
+  <text x="260" y="64" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.55">multi_compile · shader_feature · 파이프라인 키워드</text>
+
+  <!-- 화살표 1 -->
+  <line x1="260" y1="70" x2="260" y2="88" stroke="currentColor" stroke-width="1.5"/>
+  <polygon points="254,84 260,94 266,84" fill="currentColor"/>
+
+  <!-- 배리언트 후보 목록 박스 -->
+  <rect x="130" y="96" width="260" height="36" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
+  <text x="260" y="111" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">배리언트 후보 목록</text>
+  <text x="260" y="126" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.55">아직 빌드에 모두 들어간 상태는 아님</text>
+
+  <!-- 화살표 2 -->
+  <line x1="260" y1="132" x2="260" y2="150" stroke="currentColor" stroke-width="1.5"/>
+  <polygon points="254,146 260,156 266,146" fill="currentColor"/>
+
+  <!-- 스트리핑 단계 그룹 박스 -->
+  <rect x="30" y="158" width="460" height="285" rx="5" fill="currentColor" fill-opacity="0.03" stroke="currentColor" stroke-width="1.5"/>
+  <text x="260" y="178" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">스트리핑 단계</text>
+
+  <!-- (1) 설정 기반 스트리핑 박스 -->
+  <rect x="50" y="190" width="420" height="62" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
+  <text x="260" y="211" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">(1) 설정 기반 스트리핑</text>
+  <text x="260" y="230" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.6">Graphics Settings, 렌더 파이프라인 설정 반영</text>
+  <text x="260" y="245" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.55">꺼진 기능의 포그·라이트맵·그림자 조합 제외</text>
+
+  <!-- (2) shader_feature 박스 -->
+  <rect x="50" y="268" width="420" height="55" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
+  <text x="260" y="289" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">(2) shader_feature 스트리핑</text>
+  <text x="260" y="308" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.6">머티리얼에서 사용하지 않는 shader_feature 조합 제외</text>
+
+  <!-- (3) 커스텀 스트리핑 박스 -->
+  <rect x="50" y="339" width="420" height="55" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
+  <text x="260" y="360" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">(3) 커스텀 스트리핑</text>
+  <text x="260" y="379" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.6">IPreprocessShaders로 프로젝트 규칙 적용</text>
+
+  <!-- 화살표 3 (그룹 박스 밖으로) -->
+  <line x1="260" y1="443" x2="260" y2="466" stroke="currentColor" stroke-width="1.5"/>
+  <polygon points="254,462 260,472 266,462" fill="currentColor"/>
+
+  <!-- 남은 배리언트만 빌드에 포함 박스 -->
+  <rect x="115" y="476" width="290" height="36" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
+  <text x="260" y="491" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">남은 배리언트만 컴파일</text>
+  <text x="260" y="506" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.55">최종 빌드에 포함</text>
+</svg>
+</div>
 
 <br>
 
-URP는 Built-in 파이프라인보다 스트리핑 범위가 넓습니다. Built-in 파이프라인은 포워드 렌더링과 디퍼드 렌더링을 모두 지원하므로, 두 방식에 해당하는 키워드가 모두 포함됩니다. URP는 포워드 렌더링만 사용하므로 디퍼드 관련 키워드가 불필요하고, 사용하지 않는 라이트 타입 키워드도 자동으로 제거됩니다. 파이프라인을 전환하는 것만으로도 배리언트 수가 줄어드는 이유입니다.
-
-<br>
+스트리핑은 셰이더 코드만으로 결정되지 않습니다. 프로젝트 설정에서 어떤 기능을 사용할 수 있다고 열어 두었는지도 중요합니다.
+예를 들어 포그, 인스턴싱, 특정 라이트/그림자 기능을 실제로 쓰지 않는다면, 셰이더 코드뿐 아니라 Graphics Settings와 렌더 파이프라인 설정에서도 해당 기능을 사용하지 않는 상태로 맞춰 두는 편이 좋습니다. 이렇게 해야 Unity의 스트리핑 단계에서 관련 배리언트가 제거될 수 있습니다.
 
 ### IPreprocessShaders로 커스텀 스트리핑
 
-Unity의 자동 스트리핑으로 충분하지 않은 경우, `IPreprocessShaders` 인터페이스를 구현하여 빌드 시점에 직접 배리언트를 제거할 수 있습니다.
+`IPreprocessShaders`는 빌드 과정에서 Unity가 셰이더 배리언트를 컴파일하기 전에 호출되는 콜백 인터페이스입니다. 핵심은 `OnProcessShader(shader, snippet, data)`의 세 번째 인자인 `data`입니다. `data`는 컴파일 후보 배리언트가 들어 있는 수정 가능한 목록입니다.
+
+개발자는 특정 셰이더 이름, 패스 타입, 키워드 조합을 확인한 뒤, 프로젝트에 필요 없는 항목을 `data`에서 제거할 수 있습니다. 콜백이 끝나면 Unity는 `data`에 남아 있는 배리언트만 컴파일합니다. 즉, Unity의 기본 스트리핑으로 부족한 부분을 개발자가 프로젝트 기준에 맞게 직접 지정할 수 있습니다.
 
 <br>
 
-```
-IPreprocessShaders 콜백의 동작
-
-셰이더 컴파일 완료
-       │
-       ▼
-OnProcessShader(shader, snippet, shaderCompilerData) 호출
-       │
-       ├── 셰이더 이름으로 필터링
-       │     예: "Debug/"로 시작하면 → 모든 배리언트 제거
-       │
-       ├── 패스 타입으로 필터링
-       │     예: Meta 패스를 사용하지 않으면 → 해당 배리언트 제거
-       │
-       ├── 키워드로 필터링
-       │     예: 포인트 라이트를 쓰지 않으면 → POINT 키워드 배리언트 제거
-       │
-       └── 제거되지 않은 배리언트만 빌드에 포함
-```
+<div style="text-align: center; margin: 1.5em 0;">
+<svg viewBox="0 0 520 420" xmlns="http://www.w3.org/2000/svg" style="max-width: 520px; width: 100%;">
+  <!-- Title -->
+  <text x="260" y="20" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="currentColor">IPreprocessShaders 커스텀 스트리핑</text>
+  <!-- Step 1: 컴파일 후보 목록(data) -->
+  <rect x="160" y="38" width="200" height="36" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
+  <text x="260" y="54" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">컴파일 후보 목록(data)</text>
+  <text x="260" y="68" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.55">ShaderCompilerData 리스트</text>
+  <!-- Arrow down -->
+  <line x1="260" y1="74" x2="260" y2="94" stroke="currentColor" stroke-width="1.5"/>
+  <polygon points="254,90 260,100 266,90" fill="currentColor"/>
+  <!-- Step 2: OnProcessShader 호출 -->
+  <rect x="75" y="100" width="370" height="36" rx="5" fill="currentColor" fill-opacity="0.10" stroke="currentColor" stroke-width="1.5"/>
+  <text x="260" y="123" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">OnProcessShader(shader, snippet, data) 호출</text>
+  <!-- Arrow down -->
+  <line x1="260" y1="136" x2="260" y2="160" stroke="currentColor" stroke-width="1.5"/>
+  <polygon points="254,156 260,166 266,156" fill="currentColor"/>
+  <!-- Filter group background -->
+  <rect x="55" y="166" width="410" height="196" rx="5" fill="currentColor" fill-opacity="0.03" stroke="currentColor" stroke-width="1.5" stroke-dasharray="5 3"/>
+  <text x="260" y="184" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.6">개발자 코드에서 제거할 항목 판단</text>
+  <!-- Filter 1: 셰이더 이름 -->
+  <rect x="85" y="194" width="350" height="40" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
+  <text x="260" y="211" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">셰이더 이름 확인</text>
+  <text x="260" y="227" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.55">예: 배포 빌드에서 Debug 셰이더 후보 제거</text>
+  <!-- Arrow down -->
+  <line x1="260" y1="234" x2="260" y2="248" stroke="currentColor" stroke-width="1.5"/>
+  <polygon points="254,244 260,254 266,244" fill="currentColor"/>
+  <!-- Filter 2: 패스 타입 -->
+  <rect x="85" y="254" width="350" height="40" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
+  <text x="260" y="271" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">패스/스니펫 확인</text>
+  <text x="260" y="287" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.55">예: 사용하지 않는 Pass의 후보 제거</text>
+  <!-- Arrow down -->
+  <line x1="260" y1="294" x2="260" y2="308" stroke="currentColor" stroke-width="1.5"/>
+  <polygon points="254,304 260,314 266,304" fill="currentColor"/>
+  <!-- Filter 3: 키워드 -->
+  <rect x="85" y="314" width="350" height="40" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
+  <text x="260" y="331" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">키워드 조합 확인</text>
+  <text x="260" y="347" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.55">예: 쓰지 않는 라이트 키워드 조합 제거</text>
+  <!-- Arrow down to result -->
+  <line x1="260" y1="356" x2="260" y2="378" stroke="currentColor" stroke-width="1.5"/>
+  <polygon points="254,374 260,384 266,374" fill="currentColor"/>
+  <!-- Result -->
+  <rect x="115" y="384" width="290" height="36" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
+  <text x="260" y="399" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">data에 남은 항목만 컴파일</text>
+  <text x="260" y="413" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.55">제거한 항목은 빌드에서 제외</text>
+</svg>
+</div>
 
 <br>
 
-콜백은 셰이더가 컴파일된 후, 빌드에 포함되기 직전에 호출됩니다. 셰이더 이름, 패스 타입, 키워드 조합을 모두 확인할 수 있으므로, 자동 스트리핑이 놓치는 프로젝트 고유의 조건을 직접 지정할 수 있습니다.
+커스텀 스트리핑은 자동 스트리핑보다 더 구체적인 기준을 적용할 수 있지만, 잘못 제거했을 때의 영향도 큽니다. 런타임에 필요한 조합을 제거하면 해당 키워드 조합의 배리언트가 없어지고, Unity가 대체 배리언트를 선택해 결과가 달라지거나 의도한 셰이더 경로를 사용할 수 없게 됩니다.
+
+따라서 커스텀 스트리핑은 프로젝트에서 사용하지 않는다고 확인된 조건에만 적용해야 합니다. 적용 후에는 빌드된 플레이어에서 주요 씬과 머티리얼을 확인하고, 필요한 배리언트가 빠지지 않았는지도 빌드 로그로 함께 점검해야 합니다.
 
 <br>
 
 ### 빌드 로그에서 배리언트 수 확인
 
-배리언트 관리의 출발점은 현재 프로젝트의 배리언트 수를 파악하는 것입니다. Unity 에디터에서 빌드를 수행하면 Editor.log에 셰이더별 배리언트 수가 기록되므로, 이를 통해 현황을 확인할 수 있습니다.
+키워드를 정리하고 스트리핑 규칙을 추가했다면, 실제로 배리언트 수가 줄었는지 확인해야 합니다. Unity 에디터에서 빌드를 수행하면 `Editor.log`에 셰이더와 패스별 배리언트 수가 단계별로 기록됩니다.
 
 <br>
 
 ```
-Editor.log의 셰이더 배리언트 정보 (예시)
+Editor.log의 셰이더 배리언트 정보 예시
 
 Compiling shader "Universal Render Pipeline/Lit" pass "ForwardLit"
-    Full variant space:         24,576
-    After settings filtering:    4,096
-    After built-in stripping:    1,024
-    After scriptable stripping:    256
-    Compiled:                      256
+    Full variant space:          24,576
+    After settings filtering:     4,096
+    After built-in stripping:     1,024
+    After scriptable stripping:     256
+    Compiled:                       256
 
-→ 원래 24,576개였던 배리언트가 스트리핑을 거쳐 256개로 감소
+→ 가능한 후보 24,576개 중 최종 컴파일 대상은 256개
 ```
 
 <br>
 
-`Full variant space`는 키워드 조합으로 가능한 전체 배리언트 수입니다. 이후 프로젝트 설정 필터링, Built-in 스트리핑, 커스텀 스트리핑을 거치며 최종 컴파일 수까지 줄어듭니다. 새로운 키워드를 추가한 뒤 이 로그를 확인하면, 어느 단계에서 배리언트가 얼마나 제거되는지 바로 파악할 수 있습니다.
-
----
-
-## 모바일 셰이더 기법
-
-배리언트 수를 관리하는 것이 프로젝트 수준의 최적화라면, 셰이더 자체의 연산을 줄이는 것은 런타임 성능에 직접 영향을 미치는 최적화입니다. 모바일 GPU는 데스크톱에 비해 연산 능력과 대역폭이 제한적이므로, 같은 시각적 결과를 더 적은 연산으로 달성하는 기법이 필요합니다.
-
-<br>
-
-### 베이크 라이팅 활용
-
-실시간 조명 계산은 프래그먼트 셰이더에서 픽셀마다 반복되며, 광원 수에 비례하여 연산이 늘어납니다. **베이크 라이팅(Bake Lighting)**은 이 연산을 빌드 전에 미리 수행하여 텍스처에 저장하는 방식입니다.
-
-<br>
-
-```
-실시간 조명 vs 베이크 라이팅
-
-[실시간 조명]
-프래그먼트 셰이더에서 매 픽셀마다:
-  광원 방향 계산
-  거리 감쇠 계산
-  법선 · 광원 방향 내적 (디퓨즈)
-  반사 벡터 계산 (스페큘러)
-  여러 광원이면 위 과정을 광원 수만큼 반복
-
-→ 광원 3개이면 ALU 연산도 3배
-
-[베이크 라이팅 (라이트맵)]
-에디터에서 미리 조명을 계산하여 텍스처(라이트맵)에 저장
-
-프래그먼트 셰이더에서 매 픽셀마다:
-  라이트맵 텍스처 샘플링 1회
-  기본 텍스처와 곱하기
-
-→ 광원 수와 무관하게 텍스처 읽기 1회 + 곱셈 1회
-```
-
-<br>
-
-라이트맵은 빌드 전에 계산되므로, 런타임에 위치가 바뀌는 오브젝트나 광원의 변화를 반영하지 못합니다.
-
-모바일 게임에서는 배경과 정적 오브젝트에 베이크 라이팅을 적용하고, 캐릭터 등 움직이는 오브젝트에만 실시간 조명을 사용하는 구조가 일반적입니다.
-
-<br>
-
-### 간소화된 PBR
-
-데스크톱 환경의 Standard 셰이더(Built-in 파이프라인)는 **물리 기반 렌더링(PBR)**을 완전히 구현합니다. URP의 Lit 셰이더는 이 연산을 모바일에 맞게 간소화합니다.
-
-<br>
-
-```
-데스크톱 PBR vs 모바일 간소화 PBR
-
-[데스크톱 Standard 셰이더]
-프래그먼트 셰이더:
-  GGX 분포 함수 (D)        ← 삼각함수·지수 연산
-  기하 함수 (G)             ← 삼각함수·지수 연산
-  Fresnel-Schlick (F)       ← 지수 연산
-  에너지 보존 보정
-  IBL 큐브맵 샘플링 + mip 계산
-  → 높은 ALU 비용 + 다수의 텍스처 샘플링
-
-[URP Lit 셰이더 (모바일)]
-프래그먼트 셰이더:
-  간소화된 BRDF 근사        ← 곱셈·덧셈 위주
-  환경 BRDF를 수학적 근사 수식으로 대체  ← 텍스처 샘플링 제거
-  IBL을 구면 조화 함수(SH)로 근사       ← 큐브맵 샘플링 제거
-  → ALU 비용 감소 + 텍스처 샘플링 최소화
-```
-
-<br>
-
-간소화의 대표적인 예가 **환경 BRDF(양방향 반사 분포 함수)**의 처리 방식입니다. 환경 BRDF 적분은 원래 수치 적분이 필요하므로, HDRP는 그 결과를 미리 계산한 2D LUT 텍스처에서 샘플링합니다. URP는 이 텍스처 대신 roughness와 Fresnel 항만으로 계산하는 근사 수식을 사용합니다.
-
-<br>
-
-```
-환경 BRDF 근사 방식 비교
-
-[HDRP 방식: LUT 텍스처]
-  미리 계산된 2D 텍스처에서 roughness × NdotV로 샘플링
-  → 정확도 높음, 텍스처 메모리 + 샘플링 비용 발생
-
-[URP 방식: 수학적 근사]
-  surfaceReduction = 1.0 / (roughness² + 1.0)
-  result = surfaceReduction × lerp(specular, grazingTerm, fresnelTerm)
-
-  → 텍스처 접근 없이 곱셈·덧셈으로 계산
-  → 모바일 GPU에서 대역폭 절약
-  → 정확도는 LUT보다 낮지만 시각적 차이는 미미
-```
-
-<br>
-
-모바일 프로젝트에서 PBR이 필요하다면 URP의 Lit 셰이더가 기본 선택입니다. 데스크톱 Standard 셰이더와 시각적으로 유사한 결과를 텍스처 샘플링과 ALU 연산을 줄여 달성합니다.
-
-UI, 파티클, 단색 배경처럼 광원에 반응할 필요가 없는 오브젝트도 있습니다. 이런 오브젝트에는 **Unlit 셰이더**가 적합합니다. Unlit 셰이더는 조명 계산을 아예 수행하지 않고 텍스처 색상을 그대로 출력하므로, Lit 셰이더보다 연산 비용이 낮습니다.
-
-<br>
-
-### 정점 기반 이펙트
-
-[Part 1](/dev/unity/ShaderOptimization-1/)에서 프래그먼트 셰이더의 실행 횟수가 버텍스 셰이더보다 많다는 점을 확인했습니다. 화면에 100 × 100 픽셀을 차지하는 삼각형이 정점 3개로 이루어져 있다면, 버텍스 셰이더는 3번, 프래그먼트 셰이더는 10,000번 실행됩니다. 프래그먼트 셰이더에서 수행하던 일부 연산을 버텍스 셰이더로 옮기면 실행 횟수 차이만큼 연산량이 줄어듭니다.
-
-<br>
-
-```
-프래그먼트 → 버텍스로 연산 이동
-
-[프래그먼트에서 계산]
-버텍스 셰이더: 위치 변환만 수행 (3번 실행)
-프래그먼트 셰이더: 리플 이펙트 계산 (10,000번 실행)
-
-→ 리플 계산이 10,000번 실행됨
-
-[버텍스에서 계산]
-버텍스 셰이더: 위치 변환 + 리플 이펙트 계산 (3번 실행)
-  → 결과를 varying으로 프래그먼트에 전달
-프래그먼트 셰이더: varying 값을 보간하여 사용 (10,000번 실행)
-
-→ 리플 계산이 3번 실행됨
-→ 프래그먼트에서는 보간된 값만 사용 (추가 연산 없음)
-```
-
-<br>
-
-버텍스 셰이더에서 계산한 값은 래스터화 단계에서 정점 사이를 **선형 보간**하여 프래그먼트 셰이더에 전달됩니다. 이 보간은 하드웨어가 자동으로 수행합니다.
-
-<br>
-
-보간은 정점 사이의 값을 직선으로 이어주므로, 원래 값이 **표면을 따라 부드럽게 변하는 경우**에는 결과가 거의 같습니다. 반대로, 값이 **급격하게 변하는 연산**을 버텍스에서 계산하면 정점 사이의 디테일이 뭉개집니다.
-
-<br>
-
-```
-버텍스 이동이 적합한 연산과 부적합한 연산
-
-적합 (부드럽게 변하는 값)
-├── 간단한 디퓨즈 조명 (NdotL)
-├── 리플, 파동 이펙트
-├── 환경광 색상
-├── 정점 색상 기반 이펙트
-└── 안개(Fog) 농도 계산
-
-부적합 (급격하게 변하는 값)
-├── 노멀 맵 기반 스페큘러       ← 보간으로 하이라이트가 뭉개짐
-├── 날카로운 마스크 경계         ← 보간으로 경계가 흐려짐
-├── 텍스처 기반 디테일           ← 텍스처 샘플링은 프래그먼트에서만 가능
-└── 정밀한 반사/굴절 효과       ← 보간으로 방향 정밀도 손실
-```
-
-<br>
-
-### 프래그먼트 셰이더 간소화
-
-**텍스처 샘플링 수 최소화.** [Part 1](/dev/unity/ShaderOptimization-1/)에서 텍스처 샘플링이 메모리 대역폭을 소모하는 연산임을 확인했습니다. 모바일 GPU는 대역폭이 제한적이므로 샘플링 횟수를 줄여야 합니다. **채널 패킹(Channel Packing)**으로 여러 흑백 텍스처를 하나의 텍스처의 RGBA 채널에 합치면, 샘플링 1회로 여러 데이터를 얻을 수 있습니다.
-
-<br>
-
-```
-채널 패킹
-
-[패킹 전]
-텍스처 1: Metallic (흑백)   → 샘플링 1회
-텍스처 2: Roughness (흑백)  → 샘플링 1회
-텍스처 3: AO (흑백)         → 샘플링 1회
-→ 총 3회 샘플링
-
-[채널 패킹 후]
-텍스처 1개:
-  R 채널: Metallic
-  G 채널: Roughness
-  B 채널: AO
-  A 채널: (여분 / 다른 데이터)
-→ 총 1회 샘플링으로 3가지 데이터를 모두 획득
-```
-
-<br>
-
-**복잡한 수학 함수를 LUT 텍스처로 대체.** 앞서 환경 BRDF LUT를 다루었는데, 이 기법은 다른 복잡한 수학 함수에도 적용할 수 있습니다. pow, exp, sin, cos 등의 함수가 반복적으로 호출되는 경우, 입력 범위에 대한 결과를 미리 텍스처에 저장해두고 런타임에 샘플링으로 대체하면 ALU 연산이 줄어듭니다. 다만 LUT 텍스처 자체가 메모리를 차지하고 샘플링 비용이 발생하므로, 대체하려는 수학 연산이 충분히 복잡할 때만 효과가 있습니다.
-
-<br>
-
-**half 정밀도 활용.** [Part 1](/dev/unity/ShaderOptimization-1/)에서 float(32bit)과 half(16bit)의 차이를 다루었습니다. 모바일 GPU에서 half 연산은 float 대비 처리량이 약 2배입니다. 위치 좌표나 깊이 값처럼 정밀도가 중요한 데이터만 float를 유지하고, 나머지는 half로 선언합니다.
-
-<br>
-
-```
-정밀도 선택 가이드
-
-float (32bit) 유지
-├── 월드 공간 위치 좌표
-├── 깊이(depth) 값
-├── 누적되는 시간 값
-└── 큰 범위의 수학 연산
-
-half (16bit) 사용
-├── 색상 값 (RGB, Alpha)
-├── UV 좌표
-├── 법선 벡터
-├── 조명 강도
-├── 텍스처 샘플링 결과
-└── 대부분의 중간 계산 값
-```
-
-<br>
-
-**불필요한 기능 비활성화.** 셰이더에서 사용하지 않는 기능(그림자 받기, 포그 적용, 라이트 프로브 등)이 활성화되어 있으면, 해당 기능의 연산이 프래그먼트 셰이더에 포함됩니다. URP Lit 셰이더의 경우 머티리얼 Inspector에서 개별 기능을 끌 수 있습니다.
-
----
-
-## 모바일 셰이더 전략 요약
-
-```
-모바일 셰이더 최적화 전략
-
-(1) 조명 전략 결정
-    ├ 정적 오브젝트: 베이크 라이팅 (라이트맵)
-    ├ 동적 오브젝트: 라이트 프로브 + 제한된 실시간 조명
-    └ 실시간 광원 수 최소화
-
-(2) 셰이더 선택
-    ├ PBR이 필요한 오브젝트: URP Lit (간소화된 PBR)
-    ├ 조명이 필요 없는 오브젝트: URP Unlit
-    └ 특수 효과: 최소한의 연산으로 커스텀 셰이더
-
-(3) 연산 최적화
-    ├ 부드럽게 변하는 계산은 버텍스 셰이더로 이동
-    ├ 텍스처 채널 패킹으로 샘플링 수 감소
-    ├ 복잡한 수학 함수는 LUT로 대체
-    └ half 정밀도 활용
-
-(4) 불필요한 기능 제거
-    ├ 사용하지 않는 셰이더 기능 비활성화
-    └ 키워드 수 최소화 → 배리언트 감소
-```
-
-<br>
-
-조명 전략이 먼저 결정되어야 셰이더 선택이 가능하고, 셰이더가 결정되어야 연산 최적화를 적용할 수 있으므로, (1)부터 순서대로 진행합니다.
+항목명과 출력 형식은 Unity 버전과 렌더 파이프라인에 따라 조금 달라질 수 있지만, 후보 수가 단계별로 줄어드는 흐름은 같습니다.
+
+| 항목 | 의미 |
+|------|------|
+| `Full variant space` | 스트리핑 전, 키워드 조합으로 만들 수 있는 전체 후보 수 |
+| `After settings filtering` | 프로젝트, 플랫폼, Graphics Settings를 반영한 뒤의 후보 수 |
+| `After built-in stripping` | Unity와 렌더 파이프라인의 자동 스트리핑이 적용된 뒤의 후보 수 |
+| `After scriptable stripping` | `IPreprocessShaders` 같은 스크립트 기반 스트리핑이 적용된 뒤의 후보 수 |
+| `Compiled` | 최종적으로 컴파일된 배리언트 수 |
+
+새 키워드를 추가하거나 렌더 파이프라인 설정을 바꾼 뒤에는 이 로그를 이전 빌드와 비교하는 편이 좋습니다.
+먼저 `Full variant space`를 보면 키워드 조합 자체가 얼마나 커졌는지 확인할 수 있습니다.
+
+그다음 `After settings filtering`과 `After built-in stripping`에서 후보 수가 줄어드는지 확인합니다. 이 단계에서 거의 줄지 않는다면 프로젝트 설정이나 렌더 파이프라인 설정에 사용하지 않는 기능이 남아 있을 수 있습니다. `After scriptable stripping`에서 변화가 없다면 커스텀 스트리핑 규칙이 실제 후보와 맞는지 확인해야 합니다.
 
 ---
 
 ## Shader Graph 고려사항
 
+Shader Graph를 사용해도 앞에서 다룬 셰이더 비용과 배리언트 문제는 사라지지 않습니다. 노드 그래프로 작성할 뿐, 최종적으로는 Unity가 셰이더 코드와 배리언트를 생성합니다.
+
 ### Shader Graph의 편의성
 
-Unity의 **Shader Graph**는 노드를 연결하는 시각적 인터페이스로 셰이더를 작성하는 도구입니다. HLSL 코드를 직접 작성하지 않으므로, 셰이더 프로그래밍에 익숙하지 않은 개발자나 아티스트도 사용할 수 있습니다.
+Unity의 **Shader Graph**는 노드를 연결해 셰이더를 작성하는 시각적 도구입니다. HLSL 코드를 직접 작성하지 않아도 텍스처 샘플링, 색상 연산, 노멀 맵, 마스크 조합 같은 로직을 그래프 형태로 구성할 수 있습니다.
+
+이 덕분에 셰이더 코드를 직접 다루지 않아도 결과를 빠르게 만들고 수정할 수 있습니다.
 
 <br>
 
-```
-Shader Graph의 구조
+<div style="text-align: center; margin: 1.5em 0;">
+<svg viewBox="0 0 540 430" xmlns="http://www.w3.org/2000/svg" style="max-width: 540px; width: 100%;">
+  <!-- 타이틀 -->
+  <text x="270" y="20" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="currentColor">Shader Graph의 변환 흐름</text>
 
-Shader Graph 에디터
+  <!-- Shader Graph 에디터 영역 -->
+  <rect x="20" y="40" width="500" height="160" rx="5" fill="currentColor" fill-opacity="0.03" stroke="currentColor" stroke-width="1.5"/>
+  <text x="270" y="62" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">Shader Graph 에디터</text>
 
-  [텍스처 노드] ─── [샘플링 노드] ──┐
-                                 ├── [Multiply] ──── [Fragment Output]
-  [색상 노드] ────────────────────┘
+  <!-- Texture Sample 흐름 -->
+  <rect x="40" y="82" width="100" height="30" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
+  <text x="90" y="102" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor">텍스처</text>
 
-  [노멀 맵 노드] ── [Unpack] ─────── [Normal Output]
+  <rect x="170" y="82" width="110" height="30" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
+  <text x="225" y="102" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor">Sample Texture</text>
 
-→ 노드를 연결하면 HLSL 코드를 자동 생성
-         │
-         ▼  컴파일
+  <line x1="140" y1="97" x2="166" y2="97" stroke="currentColor" stroke-width="1.5"/>
+  <polygon points="164,93 172,97 164,101" fill="currentColor"/>
 
-자동 생성된 HLSL 코드
+  <rect x="40" y="130" width="100" height="30" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
+  <text x="90" y="150" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor">색상</text>
 
-  void SurfaceDescription(...) {
-      texSample = SAMPLE_TEXTURE2D(...)   ← [샘플링 노드]에 대응
-      result = texSample * color          ← [Multiply 노드]에 대응
-      ...
-  }
-```
+  <rect x="320" y="106" width="80" height="30" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
+  <text x="360" y="126" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor">Multiply</text>
+
+  <line x1="280" y1="97" x2="316" y2="114" stroke="currentColor" stroke-width="1.5"/>
+  <polygon points="311,109 320,116 313,120" fill="currentColor"/>
+
+  <line x1="140" y1="145" x2="316" y2="128" stroke="currentColor" stroke-width="1.5"/>
+  <polygon points="311,123 320,126 313,132" fill="currentColor"/>
+
+  <rect x="430" y="106" width="70" height="30" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
+  <text x="465" y="126" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor">Base Color</text>
+
+  <line x1="400" y1="121" x2="426" y2="121" stroke="currentColor" stroke-width="1.5"/>
+  <polygon points="424,117 432,121 424,125" fill="currentColor"/>
+
+  <!-- Normal 흐름 -->
+  <rect x="40" y="165" width="100" height="26" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
+  <text x="90" y="182" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor">노멀 맵</text>
+
+  <rect x="170" y="165" width="110" height="26" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
+  <text x="225" y="182" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor">Unpack Normal</text>
+
+  <line x1="140" y1="178" x2="166" y2="178" stroke="currentColor" stroke-width="1.5"/>
+  <polygon points="164,174 172,178 164,182" fill="currentColor"/>
+
+  <rect x="320" y="165" width="80" height="26" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
+  <text x="360" y="182" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor">Normal</text>
+
+  <line x1="280" y1="178" x2="316" y2="178" stroke="currentColor" stroke-width="1.5"/>
+  <polygon points="314,174 322,178 314,182" fill="currentColor"/>
+
+  <!-- 변환 화살표 영역 -->
+  <text x="270" y="222" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.6">Unity가 그래프를 셰이더 소스와 키워드 정보로 변환</text>
+  <line x1="270" y1="230" x2="270" y2="255" stroke="currentColor" stroke-width="1.5"/>
+  <polygon points="264,251 270,261 276,251" fill="currentColor"/>
+
+  <!-- 생성된 HLSL 코드 영역 -->
+  <rect x="20" y="270" width="245" height="120" rx="5" fill="currentColor" fill-opacity="0.03" stroke="currentColor" stroke-width="1.5"/>
+  <text x="142" y="292" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">생성된 HLSL</text>
+
+  <rect x="40" y="306" width="205" height="70" rx="5" fill="currentColor" fill-opacity="0.04" stroke="currentColor" stroke-width="1"/>
+  <text x="52" y="326" font-family="monospace" font-size="9" fill="currentColor">sample = SAMPLE_TEXTURE2D(...)</text>
+  <text x="52" y="346" font-family="monospace" font-size="9" fill="currentColor">baseColor = sample * color</text>
+  <text x="52" y="366" font-family="monospace" font-size="9" fill="currentColor">normal = UnpackNormal(...)</text>
+
+  <!-- 키워드/배리언트 영역 -->
+  <rect x="275" y="270" width="245" height="120" rx="5" fill="currentColor" fill-opacity="0.03" stroke="currentColor" stroke-width="1.5"/>
+  <text x="398" y="292" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">키워드와 배리언트</text>
+
+  <rect x="295" y="306" width="205" height="70" rx="5" fill="currentColor" fill-opacity="0.04" stroke="currentColor" stroke-width="1"/>
+  <text x="398" y="326" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor">Keyword 노드와 Graph 설정</text>
+  <text x="398" y="346" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor">기능 조합별 배리언트 생성</text>
+  <text x="398" y="366" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.6">일반 셰이더처럼 스트리핑 대상</text>
+
+  <!-- 하단 note -->
+  <text x="270" y="415" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.6">그래프는 편의 도구이며, 결과물은 일반 셰이더처럼 비용과 배리언트를 관리해야 함</text>
+</svg>
+</div>
 
 <br>
 
 ### 생성 코드의 비효율성
 
-Shader Graph가 자동으로 생성하는 HLSL 코드는, 수작업으로 최적화된 HLSL보다 비효율적일 수 있습니다.
+직접 작성한 HLSL에서는 셰이더가 실제로 필요한 계산 경로만 남기기 쉽습니다. 반면 Shader Graph는 노드와 연결 구조를 바탕으로 HLSL을 생성합니다. 따라서 그래프에 남아 있는 노드가 많거나 연결이 복잡하면 생성 코드도 복잡해질 수 있습니다.
+테스트 목적으로 추가했다가 정리하지 않은 노드, 더 이상 결과에 필요하지 않은 중간 계산, 불필요하게 복잡한 마스크 조합이 남아 있으면 생성 코드가 무거워질 수 있습니다.
+
+Unity나 GPU 컴파일러가 사용되지 않는 계산을 제거하는 경우도 있지만, 항상 제거된다고 기대해서는 안 됩니다. 따라서 Shader Graph를 사용할 때도 최종 출력에 필요한 노드만 남기고, 실험용 노드나 사용하지 않는 분기는 정리하는 편이 좋습니다.
 
 <br>
 
-**불필요한 노드 연결.** 그래프에 연결된 모든 노드의 연산이 생성 코드에 포함됩니다. 테스트 목적으로 연결했다가 제거하지 않은 노드, 최종 출력에 도달하지 않는 중간 노드도 예외가 아닙니다. GPU 컴파일러가 일부를 제거(dead code elimination)하기도 하지만, 모든 경우에 보장되지는 않습니다.
+<div style="text-align: center; margin: 1.5em 0;">
+<svg viewBox="0 0 560 320" xmlns="http://www.w3.org/2000/svg" style="max-width: 560px; width: 100%;">
+  <!-- 타이틀 -->
+  <text x="280" y="20" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="currentColor">Shader Graph 정리 여부와 생성 코드</text>
+
+  <!-- === 정리된 그래프 (상단) === -->
+  <rect x="15" y="38" width="530" height="105" rx="5" fill="currentColor" fill-opacity="0.03" stroke="currentColor" stroke-width="1.5"/>
+  <text x="34" y="58" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">정리된 그래프</text>
+
+  <!-- 텍스처 A -->
+  <rect x="35" y="72" width="76" height="28" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
+  <text x="73" y="90" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor">텍스처 A</text>
+
+  <!-- 샘플링 A -->
+  <rect x="135" y="72" width="68" height="28" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
+  <text x="169" y="90" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor">샘플링</text>
+
+  <!-- 텍스처 A → 샘플링 A -->
+  <line x1="111" y1="86" x2="131" y2="86" stroke="currentColor" stroke-width="1.5"/>
+  <polygon points="129,82 137,86 129,90" fill="currentColor"/>
+
+  <!-- 텍스처 B -->
+  <rect x="35" y="108" width="76" height="28" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
+  <text x="73" y="126" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor">텍스처 B</text>
+
+  <!-- 샘플링 B -->
+  <rect x="135" y="108" width="68" height="28" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
+  <text x="169" y="126" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor">샘플링</text>
+
+  <!-- 텍스처 B → 샘플링 B -->
+  <line x1="111" y1="122" x2="131" y2="122" stroke="currentColor" stroke-width="1.5"/>
+  <polygon points="129,118 137,122 129,126" fill="currentColor"/>
+
+  <!-- Lerp -->
+  <rect x="235" y="90" width="60" height="28" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
+  <text x="265" y="108" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor">Lerp</text>
+
+  <!-- 샘플링 A → Lerp (직각 ㄱ자) -->
+  <polyline points="203,86 219,86 219,99 231,99" fill="none" stroke="currentColor" stroke-width="1.5"/>
+  <polygon points="229,95 237,99 229,103" fill="currentColor"/>
+
+  <!-- 샘플링 B → Lerp (직각 ㄴ자) -->
+  <polyline points="203,122 219,122 219,109 231,109" fill="none" stroke="currentColor" stroke-width="1.5"/>
+  <polygon points="229,105 237,109 229,113" fill="currentColor"/>
+
+  <!-- Multiply -->
+  <rect x="330" y="90" width="68" height="28" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
+  <text x="364" y="108" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor">Multiply</text>
+
+  <!-- Lerp → Multiply -->
+  <line x1="295" y1="104" x2="326" y2="104" stroke="currentColor" stroke-width="1.5"/>
+  <polygon points="324,100 332,104 324,108" fill="currentColor"/>
+
+  <!-- 출력 -->
+  <rect x="435" y="90" width="60" height="28" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
+  <text x="465" y="108" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor">출력</text>
+
+  <!-- Multiply → 출력 -->
+  <line x1="398" y1="104" x2="431" y2="104" stroke="currentColor" stroke-width="1.5"/>
+  <polygon points="429,100 437,104 429,108" fill="currentColor"/>
+
+  <text x="280" y="136" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.55">필요한 경로만 남아 생성 코드도 단순함</text>
+
+  <!-- === 정리되지 않은 그래프 (하단) === -->
+  <rect x="15" y="160" width="530" height="125" rx="5" fill="currentColor" fill-opacity="0.03" stroke="currentColor" stroke-width="1.5" stroke-dasharray="5 3"/>
+  <text x="34" y="180" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">정리되지 않은 그래프</text>
+
+  <rect x="35" y="202" width="76" height="28" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
+  <text x="73" y="220" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor">텍스처 C</text>
+
+  <rect x="135" y="202" width="68" height="28" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
+  <text x="169" y="220" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor">샘플링</text>
+
+  <line x1="111" y1="216" x2="131" y2="216" stroke="currentColor" stroke-width="1.5"/>
+  <polygon points="129,212 137,216 129,220" fill="currentColor"/>
+
+  <rect x="235" y="202" width="70" height="28" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
+  <text x="270" y="220" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor">Contrast</text>
+
+  <line x1="203" y1="216" x2="231" y2="216" stroke="currentColor" stroke-width="1.5"/>
+  <polygon points="229,212 237,216 229,220" fill="currentColor"/>
+
+  <rect x="335" y="202" width="76" height="28" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
+  <text x="373" y="220" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor">Preview</text>
+
+  <line x1="305" y1="216" x2="331" y2="216" stroke="currentColor" stroke-width="1.5"/>
+  <polygon points="329,212 337,216 329,220" fill="currentColor"/>
+
+  <text x="280" y="260" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.55">테스트용 샘플링·보정·Preview 노드가 남아 있으면 그래프와 생성 코드 검토가 복잡해짐</text>
+
+  <!-- 하단 설명 텍스트 -->
+  <text x="280" y="306" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.6">컴파일러가 일부 계산을 제거할 수는 있지만, 필요한 노드만 남기는 것이 안전함</text>
+</svg>
+</div>
 
 <br>
 
-```
-불필요한 노드가 포함된 경우
+Shader Graph에서 주의해야 할 부분은 노드 구성이 그대로 셰이더 비용으로 이어질 수 있다는 점입니다. 노드 하나는 텍스처 샘플링, 벡터 변환, 정규화, 보간 같은 HLSL 연산으로 변환됩니다. 따라서 그래프가 복잡해질수록 프래그먼트 셰이더의 ALU 연산이나 텍스처 샘플링도 함께 늘어날 수 있습니다.
 
-Shader Graph:
+HLSL을 직접 작성할 때는 셰이더의 사용 조건에 맞춰 필요한 연산만 남길 수 있습니다. 반면 Shader Graph는 노드와 그래프 설정을 기준으로 코드를 생성하므로, 의도하지 않은 텍스처 샘플링, 반복되는 정규화, 불필요한 변환이 포함되지 않았는지 생성 코드를 확인해야 합니다.
 
-  [텍스처 A] ── [샘플링] ──┐
-                         ├── [Lerp] ── [Multiply] ── [출력]
-  [텍스처 B] ── [샘플링] ──┘
-                                   ↑
-  [파라미터] ───────────────────────┘
-
-  [텍스처 C] ── [샘플링] ── [Contrast] ── (연결 끊김, 출력에 도달하지 않음)
-
-→ 텍스처 C의 샘플링과 Contrast 노드는 출력에 기여하지 않음
-→ GPU 컴파일러가 제거할 수도 있지만, 보장되지 않음
-→ 수작업이라면 처음부터 포함하지 않음
-```
-
-<br>
-
-**범용적인 코드 생성.** Shader Graph는 다양한 상황에서 동작해야 하므로, 생성 코드가 범용적으로 작성됩니다. 예를 들어, 노멀 벡터가 이미 정규화되어 있는 상황에서도 normalize()를 다시 호출하는 코드가 생성됩니다. 수작업 HLSL에서는 이런 불필요한 연산을 생략할 수 있지만, Shader Graph는 입력 상태를 가정할 수 없으므로 안전한 쪽을 선택합니다.
-
-<br>
-
-**키워드 생성.** Shader Graph의 일부 노드는 내부적으로 셰이더 키워드를 생성합니다. Boolean Keyword 노드를 하나 추가하면 multi_compile 키워드가 하나 늘어나 배리언트 수가 2배가 됩니다. 개발자가 명시적으로 키워드를 추가하지 않았는데도 배리언트가 늘어나므로, 그래프의 Keyword 목록을 확인할 필요가 있습니다.
+Shader Graph의 Keyword도 일반 셰이더 키워드처럼 배리언트를 만듭니다. 예를 들어 ON/OFF Keyword 하나를 추가하면 기능이 꺼진 배리언트와 켜진 배리언트가 나뉘고, 다른 Keyword와 조합되면서 전체 배리언트 수가 늘어납니다.
+따라서 그래프를 점검할 때는 노드 수뿐 아니라 Keyword 설정도 함께 확인해야 합니다. 해당 Keyword가 `shader_feature`인지 `multi_compile`인지, 로컬 키워드인지 글로벌 키워드인지에 따라 빌드에 남는 배리언트 범위가 달라집니다.
 
 <br>
 
 ### 생성 코드 확인과 최적화
 
-Shader Graph의 성능을 관리하려면, 생성된 코드를 직접 확인하는 과정이 필요합니다.
+Shader Graph의 실제 비용은 최종적으로 생성된 셰이더 코드에서 드러납니다. Unity 버전에 따라 메뉴 이름은 조금 다를 수 있지만, Shader Graph 에셋의 Inspector에서 생성 코드나 컴파일된 셰이더를 확인할 수 있습니다.
+
+**Shader Graph 생성 코드 점검 항목**
+
+| 점검 항목 | 확인 이유 |
+|----------|----------|
+| 사용되지 않는 텍스처 샘플링 | 불필요한 텍스처 접근은 프래그먼트 셰이더 비용을 늘립니다. |
+| 반복되는 정규화(normalize)나 변환 | 같은 보정 연산이 여러 번 들어가면 ALU 비용이 증가합니다. |
+| `float` 정밀도 사용 | `half`로 충분한 값까지 `float`으로 남아 있으면 레지스터와 연산 비용이 커질 수 있습니다. |
+| 의도하지 않은 Keyword | 불필요한 배리언트가 늘어나 빌드 크기와 로딩 비용에 영향을 줄 수 있습니다. |
+
+<br>
+단순한 머티리얼이나 사용 빈도가 낮은 효과라면 Shader Graph를 그대로 사용해도 충분한 경우가 많습니다. 반대로 화면에서 넓게 쓰이거나 프레임마다 많이 그려지는 셰이더라면, Shader Graph로 프로토타입을 만든 뒤 생성 코드를 참고해 HLSL로 직접 작성하는 방법도 고려할 수 있습니다.
 
 <br>
 
-```
-Shader Graph의 생성 코드 확인 방법
+<div style="text-align: center; margin: 1.5em 0;">
+<svg viewBox="0 0 520 340" xmlns="http://www.w3.org/2000/svg" style="max-width: 520px; width: 100%;">
+  <!-- 타이틀 -->
+  <text x="260" y="20" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="currentColor">Shader Graph 활용 워크플로</text>
 
-(1) Shader Graph 에디터에서 셰이더 에셋을 선택
-(2) Inspector에서 "Compiled Shader" 또는 "Generated Code" 확인
-(3) 또는: Inspector에서 "View Generated Shader" 버튼 클릭
+  <!-- (1) 프로토타입 박스 -->
+  <rect x="120" y="36" width="280" height="40" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
+  <text x="260" y="53" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">(1) Shader Graph에서 프로토타입</text>
+  <text x="260" y="68" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.5">시각적으로 결과 확인</text>
 
-확인할 항목:
-  - 사용되지 않는 텍스처 샘플링이 포함되어 있는지
-  - 불필요한 정규화(normalize)나 변환이 반복되는지
-  - float으로 선언된 변수 중 half로 바꿀 수 있는 것이 있는지
-  - 키워드가 의도하지 않게 추가되었는지
-```
+  <!-- 화살표 1→2 -->
+  <line x1="260" y1="76" x2="260" y2="96" stroke="currentColor" stroke-width="1.5"/>
+  <polygon points="254,92 260,102 266,92" fill="currentColor"/>
+
+  <!-- (2) 생성 코드 확인 박스 -->
+  <rect x="120" y="104" width="280" height="40" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
+  <text x="260" y="121" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">(2) 생성 코드 확인</text>
+  <text x="260" y="136" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.5">불필요한 연산, 키워드 수 파악</text>
+
+  <!-- 화살표 2→3 -->
+  <line x1="260" y1="144" x2="260" y2="164" stroke="currentColor" stroke-width="1.5"/>
+  <polygon points="254,160 260,170 266,160" fill="currentColor"/>
+
+  <!-- (3) 판단 박스 -->
+  <rect x="160" y="172" width="200" height="36" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
+  <text x="260" y="195" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">(3) 판단</text>
+
+  <!-- 분기 stem (판단 → 분기점) -->
+  <line x1="260" y1="208" x2="260" y2="224" stroke="currentColor" stroke-width="1.5"/>
+
+  <!-- 분기 좌 (ㄴ자) -->
+  <polyline points="260,224 140,224 140,240" fill="none" stroke="currentColor" stroke-width="1.5"/>
+  <polygon points="134,236 140,246 146,236" fill="currentColor"/>
+
+  <!-- 분기 우 (ㄱ자) -->
+  <polyline points="260,224 380,224 380,240" fill="none" stroke="currentColor" stroke-width="1.5"/>
+  <polygon points="374,236 380,246 386,236" fill="currentColor"/>
+
+  <!-- 좌: Shader Graph 유지 -->
+  <rect x="30" y="248" width="220" height="50" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
+  <text x="140" y="268" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">Shader Graph 그대로 사용</text>
+  <text x="140" y="286" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.5">성능에 민감하지 않은 셰이더</text>
+
+  <!-- 우: 직접 작성한 HLSL 전환 -->
+  <rect x="270" y="248" width="220" height="50" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
+  <text x="380" y="268" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">직접 작성한 HLSL로 전환</text>
+  <text x="380" y="286" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.5">성능에 민감한 셰이더 → 최적화</text>
+</svg>
+</div>
 
 <br>
 
-성능에 민감한 셰이더는 Shader Graph로 프로토타입을 만든 뒤, 생성된 코드를 기반으로 수작업 HLSL로 전환하는 방법도 있습니다.
+Shader Graph를 사용할지 HLSL로 직접 작성할지는 셰이더의 사용 빈도와 GPU 비용을 기준으로 판단하는 편이 좋습니다.
+사용 빈도가 낮거나 화면에서 차지하는 면적이 작은 효과는 Shader Graph로 유지해도 문제가 없는 경우가 많습니다.
 
-<br>
-
-```
-Shader Graph 활용 워크플로
-
-(1) Shader Graph에서 프로토타입 (시각적으로 결과 확인)
-         │
-         ▼
-(2) 생성 코드 확인 (불필요한 연산, 키워드 수 파악)
-         │
-         ▼
-(3) 판단
-    ├ 성능에 민감하지 않은 셰이더 → Shader Graph 그대로 사용
-    └ 성능에 민감한 셰이더       → 수작업 HLSL로 전환하여 최적화
-```
-
-<br>
-
-모든 셰이더를 수작업 HLSL로 작성할 필요는 없습니다. 소량만 사용되는 특수 효과나 화면에서 작은 면적을 차지하는 오브젝트는 Shader Graph로 충분합니다. 프로파일러로 GPU 비용을 측정하여, 비용이 높은 셰이더만 선택적으로 최적화합니다.
-
----
-
-## 셰이더에서 물리로
-
-[Part 1](/dev/unity/ShaderOptimization-1/)에서는 셰이더 코드 수준에서 ALU 연산, 텍스처 샘플링, 정밀도를 조정하여 개별 셰이더의 실행 비용을 줄였습니다. 이 글에서는 프로젝트 수준으로 범위를 넓혀, 배리언트 수를 관리하고 모바일에 적합한 셰이더 기법을 적용했습니다.
-
-<br>
-
-두 글 모두 GPU 측의 렌더링 비용에 집중했습니다. 게임의 프레임 시간에는 렌더링 외에도 CPU에서 실행되는 물리 엔진의 비용이 포함됩니다.
-
----
+반대로 화면에 넓게 그려지거나 많은 오브젝트에서 반복해서 사용되는 셰이더는 프레임 비용에 영향을 주기 쉽습니다.
+이런 셰이더는 프로파일러로 GPU 비용을 확인한 뒤, 필요하다면 생성 코드를 정리하거나 HLSL로 직접 작성하는 방식으로 최적화합니다.
 
 ## 마무리
 
-- 셰이더 배리언트는 키워드 조합마다 별도의 GPU 프로그램이 생성되는 구조이며, 키워드 n개일 때 배리언트는 2ⁿ으로 증가합니다.
-- multi_compile은 모든 조합을 빌드에 포함하고, shader_feature는 머티리얼에서 사용하는 조합만 포함합니다.
-- 사용하지 않는 키워드 제거, Unity 자동 스트리핑, IPreprocessShaders 콜백으로 배리언트 수를 줄일 수 있습니다.
-- 베이크 라이팅은 실시간 조명 계산을 텍스처 샘플링 한 번으로 대체하고, URP Lit 셰이더는 PBR 연산을 모바일에 맞게 간소화합니다.
-- 부드럽게 변하는 연산은 버텍스 셰이더로 이동하고, 채널 패킹과 half 정밀도로 프래그먼트 셰이더 비용을 줄입니다.
-- Shader Graph는 편리하지만 생성 코드에 불필요한 연산이 포함될 수 있으므로, 성능에 민감한 셰이더는 생성 코드를 확인하고 필요 시 수작업 HLSL로 전환합니다.
+- 셰이더 배리언트는 키워드 조합마다 별도의 GPU 프로그램이 만들어지는 구조입니다.
+- ON/OFF 키워드가 n개라면 가능한 조합은 2ⁿ으로 늘어나며, 품질 단계처럼 선택지가 3개 이상인 키워드가 섞이면 더 빠르게 증가합니다.
+- `multi_compile`은 선언된 조합을 빌드에 남기는 쪽에 가깝고, `shader_feature`는 실제 사용 여부에 따라 일부 조합이 제외될 수 있습니다.
+- 사용하지 않는 키워드 제거, Unity 자동 스트리핑, `IPreprocessShaders` 콜백으로 빌드에 포함되는 배리언트를 줄일 수 있습니다.
+- Shader Graph를 사용할 때도 노드 구성, Keyword 설정, 생성 코드를 확인해야 합니다.
 
-키워드 하나를 무심코 추가했다가 빌드가 두 배로 느려지고, 앱 크기가 수십 MB 늘어나는 일이 실제로 발생합니다. 배리언트 수는 빌드 로그에서 바로 확인할 수 있으므로, 키워드를 추가하거나 셰이더를 변경할 때마다 확인하는 것이 가장 확실한 관리 방법입니다.
+배리언트 관리는 감으로 판단하기보다 빌드 로그를 함께 보는 편이 좋습니다. 키워드를 추가하거나 셰이더 설정을 바꾼 뒤에는 `Full variant space`, 스트리핑 이후의 후보 수, 최종 `Compiled` 수를 비교해야 실제로 빌드에 남는 조합을 확인할 수 있습니다.
 
-이 시리즈에서는 GPU 측 렌더링 비용에 집중했습니다. 게임의 프레임 시간에는 렌더링 외에도 CPU에서 실행되는 물리 연산이 포함됩니다. 충돌 감지, 리지드바디 시뮬레이션, 레이캐스트 등이 매 프레임 CPU 시간을 소모합니다.
+여기까지는 셰이더와 배리언트처럼 GPU 렌더링 비용에 영향을 주는 요소를 다루었습니다. 하지만 프레임 시간은 렌더링만으로 결정되지 않습니다. 충돌 감지, 리지드바디 시뮬레이션, 레이캐스트 같은 물리 연산도 매 프레임 CPU 시간을 사용합니다.
 
 [PhysicsOptimization 시리즈](/dev/unity/PhysicsOptimization-1/)에서는 물리 엔진의 구조와 최적화를 다룹니다.
 
@@ -750,7 +826,7 @@ Shader Graph 활용 워크플로
 
 **시리즈**
 - [셰이더 최적화 (1) - 셰이더 성능의 원리](/dev/unity/ShaderOptimization-1/)
-- **셰이더 최적화 (2) - 셰이더 배리언트와 모바일 기법 (현재 글)**
+- **셰이더 최적화 (2) - 셰이더 배리언트와 키워드 관리 (현재 글)**
 
 **전체 시리즈**
 - [게임 루프의 원리 (1) - 프레임의 구조](/dev/unity/GameLoop-1/)
@@ -773,7 +849,7 @@ Shader Graph 활용 워크플로
 - [조명과 그림자 (1) - 실시간 조명과 베이크](/dev/unity/LightingAndShadows-1/)
 - [조명과 그림자 (2) - 그림자와 후처리](/dev/unity/LightingAndShadows-2/)
 - [셰이더 최적화 (1) - 셰이더 성능의 원리](/dev/unity/ShaderOptimization-1/)
-- **셰이더 최적화 (2) - 셰이더 배리언트와 모바일 기법** (현재 글)
+- **셰이더 최적화 (2) - 셰이더 배리언트와 키워드 관리** (현재 글)
 - [물리 최적화 (1) - 물리 엔진의 실행 구조](/dev/unity/PhysicsOptimization-1/)
 - [물리 최적화 (2) - 물리 최적화 전략](/dev/unity/PhysicsOptimization-2/)
 - [파티클과 애니메이션 (1) - 파티클 시스템 최적화](/dev/unity/ParticleAndAnimation-1/)
