@@ -453,22 +453,24 @@ $$
 
 오브젝트가 원점 (0, 0, 0)에 있을 때, 앞서 본 Y축 회전 행렬($\theta = +90°$)과 (5, 0, 0) 이동을 어떤 순서로 적용하느냐에 따라 결과가 완전히 달라집니다. $R_y(+90°)$는 +X 방향을 -Z 방향으로 회전시키는 행렬입니다.
 
-```
-행렬 곱셈의 비교환성 — 이동 후 회전 vs 회전 후 이동
-(오브젝트 초기 위치: 원점, 회전: Ry(+90°) — +X를 -Z로 회전)
-
-이동 후 회전:
-  1) 오브젝트를 (5, 0, 0)으로 이동
-  2) 원점 기준 Ry(+90°) 적용 → +X 방향이 -Z 방향으로 회전
-  → 오브젝트는 (0, 0, -5) 위치에 놓임
-
-회전 후 이동:
-  1) 원점 기준 Ry(+90°) 적용 (원점이므로 위치 변화 없음)
-  2) (5, 0, 0)으로 이동
-  → 오브젝트는 (5, 0, 0) 위치에 놓임
-
-→ 같은 변환이라도 적용 순서에 따라 결과가 전혀 다름
-```
+<div style="text-align: center; margin: 1.5em 0;">
+<svg viewBox="0 0 620 340" xmlns="http://www.w3.org/2000/svg" style="max-width: 620px; width: 100%;">
+  <text x="310" y="18" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="currentColor">행렬 곱셈의 비교환성 — 이동 후 회전 vs 회전 후 이동</text>
+  <text x="310" y="38" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.7">오브젝트 초기 위치: 원점 · 회전: Ry(+90°) — +X를 -Z로 회전</text>
+  <line x1="40" y1="56" x2="580" y2="56" stroke="currentColor" stroke-width="0.6" opacity="0.3"/>
+  <text x="40" y="84" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">이동 후 회전</text>
+  <text x="60" y="106" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.85">1) 오브젝트를 (5, 0, 0)으로 이동</text>
+  <text x="60" y="124" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.85">2) 원점 기준 Ry(+90°) 적용 → +X 방향이 -Z 방향으로 회전</text>
+  <text x="60" y="148" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">→ 오브젝트는 (0, 0, -5) 위치에 놓임</text>
+  <line x1="40" y1="172" x2="580" y2="172" stroke="currentColor" stroke-width="0.6" opacity="0.3"/>
+  <text x="40" y="200" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">회전 후 이동</text>
+  <text x="60" y="222" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.85">1) 원점 기준 Ry(+90°) 적용 (원점이므로 위치 변화 없음)</text>
+  <text x="60" y="240" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.85">2) (5, 0, 0)으로 이동</text>
+  <text x="60" y="264" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">→ 오브젝트는 (5, 0, 0) 위치에 놓임</text>
+  <line x1="40" y1="288" x2="580" y2="288" stroke="currentColor" stroke-width="0.6" opacity="0.3"/>
+  <text x="310" y="316" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">같은 변환이라도 적용 순서에 따라 결과가 전혀 다름</text>
+</svg>
+</div>
 
 <div style="text-align: center; margin: 1.5em 0;">
 <svg viewBox="0 0 540 298" xmlns="http://www.w3.org/2000/svg" style="max-width: 540px; width: 100%;">
@@ -765,22 +767,27 @@ $T$ = 이동 행렬 (position 기반), $R$ = 회전 행렬 (rotation 기반), $S
 
 예를 들어 캐릭터 모델의 코 끝이 로컬 좌표 (0, 1.7, 0.1)일 때, 이 정점을 동차 좌표 (0, 1.7, 0.1, 1)로 표현한 뒤 localToWorldMatrix를 곱하면 월드 좌표를 얻습니다. (w = 1은 위치를 뜻하며, 이동 변환이 적용되도록 합니다.)
 
-```
-로컬 좌표 → 월드 좌표 변환
-
-캐릭터의 Transform:
-  position   = (10, 0, 5)
-  rotation   = Y축 90도
-  localScale = (1, 1, 1)
-
-로컬 좌표:  (0, 1.7, 0.1)
-
-월드 좌표 = localToWorldMatrix × (0, 1.7, 0.1, 1)
-
-→ 스케일 적용:   (0, 1.7, 0.1)     (스케일 1이므로 변화 없음)
-→ Y축 90도 회전: (0.1, 1.7, 0)     (x'=z, z'=-x 이므로 x'=0.1, z'=0)
-→ 이동 적용:     (10.1, 1.7, 5.0)  (position 더함)
-```
+<div style="text-align: center; margin: 1.5em 0;">
+<svg viewBox="0 0 620 320" xmlns="http://www.w3.org/2000/svg" style="max-width: 620px; width: 100%;">
+  <text x="310" y="18" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="currentColor">로컬 좌표 → 월드 좌표 변환</text>
+  <text x="40" y="48" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">캐릭터의 Transform</text>
+  <text x="60" y="68" font-family="monospace" font-size="11" fill="currentColor">position   = (10, 0, 5)</text>
+  <text x="60" y="86" font-family="monospace" font-size="11" fill="currentColor">rotation   = Y축 90도</text>
+  <text x="60" y="104" font-family="monospace" font-size="11" fill="currentColor">localScale = (1, 1, 1)</text>
+  <text x="40" y="138" font-family="sans-serif" font-size="11" fill="currentColor"><tspan font-weight="bold">로컬 좌표</tspan>: (0, 1.7, 0.1)</text>
+  <text x="40" y="166" font-family="sans-serif" font-size="11" fill="currentColor"><tspan font-weight="bold">월드 좌표</tspan> = localToWorldMatrix × (0, 1.7, 0.1, 1)</text>
+  <line x1="40" y1="186" x2="580" y2="186" stroke="currentColor" stroke-width="0.6" opacity="0.3"/>
+  <text x="40" y="212" font-family="sans-serif" font-size="11" fill="currentColor">→ 스케일 적용</text>
+  <text x="200" y="212" font-family="monospace" font-size="11" fill="currentColor">(0, 1.7, 0.1)</text>
+  <text x="340" y="212" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.7">스케일 1이므로 변화 없음</text>
+  <text x="40" y="236" font-family="sans-serif" font-size="11" fill="currentColor">→ Y축 90도 회전</text>
+  <text x="200" y="236" font-family="monospace" font-size="11" fill="currentColor">(0.1, 1.7, 0)</text>
+  <text x="340" y="236" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.7">x'=z, z'=-x 이므로 x'=0.1, z'=0</text>
+  <text x="40" y="260" font-family="sans-serif" font-size="11" fill="currentColor">→ 이동 적용</text>
+  <text x="200" y="260" font-family="monospace" font-size="11" font-weight="bold" fill="currentColor">(10.1, 1.7, 5.0)</text>
+  <text x="340" y="260" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.7">position 더함</text>
+</svg>
+</div>
 
 <br>
 
@@ -834,22 +841,22 @@ Unity에서 오브젝트가 부모-자식 관계(hierarchy)를 가지면, 자식
 
 즉, 자식의 localToWorldMatrix는 부모의 localToWorldMatrix에 자신의 로컬 TRS 행렬을 곱한 결과입니다.
 
-```
-부모-자식 행렬 계층
-
-자식의 월드 행렬 = 부모의 월드 행렬 × 자식의 로컬 행렬
-
-예: 탱크의 포탑
-  탱크 (부모): position (100, 0, 50), rotation Y축 30도
-  포탑 (자식): localPosition (0, 2, 0), localRotation Y축 15도
-
-  포탑의 월드 행렬
-    = 탱크의 localToWorldMatrix × 포탑의 로컬 TRS 행렬
-
-  → 포탑은 탱크의 위에 위치하면서
-     탱크의 방향(30도) + 자신의 추가 회전(15도) = 45도를 바라봄
-    (같은 축 회전이라 각도가 단순 덧셈됨)
-```
+<div style="text-align: center; margin: 1.5em 0;">
+<svg viewBox="0 0 620 320" xmlns="http://www.w3.org/2000/svg" style="max-width: 620px; width: 100%;">
+  <text x="310" y="18" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="currentColor">부모-자식 행렬 계층</text>
+  <text x="310" y="46" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">자식의 월드 행렬 = 부모의 월드 행렬 × 자식의 로컬 행렬</text>
+  <line x1="40" y1="64" x2="580" y2="64" stroke="currentColor" stroke-width="0.6" opacity="0.3"/>
+  <text x="40" y="92" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">예: 탱크의 포탑</text>
+  <text x="60" y="114" font-family="sans-serif" font-size="10" fill="currentColor"><tspan font-weight="bold">탱크 (부모)</tspan>: position (100, 0, 50), rotation Y축 30도</text>
+  <text x="60" y="132" font-family="sans-serif" font-size="10" fill="currentColor"><tspan font-weight="bold">포탑 (자식)</tspan>: localPosition (0, 2, 0), localRotation Y축 15도</text>
+  <text x="40" y="170" font-family="sans-serif" font-size="11" fill="currentColor"><tspan font-weight="bold">포탑의 월드 행렬</tspan></text>
+  <text x="60" y="190" font-family="sans-serif" font-size="11" fill="currentColor">= 탱크의 localToWorldMatrix × 포탑의 로컬 TRS 행렬</text>
+  <line x1="40" y1="212" x2="580" y2="212" stroke="currentColor" stroke-width="0.6" opacity="0.3"/>
+  <text x="40" y="240" font-family="sans-serif" font-size="11" fill="currentColor" opacity="0.85">→ 포탑은 탱크의 위에 위치하면서</text>
+  <text x="60" y="260" font-family="sans-serif" font-size="11" fill="currentColor" opacity="0.85">탱크의 방향(30도) + 자신의 추가 회전(15도) = <tspan font-weight="bold">45도</tspan>를 바라봄</text>
+  <text x="60" y="280" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.7">(같은 축 회전이라 각도가 단순 덧셈됨)</text>
+</svg>
+</div>
 
 <br>
 
