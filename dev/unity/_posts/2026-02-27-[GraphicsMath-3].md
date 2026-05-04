@@ -584,37 +584,58 @@ View 행렬(`Camera.worldToCameraMatrix`)과 Projection 행렬(`Camera.projectio
 
 <br>
 
-```
-정점 좌표 변환의 전체 흐름 (예시)
-
-1. 오브젝트 공간
-   정점 좌표: (0, 1.8, 0, 1)
-   (캐릭터 모델의 머리 위치)
-
-2. 월드 공간  ← Model 행렬 적용
-   Transform: position=(10, 0, 5), rotation=none, scale=1
-   결과: (10, 1.8, 5, 1)
-   (씬에서 캐릭터가 서 있는 위치)
-
-3. 뷰 공간  ← View 행렬 적용
-   카메라: 위치=(10, 2, 0), +Z 방향을 바라봄
-   결과: (0, -0.2, -5, 1)
-   (카메라 기준 — 정면 5m 앞, 약간 아래)
-
-4. 클립 공간  ← Projection 행렬 적용
-   FOV=60°, aspect=16:9, near=0.3, far=1000
-   결과: (0, -0.35, 4.40, 5)
-   (w에 뷰 공간 깊이 5가 들어감)
-
-5. NDC  ← 원근 나눗셈 (÷w)
-   결과: (0, -0.07, 0.88)
-   (화면 중앙에서 약간 아래 / 깊이 0.88)
-
-6. 화면 공간  ← 뷰포트 변환
-   해상도: 1920×1080
-   결과: (960, 578)
-   (화면 중앙에서 약간 아래의 픽셀)
-```
+<div style="text-align: center; margin: 1.5em 0;">
+<svg viewBox="0 0 700 660" xmlns="http://www.w3.org/2000/svg" style="max-width: 700px; width: 100%;">
+  <text x="350" y="18" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="currentColor">정점 좌표 변환의 전체 흐름 (예시)</text>
+  <rect x="40" y="38" width="180" height="68" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.2"/>
+  <text x="130" y="60" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">1. 오브젝트 공간</text>
+  <text x="130" y="80" text-anchor="middle" font-family="monospace" font-size="11" fill="currentColor">(0, 1.8, 0, 1)</text>
+  <text x="130" y="98" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.7">캐릭터 모델의 머리 위치</text>
+  <text x="240" y="68" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">← Model 행렬 적용</text>
+  <text x="240" y="86" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.7">Transform: position=(10, 0, 5)</text>
+  <text x="240" y="100" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.7">rotation=none, scale=1</text>
+  <line x1="130" y1="106" x2="130" y2="128" stroke="currentColor" stroke-width="1.4"/>
+  <polygon points="130,132 126,124 134,124" fill="currentColor"/>
+  <rect x="40" y="132" width="180" height="68" rx="5" fill="currentColor" fill-opacity="0.08" stroke="currentColor" stroke-width="1.2"/>
+  <text x="130" y="154" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">2. 월드 공간</text>
+  <text x="130" y="174" text-anchor="middle" font-family="monospace" font-size="11" fill="currentColor">(10, 1.8, 5, 1)</text>
+  <text x="130" y="192" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.7">씬에서 캐릭터가 서 있는 위치</text>
+  <text x="240" y="162" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">← View 행렬 적용</text>
+  <text x="240" y="180" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.7">카메라: 위치=(10, 2, 0)</text>
+  <text x="240" y="194" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.7">+Z 방향을 바라봄</text>
+  <line x1="130" y1="200" x2="130" y2="222" stroke="currentColor" stroke-width="1.4"/>
+  <polygon points="130,226 126,218 134,218" fill="currentColor"/>
+  <rect x="40" y="226" width="180" height="68" rx="5" fill="currentColor" fill-opacity="0.10" stroke="currentColor" stroke-width="1.2"/>
+  <text x="130" y="248" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">3. 뷰 공간</text>
+  <text x="130" y="268" text-anchor="middle" font-family="monospace" font-size="11" fill="currentColor">(0, -0.2, -5, 1)</text>
+  <text x="130" y="286" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.7">카메라 기준 — 정면 5m 앞, 약간 아래</text>
+  <text x="240" y="256" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">← Projection 행렬 적용</text>
+  <text x="240" y="274" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.7">FOV=60°, aspect=16:9</text>
+  <text x="240" y="288" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.7">near=0.3, far=1000</text>
+  <line x1="130" y1="294" x2="130" y2="316" stroke="currentColor" stroke-width="1.4"/>
+  <polygon points="130,320 126,312 134,312" fill="currentColor"/>
+  <rect x="40" y="320" width="180" height="68" rx="5" fill="currentColor" fill-opacity="0.12" stroke="currentColor" stroke-width="1.2"/>
+  <text x="130" y="342" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">4. 클립 공간</text>
+  <text x="130" y="362" text-anchor="middle" font-family="monospace" font-size="11" fill="currentColor">(0, -0.35, 4.40, 5)</text>
+  <text x="130" y="380" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.7">w에 뷰 공간 깊이 5가 들어감</text>
+  <text x="240" y="358" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">← 원근 나눗셈 (÷w)</text>
+  <line x1="130" y1="388" x2="130" y2="410" stroke="currentColor" stroke-width="1.4"/>
+  <polygon points="130,414 126,406 134,406" fill="currentColor"/>
+  <rect x="40" y="414" width="180" height="68" rx="5" fill="currentColor" fill-opacity="0.14" stroke="currentColor" stroke-width="1.2"/>
+  <text x="130" y="436" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">5. NDC</text>
+  <text x="130" y="456" text-anchor="middle" font-family="monospace" font-size="11" fill="currentColor">(0, -0.07, 0.88)</text>
+  <text x="130" y="474" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.7">화면 중앙에서 약간 아래 / 깊이 0.88</text>
+  <text x="240" y="452" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">← 뷰포트 변환</text>
+  <text x="240" y="470" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.7">해상도: 1920×1080</text>
+  <line x1="130" y1="482" x2="130" y2="504" stroke="currentColor" stroke-width="1.4"/>
+  <polygon points="130,508 126,500 134,500" fill="currentColor"/>
+  <rect x="40" y="508" width="180" height="68" rx="5" fill="currentColor" fill-opacity="0.18" stroke="currentColor" stroke-width="1.4"/>
+  <text x="130" y="530" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">6. 화면 공간</text>
+  <text x="130" y="550" text-anchor="middle" font-family="monospace" font-size="11" fill="currentColor">(960, 578)</text>
+  <text x="130" y="568" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.7">화면 중앙에서 약간 아래의 픽셀</text>
+  <text x="350" y="624" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.7" font-style="italic">셰이더: 1~4단계(MVP) · GPU 자동: 5~6단계</text>
+</svg>
+</div>
 
 위 과정에서 셰이더가 담당하는 부분은 1~4단계(MVP 변환)이고, 5~6단계는 GPU 하드웨어가 자동으로 처리합니다. 버텍스 셰이더가 클립 공간의 좌표를 출력하면, 이후 과정은 개발자가 개입할 필요 없이 GPU가 수행합니다.
 
