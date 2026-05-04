@@ -1082,20 +1082,18 @@ Blender 같은 오른손 좌표계 도구에서 만든 모델을 Unity로 가져
 
 위에서 다룬 벡터 연산들을 Unity API 기준으로 정리하면 다음과 같습니다.
 
-```
-연산                   Unity API                     결과
-─────────────────────────────────────────────────────────────
-덧셈                   a + b                         Vector3
-뺄셈                   a - b                         Vector3
-스칼라 곱              v * s 또는 s * v              Vector3
-크기                   v.magnitude                   float
-크기의 제곱            v.sqrMagnitude                float
-정규화                 v.normalized                  Vector3
-내적                   Vector3.Dot(a, b)             float
-외적                   Vector3.Cross(a, b)           Vector3
-두 점 사이 거리        Vector3.Distance(a, b)        float
-선형 보간              Vector3.Lerp(a, b, t)         Vector3
-```
+| 연산 | Unity API | 결과 |
+|:---|:---|:---|
+| 덧셈 | `a + b` | Vector3 |
+| 뺄셈 | `a - b` | Vector3 |
+| 스칼라 곱 | `v * s` 또는 `s * v` | Vector3 |
+| 크기 | `v.magnitude` | float |
+| 크기의 제곱 | `v.sqrMagnitude` | float |
+| 정규화 | `v.normalized` | Vector3 |
+| 내적 | `Vector3.Dot(a, b)` | float |
+| 외적 | `Vector3.Cross(a, b)` | Vector3 |
+| 두 점 사이 거리 | `Vector3.Distance(a, b)` | float |
+| 선형 보간 | `Vector3.Lerp(a, b, t)` | Vector3 |
 
 `Vector3.Distance(a, b)`는 `(a - b).magnitude`와 동일합니다. 거리의 대소만 비교하는 경우에는 `(a - b).sqrMagnitude`를 사용하면 제곱근 연산을 생략할 수 있어 더 효율적입니다.
 
