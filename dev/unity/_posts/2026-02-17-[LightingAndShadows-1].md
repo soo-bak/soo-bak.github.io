@@ -1338,7 +1338,7 @@ Unity에서 베이크 라이팅을 설정할 때는 정적 오브젝트 지정, 
 - **조명과 그림자 (1) - 실시간 조명과 베이크** (현재 글)
 - [조명과 그림자 (2) - 그림자와 후처리](/dev/unity/LightingAndShadows-2/)
 - [셰이더 최적화 (1) - 셰이더 성능의 원리](/dev/unity/ShaderOptimization-1/)
-- [셰이더 최적화 (2) - 셰이더 배리언트와 모바일 기법](/dev/unity/ShaderOptimization-2/)
+- [셰이더 최적화 (2) - 셰이더 배리언트와 키워드 관리](/dev/unity/ShaderOptimization-2/)
 - [물리 최적화 (1) - 물리 엔진의 실행 구조](/dev/unity/PhysicsOptimization-1/)
 - [물리 최적화 (2) - 물리 최적화 전략](/dev/unity/PhysicsOptimization-2/)
 - [파티클과 애니메이션 (1) - 파티클 시스템 최적화](/dev/unity/ParticleAndAnimation-1/)

@@ -794,7 +794,7 @@ Preserve Sample Rate는 원본을 유지하고, Optimize Sample Rate는 Unity가
 
 셰이더는 기능 조합(안개, 그림자 등의 ON/OFF)마다 별도의 variant로 컴파일되어 빌드에 포함됩니다.
 조합 수가 늘어나면 variant도 기하급수적으로 늘어나 빌드 크기와 메모리를 차지하므로, variant stripping으로 사용하지 않는 variant를 빌드에서 제외하는 것이 중요합니다.
-`multi_compile`과 `shader_feature`의 차이, variant stripping의 구체적인 설정 방법은 [셰이더 최적화 (2)](/dev/unity/ShaderOptimization-2/)에서 다룹니다.
+`multi_compile`과 `shader_feature`의 차이, variant stripping의 구체적인 설정 방법은 [셰이더 최적화 (2) - 셰이더 배리언트와 키워드 관리](/dev/unity/ShaderOptimization-2/)에서 다룹니다.
 
 ### 애니메이션
 
@@ -863,7 +863,7 @@ Unity 게임의 메모리 사용량 중 대부분은 C# 관리 힙이 아니라,
 - [조명과 그림자 (1) - 실시간 조명과 베이크](/dev/unity/LightingAndShadows-1/)
 - [조명과 그림자 (2) - 그림자와 후처리](/dev/unity/LightingAndShadows-2/)
 - [셰이더 최적화 (1) - 셰이더 성능의 원리](/dev/unity/ShaderOptimization-1/)
-- [셰이더 최적화 (2) - 셰이더 배리언트와 모바일 기법](/dev/unity/ShaderOptimization-2/)
+- [셰이더 최적화 (2) - 셰이더 배리언트와 키워드 관리](/dev/unity/ShaderOptimization-2/)
 - [물리 최적화 (1) - 물리 엔진의 실행 구조](/dev/unity/PhysicsOptimization-1/)
 - [물리 최적화 (2) - 물리 최적화 전략](/dev/unity/PhysicsOptimization-2/)
 - [파티클과 애니메이션 (1) - 파티클 시스템 최적화](/dev/unity/ParticleAndAnimation-1/)
