@@ -18,17 +18,21 @@ tags:
 
 Unity는 매 프레임 활성 캐릭터의 애니메이션을 CPU에서 평가합니다. 재생 중인 클립에서 현재 시점의 값을 읽어 본의 Transform(위치·회전·크기)과 머티리얼 프로퍼티(색상·알파 등)를 갱신합니다. 한 캐릭터의 갱신은 가벼운 작업이지만, 활성 캐릭터가 늘고 캐릭터당 본 수가 많아질수록 같은 평가가 반복되며 메인 스레드 비용이 빠르게 늘어납니다.
 
-이번 글에서는 Animator의 매 프레임 비용 구조, 클립 데이터 압축, Generic·Humanoid 리그 타입에 따른 평가 비용, Animation Culling 모드, 스키닝을 CPU와 GPU 중 어디서 수행할지를 살펴봅니다.
+이번 글에서는 애니메이션 비용이 어디에서 발생하는지부터 살펴봅니다. Animator의 매 프레임 평가 비용, 클립 데이터 압축, Generic·Humanoid 리그 타입의 차이, Animation Culling 모드를 차례로 다룹니다. 마지막으로 본의 계산 결과를 메쉬 정점에 적용하는 스키닝 단계가 CPU와 GPU 비용에 어떤 차이를 만드는지도 함께 살펴봅니다.
 
 ---
 
 ## 애니메이션 시스템
 
-Unity의 기본 애니메이션 시스템은 **Animator(Mecanim)**입니다. 상태 머신 기반으로 복잡한 캐릭터 행동을 다룰 수 있는 대신, 매 프레임 상태 평가와 블렌딩 비용이 누적됩니다. 단순 UI 트윈이나 환경 오브젝트처럼 상태 머신이 필요 없는 곳에는 더 가벼운 방식이 적합할 수 있습니다.
+애니메이션을 처리하는 방식은 하나로 고정되지 않습니다. 복잡한 캐릭터처럼 상태 전환과 블렌딩이 필요한 대상도 있고, UI 패널 이동이나 문 열림처럼 시작 값과 끝 값만 있으면 충분한 대상도 있습니다.
+
+Unity에서 이런 복잡한 흐름을 다루는 대표적인 시스템이 **Animator(Mecanim)**입니다. Animator는 상태 머신, 트랜지션, 블렌드 트리를 제공하지만, 그만큼 매 프레임 상태 평가와 블렌딩 계산이 필요합니다. 따라서 어떤 대상에 Animator를 사용할지, 더 단순한 트위닝이나 스크립트 제어로 충분한지는 비용 관점에서 구분해야 합니다.
 
 ### Animator (Mecanim)
 
-Animator는 Unity 4에서 도입된 현재의 기본 애니메이션 시스템입니다. Animator Controller라는 **상태 머신(State Machine)**을 기반으로 동작합니다. 상태 머신은 "현재 어떤 상태인가"와 "어떤 조건이 충족되면 다른 상태로 전환한다"를 정의하는 구조입니다.
+Animator는 Unity에서 캐릭터 애니메이션을 구성할 때 가장 많이 사용하는 시스템입니다. 핵심은 **Animator Controller**이며, 이 컨트롤러는 상태 머신(State Machine)을 사용해 현재 재생할 애니메이션 상태와 상태 전환 조건을 관리합니다.
+
+예를 들어 캐릭터가 대기, 달리기, 점프 상태를 오갈 때 Animator는 현재 상태를 평가하고, 파라미터 조건에 따라 다음 상태로 전환하며, 전환 중에는 두 클립을 블렌딩합니다. 이 구조는 복잡한 캐릭터 행동을 표현하기 좋지만, 매 프레임 상태 평가와 블렌딩 비용이 발생합니다.
 
 <br>
 
@@ -86,45 +90,44 @@ Animator는 Unity 4에서 도입된 현재의 기본 애니메이션 시스템�
 
 <br>
 
-Animator는 복잡한 애니메이션 흐름을 시각적으로 설계할 수 있습니다. 상태 전환(Transition)을 조건부로 설정하고, 블렌드 트리(Blend Tree)로 여러 애니메이션을 부드럽게 혼합할 수 있습니다. 캐릭터의 이동 속도에 따라 걷기와 달리기를 자연스럽게 섞는 것이 대표적인 예입니다.
+Animator는 상태 전환(Transition), 파라미터 조건, 블렌드 트리(Blend Tree)를 이용해 복잡한 애니메이션 흐름을 구성합니다. 예를 들어 캐릭터의 이동 속도에 따라 걷기와 달리기를 섞거나, 공격 중 피격 상태로 전환하는 흐름을 상태 머신 안에서 처리할 수 있습니다.
 
-다만, 매 프레임마다 상태 머신 평가, 트랜지션 조건 검사, 블렌딩 가중치 계산이 실행되므로 CPU 비용이 따릅니다. 상태, 트랜지션, 레이어가 많아질수록 이 비용도 함께 증가합니다.
-
-<br>
+이 구조는 캐릭터 행동을 표현하기에 편리하지만, 매 프레임 평가해야 할 항목도 함께 늘어납니다. Animator는 현재 상태를 확인하고, 트랜지션 조건을 검사하고, 필요한 경우 블렌딩 가중치를 계산합니다. 상태, 트랜지션, 레이어, 블렌드 트리가 많아질수록 평가 비용도 커집니다.
 
 ### 선택 기준
 
-애니메이션의 복잡도에 따라 Animator, 트위닝 라이브러리, 스크립트 직접 제어 중 적합한 방식이 달라집니다.
+Animator가 필요한지는 애니메이션의 길이나 시각적 중요도보다 **상태 전환과 블렌딩이 필요한지**로 판단하는 편이 적절합니다. 여러 상태를 오가고, 조건에 따라 전환하고, 클립을 섞어야 한다면 Animator가 맞습니다. 반대로 시작 값과 끝 값만 있거나 단순 반복만 필요하다면 트위닝 라이브러리나 스크립트 제어가 더 가볍습니다.
 
 <br>
 
-| 사용 사례 | 권장 방식 | 비고 |
-|-----------|-----------|------|
-| 플레이어 캐릭터 | Animator | 복잡한 상태 전환·블렌딩, IK, 리타겟팅 |
-| NPC (복잡한 행동 패턴) | Animator | 여러 상태, 조건부 트랜지션 |
-| UI 애니메이션 | 트위닝 라이브러리 (DOTween 등) | 버튼 확대/축소, 패널 슬라이드 — 코드에서 시작/끝 값만 지정 |
-| 환경 오브젝트 | 트위닝 또는 스크립트 | 깃발 펄럭임, 문 열기/닫기 — 단순 반복이나 트리거 동작 |
-| 단순 이펙트 | 트위닝 또는 스크립트 | 빛 깜빡임, 크기 변화 — 키프레임 클립이 필요 없는 경우 |
+| 판단 기준 | Animator가 적합한 경우 | 트위닝·스크립트가 적합한 경우 |
+|---|---|---|
+| 상태 전환 | 대기, 이동, 공격, 피격처럼 여러 상태를 조건에 따라 전환 | 단일 동작을 시작하고 끝내면 충분 |
+| 블렌딩 | 걷기와 달리기, 상체와 하체처럼 여러 클립을 섞어야 함 | 시작 값과 끝 값 사이를 보간하면 충분 |
+| 대상 | 플레이어 캐릭터, 복잡한 NPC, 리타겟팅이 필요한 캐릭터 | UI 패널, 버튼 효과, 문 열림, 단순 환경 오브젝트 |
+| 비용 특성 | 상태 머신 평가와 블렌딩 비용이 발생 | 상태 머신 없이 필요한 값만 갱신 |
 
 <br>
 
-UI 요소나 환경 오브젝트에 Animator를 사용하는 경우가 흔합니다. Unity 에디터의 Animation 창에서 키프레임을 찍으면 자동으로 Animator Controller가 생성되기 때문입니다. 이 경우 상태 머신의 오버헤드가 불필요하게 발생합니다.
+정해진 값 사이를 한 번 이동하거나 단순히 반복하는 동작이라면, 상태 머신을 평가하거나 클립을 블렌딩할 필요가 없습니다. 버튼 확대, 패널 슬라이드, 문 열림처럼 시작 값과 끝 값이 분명한 동작이 여기에 해당합니다.
 
-트위닝 라이브러리(DOTween 등)는 코드에서 시작 값과 끝 값만 지정하면 중간 값을 자동으로 보간해주므로, 상태 머신 없이 UI나 환경 오브젝트의 단순 애니메이션을 처리할 수 있습니다.
-
-<br>
+이런 경우에는 Animator보다 트위닝이나 스크립트 제어가 더 단순합니다. 트위닝 라이브러리(DOTween 등)는 시작 값, 끝 값, 지속 시간, easing을 기준으로 중간 값을 보간하므로, 상태 전환이 필요 없는 UI나 환경 오브젝트의 움직임을 Animator 평가 비용 없이 처리할 수 있습니다.
 
 ---
 
 ## 애니메이션 압축
 
-시스템 선택 외에도 애니메이션 비용을 줄이는 방법이 있습니다. 재생하는 클립 자체의 데이터 크기를 줄이면, 메모리 사용량과 매 프레임 샘플링 비용이 함께 줄어듭니다.
+애니메이션 비용은 어떤 시스템으로 재생하느냐뿐 아니라, 재생할 클립이 얼마나 많은 데이터를 가지고 있느냐에도 영향을 받습니다. 애니메이션 클립은 시간에 따른 위치, 회전, 크기 값을 키프레임으로 저장하고, Unity는 매 프레임 현재 시간에 필요한 값을 샘플링해 Transform에 적용합니다.
 
-<br>
+클립에 키프레임이 많을수록 메모리에 올려야 할 데이터가 늘고, 샘플링할 커브도 많아집니다. 애니메이션 압축은 결과 품질을 크게 해치지 않는 범위에서 불필요한 키프레임과 정밀도를 줄여, 클립 데이터 크기와 샘플링 부담을 낮추는 작업입니다.
 
 ### 키프레임 데이터의 구조
 
-애니메이션 클립은 시간에 따른 값의 변화를 **키프레임(Keyframe)**으로 기록합니다. 본(Bone) 하나에 대해 위치(x, y, z), 회전(x, y, z 또는 쿼터니언 x, y, z, w), 크기(x, y, z)로 9~10개의 커브가 생깁니다. 캐릭터 하나에 본이 50개이고, 클립이 30fps로 5초(150프레임)라면, 총 키프레임 값은 50 x 10 x 150 = 75,000개에 달합니다.
+애니메이션 클립은 시간에 따른 값의 변화를 **키프레임(Keyframe)**으로 기록합니다. 키프레임은 “0초에는 이 값, 0.5초에는 이 값, 1초에는 이 값”처럼 특정 시점의 값을 저장한 데이터입니다. Unity는 재생 중인 시간에 맞춰 키프레임 사이를 보간하고, 그 결과를 본(Bone)의 위치나 회전 값에 적용합니다.
+
+이 키프레임들은 값의 종류마다 별도의 커브를 이룹니다. 본 하나를 움직이려면 위치, 회전, 크기 값이 필요하고, 각 값은 다시 여러 성분으로 나뉩니다. 위치와 크기는 x, y, z 세 축으로 저장되고, 회전은 오일러 각이나 쿼터니언 값으로 저장됩니다. 따라서 본 하나만 보더라도 여러 개의 애니메이션 커브가 만들어집니다.
+
+이 구조가 캐릭터 전체로 확장되면 데이터 양은 빠르게 커집니다. 예를 들어 본이 50개인 캐릭터에 5초 길이의 클립이 있고, 30fps 기준으로 키가 기록되어 있다면 150개의 시간 지점이 생깁니다. 본마다 약 10개의 커브가 있다고 단순화하면, 한 클립에 `50 × 10 × 150 = 75,000`개의 키프레임 값이 포함될 수 있습니다.
 
 <br>
 
@@ -175,13 +178,17 @@ UI 요소나 환경 오브젝트에 Animator를 사용하는 경우가 흔합니
 
 <br>
 
-이 데이터는 메모리에 로드되어 매 프레임 샘플링됩니다. 클립 수가 많아지면 메모리 사용량이 늘어납니다. 데이터 총량이 커지면 CPU 캐시(CPU가 빠르게 접근할 수 있도록 소량의 데이터를 임시로 저장해 두는 고속 메모리)에 담을 수 있는 비율이 줄어들어 캐시 미스(필요한 데이터가 캐시에 없어 메인 메모리까지 읽으러 가는 상황)가 증가하고, 그만큼 샘플링 속도가 느려집니다.
+이 데이터는 클립이 재생될 때 메모리에서 읽히고, 매 프레임 현재 시간에 맞는 값으로 샘플링됩니다. 클립 수가 많거나 키프레임이 과하게 많으면 메모리 사용량이 늘고, 애니메이션 평가 중에 읽어야 할 데이터도 많아집니다.
+
+따라서 애니메이션 압축의 첫 번째 목표는 필요한 움직임은 유지하면서 불필요한 키프레임을 줄이는 것입니다. 데이터가 작아지면 메모리 사용량이 줄고, 매 프레임 샘플링해야 하는 커브 데이터도 가벼워집니다.
 
 <br>
 
 ### 키프레임 리덕션 (Keyframe Reduction)
 
-키프레임 리덕션은 **변화가 적은 키프레임을 제거**하여 데이터를 줄이는 기법입니다. 위의 예에서, 프레임 3~6은 모두 같은 값(0.3)입니다. 프레임 3과 프레임 6만 남기고 나머지를 제거해도 보간으로 동일한 결과를 만들 수 있습니다.
+키프레임 리덕션은 보간으로 충분히 복원할 수 있는 키프레임을 제거해 데이터를 줄이는 기법입니다. 모든 프레임의 값을 그대로 저장하지 않고, 움직임의 형태를 유지하는 데 필요한 지점만 남깁니다.
+
+예를 들어 어떤 커브에서 프레임 3~6의 값이 모두 `0.3`이라면, 네 프레임을 모두 저장할 필요가 없습니다. 구간의 시작과 끝만 남겨도 중간 값은 보간으로 같은 결과를 만들 수 있습니다. 값이 일정한 구간뿐 아니라 거의 직선에 가까운 변화도 같은 방식으로 줄일 수 있습니다.
 
 <br>
 
@@ -243,98 +250,94 @@ UI 요소나 환경 오브젝트에 Animator를 사용하는 경우가 흔합니
 
 <br>
 
-키프레임 리덕션은 오차 허용 범위(Error Tolerance)를 설정할 수 있습니다. 오차 범위가 크면 더 많은 키프레임이 제거되어 데이터가 줄어들지만, 원본과의 차이가 커집니다. 반대로 오차 범위를 줄이면 원본에 가깝지만 키프레임이 많이 남습니다.
-
-<br>
+키프레임 리덕션에서는 원본 커브와 리덕션 후 커브 사이의 허용 오차를 정합니다. 허용 오차를 크게 잡으면 더 많은 키프레임을 제거할 수 있어 데이터는 줄어들지만, 원본 움직임과의 차이가 커질 수 있습니다. 허용 오차를 작게 잡으면 원본에 더 가깝게 재생되지만, 제거되는 키프레임이 줄어 압축 효과도 작아집니다.
 
 ### Unity의 압축 모드
 
-Unity의 애니메이션 Import Settings에서 **Anim. Compression** 옵션으로 압축 방식을 선택할 수 있습니다.
+Unity에서는 모델의 Animation Import Settings에서 **Anim. Compression** 옵션을 설정할 수 있습니다. 이 옵션은 애니메이션 클립을 가져올 때 키프레임을 얼마나 줄이고, 어느 정도 오차를 허용할지를 결정합니다.
 
 <br>
 
-| 모드 | 설명 | 메모리 |
-|------|------|--------|
-| Off | 압축 없음 — 원본 키프레임 모두 유지 | 최대 |
-| Keyframe Reduction | 변화 적은 키프레임 제거 — 오차 범위 설정 가능 | 중간 |
-| Optimal | Keyframe Reduction에 커브 정밀도 분석을 추가 | 최소 |
+| 모드 | 동작 | 특징 |
+|------|------|------|
+| Off | 압축을 적용하지 않음 | 원본에 가장 가깝지만 데이터 크기가 큼 |
+| Keyframe Reduction | 허용 오차 안에서 불필요한 키프레임 제거 | 데이터 크기와 움직임 품질의 균형을 직접 조정 |
+| Optimal | Unity가 클립에 적합한 압축 방식을 선택 | 대체로 더 작은 데이터 크기를 목표로 하지만 결과 확인 필요 |
 
 <br>
 
-**Optimal** 모드에서는 키프레임 리덕션에 더해, Unity가 커브 데이터의 정밀도를 분석하여 추가적인 압축을 적용합니다. 대부분의 경우 Optimal 모드가 시각적 차이 없이 가장 작은 데이터 크기를 만듭니다.
-
-<br>
+일반적으로는 **Optimal**을 먼저 적용해 보고, 재생 결과에 문제가 없는지 확인하는 방식이 적절합니다. 발이 미끄러지거나 손 위치가 어긋나는 것처럼 작은 오차가 눈에 띄는 클립은 Keyframe Reduction의 오차 값을 조정하거나, 필요한 경우 압축을 낮추는 방식으로 확인합니다.
 
 ### 정밀도와 오차 설정
 
-Unity의 Import Settings에서 Rotation Error, Position Error, Scale Error 값을 조절하면 압축 수준을 세밀하게 제어할 수 있습니다. 이 값이 클수록 더 많은 키프레임이 제거되어 데이터가 줄어들지만, 원본과의 차이도 커집니다.
+Keyframe Reduction이나 Optimal 압축을 사용하면 Unity의 Import Settings에서 **Rotation Error**, **Position Error**, **Scale Error** 값을 조정할 수 있습니다. 이 값들은 압축 후 커브가 원본 커브에서 얼마나 벗어나도 되는지를 정하는 기준입니다.
 
-위치나 회전의 미세한 차이(소수점 4자리 이하)는 시각적으로 구분되지 않는 경우가 많으므로, 오차 값을 약간 높여도 품질 저하 없이 메모리를 절약할 수 있습니다.
+허용 오차를 높이면 더 많은 키프레임이 제거되어 데이터 크기가 줄어들 수 있습니다. 대신 회전이 어긋나거나, 발이 바닥에서 미끄러지거나, 손이 무기나 소품 위치와 맞지 않는 문제가 생길 수 있습니다. 반대로 허용 오차를 낮추면 원본에 더 가까운 움직임을 유지하지만 압축 효과는 작아집니다.
 
-<br>
+오차 값은 모든 클립에 같은 기준으로 적용하기보다, 애니메이션의 용도에 맞춰 조정하는 편이 적절합니다. 카메라 가까이에서 보이는 캐릭터, 손발 접지가 중요한 동작, 무기나 도구를 잡는 동작은 보수적으로 설정하고, 멀리 있는 NPC나 배경 오브젝트의 반복 동작은 더 큰 오차를 허용할 수 있습니다.
 
 ### 불필요한 커브 제거
 
-3D 모델링 툴(Maya, Blender 등)에서 애니메이션을 익스포트하면, 실제로 변화하지 않는 프로퍼티의 커브까지 함께 포함되는 경우가 흔합니다. 예를 들어, 걷기 애니메이션에서 어떤 본도 크기가 변하지 않는데 모든 본의 Scale 커브가 (1, 1, 1)로 150프레임 내내 기록되어 있는 경우입니다. 값이 일정하므로 재생 결과에 아무런 영향이 없지만, 본 50개 x Scale 커브 3개 x 150프레임 = 22,500개의 키프레임 값이 메모리를 차지하고 매 프레임 샘플링 대상에 포함됩니다.
+애니메이션 파일에는 실제 움직임에 기여하지 않는 커브가 포함될 수 있습니다. 3D 모델링 툴에서 익스포트하는 과정에서 값이 변하지 않는 프로퍼티까지 키프레임으로 기록되는 경우가 있기 때문입니다.
 
-Scale 커브가 가장 흔한 대상인 이유는, 대부분의 캐릭터 애니메이션에서 본의 크기는 변하지 않기 때문입니다. 위치와 회전은 동작마다 달라지지만, Scale은 거의 항상 (1, 1, 1)로 일정합니다.
+대표적인 예가 Scale 커브입니다. 대부분의 캐릭터 애니메이션에서는 본의 크기가 변하지 않지만, 모든 본에 `(1, 1, 1)` Scale 값이 프레임마다 기록될 수 있습니다. 값이 일정하다면 재생 결과에는 영향을 주지 않지만, 데이터에는 그대로 남습니다. 본 50개짜리 캐릭터에서 Scale x, y, z 세 커브가 150프레임 동안 기록되어 있다면 `50 × 3 × 150 = 22,500`개의 키프레임 값이 추가됩니다.
 
-Unity의 Animation Import Settings에는 이를 위한 **"Remove Constant Scale Curves"** 옵션이 있습니다. 이 옵션을 활성화하면, 값이 일정한 Scale 커브를 임포트 시점에 자동으로 제거합니다. Scale 외에도 값이 변하지 않는 Position이나 Rotation 커브가 있을 수 있는데, 이런 경우에는 AssetPostprocessor의 OnPostprocessAnimation 콜백을 사용하여 모든 상수 커브를 스크립트로 일괄 제거할 수 있습니다.
-
-<br>
+Unity의 Animation Import Settings에는 이런 경우를 줄이기 위한 **Remove Constant Scale Curves** 옵션이 있습니다. 이 옵션은 초기 Scale 값과 동일하게 유지되는 Scale 커브를 임포트 과정에서 제거합니다. Scale 외에도 값이 변하지 않는 Position이나 Rotation 커브가 있다면, 필요한 경우 `AssetPostprocessor.OnPostprocessAnimation`과 `AnimationUtility`를 사용해 프로젝트 규칙에 맞게 커브를 정리할 수 있습니다.
 
 ---
 
 ## Generic vs Humanoid 리그
 
-앞에서 다룬 압축과 커브 제거는 클립에 저장된 데이터의 크기를 줄이는 방법이었습니다. 데이터가 작아지면 메모리 사용량과 샘플링 비용이 줄어듭니다. 하지만 애니메이션 비용은 데이터 크기만으로 결정되지 않습니다. 클립에서 값을 읽은 뒤 그 값을 본(Bone)에 적용하는 과정에서도 CPU 연산이 발생하며, 이 과정의 비용은 캐릭터 모델의 리그 타입에 따라 달라집니다.
+앞에서 다룬 압축과 커브 제거는 애니메이션 클립에 저장된 데이터 자체를 줄이는 방법이었습니다. 하지만 같은 클립을 재생하더라도, Unity가 캐릭터의 본 구조를 어떻게 해석하느냐에 따라 이후 처리 비용은 달라집니다.
 
-<br>
+이 차이를 만드는 설정이 **리그 타입(Rig Type)**입니다. 이 섹션에서는 먼저 Generic과 Humanoid가 본 구조를 처리하는 방식이 어떻게 다른지 살펴봅니다. 이어서 Humanoid에서 추가 비용이 발생하는 이유와, 리타겟팅·IK 같은 Humanoid 전용 기능이 필요한 경우를 정리합니다. 마지막으로 캐릭터 종류와 애니메이션 재사용 방식에 따라 어떤 리그 타입을 선택할지 기준을 잡습니다.
 
 ### 리그 타입의 차이
 
-지금까지 본(Bone)의 Transform을 샘플링하고 적용하는 과정을 다루었습니다. 이 본 구조를 Unity가 어떻게 해석할지를 결정하는 것이 **리그 타입(Rig Type)** 설정입니다. 캐릭터 모델을 임포트할 때 **Generic**과 **Humanoid** 두 가지 중 하나를 선택하며, 각각의 내부 처리 과정이 다릅니다.
+리그 타입은 캐릭터 모델의 본 구조를 Unity가 어떤 방식으로 해석할지를 정하는 설정입니다. **Generic**은 모델에 들어 있는 본 계층을 그대로 사용하는 방식이고, **Humanoid**는 본 계층을 Unity의 표준 인체 구조인 Avatar에 매핑하는 방식입니다.
+
+두 방식은 같은 애니메이션 클립을 재생하더라도 처리 과정이 다릅니다. Generic은 원본 본 Transform을 비교적 직접적으로 적용하지만, Humanoid는 Avatar 매핑, Muscle 시스템, 리타겟팅 같은 추가 단계를 거칠 수 있습니다.
 
 <br>
 
 <div style="text-align: center; margin: 1.5em 0;">
 <svg viewBox="0 0 600 530" xmlns="http://www.w3.org/2000/svg" style="max-width: 600px; width: 100%;">
-  <text x="300" y="22" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="currentColor">Generic vs Humanoid 리그 — 매 프레임 처리 비교</text>
+  <text x="300" y="22" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="currentColor">Generic vs Humanoid 리그 — 처리 요소 비교</text>
 
   <text x="40" y="52" font-family="sans-serif" font-size="13" font-weight="bold" fill="currentColor">Generic 리그</text>
-  <text x="40" y="70" font-family="sans-serif" font-size="11" font-style="italic" fill="currentColor">FBX의 본 구조를 변환 없이 그대로 사용</text>
+  <text x="40" y="70" font-family="sans-serif" font-size="11" font-style="italic" fill="currentColor">모델의 본 계층을 기준으로 애니메이션 적용</text>
 
   <rect x="40" y="82" width="520" height="40" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.2"/>
-  <text x="60" y="106" font-family="sans-serif" font-size="11" fill="currentColor">1) 클립에서 각 본의 로컬 Transform 샘플링</text>
+  <text x="60" y="106" font-family="sans-serif" font-size="11" fill="currentColor">클립에서 각 본의 로컬 Transform 샘플링</text>
 
   <rect x="40" y="128" width="520" height="40" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.2"/>
-  <text x="60" y="152" font-family="sans-serif" font-size="11" fill="currentColor">2) 각 본의 로컬 Transform 적용</text>
+  <text x="60" y="152" font-family="sans-serif" font-size="11" fill="currentColor">모델 본 계층에 Transform 적용</text>
 
   <line x1="40" y1="190" x2="560" y2="190" stroke="currentColor" stroke-width="1" stroke-dasharray="3,3"/>
 
   <text x="40" y="215" font-family="sans-serif" font-size="13" font-weight="bold" fill="currentColor">Humanoid 리그</text>
-  <text x="40" y="233" font-family="sans-serif" font-size="11" font-style="italic" fill="currentColor">본 구조를 Unity의 표준 인체 모델(Avatar)에 매핑하여 사용</text>
-  <text x="40" y="251" font-family="sans-serif" font-size="11" font-style="italic" fill="currentColor">원본 본 구조 → (매핑) → Avatar 표준 본 구조</text>
+  <text x="40" y="233" font-family="sans-serif" font-size="11" font-style="italic" fill="currentColor">본 구조를 Unity의 표준 인체 모델(Avatar)에 연결</text>
+  <text x="40" y="251" font-family="sans-serif" font-size="11" font-style="italic" fill="currentColor">모델 본 구조 ↔ Avatar 표준 인체 구조</text>
 
   <rect x="40" y="263" width="520" height="36" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.2"/>
-  <text x="60" y="285" font-family="sans-serif" font-size="11" fill="currentColor">1) 클립에서 각 본의 로컬 Transform 샘플링</text>
+  <text x="60" y="285" font-family="sans-serif" font-size="11" fill="currentColor">클립에서 애니메이션 값 샘플링</text>
 
   <rect x="40" y="303" width="520" height="36" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.2"/>
-  <text x="60" y="325" font-family="sans-serif" font-size="11" fill="currentColor">2) Avatar 매핑을 통해 표준 본 구조로 변환</text>
+  <text x="60" y="325" font-family="sans-serif" font-size="11" fill="currentColor">Avatar 매핑을 통해 표준 인체 구조와 연결</text>
 
   <rect x="40" y="343" width="520" height="36" rx="5" fill="currentColor" fill-opacity="0.10" stroke="currentColor" stroke-width="1.2"/>
-  <text x="60" y="365" font-family="sans-serif" font-size="11" fill="currentColor">3) Muscle 시스템으로 관절 범위 제한 적용</text>
+  <text x="60" y="365" font-family="sans-serif" font-size="11" fill="currentColor">Muscle 시스템 기반 관절 보정 가능</text>
 
   <rect x="40" y="383" width="520" height="36" rx="5" fill="currentColor" fill-opacity="0.10" stroke="currentColor" stroke-width="1.2"/>
-  <text x="60" y="405" font-family="sans-serif" font-size="11" fill="currentColor">4) IK(Inverse Kinematics) 계산 (활성화된 경우)</text>
+  <text x="60" y="405" font-family="sans-serif" font-size="11" fill="currentColor">IK(Inverse Kinematics) 처리 가능 (활성화 시)</text>
 
   <rect x="40" y="423" width="520" height="36" rx="5" fill="currentColor" fill-opacity="0.10" stroke="currentColor" stroke-width="1.2"/>
-  <text x="60" y="445" font-family="sans-serif" font-size="11" fill="currentColor">5) 리타겟팅 변환 (다른 캐릭터에 적용 시)</text>
+  <text x="60" y="445" font-family="sans-serif" font-size="11" fill="currentColor">리타겟팅 처리 가능 (클립 공유 시)</text>
 
   <rect x="40" y="463" width="520" height="36" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.2"/>
-  <text x="60" y="485" font-family="sans-serif" font-size="11" fill="currentColor">6) 최종 본의 로컬 Transform 적용</text>
+  <text x="60" y="485" font-family="sans-serif" font-size="11" fill="currentColor">최종 본 Transform 적용</text>
 
-  <text x="300" y="518" text-anchor="middle" font-family="sans-serif" font-size="10" font-style="italic" fill="currentColor">진한 박스(3~5)가 Humanoid에서만 발생하는 추가 단계</text>
+  <text x="300" y="518" text-anchor="middle" font-family="sans-serif" font-size="10" font-style="italic" fill="currentColor">강조된 항목은 Humanoid에서 비용이 추가될 수 있는 처리 요소</text>
 </svg>
 </div>
 
@@ -342,104 +345,99 @@ Unity의 Animation Import Settings에는 이를 위한 **"Remove Constant Scale 
 
 ### Humanoid의 추가 비용
 
-Humanoid 리그는 Generic에 비해 매 프레임 추가 연산이 발생하며, 추가 비용의 대부분은 **Muscle 시스템**에서 비롯됩니다.
+Humanoid 리그의 추가 비용은 Avatar 기반 처리를 유지하기 위한 계산에서 발생합니다. Unity는 애니메이션 값을 Humanoid의 표준 인체 표현에 맞게 해석하고, 필요한 경우 관절 범위 보정, 리타겟팅, IK 결과를 반영합니다.
 
-Muscle 시스템은 인체의 관절이 자연스러운 범위 안에서만 움직이도록 제한합니다. 팔꿈치가 반대 방향으로 꺾이거나, 목이 360도 회전하는 것을 방지하기 위한 것입니다. 이런 비정상적인 회전은 주로 두 가지 상황에서 발생합니다.
+이 과정에서 사용되는 대표적인 개념이 **Muscle 시스템**입니다. Humanoid는 관절 회전을 단순한 본 회전값으로만 다루지 않고, 인체 관절의 움직임 범위에 맞춘 Muscle 값으로 해석합니다. 이 표현을 사용하면 서로 다른 체형의 캐릭터 사이에서 애니메이션을 공유하거나, 관절이 지나치게 꺾이는 움직임을 보정하기 쉽습니다.
 
-체형이 다른 캐릭터에 애니메이션을 리타겟팅할 때 관절 비율 차이로 회전값이 원본과 달라지는 경우, 그리고 여러 애니메이션을 블렌딩할 때 합산된 회전값이 자연스러운 범위를 벗어나는 경우입니다.
+대신 매 프레임 추가 계산이 필요합니다. 애니메이션에서 얻은 값을 Avatar와 Muscle 표현에 맞게 해석하고, 필요한 경우 관절 범위 안으로 보정하며, 리타겟팅이나 IK를 사용한다면 그 결과까지 반영해야 합니다.
 
-Muscle 시스템은 매 프레임 각 관절의 회전 값을 미리 정의된 범위와 비교하고, 범위를 초과하면 경계값으로 강제 제한(clamping)합니다.
+따라서 Humanoid의 비용은 단순히 본 수만의 문제가 아닙니다. 리타겟팅, Muscle 기반 보정, IK 같은 기능을 활용할수록 Generic보다 더 많은 CPU 작업이 발생할 수 있습니다.
 
 <br>
 
 <div style="text-align: center; margin: 1.5em 0;">
 <svg viewBox="0 0 600 360" xmlns="http://www.w3.org/2000/svg" style="max-width: 600px; width: 100%;">
-  <text x="300" y="22" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="currentColor">Humanoid의 Muscle 시스템 비용</text>
+  <text x="300" y="22" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="currentColor">Humanoid 리그의 추가 처리 요소</text>
 
   <rect x="40" y="42" width="520" height="60" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.2"/>
-  <text x="60" y="64" font-family="sans-serif" font-size="11" fill="currentColor">인체 표준 본 수: 최대 55개 (HumanBodyBones)</text>
-  <text x="60" y="86" font-family="sans-serif" font-size="11" fill="currentColor">Muscle 값: 최대 95개 (관절당 축별 회전 범위)</text>
+  <text x="60" y="64" font-family="sans-serif" font-size="11" fill="currentColor">Avatar: 모델의 본 구조를 표준 인체 구조와 연결</text>
+  <text x="60" y="86" font-family="sans-serif" font-size="11" fill="currentColor">Muscle: 관절 움직임을 인체 기준의 값으로 표현</text>
 
-  <text x="40" y="128" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">각 Muscle 값에 대해 매 프레임 수행되는 처리</text>
+  <text x="40" y="128" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">Generic보다 비용이 추가될 수 있는 요소</text>
 
   <rect x="40" y="142" width="250" height="40" rx="4" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.2"/>
-  <text x="60" y="166" font-family="sans-serif" font-size="11" fill="currentColor">1) 원본 회전값 → Muscle 공간 변환</text>
+  <text x="60" y="166" font-family="sans-serif" font-size="11" fill="currentColor">Avatar 표준 인체 구조와 매핑</text>
 
   <rect x="310" y="142" width="250" height="40" rx="4" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.2"/>
-  <text x="330" y="166" font-family="sans-serif" font-size="11" fill="currentColor">2) Muscle 범위 내인지 검사</text>
+  <text x="330" y="166" font-family="sans-serif" font-size="11" fill="currentColor">Muscle 값 기반 관절 표현</text>
 
   <rect x="40" y="186" width="250" height="40" rx="4" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.2"/>
-  <text x="60" y="210" font-family="sans-serif" font-size="11" fill="currentColor">3) 범위 초과 시 클램핑</text>
+  <text x="60" y="210" font-family="sans-serif" font-size="11" fill="currentColor">관절 범위 보정 가능</text>
 
   <rect x="310" y="186" width="250" height="40" rx="4" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.2"/>
-  <text x="330" y="210" font-family="sans-serif" font-size="11" fill="currentColor">4) Muscle 공간 → 다시 회전값으로 변환</text>
+  <text x="330" y="210" font-family="sans-serif" font-size="11" fill="currentColor">리타겟팅·IK 처리 가능</text>
 
   <line x1="40" y1="248" x2="560" y2="248" stroke="currentColor" stroke-width="1" stroke-dasharray="3,3"/>
 
-  <text x="40" y="272" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">비용 비교 예시 (기기/클립에 따라 다름)</text>
+  <text x="300" y="274" text-anchor="middle" font-family="sans-serif" font-size="11" font-style="italic" fill="currentColor">Humanoid는 Avatar, Muscle, 리타겟팅, IK를 지원하기 위해 추가 처리가 발생할 수 있음</text>
 </svg>
 </div>
 
 <br>
 
-| 리그 | 캐릭터 1개 | 캐릭터 20개 |
-|------|------------|-------------|
-| Generic | ~0.1 ms | ~2.0 ms |
-| Humanoid | ~0.15 ms (30~50% 높음) | ~3.0 ms (차이 ~1.0 ms) |
+### Humanoid가 필요한 경우
 
-30fps 예산(33.3ms) 기준, 캐릭터 20개에서 약 3% 차이입니다.
+Humanoid 리그를 선택하는 가장 큰 이유는 인간형 캐릭터 사이에서 애니메이션을 재사용하기 위해서입니다. Generic 리그는 모델의 본 계층을 기준으로 동작하므로, 본 이름이나 계층 구조가 다른 캐릭터에 같은 클립을 그대로 적용하기 어렵습니다. 반면 Humanoid 리그는 각 캐릭터를 Avatar에 매핑해 공통의 인간형 구조로 다루므로, 서로 다른 체형의 캐릭터가 같은 Humanoid 클립을 공유할 수 있습니다.
 
-<br>
+**리타겟팅(Retargeting)**은 한 인간형 캐릭터용 애니메이션을 다른 인간형 캐릭터에 적용하는 기능입니다. 키, 팔 길이, 어깨 너비가 다른 캐릭터라도 Avatar 매핑이 올바르게 되어 있으면 같은 걷기, 달리기, 공격 클립을 재사용할 수 있습니다. 플레이어가 여러 캐릭터 모델을 선택할 수 있는 게임이나, 하나의 애니메이션 세트로 여러 NPC를 처리해야 하는 경우에 유용합니다.
 
-### Humanoid 전용 기능
+**IK(Inverse Kinematics)**도 Humanoid를 선택하는 이유가 될 수 있습니다. 일반적인 애니메이션은 부모 본에서 자식 본으로 움직임이 전달되지만, IK는 손이나 발의 목표 위치를 먼저 정하고 그 위치에 맞도록 팔꿈치, 무릎, 어깨 같은 관절을 조정합니다. 경사면에서 발을 바닥에 맞추는 Foot IK나, 손을 문 손잡이에 맞추는 Hand IK가 대표적인 예입니다. Unity의 내장 Animator IK(`OnAnimatorIK`)는 Humanoid Avatar의 표준 관절 정보를 사용하므로 Humanoid 리그에서 동작합니다.
 
-Humanoid 리그가 제공하는 기능 중 Unity의 내장 기능으로는 Generic에서 사용할 수 없는 것이 두 가지 있습니다. Humanoid의 추가 비용은 이 기능들을 지원하기 위해 발생하므로, 해당 기능이 필요하지 않다면 비용만 남게 됩니다.
-
-<br>
-
-**리타겟팅(Retargeting).** 한 캐릭터용으로 만든 애니메이션을 다른 체형의 캐릭터에 그대로 적용하는 기능입니다. Generic 리그에서는 본 이름과 계층 구조가 모델마다 다르므로, A 캐릭터의 클립을 B 캐릭터에 적용하면 본 이름이 일치하지 않아 동작하지 않습니다. Humanoid 리그에서는 모든 캐릭터가 Avatar라는 동일한 표준 본 구조에 매핑되어 있으므로, 키가 다르거나 팔 길이가 다른 캐릭터라도 같은 클립을 공유할 수 있습니다. 플레이어가 다양한 캐릭터 모델을 선택할 수 있는 게임이나, 하나의 애니메이션 세트로 여러 NPC를 커버해야 하는 경우에 유용합니다.
-
-<br>
-
-**IK(Inverse Kinematics).** 일반적인 애니메이션은 순방향 키네마틱스(FK)로 동작합니다. 어깨 본이 회전하면 팔꿈치가 따라가고, 팔꿈치가 회전하면 손이 따라가는 방식으로, 부모 본에서 자식 본 방향으로 Transform이 전파됩니다. IK는 이 방향을 뒤집습니다. "손이 이 위치에 있어야 한다"는 목표를 정하면, 엔진이 팔꿈치와 어깨의 회전을 역산하여 손이 목표 위치에 도달하도록 관절 체인 전체를 조정합니다. 캐릭터의 발이 경사면이나 계단에 자연스럽게 붙는 Foot IK, 손이 문 손잡이를 정확히 잡는 Hand IK가 대표적입니다. Unity의 내장 IK(OnAnimatorIK 콜백)는 Avatar의 표준 관절 체인 정보에 의존하므로 Humanoid 리그에서만 동작합니다.
+이런 기능이 필요하다면 Humanoid의 추가 비용은 기능을 얻기 위한 비용으로 볼 수 있습니다. 반대로 리타겟팅이나 내장 IK를 사용하지 않고, 캐릭터마다 전용 클립을 재생하기만 한다면 Generic 리그가 더 단순한 선택이 될 수 있습니다.
 
 <br>
 
 <div style="text-align: center; margin: 1.5em 0;">
-<svg viewBox="0 0 600 320" xmlns="http://www.w3.org/2000/svg" style="max-width: 600px; width: 100%;">
+<svg viewBox="0 0 600 340" xmlns="http://www.w3.org/2000/svg" style="max-width: 600px; width: 100%;">
   <text x="300" y="22" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="currentColor">리그 타입 선택 기준</text>
 
-  <rect x="220" y="44" width="160" height="40" rx="6" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
-  <text x="300" y="68" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">리타겟팅 필요?</text>
+  <rect x="185" y="44" width="230" height="44" rx="6" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
+  <text x="300" y="62" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">여러 인간형 캐릭터가</text>
+  <text x="300" y="78" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">같은 클립을 공유해야 하는가?</text>
 
-  <line x1="260" y1="84" x2="140" y2="120" stroke="currentColor" stroke-width="1.5"/>
-  <polygon points="138,114 134,124 145,123" fill="currentColor"/>
-  <text x="180" y="105" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">예</text>
+  <line x1="250" y1="88" x2="140" y2="124" stroke="currentColor" stroke-width="1.5"/>
+  <polygon points="138,118 134,128 145,127" fill="currentColor"/>
+  <text x="176" y="110" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">예</text>
 
-  <line x1="340" y1="84" x2="460" y2="120" stroke="currentColor" stroke-width="1.5"/>
-  <polygon points="455,123 466,124 462,114" fill="currentColor"/>
-  <text x="420" y="105" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">아니오</text>
+  <line x1="350" y1="88" x2="460" y2="124" stroke="currentColor" stroke-width="1.5"/>
+  <polygon points="455,127 466,128 462,118" fill="currentColor"/>
+  <text x="424" y="110" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">아니오</text>
 
-  <rect x="60" y="122" width="160" height="40" rx="6" fill="currentColor" fill-opacity="0.10" stroke="currentColor" stroke-width="1.5"/>
+  <rect x="60" y="126" width="160" height="48" rx="6" fill="currentColor" fill-opacity="0.10" stroke="currentColor" stroke-width="1.5"/>
   <text x="140" y="146" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">Humanoid</text>
+  <text x="140" y="162" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor">리타겟팅 활용</text>
 
-  <rect x="380" y="122" width="160" height="40" rx="6" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
-  <text x="460" y="146" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">IK 필요?</text>
+  <rect x="365" y="126" width="190" height="48" rx="6" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
+  <text x="460" y="146" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">Unity 내장 Animator IK를</text>
+  <text x="460" y="162" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">사용해야 하는가?</text>
 
-  <line x1="420" y1="162" x2="300" y2="200" stroke="currentColor" stroke-width="1.5"/>
-  <polygon points="298,194 295,204 305,202" fill="currentColor"/>
-  <text x="345" y="184" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">예</text>
+  <line x1="420" y1="174" x2="300" y2="212" stroke="currentColor" stroke-width="1.5"/>
+  <polygon points="298,206 295,216 305,214" fill="currentColor"/>
+  <text x="345" y="196" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">예</text>
 
-  <line x1="500" y1="162" x2="500" y2="200" stroke="currentColor" stroke-width="1.5"/>
-  <polygon points="495,196 500,206 505,196" fill="currentColor"/>
-  <text x="520" y="184" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">아니오</text>
+  <line x1="500" y1="174" x2="500" y2="212" stroke="currentColor" stroke-width="1.5"/>
+  <polygon points="495,208 500,218 505,208" fill="currentColor"/>
+  <text x="520" y="196" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">아니오</text>
 
-  <rect x="220" y="206" width="160" height="40" rx="6" fill="currentColor" fill-opacity="0.10" stroke="currentColor" stroke-width="1.5"/>
-  <text x="300" y="230" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">Humanoid</text>
+  <rect x="220" y="218" width="160" height="48" rx="6" fill="currentColor" fill-opacity="0.10" stroke="currentColor" stroke-width="1.5"/>
+  <text x="300" y="238" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">Humanoid</text>
+  <text x="300" y="254" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor">내장 IK 활용</text>
 
-  <rect x="420" y="206" width="160" height="40" rx="6" fill="currentColor" fill-opacity="0.10" stroke="currentColor" stroke-width="1.5"/>
-  <text x="500" y="226" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">Generic</text>
-  <text x="500" y="240" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor">(CPU 비용 절약)</text>
+  <rect x="420" y="218" width="160" height="48" rx="6" fill="currentColor" fill-opacity="0.10" stroke="currentColor" stroke-width="1.5"/>
+  <text x="500" y="238" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">Generic</text>
+  <text x="500" y="254" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor">전용 클립 재생</text>
+
+  <text x="300" y="314" text-anchor="middle" font-family="sans-serif" font-size="10" font-style="italic" fill="currentColor">리타겟팅이나 Unity 내장 Animator IK가 필요 없다면 Generic부터 검토</text>
 </svg>
 </div>
 
@@ -447,31 +445,30 @@ Humanoid 리그가 제공하는 기능 중 Unity의 내장 기능으로는 Gener
 
 **리그 선택 예시**
 
-| 리그 | 대상 | 이유 |
+| 상황 | 우선 검토할 리그 | 판단 기준 |
 |------|------|------|
-| Humanoid | 플레이어 캐릭터 | 리타겟팅 또는 IK 사용 |
-| Generic | 보스 몬스터 | 전용 애니메이션, 리타겟팅 불필요 |
-| Generic | NPC (고유 모델) | 모델별 전용 클립 사용 |
-| Generic | 동물, 기계 | 인체 구조가 아니므로 Avatar 매핑 불가 |
-| 상황에 따라 판단 | 일반 몬스터 (종류 다양) | 종류가 다양하면 리타겟팅으로 클립 수를 줄일 수 있으나, 종류가 적으면 Generic이 효율적 |
+| 여러 인간형 캐릭터가 같은 클립을 공유해야 함 | Humanoid | Avatar 매핑을 통한 리타겟팅이 필요 |
+| Foot IK, Hand IK 등 Unity 내장 Animator IK를 사용함 | Humanoid | Humanoid Avatar의 표준 관절 정보가 필요 |
+| 전용 클립만 재생하는 인간형 캐릭터 | Generic | 리타겟팅이나 내장 IK가 없다면 Humanoid의 이점이 작음 |
+| 모델별 고유 동작을 가진 NPC나 몬스터 | Generic | 각 모델에 맞춘 전용 클립을 사용 |
+| 동물, 기계, 비인간형 보스 | Generic | Humanoid Avatar로 매핑할 대상이 아님 |
+| 인간형 몬스터 종류가 많고 클립을 공유해야 함 | 상황에 따라 판단 | 클립 재사용 이점과 Humanoid 평가 비용을 비교 |
 
 <br>
 
-캐릭터 수가 많은 게임에서 리타겟팅이나 IK가 필요하지 않은 캐릭터를 Humanoid로 설정하면, 성능 예산이 제한된 환경일수록 불필요한 CPU 비용이 빠르게 누적됩니다. 모델을 Import할 때 리그 타입을 확인하고 필요에 맞게 설정해야 합니다.
-
-<br>
+정리하면 Humanoid는 인간형 캐릭터 사이의 클립 재사용이나 Unity 내장 Animator IK가 필요할 때 선택할 이유가 분명합니다. 반대로 캐릭터마다 전용 클립을 사용하고 Humanoid 전용 기능을 쓰지 않는다면, Generic 리그부터 검토하는 편이 적절합니다. 캐릭터 수가 많을수록 이 차이는 프레임 예산에 더 크게 누적됩니다.
 
 ---
 
 ## Animation Culling 모드
 
+리그 타입을 조정해도, 애니메이션을 평가해야 하는 캐릭터 수가 많으면 비용은 계속 누적됩니다. 특히 화면에 보이지 않는 캐릭터까지 같은 방식으로 평가하면, 플레이어가 볼 수 없는 움직임에 CPU 시간을 쓰게 됩니다.
+
+캐릭터가 카메라 밖에 있어 렌더링되지 않더라도, Animator는 설정에 따라 상태 머신을 평가하고 본 Transform을 갱신할 수 있습니다. 이런 비용을 줄이기 위해 Unity는 Animator의 **Culling Mode**를 제공합니다. Culling Mode는 화면 밖 캐릭터의 애니메이션 평가를 계속할지, 일부만 처리할지, 완전히 멈출지를 정하는 설정입니다.
+
 ### 화면 밖 애니메이션의 비용
 
-리그 타입으로 캐릭터 한 개의 애니메이션 비용을 줄였다면, 다음은 화면에 보이지 않는 캐릭터의 비용을 아예 제거하는 것입니다. Part 1에서 파티클의 Culling Mode를 다루었는데, 애니메이션에도 같은 원리가 적용됩니다. 캐릭터가 카메라 밖에 있을 때, 애니메이션을 계속 평가할 것인지, 멈출 것인지를 결정하는 설정입니다.
-
-<br>
-
-Animator 컴포넌트의 **Culling Mode** 설정으로 이 동작을 제어하며, 세 가지 모드를 제공합니다.
+Animator의 Culling Mode는 캐릭터가 카메라 밖에 있을 때 애니메이션 평가를 어느 단계까지 유지할지 정합니다. 화면 안에서는 세 모드가 모두 정상적으로 애니메이션을 처리하지만, 화면 밖에서는 생략하는 작업의 범위가 달라집니다.
 
 <br>
 
@@ -487,22 +484,22 @@ Animator 컴포넌트의 **Culling Mode** 설정으로 이 동작을 제어하�
 
   <rect x="40" y="128" width="540" height="100" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.2"/>
   <text x="60" y="150" font-family="sans-serif" font-size="13" font-weight="bold" fill="currentColor">Always Animate</text>
-  <text x="60" y="170" font-family="sans-serif" font-size="11" fill="currentColor">화면 밖에서도 모든 처리를 수행 (렌더링만 제외)</text>
+  <text x="60" y="170" font-family="sans-serif" font-size="11" fill="currentColor">화면 밖에서도 전체 애니메이션 평가 유지</text>
   <text x="60" y="190" font-family="sans-serif" font-size="11" fill="currentColor">절약: 없음</text>
-  <text x="60" y="210" font-family="sans-serif" font-size="11" fill="currentColor">복귀: 정확한 시간의 애니메이션이 이어짐</text>
+  <text x="60" y="210" font-family="sans-serif" font-size="11" fill="currentColor">복귀: 시간 흐름이 유지된 상태로 이어짐</text>
 
   <rect x="40" y="240" width="540" height="118" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.2"/>
   <text x="60" y="262" font-family="sans-serif" font-size="13" font-weight="bold" fill="currentColor">Cull Update Transforms</text>
-  <text x="60" y="282" font-family="sans-serif" font-size="11" fill="currentColor">상태 머신과 루트 모션만 평가</text>
+  <text x="60" y="282" font-family="sans-serif" font-size="11" fill="currentColor">상태 머신과 Root Motion은 계속 평가</text>
   <text x="60" y="300" font-family="sans-serif" font-size="10" font-style="italic" fill="currentColor">(루트 모션: 애니메이션이 캐릭터 위치를 직접 이동시키는 기능)</text>
-  <text x="60" y="320" font-family="sans-serif" font-size="11" fill="currentColor">절약: IK, 리타겟팅, Transform 갱신 비용 제거</text>
-  <text x="60" y="340" font-family="sans-serif" font-size="11" fill="currentColor">복귀: 상태 머신은 정확하나 Transform이 한 프레임 점프</text>
+  <text x="60" y="320" font-family="sans-serif" font-size="11" fill="currentColor">생략: 리타겟팅, IK, Transform 쓰기</text>
+  <text x="60" y="340" font-family="sans-serif" font-size="11" fill="currentColor">복귀: Transform 갱신이 재개되며 포즈가 튈 수 있음</text>
 
   <rect x="40" y="370" width="540" height="92" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.2"/>
   <text x="60" y="392" font-family="sans-serif" font-size="13" font-weight="bold" fill="currentColor">Cull Completely</text>
-  <text x="60" y="412" font-family="sans-serif" font-size="11" fill="currentColor">애니메이션 완전 정지, 아무것도 하지 않음</text>
-  <text x="60" y="432" font-family="sans-serif" font-size="11" fill="currentColor">절약: CPU 비용 전부 제거</text>
-  <text x="60" y="452" font-family="sans-serif" font-size="11" fill="currentColor">복귀: 정지 시점에서 이어서 재생 (시간 흐름 끊김)</text>
+  <text x="60" y="412" font-family="sans-serif" font-size="11" fill="currentColor">화면 밖에서는 애니메이션 평가 중지</text>
+  <text x="60" y="432" font-family="sans-serif" font-size="11" fill="currentColor">절약: Animator 평가 비용 제거</text>
+  <text x="60" y="452" font-family="sans-serif" font-size="11" fill="currentColor">복귀: 다시 보일 때 애니메이션 평가 재개</text>
 </svg>
 </div>
 
@@ -510,101 +507,79 @@ Animator 컴포넌트의 **Culling Mode** 설정으로 이 동작을 제어하�
 
 ### 모드 선택 기준
 
-캐릭터 30개 중 20개가 화면 밖에 있는 상황에서, Always Animate를 Cull Completely로 바꾸면 화면 밖 20개의 애니메이션 비용(상태 머신 + 블렌딩 + Transform)이 완전히 제거됩니다. 캐릭터당 약 0.1ms의 비용이라면 총 2.0ms를 절약할 수 있고, 이는 30fps 프레임 예산(33.3ms)의 약 6%에 해당합니다.
+모드 선택은 화면 밖에서도 유지해야 하는 정보가 무엇인지에 따라 달라집니다. 일반 NPC, 군중 캐릭터, 배경 몬스터처럼 보이지 않는 동안의 포즈나 애니메이션 진행이 게임 로직에 영향을 주지 않는 대상은 `Cull Completely`부터 검토하는 편이 적절합니다. 반대로 상태 진행, Root Motion, Animation Event, IK 결과가 화면 밖에서도 필요하다면 더 보수적인 모드를 선택해야 합니다.
 
-**대부분의 캐릭터에는 Cull Completely가 적합합니다.** 화면 밖 캐릭터의 애니메이션이 정확한 시간에 있든 아니든, 플레이어는 그 차이를 알 수 없습니다. 화면에 다시 들어오는 순간 정지했던 지점에서 이어서 재생되므로, 시각적으로 문제가 되는 경우는 드뭅니다.
+`Cull Update Transforms`는 중간 선택지입니다. 화면 밖에서도 상태 머신과 Root Motion은 계속 평가하지만, 리타겟팅, IK, Transform 쓰기는 생략합니다. 따라서 상태 진행은 유지해야 하지만 보이지 않는 동안 본 포즈를 갱신할 필요는 없는 캐릭터에 사용할 수 있습니다.
 
-<br>
-
-**Always Animate가 필요한 경우는 제한적입니다.** 화면 밖에서 애니메이션 이벤트(Animation Event)가 발생하여 게임 로직에 영향을 미치는 경우가 대표적인 예입니다. 예를 들어, 화면 밖 캐릭터의 공격 애니메이션에서 특정 시점에 데미지 이벤트가 발생해야 한다면, 애니메이션이 정확한 시간에 도달해야 합니다. 이런 경우에만 Always Animate를 사용하고, 나머지는 Cull Completely를 기본으로 설정하는 것이 좋습니다.
+`Always Animate`는 화면 밖에서도 애니메이션 결과가 계속 필요할 때만 검토합니다. 예를 들어 Animation Event가 게임 로직을 호출하거나, 화면 밖 캐릭터의 포즈와 IK 결과가 다른 시스템에 영향을 준다면 애니메이션 평가를 멈출 수 없습니다. 이런 경우가 아니라면 화면 밖 캐릭터에 Always Animate를 유지할 이유는 크지 않습니다.
 
 <br>
 
-| 모드 | 적합한 대상 |
+| 모드 | 선택 기준 |
 |------|-------------|
-| Cull Completely | 대부분의 캐릭터 (기본값) |
-| Cull Update Transforms | 화면 밖에서 상태 머신이 정확해야 하는 AI NPC (패트롤 → 전투 전환 등) |
-| Always Animate | 화면 밖에서 Animation Event가 게임 로직에 영향을 미치는 경우 |
+| Cull Completely | 화면 밖에서는 애니메이션 상태를 유지할 필요가 없는 캐릭터 |
+| Cull Update Transforms | 상태 머신과 Root Motion은 유지해야 하지만, 보이지 않는 동안 본 포즈 갱신은 생략해도 되는 캐릭터 |
+| Always Animate | 화면 밖에서도 Animation Event, IK, 본 Transform 갱신이 계속 필요한 캐릭터 |
 
 <br>
+
+실제 절감량은 캐릭터 수, Animator Controller의 복잡도, 리그 타입, 활성화된 레이어와 블렌드 트리에 따라 달라집니다. 따라서 Culling Mode를 바꾼 뒤에는 Profiler에서 화면 밖 캐릭터가 많은 장면을 기준으로 Animator 평가 시간이 줄어드는지 확인해야 합니다.
 
 ---
 
 ## GPU Skinning vs CPU Skinning
 
-지금까지 다룬 최적화는 애니메이션 평가 단계, 즉 클립에서 본의 Transform 값을 계산하는 과정에 집중되어 있었습니다. 하지만 계산된 본 Transform을 실제 메쉬 정점에 반영하는 단계가 하나 더 남아 있습니다. 이 단계를 **스키닝(Skinning)**이라 하며, 정점 수에 비례하는 별도의 연산 비용이 발생합니다. 스키닝은 CPU 또는 GPU에서 처리할 수 있으며, 어느 쪽에서 실행하느냐에 따라 CPU와 GPU 사이의 부하 분배가 달라집니다.
+지금까지는 Animator가 어떤 클립을 평가하고, 어떤 리그 타입으로 본(Bone)의 포즈를 계산하며, 화면 밖 캐릭터를 어디까지 갱신할지 살펴봤습니다. 하지만 본의 포즈가 계산되어도 플레이어가 보는 캐릭터 메쉬가 자동으로 변형되는 것은 아닙니다.
 
-<br>
+계산된 본 Transform을 실제 메쉬 정점에 반영하는 단계가 따로 필요합니다. 이 단계를 **스키닝(Skinning)**이라고 하며, Unity에서는 이 작업을 CPU에서 처리할지 GPU에서 처리할지 선택할 수 있습니다.
 
 ### 스키닝이란
 
-앞 단계에서 애니메이션 시스템이 본(Bone)의 회전과 위치를 계산하지만, 본 자체는 눈에 보이지 않는 뼈대입니다. 플레이어가 실제로 보는 것은 캐릭터의 메쉬(3D 표면)입니다. 스키닝은 이 뼈대와 표면을 연결하는 단계로, 각 메쉬 정점을 자신에게 영향을 주는 본의 현재 Transform에 맞춰 이동시킵니다. 팔 본이 회전하면 팔 부분의 정점들이 함께 움직여서, 메쉬가 뼈대의 포즈에 맞게 변형됩니다.
+본은 캐릭터의 움직임을 정의하는 뼈대이고, 메쉬는 플레이어가 실제로 보는 표면입니다. 스키닝은 이 둘을 연결하는 과정입니다. 각 정점은 하나 이상의 본에 연결되어 있고, 본마다 얼마나 영향을 받을지 가중치를 가지고 있습니다.
+
+예를 들어 팔꿈치 근처의 정점은 상완본과 전완본의 영향을 함께 받을 수 있습니다. 팔이 구부러지면 두 본의 현재 Transform을 가중치에 따라 섞어 그 정점의 최종 위치를 계산합니다. 이 계산이 메쉬의 모든 정점에 대해 반복되므로, 정점 수가 많고 정점 하나에 연결된 본이 많을수록 스키닝 비용도 커집니다.
 
 <br>
 
 <div style="text-align: center; margin: 1.5em 0;">
-<svg viewBox="0 0 620 540" xmlns="http://www.w3.org/2000/svg" style="max-width: 620px; width: 100%;">
-  <text x="310" y="22" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="currentColor">스키닝 과정 — 팔 본 체인 예시</text>
+<svg viewBox="0 0 620 390" xmlns="http://www.w3.org/2000/svg" style="max-width: 620px; width: 100%;">
+  <text x="310" y="24" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="currentColor">스키닝 계산 흐름</text>
 
-  <text x="40" y="50" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">바인드 포즈 (T-Pose, 팔을 편 상태)</text>
+  <rect x="34" y="52" width="160" height="82" rx="6" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.2"/>
+  <text x="114" y="74" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">현재 본 포즈</text>
+  <text x="54" y="98" font-family="sans-serif" font-size="11" fill="currentColor">상완본 Transform</text>
+  <text x="54" y="116" font-family="sans-serif" font-size="11" fill="currentColor">전완본 Transform</text>
 
-  <rect x="80" y="72" width="64" height="28" rx="4" fill="currentColor" fill-opacity="0.10" stroke="currentColor" stroke-width="1.5"/>
-  <text x="112" y="91" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">어깨</text>
+  <rect x="230" y="52" width="160" height="82" rx="6" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.2"/>
+  <text x="310" y="74" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">정점 P의 가중치</text>
+  <text x="250" y="98" font-family="sans-serif" font-size="11" fill="currentColor">상완본 0.6</text>
+  <text x="250" y="116" font-family="sans-serif" font-size="11" fill="currentColor">전완본 0.4</text>
 
-  <line x1="144" y1="86" x2="266" y2="86" stroke="currentColor" stroke-width="2"/>
-  <text x="205" y="76" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor">상완 정점들</text>
+  <rect x="426" y="52" width="160" height="82" rx="6" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.2"/>
+  <text x="506" y="74" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">원본 정점 위치</text>
+  <text x="446" y="100" font-family="sans-serif" font-size="11" fill="currentColor">바인드 포즈 기준</text>
+  <text x="446" y="118" font-family="sans-serif" font-size="11" fill="currentColor">메쉬 안의 정점 P</text>
 
-  <rect x="266" y="72" width="68" height="28" rx="4" fill="currentColor" fill-opacity="0.10" stroke="currentColor" stroke-width="1.5"/>
-  <text x="300" y="91" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">팔꿈치</text>
+  <line x1="114" y1="134" x2="250" y2="176" stroke="currentColor" stroke-width="1.4"/>
+  <polygon points="246,170 256,178 244,180" fill="currentColor"/>
+  <line x1="310" y1="134" x2="310" y2="174" stroke="currentColor" stroke-width="1.4"/>
+  <polygon points="305,170 310,180 315,170" fill="currentColor"/>
+  <line x1="506" y1="134" x2="370" y2="176" stroke="currentColor" stroke-width="1.4"/>
+  <polygon points="376,180 364,178 374,170" fill="currentColor"/>
 
-  <line x1="334" y1="86" x2="456" y2="86" stroke="currentColor" stroke-width="2"/>
-  <text x="395" y="76" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor">전완 정점들</text>
+  <rect x="170" y="180" width="280" height="72" rx="6" fill="currentColor" fill-opacity="0.10" stroke="currentColor" stroke-width="1.4"/>
+  <text x="310" y="204" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">스키닝</text>
+  <text x="190" y="226" font-family="sans-serif" font-size="11" fill="currentColor">본별 변형 결과를 가중치만큼 섞음</text>
+  <text x="190" y="242" font-family="sans-serif" font-size="10" font-style="italic" fill="currentColor">상완본 결과 60% + 전완본 결과 40%</text>
 
-  <rect x="456" y="72" width="68" height="28" rx="4" fill="currentColor" fill-opacity="0.10" stroke="currentColor" stroke-width="1.5"/>
-  <text x="490" y="91" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">손목</text>
+  <line x1="310" y1="252" x2="310" y2="292" stroke="currentColor" stroke-width="1.4"/>
+  <polygon points="305,288 310,298 315,288" fill="currentColor"/>
 
-  <circle cx="310" cy="86" r="4" fill="currentColor"/>
-  <text x="310" y="116" text-anchor="middle" font-family="sans-serif" font-size="11" font-style="italic" fill="currentColor">P</text>
+  <rect x="210" y="298" width="200" height="52" rx="6" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.2"/>
+  <text x="310" y="320" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">변형된 정점 P'</text>
+  <text x="310" y="338" text-anchor="middle" font-family="sans-serif" font-size="11" fill="currentColor">현재 포즈에 맞는 메쉬 위치</text>
 
-  <text x="40" y="140" font-family="sans-serif" font-size="11" fill="currentColor">정점 P는 팔꿈치 근처에 위치</text>
-  <text x="40" y="158" font-family="sans-serif" font-size="11" fill="currentColor">상완본 가중치 50%, 전완본 가중치 50%</text>
-
-  <line x1="40" y1="178" x2="580" y2="178" stroke="currentColor" stroke-width="1" stroke-dasharray="3,3"/>
-
-  <text x="40" y="202" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">포즈 변경 (팔 구부림)</text>
-
-  <rect x="80" y="222" width="64" height="28" rx="4" fill="currentColor" fill-opacity="0.10" stroke="currentColor" stroke-width="1.5"/>
-  <text x="112" y="241" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">어깨</text>
-
-  <line x1="144" y1="236" x2="266" y2="236" stroke="currentColor" stroke-width="2"/>
-  <text x="205" y="226" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor">상완 정점들</text>
-
-  <rect x="266" y="222" width="68" height="28" rx="4" fill="currentColor" fill-opacity="0.10" stroke="currentColor" stroke-width="1.5"/>
-  <text x="300" y="241" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">팔꿈치</text>
-
-  <line x1="334" y1="236" x2="430" y2="290" stroke="currentColor" stroke-width="2"/>
-  <text x="400" y="280" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor">전완 정점들</text>
-
-  <rect x="430" y="276" width="68" height="28" rx="4" fill="currentColor" fill-opacity="0.10" stroke="currentColor" stroke-width="1.5"/>
-  <text x="464" y="295" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">손목</text>
-
-  <circle cx="318" cy="252" r="4" fill="currentColor"/>
-  <text x="318" y="270" text-anchor="middle" font-family="sans-serif" font-size="11" font-style="italic" fill="currentColor">P</text>
-
-  <text x="40" y="332" font-family="sans-serif" font-size="11" fill="currentColor">정점 P는 두 본에 모두 영향을 받으므로 가중치에 따라 중간 위치로 이동</text>
-
-  <line x1="40" y1="352" x2="580" y2="352" stroke="currentColor" stroke-width="1" stroke-dasharray="3,3"/>
-
-  <text x="40" y="376" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">정점 하나의 계산</text>
-
-  <rect x="40" y="390" width="540" height="100" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.2"/>
-  <text x="60" y="412" font-family="sans-serif" font-size="11" fill="currentColor">각 본의 변환 = 현재 포즈 행렬 × 바인드 포즈 역행렬</text>
-  <text x="60" y="430" font-family="sans-serif" font-size="10" font-style="italic" fill="currentColor">(바인드 포즈에서 현재 포즈까지 얼마나 변했는지)</text>
-  <text x="60" y="458" font-family="sans-serif" font-size="11" fill="currentColor">P의 최종 위치 = 상완본 변환 × 원본 위치 × 0.5</text>
-  <text x="172" y="478" font-family="sans-serif" font-size="11" fill="currentColor">+ 전완본 변환 × 원본 위치 × 0.5</text>
-
-  <text x="40" y="514" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">비용:</text>
-  <text x="100" y="514" font-family="sans-serif" font-size="11" fill="currentColor">정점 5,000개 × 정점당 본 영향 4개 = 20,000번 행렬 연산 (매 프레임 수행)</text>
+  <text x="310" y="374" text-anchor="middle" font-family="sans-serif" font-size="11" font-style="italic" fill="currentColor">이 계산이 메쉬의 모든 정점에 반복되므로, 비용은 정점 수와 정점당 본 영향 수에 비례</text>
 </svg>
 </div>
 
@@ -612,106 +587,71 @@ Animator 컴포넌트의 **Culling Mode** 설정으로 이 동작을 제어하�
 
 ### CPU Skinning vs GPU Skinning
 
-기본적으로 Unity는 CPU에서 스키닝을 처리합니다. 메인 스레드(또는 워커 스레드)에서 각 정점에 대해 본의 변환을 적용하고, 변형된 정점 버퍼를 GPU에 업로드하여 렌더링하는 방식입니다.
+CPU Skinning과 GPU Skinning의 차이는 정점 변형 계산을 어느 쪽에서 처리하느냐입니다. CPU Skinning은 CPU가 본 Transform과 정점 가중치를 이용해 변형된 정점 위치를 계산합니다. 이 방식은 GPU에 스키닝 계산을 맡기지 않지만, 캐릭터 수와 정점 수가 늘어날수록 CPU 시간이 증가합니다.
 
-CPU Skinning은 모든 플랫폼에서 동작하지만, 캐릭터 수가 늘어나면 CPU 부하가 선형적으로 증가합니다. 정점 5,000개짜리 캐릭터 20개를 CPU에서 스키닝하면, 매 프레임 100,000개 정점의 변환을 CPU가 처리해야 합니다.
+GPU Skinning은 같은 계산을 GPU에서 처리합니다. CPU는 본 행렬이나 스키닝에 필요한 데이터를 준비하고, 실제 정점 변형은 GPU의 정점 처리 단계나 GPU 스키닝 경로에서 수행됩니다. 각 정점의 스키닝 계산은 다른 정점과 독립적으로 처리할 수 있으므로, 여러 정점을 동시에 계산하는 GPU의 구조와 잘 맞습니다.
 
-<br>
+다만 GPU Skinning이 항상 더 빠른 것은 아닙니다. CPU 병목이 있는 장면에서는 CPU 시간을 줄이는 데 도움이 되지만, 이미 GPU가 바쁜 장면에서는 정점 변형 작업까지 GPU에 추가되어 오히려 프레임 시간이 나빠질 수 있습니다. 따라서 스키닝을 어디에서 처리할지는 현재 병목이 CPU 쪽인지 GPU 쪽인지에 따라 결정해야 합니다.
 
-**GPU Skinning**은 이 스키닝 연산을 CPU 대신 GPU에서 수행하는 방식입니다. CPU Skinning에서 CPU가 정점 5,000개를 순차적으로 변환했다면, GPU Skinning에서는 GPU의 수천 개 코어가 정점을 동시에 변환합니다. GPU는 동일한 연산을 대량의 데이터에 병렬로 적용하는 구조이므로, 정점 단위의 반복 계산에 적합합니다.
-
-CPU가 하는 일은 본 변환 행렬(본 50개라면 행렬 50개)만 계산하여 GPU에 전달하는 것으로 줄어듭니다. 정점 변환은 GPU의 **Compute Shader**(렌더링이 아닌 범용 계산을 GPU에서 실행하는 프로그램)에서 처리되며, 변형된 정점 데이터가 GPU 메모리에 바로 남으므로 CPU에서 GPU로 정점 버퍼를 업로드하는 과정도 사라집니다.
-
-<br>
-
-두 방식의 차이를 정리하면 다음과 같습니다.
+두 방식의 차이를 단순화하면 다음과 같습니다.
 
 <br>
 
 | 항목 | CPU Skinning | GPU Skinning |
 |------|--------------|--------------|
-| 연산 위치 | CPU (메인/워커) | GPU (Compute Shader) |
-| 정점 변환 | CPU가 순차 처리 | GPU가 병렬 처리 |
-| CPU 부하 | 정점 수에 비례 | 본 행렬 전달만 |
-| GPU 부하 | 없음 | 정점 변환 추가 |
-| 데이터 전송 | 정점 버퍼 업로드 | 불필요 (GPU에 상주) |
-| 플랫폼 | 모든 플랫폼 | Compute Shader 필요 |
-| CPU-bound 상황 | 부하 가중 | **부하 경감** ← |
-| GPU-bound 상황 | **부하 경감** ← | 부하 가중 |
+| 정점 변형 계산 | CPU에서 수행 | GPU에서 수행 |
+| CPU 영향 | 정점 수와 캐릭터 수가 늘수록 CPU 시간이 증가 | CPU의 스키닝 부담을 줄일 수 있음 |
+| GPU 영향 | GPU에는 스키닝 계산이 추가되지 않음 | GPU에 정점 변형 작업이 추가됨 |
+| 적합한 상황 | GPU 여유가 적거나 캐릭터 수가 적은 장면 | CPU 병목이 있고 GPU 여유가 있는 장면 |
+| 주의할 점 | 많은 캐릭터가 동시에 등장하면 CPU 비용이 누적됨 | GPU 병목 상황에서는 프레임 시간이 늘 수 있음 |
+| 확인 항목 | CPU의 Animator·Skinning 시간 | GPU 시간과 플랫폼 지원 여부 |
 
 <br>
 
 ### 성능 예산이 제한된 환경에서의 선택
 
-성능 예산이 제한된 환경에서는 CPU와 GPU 모두 한정적이므로, 현재 병목이 어디인지에 따라 선택이 달라집니다.
+스키닝 처리 위치는 현재 병목을 기준으로 정해야 합니다. CPU 프레임 시간이 길고 애니메이션이나 스키닝 비용이 눈에 띄는 장면이라면, GPU Skinning으로 CPU 부담을 줄일 여지가 있습니다. 반대로 GPU 시간이 이미 프레임 예산에 가깝다면, 스키닝 작업을 GPU로 옮기는 것이 오히려 부담이 될 수 있습니다.
 
-CPU-bound 상태라면 GPU Skinning으로 CPU 부하를 GPU로 이전하는 것이 효과적입니다. GPU-bound 상태라면 GPU에 추가 부하를 주면 안 되므로 CPU Skinning을 유지해야 합니다.
-
-<br>
-
-캐릭터가 10개 이하라면 CPU Skinning으로도 충분하고, 20개 이상이면 GPU Skinning을 고려할 수 있습니다. Unity Profiler에서 CPU와 GPU의 Skinning 시간을 측정하고, 실제 기기에서 프레임 레이트 변화를 확인한 후 결정해야 합니다.
-
-<br>
+따라서 캐릭터 수만으로 CPU Skinning과 GPU Skinning을 결정하기는 어렵습니다. 캐릭터의 정점 수, Skin Weights, 화면에 동시에 보이는 캐릭터 수, 렌더링 부하가 함께 영향을 줍니다. Unity Profiler와 실제 기기 측정으로 CPU 시간과 GPU 시간을 비교한 뒤, 병목이 줄어드는 쪽을 선택하는 편이 적절합니다.
 
 ### 정점 수와 본 가중치
 
-스키닝 비용은 정점 수와 **본 가중치 수(Skin Weights)**에 직접 비례합니다. 본 가중치 수는 하나의 정점이 영향을 받는 본의 최대 수입니다.
+스키닝 비용은 메쉬 정점 수와 정점마다 사용하는 본 영향 수에 따라 커집니다. 정점 하나가 본 하나에만 영향을 받으면 한 본의 Transform만 반영하면 되지만, 네 개의 본에 영향을 받는다면 네 본의 결과를 계산한 뒤 가중치에 따라 합산해야 합니다.
+
+Unity의 **Skin Weights** 설정은 스키닝 계산에 사용할 본 영향 수의 상한을 정합니다. 메쉬 파일에 더 많은 본 가중치가 들어 있더라도, 이 설정이 낮으면 Unity는 런타임 스키닝에서 그중 일부만 사용합니다.
 
 <br>
 
 **본 가중치 수에 따른 비용** (Quality Settings &gt; Skin Weights)
 
-| 설정 | 정점당 연산 | 정점 5,000개 기준 | 비고 |
-|------|-------------|-------------------|------|
-| 1 Bone | 행렬 1회 | 5,000회 | 품질 낮음 |
-| 2 Bones | 행렬 2회 | 10,000회 | 비용 제약 시 권장 |
-| 4 Bones | 행렬 4회 | 20,000회 | 기본값 |
-| Unlimited | 전체 사용 | 가변 | 최고 품질 |
+| 설정 | 계산에 사용하는 본 영향 수 | 특징 |
+|------|----------------------------|------|
+| 1 Bone | 정점당 최대 1개 | 가장 가볍지만 관절 변형이 거칠어질 수 있음 |
+| 2 Bones | 정점당 최대 2개 | 원거리 캐릭터나 단순한 모델에서 검토 가능 |
+| 4 Bones | 정점당 최대 4개 | 일반적인 캐릭터 변형에서 품질과 비용의 균형을 잡기 쉬움 |
+| Unlimited | 메쉬가 가진 본 가중치를 더 많이 사용 | 복잡한 변형에는 유리하지만 비용 확인 필요 |
 
-성능 예산이 제한된 환경에서 2 Bones를 권장하는 이유는 두 가지입니다. 4 Bones 대비 행렬 연산이 절반으로 줄고, 관절 부위(팔꿈치, 무릎)의 변형 차이가 작은 화면에서는 거의 드러나지 않기 때문입니다.
+Skin Weights를 낮추면 정점 하나를 계산할 때 참조하는 본 수가 줄어들어 스키닝 비용도 줄어듭니다. 대신 여러 본의 영향을 부드럽게 섞어야 하는 부위에서는 메쉬가 딱딱하게 접히거나, 관절 주변이 어색하게 찌그러질 수 있습니다. 특히 팔꿈치, 무릎, 어깨, 손가락처럼 움직임이 큰 관절에서 차이가 눈에 띄기 쉽습니다.
 
-<br>
-
-Unity의 Quality Settings에서 Skin Weights를 전역적으로 설정할 수 있습니다. 성능 예산이 제한된 환경에서 2 Bones로 설정하면 대부분의 캐릭터에서 시각적 품질을 유지하면서 스키닝 비용을 절반으로 줄일 수 있습니다. 관절 부위(팔꿈치, 무릎)의 변형이 약간 부자연스러워질 수 있지만, 작은 화면 크기에서는 구분하기 어렵습니다.
-
-<br>
-
----
-
-## 최적화 항목 정리
-
-이 글에서 다룬 최적화 항목을 비용 발생 지점과 함께 정리합니다.
-
-<br>
-
-| 항목 | 비용 발생 지점 | 대응 |
-|------|----------------|------|
-| 단순 애니메이션에 불필요한 Animator | 상태 머신 평가, 트랜지션 검사 | 트위닝 라이브러리 또는 스크립트로 대체 |
-| 비압축 클립 데이터 | 메모리 사용량, 샘플링 비용 | Optimal 압축, 상수 커브 제거 |
-| 키프레임 오차 미조정 | 불필요한 키프레임 잔존 | Error 값 조정 (시각 품질과 균형) |
-| 불필요한 Humanoid | Muscle 연산, 매 프레임 30~50% 추가 | 리타겟팅/IK 불필요 시 Generic으로 변경 |
-| Always Animate 남용 | 화면 밖 캐릭터에서 CPU 비용 지속 | Cull Completely를 기본으로 설정 |
-| 높은 Skin Weights | 정점당 행렬 연산 증가, 4 Bones는 2배 비용 | 2 Bones로 설정 (비용 제약 시) |
-| 과다한 정점 수 | 스키닝 연산 총량 증가 | LOD로 거리별 감소 |
-| 비대한 Animator Controller | 상태/레이어 수에 비례하는 평가 비용 | 불필요한 상태, 트랜지션 정리 |
-
-<br>
+따라서 모든 캐릭터에 같은 값을 적용하기보다 화면 크기와 중요도에 따라 판단하는 편이 적절합니다. 플레이어 캐릭터나 클로즈업되는 캐릭터는 4 Bones 이상이 필요할 수 있고, 원거리 NPC나 단순한 몬스터는 2 Bones로도 충분할 수 있습니다. 낮은 Skin Weights가 적절한지는 실제 게임 카메라에서 관절 주변의 접힘이나 찌그러짐이 얼마나 눈에 띄는지에 따라 달라집니다.
 
 ---
 
 ## 마무리
 
 - 애니메이션 비용은 본 Transform을 계산하는 **애니메이션 평가** 단계와, 계산된 Transform을 메쉬 정점에 반영하는 **스키닝** 단계로 나뉩니다.
-- 단순한 UI/환경 애니메이션에는 Animator 대신 트위닝 라이브러리나 스크립트 직접 제어가 효율적입니다. Animator의 상태 머신 오버헤드를 피할 수 있습니다.
-- 애니메이션 압축은 Optimal 모드를 기본으로 사용하고, 3D 모델링 툴에서 함께 익스포트된 불필요한 상수 커브를 제거하면 메모리와 샘플링 비용이 줄어듭니다.
-- Humanoid 리그는 리타겟팅과 IK를 위해 Generic보다 30~50% 높은 CPU 비용이 발생합니다. 이 기능이 불필요한 캐릭터에는 Generic을 사용합니다.
-- Culling Mode를 Cull Completely로 설정하면 화면 밖 캐릭터의 애니메이션 비용을 완전히 제거할 수 있습니다.
-- 스키닝은 정점 수와 Skin Weights에 비례하는 비용이 발생합니다. Skin Weights를 2 Bones로 설정하면 행렬 연산을 절반으로 줄일 수 있습니다.
-- GPU Skinning은 CPU-bound 상황에서 스키닝 부하를 GPU로 이전하는 데 효과적이지만, GPU-bound 상태에서는 역효과가 날 수 있으므로 프로파일러로 확인한 뒤 결정합니다.
+- 상태 전환과 블렌딩이 필요 없는 UI나 환경 오브젝트는 Animator보다 트위닝 라이브러리나 스크립트 제어가 단순할 수 있습니다.
+- 애니메이션 압축과 상수 커브 제거는 클립 데이터 크기를 줄여 메모리 사용량과 샘플링 부담을 낮춥니다.
+- Humanoid 리그는 리타겟팅과 Unity 내장 Animator IK가 필요할 때 의미가 큽니다. 이런 기능이 없다면 Generic 리그부터 검토하는 편이 적절합니다.
+- Animation Culling Mode는 화면 밖 캐릭터의 애니메이션 평가 범위를 줄이는 설정입니다. 화면 밖에서도 상태, 이벤트, IK 결과가 필요한지에 따라 모드를 선택합니다.
+- 스키닝 비용은 메쉬 정점 수와 Skin Weights의 영향을 받습니다. Skin Weights를 낮추면 비용은 줄 수 있지만 관절 변형 품질도 함께 확인해야 합니다.
+- GPU Skinning은 스키닝 계산을 GPU로 옮겨 CPU 부담을 줄일 수 있지만, GPU 병목 상황에서는 오히려 부담이 될 수 있습니다.
 
 <br>
 
-파티클과 애니메이션까지 포함하여, [게임 루프의 원리 (1)](/dev/unity/GameLoop-1/)에서 시작한 전체 시리즈에서 각 서브시스템의 비용 구조와 최적화 방법을 하나씩 다루었습니다. 각 서브시스템의 비용 구조를 알고 있어도, 실제 게임에서 병목이 어디에 있는지 찾지 못하면 최적화를 적용할 수 없습니다. [프로파일링](/dev/unity/Profiling-1/) 시리즈에서 Unity Profiler를 비롯한 프로파일링 도구로 병목을 진단하는 방법을 이어서 다뤄봅니다.
+파티클과 애니메이션 최적화의 공통점은 비용이 한 지점에만 모이지 않는다는 점입니다. 파티클은 생성 수, 모듈, Culling, 오버드로우가 함께 작용하고, 애니메이션은 상태 평가, 클립 데이터, 리그 타입, Culling, 스키닝이 함께 비용을 만듭니다.
+
+따라서 최적화 항목을 많이 아는 것보다, 실제 프로젝트에서 어떤 항목이 프레임 시간을 쓰고 있는지 확인하는 과정이 중요합니다. 이어지는 [프로파일링](/dev/unity/Profiling-1/) 시리즈에서는 Unity Profiler를 비롯한 도구로 CPU와 GPU 시간을 읽고, 병목 위치에 맞춰 최적화 우선순위를 정하는 방법을 다룹니다.
 
 <br>
 
