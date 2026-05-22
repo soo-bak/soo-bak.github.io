@@ -6,6 +6,7 @@ source "https://rubygems.org"
 
 gem "jekyll"
 gem "minimal-mistakes-jekyll"
+gem "sass-embedded", "< 1.100"
 
 group :jekyll_plugins do
 end
