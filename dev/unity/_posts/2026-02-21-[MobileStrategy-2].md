@@ -13,184 +13,171 @@ tags:
 
 ## 기기별 성능 차이에 대응하기
 
-[Part 1](/dev/unity/MobileStrategy-1/)에서 모바일 게임의 근본적 제약인 발열과 배터리를 다루었습니다. 서멀 쓰로틀링은 피크 성능과 지속 성능 사이에 큰 격차를 만듭니다. 60fps와 30fps 사이의 선택도 부드러움만의 문제가 아니라 전력 소비와 발열에 직결됩니다. 장시간 플레이에서 안정적인 경험을 유지하려면, 피크가 아닌 지속 성능을 기준으로 설계해야 합니다.
+[Part 1](/dev/unity/MobileStrategy-1/)에서는 모바일 게임이 발열과 배터리라는 물리적 제약 안에서 동작한다는 점을 다루었습니다. 서멀 쓰로틀링이 시작되면 차가운 상태에서의 피크 성능을 계속 유지할 수 없고, 목표 프레임레이트도 전력과 발열까지 고려해 정해야 합니다. 결국 모바일 성능 설계의 기준은 순간적인 최고 성능이 아니라, 실제 플레이 시간 동안 유지되는 지속 성능입니다.
 
-<br>
+문제는 이 지속 성능이 기기마다 크게 다르다는 점입니다. SoC 성능, GPU 구조, RAM 용량, 화면 해상도, 방열 설계가 모두 다르기 때문에 같은 빌드라도 어떤 기기에서는 여유가 남고, 어떤 기기에서는 몇 분 만에 프레임 예산을 넘을 수 있습니다. 하나의 품질 설정으로 모든 기기를 만족시키기는 어렵습니다. 낮은 사양에 맞추면 고사양 기기의 여유 성능을 활용하지 못하고, 높은 사양에 맞추면 저사양 기기에서 프레임레이트와 발열을 안정적으로 유지하기 어렵습니다.
 
-하지만 지속 성능이라는 기준 자체가 기기마다 다릅니다. 2GB RAM에 Mali-G52 GPU를 탑재한 저사양 기기와, 8GB RAM에 Apple A17 Pro를 탑재한 고사양 기기의 지속 성능은 수 배 차이가 납니다. 하나의 품질 설정으로 모든 기기를 만족시킬 수는 없습니다. 저사양에 맞추면 고사양 기기의 성능을 낭비하고, 고사양에 맞추면 저사양 기기에서 프레임이 유지되지 않기 때문입니다.
-
-<br>
-
-이 글에서는 다양한 성능의 기기에 대응하는 Quality Settings 전략과, 빌드 크기를 줄이는 IL2CPP 스트리핑 및 에셋 압축을 다룹니다. 전체 29편 시리즈의 마지막 글로서, 프레임 하나의 여정을 통합 정리하며 마무리합니다.
-
-<br>
+이 글에서는 기기 성능 차이에 대응하기 위한 Quality Settings 티어와 디바이스 분류 전략을 먼저 살펴봅니다. 이어서 모바일 배포에서 중요한 IL2CPP 스트리핑, 앱 크기, 에셋 압축을 정리합니다.
 
 ---
 
 ## Quality Settings 티어
 
-Unity의 **Quality Settings**(Edit > Project Settings > Quality)는 여러 개의 품질 프리셋을 정의하고, 런타임에서 프리셋을 전환할 수 있는 시스템입니다. 각 프리셋에는 렌더 스케일, 그림자, 텍스처 해상도, LOD 등 렌더링 비용에 직접 영향을 미치는 설정이 포함됩니다.
+Unity의 **Quality Settings**(Edit > Project Settings > Quality)는 여러 품질 프리셋을 만들어 두고, 기기 성능이나 실행 중 상태에 따라 전환할 수 있게 해 주는 시스템입니다. 여기서 중요한 것은 옵션을 많이 만드는 것이 아니라, 같은 목표 프레임레이트를 유지하기 위해 기기 등급별로 어떤 부하를 줄이고 어떤 품질을 남길지 정하는 것입니다. 저사양 티어에서는 프레임 시간과 발열에 직접 영향을 주는 항목을 먼저 낮추고, 고사양 티어에서는 지속 성능에 여유가 있는 범위 안에서 해상도, 그림자, 후처리 같은 시각 품질을 더 유지합니다.
+
+품질 티어는 비용 축별로 나누어 설계하는 편이 좋습니다. 해상도는 픽셀 처리량을, 그림자는 추가 렌더링 패스를, 텍스처 설정은 메모리와 대역폭을, LOD는 정점 수와 원거리 오브젝트 비용을 조절합니다. 아래 항목들은 모바일에서 티어별 차이를 만들 때 자주 사용하는 설정입니다.
 
 <br>
 
-**렌더 스케일(Render Scale).** URP의 Render Scale은 내부 렌더링 해상도를 화면 해상도보다 낮춥니다. 1080p 디스플레이에서 Render Scale 0.7이면 내부적으로 756p로 렌더링한 뒤 업스케일합니다. 가로와 세로가 모두 0.7배가 되므로 전체 픽셀 수는 약 49%(0.7 × 0.7)로 줄어들고, GPU 프래그먼트 부하가 절반 가까이 감소합니다. 단일 설정으로 가장 큰 GPU 비용 절감 효과를 얻을 수 있는 항목이지만, 해상도가 낮아지는 만큼 화면이 흐려지므로 UI는 별도 카메라로 원본 해상도를 유지하는 것이 일반적입니다.
+**품질 티어에서 주로 조정하는 항목**
 
-**그림자.** 실시간 그림자는 셰도우맵을 별도로 렌더링하는 과정이므로 GPU 비용이 큽니다. 그림자를 끄면 셰도우맵 렌더링이 완전히 제거됩니다. 시각적으로 그림자가 필요한 경우에는 셰도우맵 해상도를 낮추거나(2048 → 512), 그림자 거리를 줄여 셰도우맵에 포함되는 오브젝트 수를 제한합니다. 캐스케이드 수도 중요한 조절 항목입니다. URP에서 Shadow Cascade Count가 4이면 셰도우맵을 4장 렌더링하고, 1이면 1장만 렌더링합니다. 저사양 프리셋에서는 캐스케이드를 1로 줄이면 그림자 패스의 GPU 비용이 크게 감소합니다.
-
-**텍스처 해상도.** `QualitySettings.globalTextureMipmapLimit`(이전의 masterTextureLimit)으로 모든 텍스처의 밉맵 레벨을 강제로 올릴 수 있습니다. 밉맵(Mipmap)은 원본 텍스처를 절반, 1/4, 1/8 크기로 미리 축소해 둔 버전입니다. 값이 1이면 원본 대신 절반 해상도 밉맵을 사용하고, 2이면 1/4 해상도를 사용합니다. 텍스처 메모리와 대역폭이 함께 줄어듭니다.
-
-**MSAA(Multi-Sample Anti-Aliasing).** MSAA는 폴리곤 경계의 계단 현상을 줄이는 안티앨리어싱 기법입니다. URP Asset에서 4x, 2x, Off를 선택할 수 있습니다. MSAA는 타일 기반 GPU에서 타일 메모리 안에서 처리되므로 데스크톱 GPU보다 비용이 낮지만, 4x MSAA는 여전히 프래그먼트 처리량과 타일 메모리 사용량을 늘립니다. 저사양 프리셋에서는 MSAA를 끄고, 고사양에서만 2x 또는 4x를 적용하는 것이 일반적입니다.
-
-**후처리(Post-Processing).** URP Volume에 설정하는 Bloom, Color Grading, SSAO(Screen Space Ambient Occlusion) 등의 후처리 효과입니다. 이 중 SSAO는 화면의 모든 픽셀에 대해 주변 깊이를 샘플링하므로 모바일 GPU에서 비용이 높습니다. 저사양 프리셋에서 가장 먼저 끄는 항목이 SSAO이며, Bloom도 해상도가 높을수록 비용이 커지므로 다운샘플 횟수를 줄이거나 비활성화합니다. 후처리 효과의 활성 여부는 Volume Profile을 품질 등급별로 분리하여 관리합니다.
-
-**LOD 바이어스.** LOD(Level of Detail) 전환 거리를 조절합니다. 기본값은 2.0이며, 값이 낮을수록 카메라에서 더 가까운 거리에서 저해상도 LOD로 전환됩니다. 저사양 프리셋에서 LOD 바이어스를 1.0이나 0.5로 낮추면, 화면에 보이는 메시의 정점 수가 줄어들어 버텍스 셰이더 부하가 감소합니다. 오브젝트가 많은 오픈월드 장르에서 효과가 큽니다.
-
-<br>
-
-URP에서는 각 Quality Level이 별도의 **URP Asset**(UniversalRenderPipelineAsset)을 참조합니다. 렌더 스케일, MSAA, 그림자 캐스케이드 등 렌더링 파이프라인 설정이 이 URP Asset에 정의되어 있으므로, 품질 프리셋마다 다른 URP Asset을 할당하면 Quality Level 전환 시 렌더링 설정이 함께 바뀝니다.
-
-런타임에서는 `QualitySettings.SetQualityLevel(index)`로 프리셋을 전환합니다. 인덱스 0이 가장 낮은 품질, 숫자가 올라갈수록 높은 품질입니다.
+| 항목 | 주로 줄이는 비용 | 낮췄을 때의 영향 |
+|---|---|---|
+| Render Scale | 픽셀 수, 프래그먼트 셰이더, 렌더 타깃 대역폭 | 화면이 흐려질 수 있음 |
+| 그림자 | 셰도우맵 렌더링, 그림자 샘플링, 추가 드로우 | 입체감과 접지감이 약해짐 |
+| 텍스처 밉맵 제한 | 텍스처 메모리, 텍스처 대역폭 | 표면 디테일이 낮아짐 |
+| MSAA | 경계 샘플 수, 타일 메모리 사용량 | 폴리곤 경계가 거칠어질 수 있음 |
+| 후처리 | 전체 화면 패스, 깊이·컬러 텍스처 샘플링 | 화면 연출이 단순해짐 |
+| LOD 바이어스 | 정점 수, 원거리 오브젝트 비용 | 멀리 있는 오브젝트 품질이 낮아짐 |
 
 <br>
+
+가장 먼저 검토할 항목은 **Render Scale**입니다. URP의 Render Scale은 화면에 표시되는 해상도와 별개로 카메라가 장면을 렌더링하는 내부 해상도를 낮춥니다. 예를 들어 1080p 화면에서 Render Scale을 0.7로 설정하면 가로와 세로가 각각 70%로 줄어들고, 실제로 처리해야 하는 픽셀 수는 약 49%가 됩니다. 픽셀 셰이더, 후처리, 렌더 타깃 대역폭이 함께 줄어드는 효과가 크지만, 카메라가 그린 결과를 다시 확대해 보여주므로 화면이 흐려질 수 있습니다.
+
+UI 선명도는 Render Scale 값만 보고 판단하기 어렵습니다. HUD나 텍스트가 장면 카메라의 저해상도 렌더 결과에 포함되어 있으면, 장면과 함께 확대되면서 흐려질 수 있습니다. Render Scale을 낮춘 뒤 UI가 흐려진다면, UI Canvas를 `Screen Space - Overlay`로 두거나 UI 전용 카메라 구성을 사용해 장면 렌더링과 분리하는 방법을 검토합니다. 핵심은 해상도를 낮춘 장면 렌더링과, 선명해야 하는 UI가 같은 저해상도 결과물에 묶이지 않도록 확인하는 것입니다.
+
+**그림자**는 모바일에서 티어별 차이를 크게 만들 수 있는 항목입니다. 실시간 그림자는 먼저 그림자를 만드는 라이트 기준으로 셰도우맵을 렌더링하고, 이후 본 렌더링에서 그 셰도우맵을 샘플링해 밝기가 정해집니다. 즉 그림자를 켜면 셰도우맵을 만들기 위한 추가 렌더링 비용과, 화면을 그릴 때의 그림자 샘플링 비용이 함께 생깁니다. 저사양 티어에서 선택할 수 있는 방법은 그림자를 끄는 것, 그림자 거리와 셰도우맵 해상도를 낮추는 것, 캐스케이드 수를 줄이는 것입니다. 다만 그림자를 완전히 끄면 캐릭터와 바닥 사이의 접지감이 약해질 수 있으므로, Blob Shadow, 베이크된 그림자, 간단한 데칼이 대안이 됩니다.
+
+**텍스처 해상도**는 GPU가 사용하는 텍스처 해상도와 샘플링 대역폭을 조절하는 항목입니다. `QualitySettings.globalTextureMipmapLimit`은 2D 밉맵 텍스처에서 사용할 최고 해상도 mip을 제한합니다. 값이 1이면 원본 mip을 건너뛰고 절반 해상도부터, 2이면 1/4 해상도부터 사용하는 식입니다. 이렇게 하면 영향받는 텍스처의 고해상도 mip 업로드와 샘플링 대역폭을 줄일 수 있지만, 빌드에 포함된 텍스처 데이터 자체를 제거하는 설정은 아닙니다. UI, 폰트, 캐릭터 얼굴처럼 선명도가 중요한 텍스처는 별도의 Mipmap Limit Group에 넣거나 텍스처별 제한 값을 조정할 대상입니다. 일반 배경 텍스처와 같은 수준으로 낮아지면 품질 저하가 바로 보이기 때문입니다. 런타임에서 값을 바꿀 때는 텍스처 재업로드가 발생할 수 있으므로, 로딩 화면이나 씬 전환처럼 끊김을 감추기 쉬운 시점에 적용하는 편이 안전합니다.
+
+**MSAA**는 폴리곤 경계의 계단 현상을 줄이기 위해 한 픽셀 안에서 여러 샘플을 저장하고 해석하는 방식입니다. 화면 전체를 고해상도로 다시 그리는 방식은 아니지만, 샘플 수가 늘어나는 만큼 컬러·깊이 버퍼 사용량과 resolve 비용이 증가할 수 있습니다. 특히 Render Scale이 높거나 HDR, 여러 렌더 타깃, 깊이 텍스처를 함께 쓰는 구성에서는 비용이 더 커질 수 있습니다. 저사양 티어에서는 Off나 2x부터 시작하고, 4x는 실제 기기에서 프레임 시간과 메모리 대역폭을 확인한 뒤 허용하는 편이 안전합니다.
+
+**후처리**는 이미 렌더링된 화면을 다시 읽고 가공하는 단계입니다. 대부분 화면 크기에 비례해 비용이 늘어나므로, Render Scale과 화면 해상도의 영향을 함께 받습니다. Color Grading처럼 비교적 단순한 효과도 있지만, Bloom, SSAO, Depth of Field처럼 다운샘플·블러·깊이 텍스처 샘플링이 들어가는 효과는 모바일에서 부담이 커질 수 있습니다. 저사양 티어에서는 색 보정처럼 체감 대비 비용이 낮은 효과만 남기고, SSAO나 무거운 Bloom은 해상도와 샘플 수를 낮추거나 끄는 쪽이 안전합니다. 품질 티어별로 Volume Profile을 나누어 두면 효과의 활성 여부와 강도를 단계적으로 관리할 수 있습니다.
+
+**LOD 바이어스**는 카메라 거리별로 어떤 LOD 메시를 사용할지 조정합니다. 바이어스를 낮추면 더 이른 시점에 낮은 LOD로 전환되므로, 멀리 있는 오브젝트의 정점 수와 셰이더 비용을 줄일 수 있습니다. 오브젝트 수가 많은 필드나 오픈월드에서는 효과가 크지만, 너무 공격적으로 낮추면 모델이 갑자기 단순해지는 팝핑이 눈에 띕니다. 따라서 티어별 LOD 바이어스만 바꾸기보다, 주요 오브젝트의 LOD Group 전환 거리와 크로스페이드 설정도 함께 확인하는 편이 좋습니다.
+
+URP 프로젝트에서는 Quality Level의 **Render Pipeline** 항목에 서로 다른 **URP Asset**(UniversalRenderPipelineAsset)을 지정할 수 있습니다. 특정 Quality Level이 활성화되면 그 레벨에 지정된 URP Asset이 기본 렌더 파이프라인 설정을 덮어쓰는 구조입니다. Render Scale, MSAA, 그림자 캐스케이드처럼 URP Asset에 들어 있는 설정은 Low/Mid/High 티어별로 나누기 좋습니다. 반면 Volume Profile, 게임 내 오브젝트 밀도, 이펙트 개수, 동시 등장 수처럼 프로젝트 코드나 씬 데이터가 관리하는 항목은 Quality Settings만으로 자동 전환되지 않습니다. 이런 값은 별도의 품질 설정 데이터에 묶어 Quality Level과 함께 적용하는 편이 좋습니다.
+
+런타임에서는 `QualitySettings.SetQualityLevel(index)`로 Quality Level을 전환할 수 있습니다. 다만 이 방식은 프리셋 전체를 바꾸는 작업이므로, 안티앨리어싱이나 렌더 파이프라인 설정처럼 리소스 재설정이 필요한 항목까지 함께 바뀔 수 있습니다. 그래서 기기 티어를 처음 적용할 때나 옵션 메뉴에서 사용자가 품질을 바꿀 때처럼, 전환 비용을 감수할 수 있는 시점에 사용하는 편이 적절합니다. 플레이 중 열 상태나 프레임 시간에 따라 품질을 조금씩 조정해야 한다면, 전체 Quality Level을 반복해서 바꾸기보다 Render Scale, 후처리 강도, 이펙트 수처럼 영향 범위가 분명한 항목만 따로 조절하는 구조가 더 안정적입니다.
 
 ---
 
 ## 디바이스 티어 전략
 
-Quality Settings 프리셋을 정의한 다음에는, 어떤 기기에서 어떤 프리셋을 적용할지 결정해야 합니다. 이를 **디바이스 티어(Device Tier)** 전략이라 합니다.
-
-<br>
+Quality Settings 티어는 Low, Mid, High 같은 품질 선택지를 만드는 단계입니다. 그다음에는 실행 중인 기기가 어느 선택지에 가까운지 판단해야 합니다. 이렇게 기기를 성능 등급으로 나누고, 각 등급에 맞는 시작 품질을 고르는 방식을 **디바이스 티어(Device Tier)** 전략이라고 합니다. 실제 성능보다 낮은 티어로 배정하면 고사양 기기에서 품질을 활용하지 못하고, 반대로 실제 성능보다 높은 티어로 배정하면 저사양 기기에서 프레임 시간과 발열을 감당하기 어려워집니다. 따라서 디바이스 티어는 기기의 대략적인 성능과 메모리 여유를 기준으로 시작 품질을 정하는 출발점이 됩니다.
 
 ### 티어 분류 기준
 
-기기를 성능 등급으로 분류하는 데에는 여러 기준을 사용할 수 있습니다. Unity의 `SystemInfo` 클래스가 제공하는 정보가 대표적입니다.
+모든 기기를 직접 측정한 뒤 품질을 정할 수는 없으므로, 처음에는 기기 정보로 기본 품질을 추정해야 합니다. Unity의 `SystemInfo`에서 확인할 수 있는 RAM, GPU 이름, 그래픽 API는 그때 사용할 수 있는 대표적인 정보입니다.
 
 <br>
 
-**디바이스 티어 분류에 사용하는 SystemInfo 항목**
+**초기 품질 선택에 참고할 SystemInfo 항목**
 
-| 항목 | 의미 |
+| 항목 | 용도 |
 |---|---|
-| `SystemInfo.systemMemorySize` | RAM 크기 (MB) — 1차 분류 기준 |
-| `SystemInfo.graphicsDeviceName` | GPU 이름 문자열 — 정밀 분류 시 사용 |
-| `SystemInfo.graphicsDeviceType` | 그래픽 API (Vulkan, Metal 등) — 기능 지원 여부 확인용 |
-| `SystemInfo.supportsComputeShaders` | 컴퓨트 셰이더 지원 여부 — 기능 지원 여부 확인용 |
-
-**티어 분류 예시**
-
-| 티어 | RAM | GPU 예시 |
-|---|---|---|
-| Low (저사양) | ≤ 3GB | Mali-G52, Adreno 506 등 |
-| Mid (중사양) | 4~6GB | Adreno 619, Mali-G77 등 |
-| High (고사양) | ≥ 8GB | Apple A15+, Adreno 730+ 등 |
+| `SystemInfo.systemMemorySize` | 전체 RAM 크기. 메모리 예산과 저사양 기기 구분에 가장 먼저 참고 |
+| `SystemInfo.graphicsDeviceName` | GPU 이름. 알려진 GPU 목록과 대조해 그래픽 성능 등급을 보정 |
+| `SystemInfo.graphicsDeviceType` | 사용 중인 그래픽 API. Vulkan, Metal, OpenGL ES 등 렌더링 경로와 기능 차이 확인 |
+| `SystemInfo.supportsComputeShaders` | 컴퓨트 셰이더 지원 여부. compute 기반 효과나 대체 경로 선택에 사용 |
 
 <br>
 
-RAM 크기가 가장 간단하고 효과적인 분류 기준입니다. 제조사가 고사양 SoC(System on Chip)를 탑재하는 기기에는 RAM도 많이 넣고, 저사양 SoC에는 RAM도 적게 넣는 경향이 있으므로, RAM 하나로도 대략적인 성능 등급을 추정할 수 있습니다.
+이 중에서 가장 먼저 보기 쉬운 값은 RAM입니다. RAM은 메모리 예산을 직접 가늠할 수 있게 해 주고, 매우 낮은 RAM을 가진 기기를 Low 티어로 분류하는 데 유용합니다. 다만 RAM이 곧 그래픽 성능을 의미하지는 않습니다. 같은 RAM 용량이라도 SoC와 GPU 세대, 화면 해상도에 따라 실제 프레임 시간은 크게 달라질 수 있습니다.
 
-GPU 이름으로 더 정밀하게 분류할 수도 있지만, GPU 모델이 수백 가지에 달하므로 관리 비용이 커집니다.
+그래서 RAM은 대략적인 출발점으로 보고, GPU 정보로 한 번 더 확인하는 편이 좋습니다. 예를 들어 RAM 용량만 보면 Mid 티어에 가까운 기기라도 GPU 세대가 오래되었거나 화면 해상도가 높다면 렌더 스케일, 그림자, 후처리 설정을 더 낮게 잡아야 할 수 있습니다. 반대로 RAM 용량이 아주 크지 않아도 비교적 최신 GPU를 탑재한 기기는 같은 메모리 조건의 다른 기기보다 렌더링 품질을 더 안정적으로 유지할 수 있습니다. 즉 RAM은 메모리 여유를 보는 기준이고, GPU는 렌더링 부하를 얼마나 감당할 수 있는지 가늠하는 기준입니다.
 
-`SystemInfo.graphicsMemorySize`(GPU 메모리)와 `SystemInfo.processorFrequency`(CPU 클럭)도 존재하지만, 모바일 기기에서는 0이나 부정확한 값을 반환하는 경우가 많아 분류 기준으로 신뢰하기 어렵습니다.
+Unity에서 GPU 이름은 `SystemInfo.graphicsDeviceName`으로 읽을 수 있습니다. 이 값을 이용하면 Adreno, Mali, Apple GPU처럼 알려진 GPU 계열이나 세대를 기준으로 티어를 보정할 수 있습니다. 다만 실제로 반환되는 문자열은 드라이버, OS, 제조사 펌웨어에 따라 조금씩 달라질 수 있으므로, 문자열을 완전히 똑같이 비교하는 방식에만 의존하면 예외가 늘어납니다. 실무에서는 GPU 이름을 대략적인 제조사와 모델명으로 정리한 뒤 알려진 목록과 대조하고, 알 수 없는 GPU는 한 단계 보수적인 티어로 배정하는 편이 안전합니다.
 
-<br>
-
-### 티어별 설정
-
-각 티어에 적용할 URP Asset 설정과 게임 자체 설정의 예시입니다. URP Asset 항목은 `SetQualityLevel`로 함께 전환되고, 게임 설정 항목은 별도 코드로 관리해야 합니다.
-
-<br>
-
-**디바이스 티어별 설정 예시**
-
-| URP Asset 항목 | Low (2~3GB RAM, Mali-G52 급) | Mid (4~6GB RAM, Adreno 619 급) | High (8GB+ RAM, Apple A15 / Snapdragon 8 급) |
-|---|---|---|---|
-| 렌더 스케일 | 0.65~0.7 (1080p 기기에서 약 700~756p) | 0.85 (1080p 기기에서 약 918p) | 1.0 (풀 해상도) |
-| 그림자 | 끔 | 켬 (해상도 512, 거리 30m) | 켬 (해상도 1024, 거리 50m) |
-| 그림자 캐스케이드 | — | 1 | 2 |
-| MSAA | 끔 | 끔 | 2x |
-| 후처리 | 끔 | Bloom | Bloom + Color Grading + Vignette + SSAO |
-| 텍스처 해상도 | Half (밉맵 레벨 +1) | Full | Full |
-| LOD 바이어스 | 0.5 | 1.0 | 1.5 |
-
-| 게임 설정 항목 | Low | Mid | High |
-|---|---|---|---|
-| 파티클 최대 | 30~50개 | 100개 | 200개 |
-| 프레임레이트 | 30fps | 30fps | 60fps 옵션 제공 |
-| 목표 | 30fps 안정 유지, 쓰로틀링 최소화 | 30fps 안정 유지, 시각적 품질 확보 | 높은 시각 품질 + 60fps 옵션 |
-
-<br>
+`SystemInfo.graphicsMemorySize`와 `SystemInfo.processorFrequency`도 참고할 수는 있지만, RAM이나 GPU 이름보다 우선순위는 낮습니다. 모바일에서는 CPU와 GPU가 시스템 메모리를 함께 쓰는 경우가 많아, `graphicsMemorySize` 값만으로 텍스처나 렌더 타깃에 실제로 남는 여유를 알기 어렵기 때문입니다. `processorFrequency`도 비슷합니다. 모바일 CPU는 발열, 배터리 상태, 전력 정책에 따라 클럭이 계속 바뀌므로, 표시된 주파수가 플레이 중 오래 유지된다고 보기 어렵습니다. 그래서 이 값들은 Low/Mid/High를 나누는 주된 조건으로 삼기보다, RAM과 GPU 이름으로 추정한 티어를 보완하는 정도로 사용하는 편이 좋습니다.
 
 ### 티어 결정 시점
 
-Low/Mid/High 프리셋은 앱 최초 실행 시 자동으로 결정됩니다.
+디바이스 티어는 보통 앱을 처음 실행할 때 한 번 정해 두는 편이 적절합니다. 실행할 때마다 기기 정보를 다시 읽어 자동 판별을 수행하면, 사용자가 설정 화면에서 선택한 티어가 자동 판별 결과로 바뀔 수 있기 때문입니다. OS나 드라이버 업데이트로 `SystemInfo` 값이 조금 달라졌을 때도, 같은 기기에서 품질이 갑자기 바뀌는 상황을 줄일 수 있습니다.
 
-앱이 처음 실행되면 Unity의 `SystemInfo`에서 RAM, GPU 이름, 그래픽스 API 지원 여부 등을 읽어 티어를 판별하고, 해당 티어에 맞는 Quality Level을 적용하는 코드를 작성합니다. `QualitySettings.SetQualityLevel()`은 앱 재시작 시 유지되지 않으므로, 판별 결과를 `PlayerPrefs`에 저장해 두고 이후 실행에서는 저장된 값을 읽어 바로 적용합니다. `PlayerPrefs`는 Unity가 제공하는 간단한 키-값 저장소로, 앱을 종료해도 값이 유지됩니다.
+따라서 저장된 티어가 없다면 `SystemInfo`에서 RAM, GPU 이름, 그래픽스 API 지원 여부 등을 읽고 Low/Mid/High 중 하나를 초기 티어로 정합니다. 선택한 티어는 `QualitySettings.SetQualityLevel()`로 적용합니다. 다만 Unity가 이 선택을 다음 실행까지 자동으로 기억해 주지는 않으므로, 같은 티어를 유지하려면 결과를 따로 저장해야 합니다. 간단한 구현에서는 `PlayerPrefs`에 티어 값을 저장해 두고, 이후 실행에서는 그 값을 먼저 읽어 적용합니다.
 
 <br>
 
 <div style="text-align: center; margin: 1.5em 0;">
-<svg viewBox="0 0 580 470" xmlns="http://www.w3.org/2000/svg" style="max-width: 580px; width: 100%;">
-  <text x="290" y="22" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="currentColor">디바이스 티어 결정 흐름</text>
+<svg viewBox="0 0 620 585" xmlns="http://www.w3.org/2000/svg" style="max-width: 620px; width: 100%;">
+  <text x="310" y="22" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="currentColor">디바이스 티어 적용 흐름</text>
 
-  <rect x="180" y="42" width="220" height="38" rx="6" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
-  <text x="290" y="65" text-anchor="middle" font-family="sans-serif" font-size="12" fill="currentColor">앱 최초 실행</text>
+  <rect x="230" y="42" width="160" height="36" rx="6" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
+  <text x="310" y="64" text-anchor="middle" font-family="sans-serif" font-size="12" fill="currentColor">앱 실행</text>
 
-  <line x1="290" y1="80" x2="290" y2="100" stroke="currentColor" stroke-width="1.5"/>
-  <polygon points="285,95 290,105 295,95" fill="currentColor"/>
+  <line x1="310" y1="78" x2="310" y2="90" stroke="currentColor" stroke-width="1.5"/>
+  <polygon points="305,86 310,96 315,86" fill="currentColor"/>
 
-  <rect x="140" y="105" width="300" height="56" rx="6" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
-  <text x="290" y="127" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">SystemInfo 조회</text>
-  <text x="290" y="148" text-anchor="middle" font-family="sans-serif" font-size="11" fill="currentColor">RAM, GPU 이름, API 지원 여부</text>
+  <polygon points="310,96 430,136 310,176 190,136" fill="currentColor" fill-opacity="0.08" stroke="currentColor" stroke-width="1.5"/>
+  <text x="310" y="132" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">저장된 티어가</text>
+  <text x="310" y="149" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">있는가?</text>
 
-  <line x1="290" y1="161" x2="290" y2="181" stroke="currentColor" stroke-width="1.5"/>
-  <polygon points="285,176 290,186 295,176" fill="currentColor"/>
+  <text x="166" y="128" text-anchor="middle" font-family="sans-serif" font-size="11" fill="currentColor">없음</text>
+  <polyline points="190,136 170,136 170,200" fill="none" stroke="currentColor" stroke-width="1.5"/>
+  <polygon points="165,195 170,205 175,195" fill="currentColor"/>
 
-  <rect x="100" y="186" width="380" height="92" rx="6" fill="currentColor" fill-opacity="0.10" stroke="currentColor" stroke-width="1.5"/>
-  <text x="290" y="208" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">티어 판별 로직</text>
-  <text x="120" y="231" font-family="sans-serif" font-size="11" fill="currentColor">RAM ≤ 3GB</text>
-  <text x="380" y="231" text-anchor="end" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">→ Low</text>
-  <text x="120" y="251" font-family="sans-serif" font-size="11" fill="currentColor">3GB &lt; RAM ≤ 6GB</text>
-  <text x="380" y="251" text-anchor="end" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">→ Mid</text>
-  <text x="120" y="271" font-family="sans-serif" font-size="11" fill="currentColor">RAM &gt; 6GB</text>
-  <text x="380" y="271" text-anchor="end" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">→ High</text>
+  <rect x="50" y="205" width="240" height="56" rx="6" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
+  <text x="170" y="227" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">SystemInfo 조회</text>
+  <text x="170" y="248" text-anchor="middle" font-family="sans-serif" font-size="11" fill="currentColor">RAM, GPU 이름, API 지원 여부</text>
 
-  <line x1="290" y1="278" x2="290" y2="298" stroke="currentColor" stroke-width="1.5"/>
-  <polygon points="285,293 290,303 295,293" fill="currentColor"/>
+  <line x1="170" y1="261" x2="170" y2="282" stroke="currentColor" stroke-width="1.5"/>
+  <polygon points="165,277 170,287 175,277" fill="currentColor"/>
 
-  <rect x="140" y="303" width="300" height="38" rx="6" fill="currentColor" fill-opacity="0.08" stroke="currentColor" stroke-width="1.5"/>
-  <text x="290" y="326" text-anchor="middle" font-family="monospace" font-size="11" fill="currentColor">QualitySettings.SetQualityLevel(tier)</text>
+  <rect x="50" y="287" width="240" height="70" rx="6" fill="currentColor" fill-opacity="0.10" stroke="currentColor" stroke-width="1.5"/>
+  <text x="170" y="309" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">초기 티어 결정</text>
+  <text x="170" y="330" text-anchor="middle" font-family="sans-serif" font-size="11" fill="currentColor">RAM 기준 + GPU 보정</text>
+  <text x="170" y="348" text-anchor="middle" font-family="sans-serif" font-size="11" fill="currentColor">Low / Mid / High</text>
 
-  <line x1="290" y1="341" x2="290" y2="361" stroke="currentColor" stroke-width="1.5"/>
-  <polygon points="285,356 290,366 295,356" fill="currentColor"/>
+  <line x1="170" y1="357" x2="170" y2="377" stroke="currentColor" stroke-width="1.5"/>
+  <polygon points="165,372 170,382 175,372" fill="currentColor"/>
 
-  <rect x="160" y="366" width="260" height="38" rx="6" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
-  <text x="290" y="389" text-anchor="middle" font-family="sans-serif" font-size="12" fill="currentColor">PlayerPrefs에 티어 저장</text>
+  <rect x="50" y="382" width="240" height="42" rx="6" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
+  <text x="170" y="407" text-anchor="middle" font-family="sans-serif" font-size="12" fill="currentColor">PlayerPrefs에 티어 저장</text>
 
-  <line x1="290" y1="404" x2="290" y2="424" stroke="currentColor" stroke-width="1.5"/>
-  <polygon points="285,419 290,429 295,419" fill="currentColor"/>
+  <text x="454" y="128" text-anchor="middle" font-family="sans-serif" font-size="11" fill="currentColor">있음</text>
+  <polyline points="430,136 465,136 465,242" fill="none" stroke="currentColor" stroke-width="1.5"/>
+  <polygon points="460,237 465,247 470,237" fill="currentColor"/>
 
-  <rect x="120" y="429" width="340" height="32" rx="6" fill="currentColor" fill-opacity="0.04" stroke="currentColor" stroke-width="1" stroke-dasharray="4,3"/>
-  <text x="290" y="450" text-anchor="middle" font-family="sans-serif" font-size="11" font-style="italic" fill="currentColor">설정 화면에서 플레이어가 수동 변경 가능</text>
+  <rect x="360" y="247" width="210" height="42" rx="6" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
+  <text x="465" y="272" text-anchor="middle" font-family="sans-serif" font-size="12" fill="currentColor">PlayerPrefs에서 티어 읽기</text>
+
+  <polyline points="170,424 170,450 310,450" fill="none" stroke="currentColor" stroke-width="1.5"/>
+  <polyline points="465,289 465,450 310,450" fill="none" stroke="currentColor" stroke-width="1.5"/>
+  <line x1="310" y1="450" x2="310" y2="460" stroke="currentColor" stroke-width="1.5"/>
+  <polygon points="305,455 310,465 315,455" fill="currentColor"/>
+
+  <rect x="160" y="465" width="300" height="40" rx="6" fill="currentColor" fill-opacity="0.08" stroke="currentColor" stroke-width="1.5"/>
+  <text x="310" y="489" text-anchor="middle" font-family="monospace" font-size="11" fill="currentColor">QualitySettings.SetQualityLevel(tier)</text>
+
+  <line x1="310" y1="505" x2="310" y2="520" stroke="currentColor" stroke-width="1.5"/>
+  <polygon points="305,515 310,525 315,515" fill="currentColor"/>
+
+  <rect x="130" y="525" width="360" height="42" rx="6" fill="currentColor" fill-opacity="0.04" stroke="currentColor" stroke-width="1" stroke-dasharray="4,3"/>
+  <text x="310" y="548" text-anchor="middle" font-family="sans-serif" font-size="11" font-style="italic" fill="currentColor">설정 화면에서 플레이어가 수동 변경 가능</text>
+  <text x="310" y="563" text-anchor="middle" font-family="sans-serif" font-size="11" font-style="italic" fill="currentColor">변경 시 PlayerPrefs 갱신</text>
 </svg>
 </div>
 
 <br>
 
-자동 판별 결과가 항상 정확하지는 않습니다. 예를 들어 RAM이 4GB인 구형 기기가 RAM 3GB인 신형 기기보다 GPU 성능이 낮을 수 있습니다. RAM 수치만으로는 실제 렌더링 성능을 정확히 반영하기 어렵기 때문입니다. 이런 한계를 보완하기 위해, 설정 화면에서 플레이어가 품질을 수동으로 변경할 수 있는 옵션을 함께 제공하는 것이 안전합니다.
-
-<br>
+이 흐름에서 자동 판별은 최종 결정이라기보다 첫 실행을 위한 기본값에 가깝습니다. 실제 체감 성능은 배터리 절약 모드, 주변 온도, 백그라운드 앱, 플레이어가 원하는 프레임레이트에 따라 달라질 수 있습니다. 따라서 설정 화면에는 자동 설정을 기본으로 두고, 필요하면 사용자가 품질 프리셋을 바꿀 수 있는 선택지를 함께 제공하는 것이 적절합니다. 이때 내부 티어 이름을 그대로 노출하기보다 성능 우선, 균형, 품질 우선처럼 사용자가 결과를 예상하기 쉬운 이름으로 보여주는 편이 좋습니다.
 
 ---
 
 ## IL2CPP 스트리핑과 코드 최적화
 
-앞서 디바이스 티어로 런타임 품질을 조절했다면, 빌드 크기는 IL2CPP 스트리핑으로 줄일 수 있습니다.
+디바이스 티어가 실행 중 품질을 맞추기 위한 전략이라면, 빌드 단계에서는 앱에 포함되는 코드와 리소스의 양을 관리해야 합니다. 앱 크기의 대부분은 에셋이 차지하지만, 코드 쪽에서도 IL2CPP와 스트리핑 설정을 통해 불필요한 부분을 줄일 수 있습니다.
 
-<br>
+다만 스트리핑 레벨을 높일수록 무조건 좋은 것은 아닙니다. 사용하지 않는 코드를 제거해 실행 파일 크기를 줄일 수 있지만, 리플렉션이나 일부 SDK처럼 정적 분석만으로 사용 여부를 알기 어려운 코드가 함께 제거될 수도 있기 때문입니다. 먼저 IL2CPP 빌드 과정에서 코드가 어떻게 변환되는지 살펴보고, 이어서 Managed Stripping Level별 차이와 적용 시 주의할 점을 다룹니다.
 
 ### IL2CPP와 코드 변환
 
-Unity에서 C# 코드를 작성하면, C# 컴파일러가 **IL(Intermediate Language)** 바이트코드로 변환합니다. 모바일 빌드에서는 **IL2CPP** 백엔드가 이 IL 코드를 **C++ 코드**로 변환하고, 네이티브 컴파일러가 최종 실행 파일을 만듭니다.
+Unity 프로젝트의 스크립트는 C#으로 작성되지만, 빌드에서 C# 소스가 그대로 실행되는 것은 아닙니다. 먼저 C# 컴파일러가 스크립트를 **IL(Intermediate Language)** 바이트코드로 변환하고, IL2CPP가 이 IL을 다시 C++ 코드로 변환합니다. 그다음 플랫폼별 네이티브 컴파일러가 C++ 코드를 컴파일해 최종 실행 파일과 라이브러리에 포함합니다.
+
+결과적으로 C#으로 작성한 게임 로직은 모바일 기기에서 네이티브 코드 형태로 실행됩니다. 실행 중에 IL을 기계어로 변환하는 단계가 없기 때문에, 런타임에 JIT(Just-In-Time) 컴파일을 수행하는 방식과는 동작 특성이 달라집니다.
+
+> IL, JIT/AOT, Mono와 IL2CPP의 차이는 [C# 런타임 기초 (2) - .NET 런타임과 IL2CPP](/dev/unity/CSharpRuntime-2/)에서 더 자세히 다룹니다.
 
 <br>
 
@@ -217,287 +204,182 @@ Unity에서 C# 코드를 작성하면, C# 컴파일러가 **IL(Intermediate Lang
 
   <line x1="290" y1="216" x2="290" y2="241" stroke="currentColor" stroke-width="1.5"/>
   <polygon points="285,236 290,246 295,236" fill="currentColor"/>
-  <text x="305" y="233" font-family="sans-serif" font-size="10" font-style="italic" fill="currentColor">네이티브 컴파일러: Clang/GCC</text>
+  <text x="305" y="233" font-family="sans-serif" font-size="10" font-style="italic" fill="currentColor">플랫폼별 네이티브 컴파일러</text>
 
   <rect x="160" y="246" width="260" height="38" rx="6" fill="currentColor" fill-opacity="0.10" stroke="currentColor" stroke-width="1.5"/>
-  <text x="290" y="269" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">네이티브 바이너리 (.so / 실행 파일)</text>
+  <text x="290" y="269" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">실행 파일과 네이티브 라이브러리</text>
 </svg>
 </div>
 
-**IL2CPP의 이점**
-
-- Mono(C#을 직접 실행하는 런타임)보다 실행 성능이 높음 (네이티브 코드로 미리 컴파일되므로)
-- iOS에서 필수 (iOS는 보안 정책상 JIT(실행 시점 컴파일)를 허용하지 않음)
-- 코드 역공학이 어려움 (C++ 바이너리)
-
 <br>
+
+모바일 빌드에서 IL2CPP를 사용하는 가장 큰 이유는 플랫폼 제약과 실행 성능입니다. iOS처럼 JIT 컴파일을 허용하지 않는 플랫폼에서는 실행 전에 기계어가 준비되는 방식이 필요하므로, IL2CPP가 사실상 필수 선택지가 됩니다.
+
+또한 IL2CPP는 생성된 C++ 코드를 플랫폼의 네이티브 컴파일러로 다시 빌드합니다. 이 과정에서 인라이닝, 데드 코드 제거 같은 C++ 컴파일러 최적화가 적용될 수 있으므로, 런타임에서 IL을 바로 실행하는 방식보다 실행 성능을 확보하기 쉽습니다. C# 어셈블리를 그대로 배포하는 방식보다 코드 구조가 직접 노출되기 어렵다는 점도 모바일 배포에서 장점이 됩니다.
 
 ### Managed Stripping Level
 
-IL2CPP 빌드 과정에서는 **코드 스트리핑(Code Stripping)**이 함께 수행됩니다. 스트리핑은 사용하지 않는 코드를 빌드에서 제거하여 실행 파일 크기를 줄이는 최적화입니다.
+IL2CPP 빌드에서는 C# 코드와 .NET 라이브러리 코드가 모두 최종 바이너리로 이어질 수 있습니다. 프로젝트에서 실제로 쓰지 않는 타입과 메서드까지 모두 포함하면 실행 파일 크기가 불필요하게 커지므로, Unity는 빌드 과정에서 **관리 코드 스트리핑(Managed Code Stripping)**을 수행합니다.
+
+이 작업은 UnityLinker가 담당합니다. UnityLinker는 씬, 스크립트, 어셈블리 참조를 따라가며 실행 중 도달할 수 있는 코드를 남기고, 도달할 수 없다고 판단한 관리 코드를 제거합니다. **Managed Stripping Level**은 이 분석을 얼마나 보수적으로 할지 정하는 설정입니다. 레벨이 높아질수록 더 넓은 범위를 분석해 빌드 크기를 줄일 수 있지만, 동적으로 접근하는 코드가 제거될 가능성도 함께 커집니다.
 
 <br>
 
-제거 범위는 Unity의 Player Settings에 있는 **Managed Stripping Level** 설정으로 조절합니다. 레벨이 높을수록 더 많은 코드를 제거하지만, 필요한 코드까지 잘못 제거할 위험도 함께 커집니다.
+| 레벨 | 성격 | 사용 기준 |
+|------|------|----------|
+| **Minimal** | 가장 보수적인 설정. 사용자 코드 제거를 최소화하고, 예상치 못한 동작 변화가 가장 적음 | 안정성이 우선이거나 리플렉션·외부 SDK 사용이 많은 프로젝트 |
+| **Low** | Minimal보다 조금 더 넓게 분석하지만, 여전히 보수적인 설정 | 기존 프로젝트에서 낮은 위험으로 크기를 조금 줄이고 싶을 때 |
+| **Medium** | 모든 어셈블리를 더 넓게 분석해 빌드 크기 감소 효과가 커짐 | 모바일 빌드 크기를 줄이고 싶을 때의 현실적인 출발점 |
+| **High** | 크기 감소를 우선해 가장 적극적으로 제거 | 빌드 크기가 특히 중요하고, 스트리핑 이후 전체 기능 테스트가 가능한 경우 |
 
 <br>
 
-| 레벨 | 제거 범위 | 크기 감소 | 안전성 |
-|------|----------|----------|--------|
-| **Minimal** | UnityEngine·.NET 라이브러리에서 참조되지 않는 코드만 제거. 사용자 코드는 건드리지 않음 | 작음 | 높음 |
-| **Low** | Minimal + 사용자 어셈블리에서도 정적으로 도달할 수 없는 코드 제거 | 중간 | 높음 |
-| **Medium** | Low + 참조되지 않는 타입과 메서드까지 제거 | 큼 | 중간 |
-| **High** | Medium + 메서드 본문 최적화, 가장 적극적으로 제거 | 가장 큼 | 낮음 |
+레벨을 고를 때는 빌드 크기만 보지 않는 것이 좋습니다. Minimal은 가장 안전하지만 크기 감소 효과가 제한적이고, High는 크기를 더 줄일 수 있지만 런타임에서만 접근하는 코드가 제거될 가능성이 커집니다. 일반적인 모바일 프로젝트라면 Minimal이나 Medium에서 시작하고, 빌드 크기와 기능 테스트 결과를 보며 조정하는 편이 적절합니다.
 
-Minimal과 Low의 차이는 사용자 코드 포함 여부입니다. Minimal은 Unity 엔진과 .NET 라이브러리만 정리하므로 사용자 코드에는 영향이 없고, Low부터 사용자 어셈블리의 미사용 코드도 제거 대상에 포함됩니다. Medium부터는 리플렉션으로 접근하는 타입이 "참조되지 않음"으로 판정되어 제거될 수 있습니다.
-
-<br>
-
-스트리핑 레벨이 높을수록 빌드 크기가 작아지지만, 리플렉션(Reflection)으로 접근하는 코드가 제거될 위험이 커집니다. 리플렉션은 문자열로 타입이나 메서드를 참조하는 방식이므로, 정적 분석으로는 "이 코드가 사용되는지" 판별할 수 없습니다. JSON 직렬화 라이브러리, 의존성 주입 프레임워크, 일부 애널리틱스 SDK가 리플렉션을 사용합니다.
-
-<br>
+특히 리플렉션(Reflection)을 사용하는 코드는 주의해야 합니다. 예를 들어 문자열로 타입을 찾거나, JSON 직렬화 라이브러리와 의존성 주입 프레임워크가 런타임에 멤버를 찾는 경우에는 코드 안에 직접 참조가 드러나지 않을 수 있습니다. UnityLinker가 이런 코드를 사용하지 않는다고 판단하면 빌드에서 제거할 수 있으므로, 스트리핑 레벨을 올릴수록 보존해야 할 타입과 메서드를 별도로 표시하는 작업이 중요해집니다.
 
 ### link.xml로 코드 보존
 
-스트리핑이 필요한 코드까지 제거하는 것을 방지하려면 **link.xml** 파일을 프로젝트에 추가합니다. 이 파일에 보존할 타입이나 어셈블리를 명시하면, 스트리핑이 해당 코드를 제거하지 않습니다.
+정적 분석으로는 사용 여부가 드러나지 않지만 런타임에는 필요한 코드가 있다면 **link.xml**로 보존 대상을 지정할 수 있습니다. `link.xml`은 UnityLinker에게 "이 타입이나 어셈블리는 제거하지 말라"고 알려주는 파일이며, 보통 프로젝트의 `Assets` 폴더 아래에 둡니다.
+
+중요한 것은 보존 범위를 필요한 만큼만 좁게 잡는 것입니다. 전체 어셈블리를 보존하면 안전해 보일 수 있지만, 그만큼 스트리핑으로 줄일 수 있는 크기도 줄어듭니다. JSON 저장 데이터, 리플렉션으로 생성하는 타입, 외부 SDK가 문서에서 보존을 요구하는 타입처럼 실제로 런타임 접근이 필요한 대상부터 명시하는 편이 좋습니다.
 
 <br>
 
 ```xml
 <linker>
-  <!-- 특정 어셈블리 전체 보존 -->
-  <assembly fullname="MyGameAssembly" preserve="all"/>
-
-  <!-- 특정 타입만 보존 -->
-  <assembly fullname="UnityEngine">
-    <type fullname="UnityEngine.Networking.UnityWebRequest"
-          preserve="all"/>
+  <!-- asmdef를 쓰지 않는 일반 스크립트의 타입 보존 -->
+  <assembly fullname="Assembly-CSharp">
+    <type fullname="MyGame.Save.PlayerSaveData" preserve="all"/>
   </assembly>
 
-  <!-- 네임스페이스 단위 보존 -->
-  <assembly fullname="Newtonsoft.Json">
-    <type fullname="Newtonsoft.Json.JsonConvert"
-          preserve="all"/>
+  <!-- asmdef를 사용하는 경우에는 해당 어셈블리 이름을 지정 -->
+  <assembly fullname="MyGame.Runtime">
+    <type fullname="MyGame.Analytics.AnalyticsEvent" preserve="all"/>
   </assembly>
+
+  <!-- SDK 문서에서 요구하는 경우에만 어셈블리 전체 보존 -->
+  <assembly fullname="ThirdParty.SDK" preserve="all"/>
 </linker>
 ```
 
 <br>
 
-리플렉션을 거의 사용하지 않는 프로젝트라면 Medium이 안전한 출발점입니다. 빌드 크기 감소 효과가 충분하면서도 link.xml 관리 부담이 적습니다. 빌드 크기를 최대한 줄여야 하는 경우에는 High로 설정한 뒤 link.xml에 보존할 코드를 명시하는 조합을 사용합니다. 단, link.xml에서 누락한 타입이 있으면 런타임에서야 오류가 발생하므로, High 레벨을 적용한 빌드는 리플렉션을 사용하는 경로(JSON 파싱, 의존성 주입 등)를 중심으로 실기기 테스트를 거칩니다.
+위 예시는 형식을 보여주기 위한 것이며, 실제 `fullname` 값은 프로젝트의 어셈블리 이름과 네임스페이스를 포함한 타입 이름에 맞춰야 합니다. `preserve="all"`은 해당 타입의 생성자, 필드, 메서드까지 보존하므로 JSON 역직렬화 대상처럼 런타임에 멤버 접근이 필요한 타입에 사용할 수 있습니다. 반대로 어셈블리 전체 보존은 범위가 넓으므로, 필요한 타입을 특정하기 어렵거나 SDK 문서에서 요구하는 경우에만 사용하는 편이 적절합니다.
 
-<br>
+따라서 `link.xml`은 스트리핑 레벨을 무작정 높이기 위한 안전장치라기보다, UnityLinker가 정적 분석만으로 알기 어려운 사용 경로를 보완하는 설정으로 보는 것이 좋습니다. 스트리핑 레벨을 올린 빌드는 저장 데이터 로드, JSON 파싱, 의존성 주입, 애널리틱스 초기화처럼 리플렉션이나 외부 SDK가 관여하는 경로를 중심으로 확인해야 합니다.
 
 ---
 
 ## 에셋 압축과 앱 사이즈
 
-코드 스트리핑이 실행 파일 크기를 줄인다면, 에셋 압축은 전체 앱 크기에서 대부분을 차지하는 리소스 크기를 줄입니다. 모바일 앱의 빌드 크기에서 에셋은 전체 빌드의 90% 이상을 차지하고, 코드는 5% 내외에 불과합니다.
+코드 스트리핑은 관리 코드와 실행 파일 쪽의 불필요한 부분을 줄이는 작업입니다. 하지만 모바일 빌드 크기를 크게 좌우하는 것은 대개 텍스처, 오디오, 모델, 영상 같은 에셋입니다.
 
-<br>
+따라서 앱 사이즈를 줄일 때는 코드 스트리핑만으로 끝내기보다, 어떤 에셋이 빌드에 포함되는지와 각 에셋이 어떤 압축 포맷으로 저장되는지를 함께 봐야 합니다. 특히 텍스처는 용량과 메모리 사용량 모두에 영향을 주므로, 모바일 빌드에서는 압축 포맷과 해상도 설정을 먼저 점검하는 편이 적절합니다.
 
 ### 플랫폼 크기 제한
 
-앱 스토어마다 초기 다운로드 크기에 대한 제한이 있습니다.
+스토어마다 앱 크기를 판단하는 기준은 다르고, 같은 플랫폼 안에서도 배포 방식에 따라 적용되는 조건이 달라질 수 있습니다. 그래서 빌드 크기를 관리할 때는 어떤 파일이 처음 설치 패키지에 들어가고 어떤 파일을 나중에 받을 수 있는지 나누어 보는 편이 좋습니다. 초기 설치에 꼭 필요한 리소스와 이후에 받을 수 있는 콘텐츠를 구분해 두면, 플랫폼 정책이 바뀌어도 빌드 구성을 조정하기 쉽기 때문입니다.
 
-<br>
+이런 분리 배포를 위해 각 플랫폼은 자체 기능을 제공합니다. Android에서는 App Bundle과 Play Asset Delivery가 대표적이고, iOS에서는 App Thinning, On-Demand Resources, Background Assets 같은 기능을 사용할 수 있습니다. 어떤 기능을 선택할지는 에셋의 크기, 다운로드 시점, 스토어 정책에 따라 달라지므로, 출시 전에는 Google Play Console과 App Store Connect의 최신 기준을 확인하는 것이 좋습니다.
 
-| 플랫폼 | 제한 | 성격 | 초과 시 대응 |
-|--------|------|------|-------------|
-| **Google Play** | AAB 기본 설치 200MB | 하드 제한 (초과 시 업로드 불가) | Play Asset Delivery로 에셋 분리 |
-| **App Store** | 200MB | 셀룰러 다운로드 경고 임계값 | On-Demand Resources, App Thinning |
-
-<br>
-
-두 플랫폼 모두 200MB가 기준선이지만 성격이 다릅니다. Android는 이 크기를 초과하면 Play Asset Delivery 없이는 스토어에 업로드할 수 없고, iOS는 셀룰러 네트워크에서 다운로드 경고가 표시되어 설치를 포기하는 사용자가 늘어납니다. 앱 크기를 가능한 한 줄이는 것이 사용자 획득에 직접적인 영향을 미칩니다.
-
-<br>
+실무 기준으로는 초기 설치에 꼭 필요한 코드, 첫 실행 리소스, 공통 UI, 기본 튜토리얼 정도만 기본 빌드에 남기고, 이후 콘텐츠나 선택적으로 쓰는 고해상도 에셋은 분리 배포 대상으로 검토하는 편이 좋습니다. 이렇게 나누어 두면 스토어 제한에 대응하기 쉬울 뿐 아니라, 사용자가 처음 게임을 설치하고 실행하기까지의 대기 시간도 줄일 수 있습니다.
 
 ### 텍스처 압축
 
-에셋 중에서도 가장 큰 비중을 차지하는 것은 텍스처입니다. 텍스처 압축 포맷 자체는 [렌더링 기초 (2) - 텍스처와 압축](/dev/unity/RenderingFoundation-2/)에서 다루었고, 빌드 크기 관점에서 핵심은 **ASTC(Adaptive Scalable Texture Compression)**입니다.
+빌드 크기를 줄일 때 가장 먼저 확인할 에셋은 텍스처입니다. 텍스처는 프로젝트 안에서 개수가 많고, 개별 파일의 해상도도 커지기 쉬워 전체 용량에서 큰 비중을 차지하기 때문입니다. 따라서 모바일 빌드에서는 텍스처의 최대 해상도와 압축 포맷을 먼저 점검하는 것이 적절합니다. 이 설정은 설치 크기뿐 아니라 런타임 메모리 사용량에도 영향을 줍니다.
 
-<br>
+모바일에서는 플랫폼 지원 범위를 확인한 뒤 **ASTC(Adaptive Scalable Texture Compression)**를 우선 검토하는 편이 좋습니다. ASTC는 블록 크기를 선택할 수 있어, 같은 포맷 안에서도 품질과 용량의 균형을 조정할 수 있기 때문입니다.
 
-동일한 1024×1024 RGBA 텍스처 기준으로 포맷별 크기 차이는 다음과 같습니다.
+> 텍스처 블록 압축의 원리와 ETC2, ASTC 포맷의 차이는 [렌더링 기초 (2) - 텍스처와 압축](/dev/unity/RenderingFoundation-2/)에서 더 자세히 다룹니다.
 
-| 포맷 | 크기 | 압축비 |
-|------|------|--------|
-| 비압축 (RGBA 32bit) | 4MB | — |
-| ETC2 | 1MB | 4:1 |
-| ASTC 6×6 | 0.45MB | 약 9:1 |
-| ASTC 8×8 | 0.25MB | 약 16:1 |
+ASTC를 사용할 때는 블록 크기를 텍스처 용도별로 나누는 것이 중요합니다. 4×4처럼 작은 블록은 품질을 더 잘 유지하지만 용량이 커지고, 6×6이나 8×8처럼 큰 블록은 용량을 줄이는 대신 세부 디테일이 손상될 수 있습니다. 그래서 UI, 폰트, 캐릭터 얼굴, 노멀맵처럼 품질 저하가 바로 보이는 텍스처는 보수적인 블록 크기에서 시작하는 편이 좋습니다. 반대로 원거리 배경, 반복 패턴이 많은 표면, 디테일 손실이 눈에 덜 띄는 디퓨즈 텍스처는 더 큰 블록을 검토할 수 있습니다.
 
-ASTC는 블록 크기를 선택할 수 있습니다. 블록이 클수록 압축률이 높아지지만 품질이 떨어지므로, 용도에 따라 블록 크기를 달리 설정합니다.
-
-| 용도 | 권장 블록 | 이유 |
-|------|----------|------|
-| 노멀맵 | 4×4 ~ 5×5 | 법선 벡터의 디테일 보존 |
-| UI 스프라이트 | 4×4 | 선명한 경계선 유지 |
-| 일반 텍스처 | 6×6 | 품질과 크기의 균형 |
-| 배경 / 디퓨즈 | 6×6 ~ 8×8 | 디테일 손실이 눈에 덜 띔 |
-
-<br>
+텍스처 압축 설정은 실제 기기에서 확인한 뒤 확정하는 편이 좋습니다. 에디터에서는 크게 눈에 띄지 않던 색 번짐, 블록 노이즈, 작은 글자의 흐림, 노멀맵 하이라이트 깨짐이 모바일 화면에서는 더 잘 보일 수 있기 때문입니다. 따라서 빌드 크기를 줄이기 위해 블록 크기를 키우더라도, UI와 주요 캐릭터처럼 시선이 오래 머무는 텍스처는 품질을 확인하면서 보수적으로 조정하는 것이 안전합니다.
 
 ### 오디오 압축
 
-텍스처 다음으로 빌드 크기에 영향을 주는 에셋이 오디오입니다. 빌드 크기의 10~20%를 차지하는 경우도 있으므로, 클립 길이와 용도에 따라 Import Settings의 압축 방식과 로드 방식을 구분해서 설정합니다.
+오디오도 빌드 크기에 크게 영향을 줄 수 있습니다. 특히 BGM, 보이스, 긴 환경음처럼 길이가 긴 클립이 많으면 텍스처 압축만으로는 앱 크기를 충분히 줄이기 어렵습니다. 오디오는 클립 길이보다 용도를 기준으로 압축 방식과 로드 방식을 나누는 편이 좋습니다.
 
-<br>
+짧고 자주 재생되는 효과음은 재생 지연이 체감되기 쉬우므로, 메모리 사용량을 감수하고 빠르게 재생되는 설정을 선택할 수 있습니다. 반대로 BGM이나 긴 보이스처럼 재생 시간이 긴 클립은 처음부터 모두 메모리에 올리기보다 압축 상태로 두거나 스트리밍하는 편이 적절합니다. 핵심은 모든 오디오를 같은 설정으로 처리하지 않고, 재생 빈도와 길이, 지연 허용 범위에 따라 Import Settings를 나누는 것입니다.
 
-| 클립 길이 | Load Type | Compression | 효과 |
-|-----------|-----------|-------------|------|
-| 1초 미만 (효과음) | Decompress On Load | ADPCM 또는 PCM | 재생 지연 없음, 메모리에 상주 |
-| 1~10초 | Compressed In Memory | Vorbis (Quality 40~60%) | 메모리 절약 + 빠른 재생 |
-| 10초 이상 (배경음) | Streaming | Vorbis (Quality 30~50%) | 메모리 최소 사용 (버퍼만 유지) |
-
-공통적으로, 모바일에서 스테레오가 불필요한 효과음은 **Force To Mono**를 활성화하면 크기가 50% 줄어듭니다. 음악 외 효과음은 Sample Rate를 22050Hz로 낮춰도 품질 차이가 거의 느껴지지 않습니다.
-
-<br>
+모바일에서는 스테레오가 꼭 필요하지 않은 효과음을 모노로 바꾸는 것도 먼저 확인할 만한 항목입니다. 채널 수를 줄이면 파일 크기와 메모리 사용량을 줄일 수 있기 때문입니다. 샘플레이트도 마찬가지입니다. UI 효과음이나 짧은 피드백 사운드는 낮은 샘플레이트에서도 충분한 경우가 있지만, 보이스와 음악은 품질 저하가 더 잘 드러날 수 있으므로 실제 기기에서 들어 보며 조정하는 것이 좋습니다.
 
 ### 메쉬 압축
 
-메쉬도 정점 수가 많은 모델이 쌓이면 빌드 크기에 영향을 줍니다. Unity의 Import Settings에서 Mesh Compression을 Low/Medium/High로 설정하면, 양자화(Quantization) 방식으로 정점 위치, 노멀, UV 좌표의 값을 더 적은 비트로 근사하여 메쉬 데이터 크기를 줄입니다. High 설정에서는 메쉬 데이터가 40~80% 줄어드는 경우가 일반적입니다. 다만 높은 압축률에서는 정점 위치에 미세한 오차가 생길 수 있으므로, 시각적으로 확인한 뒤 적용합니다.
+메쉬는 텍스처나 오디오보다 눈에 덜 띄는 경우가 많지만, 정점 수가 많은 캐릭터와 배경 모델이 쌓이면 빌드 크기에 영향을 줍니다. 특히 모바일에서는 같은 모델이 여러 LOD와 스킨드 메시로 함께 들어가는 경우가 있으므로, 메쉬 데이터도 import 단계에서 확인하는 편이 좋습니다.
 
-압축과 별도로, 처음부터 불필요한 정점 데이터를 Import에서 제외하는 방법도 있습니다. 탄젠트는 정점당 16바이트, 노멀은 12바이트, 두 번째 UV는 8바이트를 차지합니다. 10,000개 정점의 메쉬에서 탄젠트와 두 번째 UV를 제외하면 약 240KB가 절약됩니다. 노멀맵을 사용하지 않는 오브젝트에서 탄젠트를 제외하고, 라이트맵을 사용하지 않는 오브젝트에서 두 번째 UV를 제외하는 것이 기본 원칙입니다.
+먼저 볼 것은 압축률보다 불필요한 정점 데이터입니다. 노멀맵을 쓰지 않는 오브젝트라면 탄젠트가 필요하지 않을 수 있고, 라이트맵이나 별도 UV 기반 효과를 쓰지 않는다면 두 번째 UV도 제거할 수 있습니다. 이런 데이터는 메쉬마다 작아 보여도 모델 수가 늘어나면 누적되므로, Import Settings에서 실제로 필요한 vertex attribute만 남기는 것이 기본입니다.
 
-<br>
+그다음 Mesh Compression을 검토합니다. Mesh Compression은 정점 위치, 노멀, UV 같은 값을 더 적은 정밀도로 저장해 메쉬 데이터 크기를 줄이는 방식입니다. 압축 강도를 높이면 크기는 줄어들 수 있지만, 정점 위치가 미세하게 흔들리거나 노멀과 UV 정밀도가 떨어져 실루엣, 라이팅, 텍스처 경계가 어색해질 수 있습니다. 따라서 배경 소품이나 원거리 LOD처럼 오차가 눈에 덜 띄는 메쉬부터 적용하고, 캐릭터 얼굴, 손, 무기처럼 화면에서 자주 보이는 모델은 실제 기기에서 확인하면서 보수적으로 적용하는 편이 안전합니다.
 
 ---
 
 ## Play Asset Delivery와 On-Demand Resources
 
-텍스처, 오디오, 메쉬를 압축해도 앱 크기가 플랫폼 제한(Google Play AAB 200MB, iOS 셀룰러 다운로드 200MB)을 초과할 수 있습니다. 이 경우 에셋 일부를 초기 설치에서 분리하여 나중에 다운로드하는 방식을 사용합니다. [메모리 관리 (3) - Addressables와 에셋 전략](/dev/unity/MemoryManagement-3/)에서 Addressables를 통한 온디맨드 다운로드를 다루었는데, 이와 별도로 플랫폼 자체가 제공하는 공식 에셋 전달 메커니즘도 있습니다.
+텍스처, 오디오, 메쉬를 압축한 뒤에도 모든 콘텐츠를 초기 설치 패키지에 넣으면 설치 크기와 첫 실행 대기 시간이 커질 수 있습니다. 시즌 콘텐츠, 고해상도 리소스, 특정 챕터에서만 쓰는 에셋처럼 처음 실행에 필요하지 않은 데이터는 나중에 받도록 분리하는 편이 좋습니다.
+
+Unity 프로젝트에서는 Addressables로 에셋 참조와 로딩 단위를 나눌 수 있고, 배포 단계에서는 플랫폼이 제공하는 에셋 전달 기능을 함께 사용할 수 있습니다. Android의 Play Asset Delivery와 iOS의 On-Demand Resources는 초기 설치에 넣지 않은 에셋을 필요한 시점에 내려받도록 구성할 때 사용하는 대표적인 방식입니다.
+
+> Addressables를 통한 에셋 그룹 구성과 온디맨드 로딩 전략은 [메모리 관리 (3) - Addressables와 에셋 전략](/dev/unity/MemoryManagement-3/)에서 더 자세히 다룹니다.
 
 <br>
 
-**Play Asset Delivery (Android) — 전달 모드**
+**Play Asset Delivery (Android)**
 
-| 모드 | 다운로드 시점 | 용도 | 제약 |
+Play Asset Delivery는 Android App Bundle 안의 에셋을 여러 에셋 팩으로 나누고, 각 팩의 전달 시점을 지정하는 방식입니다. 처음 실행에 반드시 필요한 데이터는 설치 시점에 포함하고, 특정 모드나 챕터에서만 쓰는 데이터는 설치 후 또는 앱 실행 중 필요한 시점에 받도록 구성할 수 있습니다.
+
+| 모드 | 전달 시점 | 적합한 에셋 | 주의할 점 |
 |---|---|---|---|
-| `install-time` | APK/AAB와 함께 설치 (사용자가 기다리는 시간에 포함) | 필수 에셋 | 스토어 표시 크기에 포함, install-time 팩 전체 합산 200MB 이내 |
-| `fast-follow` | 설치 완료 직후 백그라운드에서 자동 다운로드 | 메인 콘텐츠 (앱을 처음 열었을 때 이미 받아져 있을 가능성이 높음) | — |
-| `on-demand` | 앱이 요청할 때만 다운로드 | 확장 콘텐츠, 이벤트 | 다운로드 진행률 UI 필요 |
+| `install-time` | 앱 설치 시 함께 전달 | 첫 실행에 필요한 공통 리소스 | 초기 설치 크기와 설치 대기 시간이 늘어남 |
+| `fast-follow` | 설치 직후 백그라운드에서 전달 | 초반 플레이에 곧 필요한 콘텐츠 | 다운로드 완료 전 접근하는 경우를 처리해야 함 |
+| `on-demand` | 앱이 요청할 때 전달 | 선택 콘텐츠, 후반 챕터, 이벤트 리소스 | 진행률 표시, 실패 처리, 재시도 흐름이 필요함 |
+
+<br>
 
 **iOS On-Demand Resources**
 
-태그 기반으로 동작합니다. 에셋에 태그를 부여하고, 앱이 태그를 요청하면 App Store에서 다운로드되며, 사용 완료 후 시스템이 자동으로 정리할 수 있습니다.
+iOS의 On-Demand Resources는 리소스에 태그를 붙여 묶고, 앱이 해당 태그를 요청할 때 App Store에서 내려받는 방식입니다. 특정 스테이지, 언어 리소스, 고해상도 에셋처럼 처음 설치에는 필요 없지만 특정 시점에 필요한 콘텐츠를 분리할 때 사용할 수 있습니다.
+
+iOS는 On-Demand Resources로 받은 리소스를 계속 보관한다고 보장하지 않습니다. 앱에서 더 이상 사용하지 않는 리소스는 저장 공간 상황에 따라 정리될 수 있습니다. 따라서 필요한 시점보다 조금 앞서 요청하고, 다운로드 진행 중인 상태와 실패한 상태를 처리하는 흐름을 함께 만들어야 합니다.
 
 <br>
 
-Addressables만 단독으로 사용하면, 에셋 번들을 호스팅할 CDN 서버를 직접 준비하고 운영해야 합니다. Play Asset Delivery나 On-Demand Resources는 Google Play / App Store가 에셋 호스팅과 다운로드를 대신 처리하므로 별도 서버가 필요 없습니다.
+Play Asset Delivery와 On-Demand Resources는 Addressables를 대체하는 기능이라기보다, 에셋을 전달하는 위치와 시점을 플랫폼 쪽에서 관리하게 해 주는 기능입니다. Addressables는 코드에서 에셋을 참조하고 로드하는 구조를 담당하고, 플랫폼 전달 기능은 그 에셋이 설치 패키지에 들어갈지, 스토어를 통해 나중에 내려받을지를 담당합니다.
 
-두 방식을 결합할 수도 있습니다. Addressables만 쓰면 에셋 번들 파일을 CDN 서버에 올려두고, 앱이 그 서버에서 다운로드합니다. Play Asset Delivery와 결합하면, 같은 에셋 번들 파일을 CDN 대신 Google Play 스토어가 배포합니다. 게임 코드에서는 `Addressables.LoadAssetAsync("무기_텍스처")` 같은 호출을 동일하게 사용하고, 그 파일이 CDN에서 오는지 Google Play에서 오는지는 빌드 설정에 따라 달라집니다.
-
-<br>
+원격 Addressables만 사용하는 경우에는 에셋 번들을 올려둘 서버나 CDN이 필요할 수 있습니다. 반대로 플랫폼 전달 기능을 함께 사용하면, 스토어가 제공하는 배포 경로를 통해 해당 에셋을 전달할 수 있습니다. 어느 방식을 쓰든 먼저 정해야 할 것은 같습니다. 첫 실행에 필요한 에셋과 나중에 받아도 되는 에셋을 구분하고, 나중에 받는 에셋에는 다운로드 대기와 실패 처리 흐름을 마련해야 합니다.
 
 ---
 
 ## Build Report로 빌드 크기 점검하기
 
-빌드 크기는 한 번 줄여 놓고 끝나는 것이 아니라, 에셋이 추가될 때마다 다시 확인해야 합니다. Unity 에디터의 **Build Report**(빌드 완료 후 Console 로그에 표시)에서 에셋 유형별 크기 비중을 확인할 수 있습니다.
+빌드 크기는 한 번 줄여 두고 끝나는 값이 아닙니다. 새 에셋이 추가되거나 압축 설정, Addressables 그룹, 플랫폼별 import 설정이 바뀌면 최종 빌드에 포함되는 파일도 달라집니다.
 
-<br>
+그래서 모바일 빌드에서는 빌드가 끝난 뒤 **Build Report**를 확인하는 과정이 필요합니다. Build Report를 보면 텍스처, 오디오, 메쉬, 셰이더, 코드처럼 어떤 항목이 빌드 크기를 크게 차지하는지 대략적인 비중을 확인할 수 있습니다.
 
-**빌드 리포트 예시 (개략적)**
-
-| 카테고리 | 크기 | 비중 |
-|---|---:|---:|
-| 텍스처 | 45MB | 55% |
-| 오디오 | 15MB | 18% |
-| 메쉬 | 8MB | 10% |
-| 셰이더 | 5MB | 6% |
-| 코드 (IL2CPP) | 4MB | 5% |
-| 애니메이션 | 3MB | 4% |
-| 기타 | 2MB | 2% |
-| **합계** | **82MB** | **100%** |
-
-텍스처가 절반 이상을 차지하므로 ASTC 압축 포맷과 밉맵 레벨 확인이 우선이고, 불필요한 텍스처가 빌드에 포함되어 있지 않은지도 함께 점검해야 합니다.
-
-<br>
+예를 들어 텍스처 비중이 크다면 압축 포맷, 최대 해상도, 밉맵 설정을 먼저 확인합니다. 오디오 비중이 크다면 긴 클립의 압축 방식과 로드 방식을 보고, 메쉬 비중이 크다면 불필요한 vertex attribute나 과도한 LOD 포함 여부를 확인합니다. Build Report는 어떤 최적화를 먼저 볼지 정하는 출발점으로 쓰는 것이 좋습니다.
 
 빌드에 포함되지 말아야 할 에셋(개발용 텍스처, 테스트 프리팹, 사용하지 않는 폰트 등)이 포함되어 있는 경우가 빌드 크기 증가의 흔한 원인입니다. Resources 폴더에 넣은 에셋은 사용 여부와 관계없이 모두 빌드에 포함되므로, Resources 폴더 대신 Addressables를 사용하는 것이 크기 관리에도 유리합니다.
-
-<br>
-
----
-
-## 전체 시리즈 통합 — 프레임 하나의 여정
-
-지금까지 29편에 걸쳐 Unity 모바일 최적화의 각 영역을 개별적으로 다루었습니다. 아래 다이어그램은 프레임 하나가 시작되어 화면에 표시되기까지의 여정을 따라가면서, 각 단계에 대응하는 시리즈 글을 함께 표기한 것입니다.
-
-<br>
-
-**프레임 하나의 여정과 시리즈 매핑**
-
-프레임 시작 → 프레임 완료까지의 단계와 각 단계에 대응하는 시리즈 글입니다.
-
-1. **입력 처리** — 터치·가속도계 입력 수신
-
-2. **FixedUpdate (물리)** — 충돌 감지, 강체 시뮬레이션
-   - ← PhysicsOptimization (1)(2): 콜라이더 단순화, 레이어 매트릭스, 물리 오브젝트 수 관리
-
-3. **Update (스크립트 로직)** — 게임플레이 코드, AI, 상태 머신
-   - ← ScriptOptimization (1)(2): GC 할당 최소화, 캐싱, 오브젝트 풀링
-   - ← MemoryManagement (1)(2)(3): 가비지 컬렉션, Addressables
-
-4. **LateUpdate (애니메이션, 카메라)** — Animator 평가, 본 변환, 카메라 추적
-   - ← ParticleAndAnimation (2): Animator 최적화, Culling Mode
-
-5. **UI 업데이트** — Canvas 리빌드, 레이아웃 계산
-   - ← UIOptimization (1)(2): Canvas 분리, ScrollRect 풀링, TextMeshPro, Raycast Target
-
-6. **렌더링 준비 (CPU)** — 컬링(카메라 밖 오브젝트 제거), 정렬(불투명 앞→뒤, 반투명 뒤→앞), 배칭(SRP Batcher, 정적·동적 배칭), 커맨드 버퍼 구성
-   - ← UnityPipeline (1)(2)(3): URP 구조, 드로우콜 배칭, 컬링 전략
-
-7. **GPU 제출 및 렌더링**
-   - **정점 셰이더 실행** — 메쉬 정점 변환, 스키닝
-     - ← RenderingFoundation (1)
-   - **래스터라이징** — 삼각형 → 프래그먼트
-   - **프래그먼트 셰이더 실행** — 텍스처 샘플링, 라이팅 계산
-     - ← RenderingFoundation (2)(3)
-     - ← ShaderOptimization (1)(2)
-     - ← LightingAndShadows (1)(2)
-   - **TBDR 타일 처리 (모바일)**
-     - ← GPUArchitecture (1)(2)
-   - **파티클 렌더링**
-     - ← ParticleAndAnimation (1)
-
-8. **후처리 (Post-Processing)** — Bloom, Color Grading, Anti-Aliasing
-   - ← LightingAndShadows (2)
-   - ← ShaderOptimization (2)
-
-9. **Present (화면 표시)** — VSync 대기, 프레임 버퍼 교체
-   - ← GameLoop (1)(2): 프레임 구조, VSync, 프레임 페이싱
-
-→ 프레임 완료
-
-<br>
-
-**전체를 관통하는 제약**
-
-- 서멀 쓰로틀링, 전력 예산, 디바이스 티어 ← MobileStrategy (1)(2)
-- 프로파일링으로 병목 위치 파악 ← Profiling (1)(2)
-
-<br>
-
-다이어그램의 각 단계는 서로 독립적이지 않고, 한 단계의 비용이 다른 단계에 영향을 미칩니다. 스크립트에서 너무 많은 오브젝트를 생성하면 가비지 컬렉션 스파이크가 발생하여 렌더링 준비 단계의 시작이 지연됩니다. 그림자를 고해상도로 렌더링하면 GPU가 다른 렌더링 작업에 착수하는 시점이 늦어지고, UI Canvas가 매 프레임 리빌드되면 CPU 예산의 상당 부분이 UI에 소비되어 스크립트 로직의 여유가 줄어듭니다.
-
-최적화는 이 파이프라인에서 **가장 느린 단계**를 찾아 개선하는 과정입니다. [프로파일링 (1) - Unity Profiler와 Frame Debugger](/dev/unity/Profiling-1/)에서 다룬 프로파일러가 이 "가장 느린 단계"를 알려 줍니다. [게임 루프의 원리 (2) - CPU-bound와 GPU-bound](/dev/unity/GameLoop-2/)에서 다룬 병목 판별이 CPU와 GPU 중 어느 쪽을 먼저 최적화할지 결정해 줍니다.
-
-한쪽 병목을 해소하면 다른 쪽이 새로운 병목이 됩니다. CPU를 최적화하면 GPU가 병목이 되고, GPU를 최적화하면 다시 CPU가 병목이 됩니다. 이 과정을 반복하면서 프레임 시간을 목표 예산 이내로 줄이고, [모바일 전략 (1)](/dev/unity/MobileStrategy-1/)에서 다룬 지속 성능 기준으로 안정성을 검증합니다.
-
-<br>
 
 ---
 
 ## 마무리
 
-[게임 루프의 원리 (1) - 프레임의 구조](/dev/unity/GameLoop-1/)에서 프레임 하나의 구조를 이해하는 것으로 시작하여, 렌더링 데이터의 구조, GPU의 동작 원리, Unity 렌더 파이프라인, 스크립트와 메모리 관리, UI, 조명, 셰이더, 물리, 파티클, 애니메이션, 프로파일링, 그리고 모바일 특유의 발열/배터리/빌드 전략까지, 29편에 걸쳐 하나의 프레임이 만들어지는 전 과정을 다루었습니다.
+이 글의 핵심은 모바일 품질 전략을 런타임 설정과 빌드 구성으로 나누어 봐야 한다는 점입니다. 실행 중에는 기기 성능과 발열에 맞게 품질을 조정하고, 빌드 단계에서는 불필요한 코드와 에셋이 앱에 포함되지 않도록 관리해야 합니다.
 
-<br>
+- Quality Settings는 Low/Mid/High 같은 계층으로 나누되, 렌더 스케일, 그림자, 후처리, 셰이더 품질처럼 실제 비용이 큰 항목을 중심으로 차이를 둡니다.
+- 디바이스 티어는 RAM만으로 확정하기보다 GPU 이름과 그래픽스 API 지원 여부를 함께 보고, 사용자가 설정 화면에서 품질을 조정할 수 있게 둡니다.
+- `QualitySettings.SetQualityLevel()`은 현재 실행 중인 품질 레벨을 바꾸는 호출이므로, 선택한 티어를 다음 실행에서도 유지하려면 별도로 저장해야 합니다.
+- IL2CPP 스트리핑은 빌드 크기를 줄이는 데 도움이 되지만, 리플렉션이나 외부 SDK가 사용하는 코드가 제거되지 않도록 Managed Stripping Level과 `link.xml`을 함께 관리해야 합니다.
+- 텍스처, 오디오, 메쉬는 빌드 크기의 큰 비중을 차지하므로, 압축 포맷과 import 설정을 에셋 용도에 맞게 나누어야 합니다.
+- 처음 실행에 필요하지 않은 콘텐츠는 Addressables와 플랫폼별 에셋 전달 기능을 이용해 나중에 받도록 분리할 수 있습니다.
+- Build Report는 빌드 크기를 줄일 때 어떤 항목을 먼저 확인할지 정하는 출발점으로 사용합니다.
 
-최적화는 프레임에서 가장 느린 단계를 찾고, 그 단계의 원리를 이해하고, 원리에 맞는 방법을 적용하는 과정입니다. 프레임 하나가 어떻게 만들어지는지 이해하면 병목이 보이고, 병목이 보이면 최적화가 보입니다.
+모바일 최적화는 한 가지 설정으로 끝나지 않습니다. 프레임 시간, 발열, 메모리, 빌드 크기, 다운로드 흐름이 서로 연결되어 있으므로, 품질 기준과 빌드 구성을 함께 조정해야 실제 기기에서 안정적인 결과를 얻을 수 있습니다.
+
+[게임 루프의 원리 (1) - 프레임의 구조](/dev/unity/GameLoop-1/)에서 시작한 이 시리즈는 하나의 프레임이 만들어지는 과정을 여러 관점에서 나누어 살펴보았습니다. 렌더링과 GPU, 스크립트와 메모리, UI와 조명, 셰이더와 물리, 파티클과 애니메이션, 프로파일링과 모바일 전략은 모두 같은 프레임 안에서 서로 영향을 주는 요소입니다.
+
+최적화는 이 요소들 중 어디에서 비용이 커지는지 찾고, 그 원리를 이해한 뒤, 상황에 맞는 방법을 적용하는 과정입니다. 프레임의 구조를 이해하면 병목을 더 정확히 볼 수 있고, 병목을 정확히 보면 어떤 최적화가 필요한지도 분명해집니다.
 
 <br>
 
@@ -506,10 +388,6 @@ Addressables만 단독으로 사용하면, 에셋 번들을 호스팅할 CDN 서
 **관련 글**
 - [게임 루프의 원리 (1) - 프레임의 구조](/dev/unity/GameLoop-1/)
 - [프로파일링 (1) - Unity Profiler와 Frame Debugger](/dev/unity/Profiling-1/)
-
-**시리즈**
-- [모바일 전략 (1) - 발열과 배터리](/dev/unity/MobileStrategy-1/)
-- **모바일 전략 (2) - 빌드와 품질 전략** (현재 글)
 
 **전체 시리즈**
 - [게임 루프의 원리 (1) - 프레임의 구조](/dev/unity/GameLoop-1/)
