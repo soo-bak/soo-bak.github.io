@@ -13,25 +13,25 @@ tags:
 
 ## 3D 그래픽스에서 수학이 필요한 이유
 
-게임 화면에 보이는 모든 것은 수학으로 표현됩니다.
+Unity에서 위치를 바꾸거나 카메라를 회전시키는 코드는 대부분 API 호출로 끝납니다. 하지만 그 API 안에서는 좌표, 벡터, 행렬, 투영 같은 수학 연산이 계속 실행됩니다.
 
-캐릭터의 위치는 좌표로, 캐릭터가 바라보는 방향은 방향 벡터로, 이동은 벡터의 덧셈으로, 조명의 밝기는 벡터의 내적으로 계산됩니다. 3D 오브젝트를 회전시키는 것은 행렬 곱셈이고, 3D 공간을 2D 화면에 투영하는 것도 행렬 연산입니다.
+캐릭터의 위치는 좌표로 저장되고, 바라보는 방향은 방향 벡터로 표현됩니다. 이동은 위치에 이동량을 더하는 연산이고, 조명 밝기는 표면 방향과 빛 방향의 관계로 계산됩니다. 오브젝트의 회전과 3D 공간을 2D 화면으로 옮기는 과정에는 행렬 연산이 들어갑니다.
 
 [렌더링 기초 (1) - 메쉬의 구조](/dev/unity/RenderingFoundation-1/)에서 법선 벡터가 빛 계산에 사용된다고 했고, [렌더링 기초 (3) - 머티리얼과 셰이더 기초](/dev/unity/RenderingFoundation-3/)에서 셰이더가 정점 변환과 조명 계산을 수행한다고 했습니다.
 
-이 과정에서 사용되는 수학이 벡터, 행렬, 좌표 변환, 투영입니다. 이 수학적 기반이 없으면 렌더링 파이프라인이나 셰이더의 동작을 정확히 파악하기 어렵습니다.
+이때 등장하는 벡터, 행렬, 좌표 변환, 투영을 이해해야 렌더링 파이프라인과 셰이더 코드가 어떤 값을 다루는지 따라갈 수 있습니다.
 
 <br>
 
-Unity API를 호출하면 내부적으로 이 수학 연산이 실행되므로, 수학을 모르더라도 게임을 만들 수는 있습니다.
+Unity API가 많은 계산을 대신 처리하므로, 수학을 깊게 몰라도 게임을 만들 수는 있습니다.
 
-그러나 성능 병목을 분석하거나 셰이더를 직접 수정해야 할 때, 내부에서 어떤 계산이 일어나는지 파악하지 못하면 최적화 방향을 잡기 어렵습니다.
+다만 성능 병목을 분석하거나 셰이더를 직접 수정해야 할 때는 이야기가 달라집니다. 내부에서 어떤 벡터를 만들고 어떤 값을 비교하는지 알아야 불필요한 계산을 줄이거나 잘못된 좌표 변환을 찾을 수 있기 때문입니다.
 
-이 시리즈는 셰이더 최적화와 렌더링 파이프라인 분석이 전제하는 3D 그래픽스 수학을 다루며, 이 글에서는 가장 기본이 되는 벡터와 벡터 연산을 살펴봅니다.
+이 시리즈에서는 렌더링과 셰이더를 읽는 데 필요한 그래픽스 수학을 다룹니다. 첫 글의 주제는 벡터입니다. 벡터가 위치, 방향, 이동량을 어떻게 표현하는지 확인한 뒤, 덧셈, 뺄셈, 정규화, 내적, 외적이 Unity와 렌더링에서 어떤 의미를 갖는지 연결합니다.
 
 <br>
 
-<div style="text-align: center; margin: 1.5em 0;">
+<div style="text-align: center; margin: 1.5em 0; overflow-x: auto;">
 <svg viewBox="0 0 580 90" xmlns="http://www.w3.org/2000/svg" style="max-width: 580px; width: 100%;">
   <rect x="5" y="8" width="110" height="52" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
   <text fill="currentColor" x="60" y="28" text-anchor="middle" font-size="13" font-weight="bold" font-family="sans-serif">벡터</text>
@@ -62,19 +62,15 @@ Unity API를 호출하면 내부적으로 이 수학 연산이 실행되므로, 
 
 ## 벡터란 무엇인가
 
-수학에서 다루는 양은 **스칼라(Scalar)**와 **벡터(Vector)** 두 가지로 나뉩니다.
+게임에서 위치를 다룰 때는 숫자 하나만으로는 충분하지 않습니다. 캐릭터가 얼마나 이동했는지도 중요하지만, 어느 방향으로 이동했는지도 함께 필요하기 때문입니다.
 
-스칼라는 **크기만** 가진 양입니다. 온도 25도, 질량 5kg, 속력 60km/h 같은 값이 스칼라입니다. 하나의 숫자로 완전히 표현되며, 방향이라는 개념이 없습니다.
+숫자 하나로 표현되는 값은 **스칼라(Scalar)**입니다. 온도 25도, 질량 5kg, 속력 60km/h처럼 크기만 있는 값이 여기에 해당합니다. 스칼라는 값의 크기를 나타낼 수 있지만, 방향은 담지 않습니다.
 
-<br>
+반대로 **벡터(Vector)**는 크기와 방향을 함께 담습니다. "북쪽으로 60km/h"는 얼마나 빠른지와 어느 쪽으로 움직이는지를 함께 나타내고, "오른쪽으로 3미터 이동"도 이동 거리와 방향을 함께 나타냅니다.
 
-벡터는 **크기와 방향**을 동시에 가진 양입니다. "북쪽으로 60km/h"는 속력(크기)과 방향이 결합된 벡터입니다. "오른쪽으로 3미터 이동"도 크기(3미터)와 방향(오른쪽)을 함께 담고 있으므로 벡터입니다.
+그래서 벡터는 좌표축별 성분으로 표현합니다. 2D 벡터는 x, y 두 성분을 사용하고, 3D 벡터는 x, y, z 세 성분을 사용합니다. Unity의 `Vector3`도 이 세 성분으로 위치, 방향, 이동량을 표현합니다.
 
-<br>
-
-2D 벡터는 x, y 두 개의 성분으로 표현됩니다. 3D 벡터는 x, y, z 세 개의 성분으로 표현됩니다. 게임 개발에서는 주로 3D 벡터를 사용합니다.
-
-<div style="text-align: center; margin: 1.5em 0;">
+<div style="text-align: center; margin: 1.5em 0; overflow-x: auto;">
 <svg viewBox="0 0 540 230" xmlns="http://www.w3.org/2000/svg" style="max-width: 540px; width: 100%;">
   <!-- 2D 벡터 -->
   <text fill="currentColor" x="125" y="16" text-anchor="middle" font-size="13" font-weight="bold" font-family="sans-serif">2D 벡터</text>
@@ -156,29 +152,25 @@ Unity API를 호출하면 내부적으로 이 수학 연산이 실행되므로, 
 
 <br>
 
-게임에서 벡터는 용도에 따라 다양하게 활용됩니다.
+같은 x, y, z 성분이라도 어떤 값으로 쓰느냐에 따라 위치, 방향, 속도처럼 다른 의미를 가집니다.
 
-**위치 벡터(Position Vector)**는 공간에서 한 점의 좌표를 나타냅니다. 캐릭터의 위치 (5, 0, 3)은 원점에서 x 방향으로 5, y 방향으로 0, z 방향으로 3만큼 떨어진 점을 가리키는 벡터입니다.
+**위치 벡터(Position Vector)**로 사용할 때는 공간의 한 점을 가리킵니다. 캐릭터 위치가 (5, 0, 3)이라면, 원점에서 x 방향으로 5, y 방향으로 0, z 방향으로 3만큼 떨어진 지점에 있다는 뜻입니다.
 
-<br>
+**방향 벡터(Direction Vector)**로 사용할 때는 어느 쪽을 향하는지만 나타냅니다. 캐릭터의 전방 방향이나 표면의 법선 방향처럼 위치보다 방향 자체가 중요한 값입니다. 이런 경우에는 거리 정보가 섞이지 않도록 크기를 1로 맞춘 단위 벡터를 주로 사용합니다.
 
-**방향 벡터(Direction Vector)**는 특정 방향을 나타내며, 캐릭터가 바라보는 전방 방향이나 표면에서 수직으로 뻗어나가는 법선 방향 등이 이에 해당합니다. 방향 벡터는 보통 크기를 1로 맞춰서(정규화하여) 사용하고, 이렇게 크기가 1인 벡터를 단위 벡터라 부릅니다.
-
-<br>
-
-**속도 벡터(Velocity Vector)**는 이동의 방향과 빠르기를 동시에 담고 있습니다. (2, 0, -1)이라는 속도 벡터는 매 초마다 x 방향으로 2, z 방향으로 -1만큼 이동한다는 뜻입니다.
+**속도 벡터(Velocity Vector)**로 사용할 때는 방향에 빠르기까지 포함됩니다. (2, 0, -1)이라는 속도 벡터는 1초 동안 x 방향으로 2, z 방향으로 -1만큼 이동한다는 뜻입니다.
 
 ---
 
 ## 벡터의 기본 연산
 
-벡터에 대해 수행할 수 있는 기본 연산은 덧셈, 뺄셈, 스칼라 곱입니다.
+벡터를 실제 코드에서 사용하려면 위치를 더하고, 두 위치의 차이를 구하고, 방향에 속력을 곱하는 계산이 필요합니다. 방향 벡터의 길이를 1로 맞출 때는 벡터를 자신의 크기로 나누기도 합니다. 이때 사용하는 기본 연산이 덧셈, 뺄셈, 스칼라 곱과 스칼라 나눗셈입니다.
 
 ---
 
 ### 덧셈
 
-두 벡터의 덧셈은 각 성분을 더하는 것입니다.
+두 벡터를 더할 때는 같은 자리의 성분끼리 더합니다.
 
 $$
 \mathbf{a} = (2, \; 1), \quad \mathbf{b} = (1, \; 3)
@@ -188,11 +180,11 @@ $$
 \mathbf{a} + \mathbf{b} = (2{+}1, \; 1{+}3) = (3, \; 4)
 $$
 
-기하학적으로 벡터의 덧셈은 **화살표를 이어 붙이는 것**입니다. 벡터 a의 끝점에 벡터 b의 시작점을 놓으면, 원점에서 b의 끝점까지가 a + b입니다.
+벡터 덧셈은 이동량을 차례대로 적용하는 것과 같습니다. 먼저 벡터 a만큼 이동하고, 그 끝점에서 다시 벡터 b만큼 이동하면, 처음 출발점에서 마지막 도착점까지의 이동량이 a + b입니다.
 
 <br>
 
-<div style="text-align: center; margin: 1.5em 0;">
+<div style="text-align: center; margin: 1.5em 0; overflow-x: auto;">
 <svg viewBox="0 0 310 290" xmlns="http://www.w3.org/2000/svg" style="max-width: 310px; width: 100%;">
   <!-- Y축 -->
   <line x1="55" y1="260" x2="55" y2="10" stroke="currentColor" stroke-width="1.2"/>
@@ -238,7 +230,7 @@ $$
 
 <br>
 
-게임에서 벡터 덧셈의 대표적인 사용 사례는 **이동**입니다. 캐릭터의 현재 위치에 이동 벡터를 더하면 새 위치가 됩니다.
+게임에서는 현재 위치에 이동량을 더할 때 이 연산을 사용합니다. 캐릭터의 현재 위치에 이동 벡터를 더하면 새 위치가 됩니다.
 
 $$
 \begin{aligned}
@@ -252,7 +244,7 @@ $$
 
 ### 뺄셈
 
-두 벡터의 뺄셈도 각 성분을 빼는 것입니다.
+두 벡터를 뺄 때도 같은 자리의 성분끼리 뺍니다.
 
 $$
 \mathbf{a} = (4, \; 3), \quad \mathbf{b} = (1, \; 1)
@@ -262,15 +254,13 @@ $$
 \mathbf{a} - \mathbf{b} = (4{-}1, \; 3{-}1) = (3, \; 2)
 $$
 
-기하학적으로 벡터의 뺄셈은 **한 점에서 다른 점으로 향하는 방향**을 구하는 연산입니다.
+두 위치를 빼면 한 위치에서 다른 위치까지의 차이가 벡터로 나옵니다.
 
-`target - origin`을 계산하면, `origin`에서 `target`을 향하는 방향 벡터가 나옵니다.
-
-결과 벡터의 크기는 두 점 사이의 거리이고, 방향은 `origin`에서 `target`을 바라보는 방향입니다.
+`target - origin`을 계산하면 `origin`에서 `target`까지 이동하려면 어느 방향으로 얼마나 가야 하는지 알 수 있습니다. 이 벡터의 방향은 `target` 쪽이고, 크기는 두 점 사이의 거리입니다.
 
 <br>
 
-<div style="text-align: center; margin: 1.5em 0;">
+<div style="text-align: center; margin: 1.5em 0; overflow-x: auto;">
 <svg viewBox="0 0 340 230" xmlns="http://www.w3.org/2000/svg" style="max-width: 340px; width: 100%;">
   <!-- Y축 -->
   <line x1="50" y1="200" x2="50" y2="20" stroke="currentColor" stroke-width="1.2"/>
@@ -309,9 +299,9 @@ $$
 
 <br>
 
-게임에서 적 캐릭터가 플레이어를 향해 이동하려면, 플레이어 위치에서 적 위치를 빼서 방향 벡터를 구합니다.
+적 캐릭터를 플레이어 쪽으로 움직일 때도 같은 계산을 사용합니다. 플레이어 위치에서 적 위치를 빼면, 적에서 플레이어로 향하는 벡터를 얻을 수 있습니다.
 
-이 방향 벡터를 정규화한 뒤 이동 속력을 곱하면 이동 벡터가 됩니다.
+이 벡터를 정규화한 뒤 이동 속력을 곱하면 실제 이동에 사용할 속도 벡터가 됩니다.
 
 $$
 \begin{aligned}
@@ -325,9 +315,9 @@ $$
 
 ---
 
-### 스칼라 곱
+### 스칼라 곱과 나눗셈
 
-벡터에 스칼라(숫자 하나)를 곱하는 연산입니다. 각 성분에 그 스칼라를 곱합니다.
+벡터에 숫자 하나를 곱하거나 나누면 벡터의 길이를 조절할 수 있습니다. 계산할 때는 x, y, z 각 성분을 같은 숫자로 곱하거나 나눕니다.
 
 $$
 \mathbf{v} = (3, \; 2)
@@ -337,17 +327,18 @@ $$
 \begin{aligned}
 2\mathbf{v} &= (6, \; 4) & &\text{— 크기가 2배} \\
 0.5\mathbf{v} &= (1.5, \; 1) & &\text{— 크기가 절반} \\
+\frac{\mathbf{v}}{2} &= (1.5, \; 1) & &\text{— 0.5를 곱한 것과 같음} \\
 {-}\mathbf{v} &= (-3, \; -2) & &\text{— 방향 반전}
 \end{aligned}
 $$
 
-기하학적으로 스칼라 곱은 벡터의 **크기를 변경**합니다.
+기하학적으로 스칼라 곱과 나눗셈은 벡터의 **크기를 변경**합니다.
 
-양수를 곱하면 같은 방향으로 늘어나거나 줄어들고, 음수를 곱하면 **방향이 반전**됩니다.
+양수를 곱하거나 나누면 같은 방향으로 늘어나거나 줄어들고, 음수를 곱하면 **방향이 반전**됩니다. 나눗셈은 0이 아닌 값에 대해서만 사용할 수 있으며, `v / 2`는 `v * 0.5`와 같은 의미입니다.
 
 <br>
 
-<div style="text-align: center; margin: 1.5em 0;">
+<div style="text-align: center; margin: 1.5em 0; overflow-x: auto;">
 <svg viewBox="0 0 440 280" xmlns="http://www.w3.org/2000/svg" style="max-width: 440px; width: 100%;">
   <!-- Y축 -->
   <line x1="170" y1="265" x2="170" y2="12" stroke="currentColor" stroke-width="1.2"/>
@@ -386,21 +377,17 @@ $$
 
 <br>
 
-게임에서 스칼라 곱은 속도 조절에 활용됩니다.
-
-방향 벡터에 속력(스칼라)을 곱하면 속도 벡터가 됩니다. 같은 방향으로 더 빠르게 이동하려면 더 큰 값을 곱하면 됩니다.
+게임에서는 방향에 속력을 붙일 때 스칼라 곱을 사용합니다. 방향 벡터에 속력 값을 곱하면 속도 벡터가 되고, 같은 방향으로 더 빠르게 이동하려면 더 큰 값을 곱하면 됩니다. 반대로 벡터를 일정한 크기로 줄이거나 정규화할 때는 스칼라 나눗셈이 사용됩니다.
 
 ---
 
 ## 벡터의 크기와 정규화
 
-앞의 기본 연산에서 "크기가 2배", "크기가 1인 벡터", "정규화한 뒤" 같은 표현이 등장했습니다.
-
-벡터의 **크기**와 **정규화**는 이 표현들의 정확한 의미를 정의하는 개념입니다.
+벡터는 방향만 담는 것이 아니라 길이도 함께 가집니다. 두 위치 사이의 거리를 구하려면 벡터의 길이를 알아야 합니다. 반대로 방향만 필요할 때는 길이가 계산에 섞이지 않도록 벡터의 길이를 1로 맞춥니다.
 
 ### 크기 (Magnitude)
 
-벡터의 **크기(Magnitude)**는 벡터가 나타내는 화살표의 길이입니다. 2D 벡터 (x, y)의 크기는 피타고라스 정리로 계산합니다.
+벡터의 **크기(Magnitude)**는 벡터가 나타내는 화살표의 길이입니다. 2D 벡터 (x, y)는 x축 이동량과 y축 이동량이 직각을 이루므로, 피타고라스 정리로 길이를 구할 수 있습니다.
 
 **2D 벡터의 크기**
 
@@ -419,7 +406,7 @@ $$
 
 <br>
 
-3D 벡터는 같은 공식을 한 차원 확장한 형태입니다.
+3D 벡터도 같은 원리를 사용합니다. x, y, z 세 성분이 서로 직교하는 축의 이동량이므로, 세 성분의 제곱을 더한 뒤 제곱근을 구합니다.
 
 **3D 벡터의 크기**
 
@@ -438,11 +425,9 @@ $$
 
 <br>
 
-피타고라스 정리는 2D에서 직각삼각형의 빗변을 구하는 공식이고, 3D 벡터의 크기는 이 정리를 3차원으로 확장한 것입니다.
+3D에서 이 공식을 떠올리기 어렵다면, 바닥면의 대각선을 먼저 구한 뒤 그 대각선과 y축 높이를 다시 조합한다고 보면 됩니다.
 
-먼저 x축과 z축으로 바닥면 대각선 $\sqrt{x^2 + z^2}$을 구하고, 이 대각선과 y축을 조합하여 공간 대각선의 길이를 구합니다.
-
-<div style="text-align: center; margin: 1.5em 0;">
+<div style="text-align: center; margin: 1.5em 0; overflow-x: auto;">
 <svg viewBox="0 0 500 170" xmlns="http://www.w3.org/2000/svg" style="max-width: 500px; width: 100%;">
   <!-- 2D -->
   <text fill="currentColor" x="110" y="16" text-anchor="middle" font-size="13" font-weight="bold" font-family="sans-serif">2D</text>
@@ -490,7 +475,7 @@ $$
 
 <br>
 
-게임에서 벡터의 크기는 **거리 계산**에 직접 사용됩니다. 두 오브젝트 사이의 거리는 위치 차이 벡터의 크기입니다.
+게임에서 벡터의 크기는 **거리 계산**에 직접 쓰입니다. 두 오브젝트의 위치를 빼면 한 오브젝트에서 다른 오브젝트로 향하는 벡터가 나오고, 그 벡터의 크기가 두 점 사이의 거리입니다.
 
 $$
 \begin{aligned}
@@ -509,7 +494,7 @@ $$
 
 **단위 벡터(Unit Vector)**는 크기가 정확히 1인 벡터입니다. 단위 벡터는 순수한 **방향**만을 나타내며, 크기 정보를 담지 않습니다.
 
-**정규화(Normalization)**는 임의의 벡터를 단위 벡터로 변환하는 연산으로, 벡터의 각 성분을 벡터의 크기로 나누면 됩니다.
+임의의 벡터를 단위 벡터로 바꾸는 연산을 **정규화(Normalization)**라고 합니다. 벡터의 각 성분을 벡터의 크기로 나누면 방향은 유지되고 크기만 1이 됩니다.
 
 <br>
 
@@ -528,13 +513,13 @@ $$
 \end{aligned}
 $$
 
-정규화의 결과는 원래 벡터와 같은 방향을 가리키되 크기가 1인 벡터입니다. 방향 정보만 남기고 크기 정보를 제거하는 연산입니다.
+정규화된 벡터는 원래 벡터와 같은 방향을 가리키지만 크기는 1입니다. 즉, 방향 정보만 남기고 거리나 속력 같은 크기 정보는 제거합니다.
 
 <br>
 
-게임에서 정규화는 방향과 속력을 분리할 때 사용됩니다. "적에서 플레이어를 향한 방향"을 구한 뒤, 이 방향에 원하는 속력을 곱하면 이동 속도 벡터가 됩니다.
+게임에서 정규화는 방향과 속력을 분리할 때 사용합니다. 적에서 플레이어를 향하는 벡터를 구한 뒤, 이 벡터를 정규화하고 원하는 속력을 곱하면 이동 속도 벡터가 됩니다.
 
-정규화 없이 방향 벡터를 그대로 사용하면, 두 오브젝트 사이의 거리가 멀수록 방향 벡터의 크기가 커져 이동 속도까지 달라집니다.
+정규화하지 않은 벡터를 그대로 이동에 사용하면, 두 오브젝트 사이가 멀수록 벡터의 크기도 커집니다. 그러면 방향만 달라져야 하는 상황에서 이동 속도까지 함께 달라집니다.
 
 $$
 \begin{aligned}
@@ -550,19 +535,15 @@ $$
 
 ### Unity에서의 크기와 정규화
 
-위에서 다룬 크기와 정규화 연산은 Unity의 `Vector3` 구조체에 속성으로 구현되어 있습니다.
+Unity의 `Vector3`에는 크기와 정규화에 대응하는 속성이 준비되어 있습니다.
 
 `Vector3.magnitude`는 벡터의 크기를 반환합니다. 내부적으로 $\sqrt{x^2 + y^2 + z^2}$를 계산합니다.
 
-<br>
-
 `Vector3.normalized`는 정규화된 벡터를 반환합니다. 내부적으로 크기를 먼저 구한 뒤 각 성분을 나눕니다.
-
-<br>
 
 `Vector3.sqrMagnitude`는 크기의 **제곱** 값을 반환합니다. 내부적으로 $x^2 + y^2 + z^2$만 계산하고 제곱근을 생략합니다.
 
-제곱근 연산은 CPU에서 곱셈이나 덧셈보다 수 배 이상 비용이 높습니다. 거리의 정확한 값이 필요하지 않고 두 거리의 대소만 비교하면 되는 경우에는 `sqrMagnitude`가 `magnitude`보다 효율적입니다. a > b이면 a² > b²이므로, 제곱 상태에서도 대소 관계가 유지되기 때문입니다.
+제곱근 연산은 덧셈이나 곱셈보다 비용이 큽니다. 거리의 정확한 값이 필요하지 않고 기준 거리보다 가까운지만 확인하면 된다면 `sqrMagnitude`를 사용할 수 있습니다. 양수 거리에서는 a > b이면 a² > b²이므로, 제곱값끼리 비교해도 대소 관계가 유지되기 때문입니다.
 
 ```csharp
 // magnitude 사용 (제곱근 포함)
@@ -574,27 +555,21 @@ float sqrDist = (target - origin).sqrMagnitude;
 if (sqrDist < 100f) { ... }    // 10의 제곱 = 100
 ```
 
-`sqrMagnitude`와 비교 대상의 제곱값을 사용하면 결과는 동일하면서 연산 비용이 줄어듭니다. 프레임마다 수십~수백 개의 오브젝트에 대해 거리 비교를 수행하는 경우, 이 차이가 누적되어 체감 가능한 성능 개선으로 이어질 수 있습니다.
+예를 들어 반경 10 안에 들어왔는지만 확인한다면, 실제 거리와 10을 비교할 필요가 없습니다. 거리의 제곱값을 구한 뒤 10의 제곱인 100과 비교하면 같은 판단을 할 수 있습니다. 프레임마다 많은 오브젝트의 거리를 검사하는 코드에서는 이런 방식으로 제곱근 계산을 줄일 수 있습니다.
 
 ---
 
 ## 내적 (Dot Product)
 
-덧셈, 뺄셈, 스칼라 곱은 벡터의 값을 직접 변경하는 기본 연산이었습니다.
+게임에서는 두 방향이 얼마나 비슷한지 판단해야 할 때가 많습니다. 플레이어가 적을 바라보고 있는지, 표면이 빛을 정면으로 받고 있는지, 오브젝트가 카메라를 향하고 있는지 같은 판단이 여기에 해당합니다.
 
-내적과 외적은 이와 다르게, 두 벡터 사이의 **관계**를 계산하는 연산입니다.
-
-<br>
-
-벡터의 내적(Dot Product)은 두 벡터를 입력으로 받아 **스칼라(숫자 하나)**를 결과로 반환합니다.
+**내적(Dot Product)**은 이런 방향 관계를 숫자 하나로 바꾸는 연산입니다. 두 벡터를 입력으로 받아 스칼라 값을 반환하며, 이 값의 부호와 크기를 보면 두 벡터가 같은 쪽을 향하는지, 수직에 가까운지, 반대쪽을 향하는지 알 수 있습니다.
 
 ---
 
 ### 내적의 공식
 
-내적을 계산하는 방법은 두 가지입니다.
-
-첫 번째는 **성분별 곱의 합**입니다.
+내적은 코드에서는 성분별 곱의 합으로 계산합니다.
 
 <br>
 
@@ -613,7 +588,7 @@ $$
 
 <br>
 
-두 번째는 **기하학적 정의**입니다.
+내적은 두 벡터 사이의 각도와도 연결됩니다.
 
 $$
 \mathbf{a} \cdot \mathbf{b} = |\mathbf{a}| \; |\mathbf{b}| \; \cos\theta
@@ -623,23 +598,19 @@ $$
 
 <br>
 
-두 공식은 수학적으로 동일한 결과를 냅니다.
-
-성분별 곱의 합이 $\lvert\mathbf{a}\rvert \times \lvert\mathbf{b}\rvert \times \cos\theta$ 와 같다는 점은 삼각함수의 성질로 증명됩니다.
-
-프로그램에서 내적을 계산할 때는 성분별 곱의 합을 사용하고, 내적의 기하학적 의미를 해석할 때는 코사인 관계를 활용합니다.
+이 식 때문에 내적 값으로 두 벡터의 방향 차이를 읽을 수 있습니다. 특히 두 벡터의 크기가 1이면 식이 더 단순해집니다.
 
 ---
 
 ### 내적의 기하학적 의미
 
-두 벡터가 모두 **단위 벡터**(크기 1)라면, 기하학적 공식이 단순해집니다.
+두 벡터가 모두 **단위 벡터**(크기 1)라면, 앞의 식에서 $|\mathbf{a}|$와 $|\mathbf{b}|$가 모두 1이 됩니다.
 
 $$
 |\mathbf{a}| = 1, \; |\mathbf{b}| = 1 \; \text{일 때:} \quad \mathbf{a} \cdot \mathbf{b} = 1 \times 1 \times \cos\theta = \cos\theta
 $$
 
-두 단위 벡터의 내적이 곧 두 벡터 사이 각도의 코사인 값이 됩니다. 이 성질 덕분에 내적 하나로 두 벡터 사이의 각도 관계를 바로 파악할 수 있습니다.
+두 단위 벡터의 내적은 두 벡터 사이 각도의 코사인 값과 같습니다. 그래서 벡터를 정규화해 두면 내적 결과만으로 두 방향이 얼마나 비슷한지 판단할 수 있습니다.
 
 <br>
 
@@ -657,7 +628,7 @@ $$
 
 <br>
 
-<div style="text-align: center; margin: 1.5em 0;">
+<div style="text-align: center; margin: 1.5em 0; overflow-x: auto;">
 <svg viewBox="0 0 540 135" xmlns="http://www.w3.org/2000/svg" style="max-width: 540px; width: 100%;">
   <!-- 내적 > 0 -->
   <text fill="currentColor" x="90" y="16" text-anchor="middle" font-size="12" font-weight="bold" font-family="sans-serif">내적 > 0</text>
@@ -695,21 +666,17 @@ $$
 </svg>
 </div>
 
-내적의 부호만으로 두 벡터가 같은 쪽을 가리키는지, 수직인지, 반대 쪽인지를 판별할 수 있습니다.
+내적이 양수이면 두 벡터의 각도가 90도보다 작고, 음수이면 90도보다 큽니다. 값이 0에 가까우면 두 방향은 거의 수직입니다.
 
-<br>
+이 성질은 앞뒤 판정에 자주 사용됩니다. 플레이어의 전방 벡터와 적을 향한 방향 벡터를 내적했을 때 값이 양수이면, 적은 플레이어가 바라보는 앞쪽에 있습니다. 값이 음수이면 플레이어 뒤쪽에 있는 것으로 볼 수 있습니다.
 
-예를 들어, 플레이어의 전방 벡터와 적을 향한 방향 벡터의 내적이 양수이면, 적이 플레이어 시야의 앞쪽에 있다는 뜻입니다. 이를 통해 적이 시야 안에 있는지 판별할 수 있습니다.
-
-반대로, 오브젝트의 전방 벡터와 카메라를 향한 방향의 내적이 음수이면, 오브젝트가 카메라에 등을 보이고 있다는 뜻입니다.
-
-이처럼 내적의 부호 하나로 방향 관계를 판별할 수 있어, 시야 판정이나 앞뒤 구분 등 다양한 게임 로직에 활용됩니다.
+카메라와 오브젝트의 앞뒤 관계를 판단할 때도 같은 방식으로 사용할 수 있습니다. 별도의 각도 계산 없이 내적의 부호만으로 시야 판정이나 앞뒤 구분을 처리할 수 있습니다.
 
 ---
 
 ### 내적과 조명 계산
 
-내적이 사용되는 대표적인 곳은 **조명(Lighting)** 계산입니다. [렌더링 기초 (1) - 메쉬의 구조](/dev/unity/RenderingFoundation-1/)에서 법선(Normal)과 빛의 각도에 따라 표면 밝기가 달라진다고 했습니다. 이때 "각도에 따른 밝기"를 수치로 구하는 연산이 바로 내적입니다.
+내적은 **조명(Lighting)** 계산에서 자주 등장합니다. [렌더링 기초 (1) - 메쉬의 구조](/dev/unity/RenderingFoundation-1/)에서 법선(Normal)과 빛의 각도에 따라 표면 밝기가 달라진다고 했습니다. 이 각도 관계를 수치로 바꿀 때 내적을 사용합니다.
 
 표면의 법선 벡터 N은 표면에서 수직으로 뻗어나가는 방향이고, 광원 방향 벡터 L은 표면에서 광원을 향하는 방향입니다. 이 두 벡터의 내적 $\mathbf{N} \cdot \mathbf{L}$은 빛이 표면에 얼마나 직접적으로 닿는지를 나타냅니다.
 
@@ -717,7 +684,7 @@ $$
 
 $\mathbf{N}$과 $\mathbf{L}$이 모두 단위 벡터일 때, $\mathbf{N} \cdot \mathbf{L} = \cos\theta$입니다. 빛이 표면 뒤쪽에서 오는 경우($\theta > 90°$)에는 음수가 되므로, 실제 조명 계산에서는 0 이하를 잘라냅니다.
 
-<div style="text-align: center; margin: 1.5em 0;">
+<div style="text-align: center; margin: 1.5em 0; overflow-x: auto;">
 <svg viewBox="0 0 420 175" xmlns="http://www.w3.org/2000/svg" style="max-width: 420px; width: 100%;">
   <!-- 표면 -->
   <line x1="40" y1="140" x2="380" y2="140" stroke="currentColor" stroke-width="2"/>
@@ -766,9 +733,9 @@ $$
 
 <br>
 
-이 계산 방식을 **램버트 반사(Lambertian Reflectance)**라 부릅니다. 램버트 반사는 가장 기본적인 확산(Diffuse) 조명 모델이며, 대부분의 셰이더에 포함되어 있습니다. 내적 한 번으로 표면이 빛을 받는 정도를 구할 수 있어, 3D 그래픽스에서 가장 빈번하게 수행되는 수학 연산 중 하나입니다.
+확산(Diffuse) 조명에서는 빛이 표면에 정면으로 들어올수록 밝고, 옆에서 스치듯 들어올수록 어둡게 보입니다. 법선과 빛 방향의 내적은 이 차이를 1에서 0 사이의 값으로 바꿔 주므로, 표면 밝기를 계산하는 기본 값으로 사용할 수 있습니다. 이 방식이 **램버트 반사(Lambertian Reflectance)**의 기본 형태입니다.
 
-Unity에서 내적은 `Vector3.Dot(a, b)`로 계산합니다.
+Unity에서는 이 내적 계산을 `Vector3.Dot(a, b)`로 작성합니다.
 
 ```csharp
 Vector3 N = transform.up;          // 표면 법선
@@ -782,13 +749,13 @@ brightness = Mathf.Max(brightness, 0f);  // 음수는 0으로
 
 ## 외적 (Cross Product)
 
-내적이 두 벡터에서 스칼라를 만드는 연산이었다면, **외적(Cross Product)**은 두 벡터에서 **새로운 벡터**를 만드는 연산입니다. 외적의 결과는 입력 두 벡터에 모두 수직인 벡터이며, 3D 공간에서만 정의됩니다.
+내적이 두 벡터에서 숫자 하나를 얻는 연산이라면, **외적(Cross Product)**은 두 벡터에서 새로운 벡터를 얻는 연산입니다. 외적의 결과는 입력 두 벡터에 모두 수직인 방향을 가리키며, 3D 공간에서만 정의됩니다.
 
 ---
 
 ### 외적의 공식
 
-외적의 계산 공식은 다음과 같습니다.
+외적은 다음 공식으로 계산합니다.
 
 $$
 \mathbf{a} \times \mathbf{b} = (a_y b_z - a_z b_y, \;\; a_z b_x - a_x b_z, \;\; a_x b_y - a_y b_x)
@@ -808,16 +775,18 @@ x축 방향 벡터 (1, 0, 0)과 y축 방향 벡터 (0, 1, 0)의 외적은 z축 �
 
 ### 외적의 기하학적 의미
 
-외적의 결과 벡터는 두 가지 정보를 담고 있습니다.
+외적의 결과는 두 입력 벡터가 놓인 평면에서 수직으로 뻗는 벡터입니다. 그래서 삼각형이나 표면의 방향을 나타내는 **법선 벡터(Normal Vector)**를 구할 때 외적을 사용합니다.
 
-첫째, **방향**: 두 입력 벡터가 이루는 평면에 수직인 방향입니다. 이 방향을 **법선 벡터(Normal Vector)**라 합니다.
+결과 벡터의 길이도 의미를 가집니다. 외적의 크기는 다음과 같고, 이 값은 두 벡터가 만드는 평행사변형의 넓이와 같습니다.
 
-<br>
+$$
+\lvert\mathbf{a} \times \mathbf{b}\rvert = \lvert\mathbf{a}\rvert \; \lvert\mathbf{b}\rvert \; \sin\theta
+$$
 
-둘째, **크기**: $\lvert\mathbf{a} \times \mathbf{b}\rvert = \lvert\mathbf{a}\rvert \; \lvert\mathbf{b}\rvert \; \sin\theta$이며, 이는 두 벡터가 이루는 **평행사변형의 넓이**와 같습니다. 두 벡터가 평행하면 $\sin\theta = 0$이므로 외적의 크기도 0이 됩니다. 두 벡터가 수직이면 $\sin\theta = 1$이므로 외적의 크기가 최대입니다.
+두 벡터가 평행하면 평행사변형의 넓이가 0이므로 외적의 크기도 0입니다. 두 벡터가 수직에 가까워질수록 넓이가 커지고, 외적의 크기도 함께 커집니다.
 
-<div style="text-align: center; margin: 1.5em 0;">
-<svg viewBox="0 0 420 220" xmlns="http://www.w3.org/2000/svg" style="max-width: 420px; width: 100%;">
+<div style="text-align: center; margin: 1.5em 0; overflow-x: auto;">
+<svg viewBox="0 0 420 205" xmlns="http://www.w3.org/2000/svg" style="max-width: 420px; width: 100%;">
   <!-- 평행사변형 -->
   <polygon points="60,175 240,175 310,115 130,115" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
   <!-- 벡터 a (아래 변) -->
@@ -834,8 +803,6 @@ x축 방향 벡터 (1, 0, 0)과 y축 방향 벡터 (0, 1, 0)의 외적은 z축 �
   <text fill="currentColor" x="200" y="20" font-size="12" font-family="sans-serif" font-weight="bold">a × b</text>
   <!-- 넓이 레이블 -->
   <text fill="currentColor" x="185" y="152" text-anchor="middle" font-size="10" font-family="sans-serif" opacity="0.4">넓이 = |a × b|</text>
-  <!-- 결론 -->
-  <text fill="currentColor" x="210" y="215" text-anchor="middle" font-size="10" font-family="sans-serif" opacity="0.5">방향: a와 b 모두에 수직 · 크기: |a|·|b|·sinθ</text>
 </svg>
 </div>
 
@@ -843,14 +810,14 @@ x축 방향 벡터 (1, 0, 0)과 y축 방향 벡터 (0, 1, 0)의 외적은 z축 �
 
 ### 외적의 방향
 
-외적의 결과 벡터가 "위로" 향할지 "아래로" 향할지는 좌표계의 손잡이 규칙으로 결정됩니다. 수학과 OpenGL에서는 **오른손 법칙(Right-Hand Rule)**을 사용합니다.
+외적의 결과는 두 벡터가 이루는 평면에 수직이지만, 그 수직 방향은 두 가지가 가능합니다. 어느 쪽을 결과로 볼지는 좌표계의 손잡이 규칙으로 정합니다. 수학과 OpenGL에서는 **오른손 법칙(Right-Hand Rule)**을 사용합니다.
 
 오른손의 네 손가락을 벡터 a 방향으로 뻗은 뒤, 벡터 b 방향으로 감아쥡니다. 이때 엄지가 가리키는 방향이 $\mathbf{a} \times \mathbf{b}$의 방향입니다.
 
 <br>
 
-<div style="text-align: center; margin: 1.5em 0;">
-<svg viewBox="0 0 330 210" xmlns="http://www.w3.org/2000/svg" style="max-width: 330px; width: 100%;">
+<div style="text-align: center; margin: 1.5em 0; overflow-x: auto;">
+<svg viewBox="0 0 330 172" xmlns="http://www.w3.org/2000/svg" style="max-width: 330px; width: 100%;">
   <circle cx="90" cy="155" r="3" fill="currentColor" fill-opacity="0.3"/>
   <!-- 벡터 a (오른쪽) -->
   <line x1="90" y1="155" x2="268" y2="155" stroke="currentColor" stroke-width="2.2"/>
@@ -867,13 +834,10 @@ x축 방향 벡터 (1, 0, 0)과 y축 방향 벡터 (0, 1, 0)의 외적은 z축 �
   <!-- θ 각도 -->
   <path d="M 120,155 A 30,30 0 0,0 109,132" fill="none" stroke="currentColor" stroke-width="1" opacity="0.5"/>
   <text fill="currentColor" x="125" y="140" font-size="10" font-family="sans-serif" font-style="italic" opacity="0.6">θ</text>
-  <!-- 설명 -->
-  <text fill="currentColor" x="165" y="188" text-anchor="middle" font-size="10" font-family="sans-serif" opacity="0.5">① 오른손 손가락을 a 방향으로 편다</text>
-  <text fill="currentColor" x="165" y="203" text-anchor="middle" font-size="10" font-family="sans-serif" opacity="0.5">② b 방향으로 감아쥐면 엄지 = a × b</text>
 </svg>
 </div>
 
-외적은 **교환 법칙이 성립하지 않습니다.** $\mathbf{a} \times \mathbf{b}$와 $\mathbf{b} \times \mathbf{a}$는 크기는 같지만 방향이 반대입니다.
+외적에서는 입력 순서가 결과 방향을 결정합니다. $\mathbf{a} \times \mathbf{b}$와 $\mathbf{b} \times \mathbf{a}$는 길이는 같지만 서로 반대 방향을 가리킵니다.
 
 $$
 \mathbf{a} \times \mathbf{b} = -(\mathbf{b} \times \mathbf{a})
@@ -881,7 +845,7 @@ $$
 
 <br>
 
-Unity는 왼손 좌표계를 사용합니다. `Vector3.Cross()`의 계산 공식 자체는 수학 교과서와 동일하지만, 왼손 좌표계에서 결과를 해석할 때는 오른손이 아닌 **왼손 법칙**을 적용합니다. 왼손의 네 손가락을 벡터 a 방향으로 뻗은 뒤 벡터 b 방향으로 감아쥐면, 엄지가 가리키는 방향이 외적의 방향입니다.
+Unity는 왼손 좌표계를 사용하므로, Unity의 x, y, z축에서 외적 방향을 예상할 때는 **왼손 법칙**으로 확인해야 합니다. 왼손의 네 손가락을 첫 번째 벡터 방향에서 두 번째 벡터 방향으로 감아쥐면, 엄지가 가리키는 방향이 `Vector3.Cross(a, b)`의 결과 방향입니다.
 
 <br>
 
@@ -892,15 +856,15 @@ Vector3.Cross(Vector3.right, Vector3.up);      // (0, 0, 1) = forward
 Vector3.Cross(Vector3.right, Vector3.forward);  // (0, -1, 0) = down
 ```
 
-첫 번째 예시에서 왼손 손가락을 right(+x)에서 up(+y) 방향으로 감아쥐면, 엄지가 forward(+z)를 가리킵니다. 오른손 법칙을 적용하면 엄지는 -z를 가리키므로 결과 해석이 반대가 됩니다. Unity에서 외적의 방향을 예측할 때는 왼손을 사용해야 합니다.
+첫 번째 예시에서 왼손 손가락을 right(+x)에서 up(+y) 방향으로 감아쥐면, 엄지가 forward(+z)를 가리킵니다. Unity에서 외적의 방향을 예상할 때는 이 축 방향을 기준으로 확인해야 합니다.
 
 ---
 
 ### 외적의 활용: 면의 법선 계산
 
-외적의 가장 대표적인 활용은 **삼각형의 법선 벡터 계산**입니다. [렌더링 기초 (1) - 메쉬의 구조](/dev/unity/RenderingFoundation-1/)에서 메쉬가 삼각형으로 구성되며, 각 표면에 법선이 있다고 했습니다. 삼각형 세 정점 v0, v1, v2가 주어지면, 두 변을 벡터로 만들고 외적을 구하면 법선이 됩니다.
+외적은 **삼각형의 법선 벡터**를 구할 때 자주 사용합니다. [렌더링 기초 (1) - 메쉬의 구조](/dev/unity/RenderingFoundation-1/)에서 메쉬가 삼각형으로 구성되며, 각 표면에 법선이 있다고 했습니다. 삼각형의 세 정점 v0, v1, v2가 주어지면 두 변을 벡터로 만들 수 있고, 두 변의 외적이 삼각형 면에 수직인 방향을 줍니다.
 
-<div style="text-align: center; margin: 1.5em 0;">
+<div style="text-align: center; margin: 1.5em 0; overflow-x: auto;">
 <svg viewBox="0 0 280 170" xmlns="http://www.w3.org/2000/svg" style="max-width: 280px; width: 100%;">
   <!-- 삼각형 -->
   <polygon points="140,20 40,145 240,145" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.8"/>
@@ -927,15 +891,15 @@ $$
 \end{aligned}
 $$
 
-법선의 방향은 정점의 감기 순서(Winding Order)에 따라 달라집니다. 감기 순서란 삼각형의 세 정점을 나열하는 순서를 말합니다. 정점 순서가 바뀌면 edge1과 edge2가 뒤바뀌고, 앞서 확인한 것처럼 $\mathbf{a} \times \mathbf{b} = -(\mathbf{b} \times \mathbf{a})$이므로 법선의 방향이 반전됩니다.
+법선의 방향은 정점의 감기 순서(Winding Order)에 따라 달라집니다. 감기 순서는 삼각형의 세 정점을 나열하는 순서입니다. 정점 순서가 바뀌면 edge1과 edge2의 순서도 바뀌고, 외적은 입력 순서가 바뀔 때 방향이 반전되므로 법선 방향도 반대로 뒤집힙니다.
 
-GPU는 화면 공간에서의 감기 순서를 기준으로 삼각형의 앞면과 뒷면을 구분합니다. 래스터화 단계에서 투영된 삼각형의 정점이 시계 방향(CW)인지 반시계 방향(CCW)인지를 확인하여 판별하며, 뒷면으로 판정된 삼각형은 백페이스 컬링(Backface Culling)으로 제거됩니다.
+GPU는 이 감기 순서를 사용해 삼각형의 앞면과 뒷면을 구분합니다. 래스터화 단계에서 화면에 투영된 삼각형의 정점 순서가 시계 방향(CW)인지 반시계 방향(CCW)인지 확인하고, 뒷면으로 판정된 삼각형은 백페이스 컬링(Backface Culling)으로 제거할 수 있습니다.
 
 Unity는 시계 방향(CW)을 앞면으로 판정합니다. OpenGL 기반 엔진은 반시계 방향(CCW)을 앞면으로 사용하므로, 엔진에 따라 규칙이 다릅니다.
 
 <br>
 
-Unity에서 외적은 `Vector3.Cross(a, b)`로 계산합니다. 표준 외적 공식과 동일하므로, 시계 방향으로 감긴 삼각형에 적용하면 앞면 방향의 법선을 얻습니다.
+Unity에서 외적은 `Vector3.Cross(a, b)`로 계산합니다. 삼각형의 정점 순서를 Unity의 앞면 규칙에 맞추면, 이 연산으로 앞면 방향의 법선을 얻을 수 있습니다.
 
 ```csharp
 Vector3 edge1 = v1 - v0;
@@ -947,21 +911,19 @@ Vector3 normal = Vector3.Cross(edge1, edge2).normalized;
 
 ## Unity에서의 Vector3
 
-지금까지 다룬 벡터의 기본 연산, 크기와 정규화, 내적, 외적은 Unity에서 `Vector3`라는 구조체를 통해 사용됩니다. `Vector3`는 3D 벡터를 표현하며, 위의 연산들이 메서드와 연산자로 구현되어 있습니다.
+앞에서 다룬 연산은 Unity에서 대부분 `Vector3`를 통해 사용합니다. `Vector3`는 x, y, z 성분을 가진 3D 벡터 구조체이며, 덧셈과 뺄셈은 연산자로, 내적과 외적은 정적 메서드로 제공됩니다.
 
 ---
 
 ### 위치와 방향
 
-Unity에서 오브젝트의 위치와 방향은 `Transform` 컴포넌트를 통해 접근합니다.
+Unity에서 오브젝트가 어디에 있고 어느 쪽을 향하는지는 `Transform` 컴포넌트에서 읽습니다.
 
-`Transform.position`은 오브젝트의 **월드 공간 위치**를 나타내는 위치 벡터입니다.
+`Transform.position`은 오브젝트의 **월드 공간 위치**입니다. 씬의 원점을 기준으로 오브젝트가 어디에 있는지를 나타내는 위치 벡터입니다.
 
-<br>
+방향은 `Transform.forward`, `Transform.up`, `Transform.right`로 읽습니다. 이 값들은 오브젝트가 회전한 상태를 반영한 전방, 위쪽, 오른쪽 방향입니다. 모두 길이가 1인 단위 벡터이므로, 이동 방향이나 내적 계산에 바로 사용할 수 있습니다.
 
-`Transform.forward`는 오브젝트가 바라보는 **전방 방향**의 단위 벡터이고, `Transform.up`은 **위쪽 방향**, `Transform.right`는 **오른쪽 방향**의 단위 벡터입니다. 이 세 벡터는 서로 수직이며, 오브젝트의 로컬 좌표축을 구성합니다.
-
-<div style="text-align: center; margin: 1.5em 0;">
+<div style="text-align: center; margin: 1.5em 0; overflow-x: auto;">
 <svg viewBox="0 0 340 230" xmlns="http://www.w3.org/2000/svg" style="max-width: 340px; width: 100%;">
   <circle cx="140" cy="125" r="3" fill="currentColor" fill-opacity="0.3"/>
   <!-- up (0, 1, 0) -->
@@ -981,7 +943,7 @@ Unity에서 오브젝트의 위치와 방향은 `Transform` 컴포넌트를 통�
 
 <br>
 
-위 다이어그램은 회전이 적용되지 않은 기본 상태의 방향 벡터입니다. 오브젝트가 회전하면 이 세 벡터도 함께 회전하여 항상 오브젝트 기준의 방향을 나타냅니다.
+위 다이어그램은 오브젝트가 회전하지 않았을 때의 기본 방향입니다. 오브젝트를 회전시키면 `forward`, `up`, `right`도 그 회전에 맞춰 바뀌므로, 현재 오브젝트가 바라보는 방향을 기준으로 사용할 수 있습니다.
 
 ```csharp
 Vector3 pos = transform.position;       // 위치 벡터
@@ -994,7 +956,7 @@ Vector3 rt  = transform.right;          // 오른쪽 단위 벡터
 
 ### 미리 정의된 벡터
 
-`Vector3`에는 자주 사용되는 벡터가 정적 속성으로 정의되어 있습니다.
+`Vector3`에는 자주 쓰는 월드 방향 벡터가 정적 속성으로 정의되어 있습니다.
 
 ```csharp
 // 미리 정의된 Vector3 상수
@@ -1009,17 +971,15 @@ Vector3 rt  = transform.right;          // 오른쪽 단위 벡터
   Vector3.left     = (-1, 0, 0)     // 월드 왼쪽
 ```
 
-`Vector3.up`과 `transform.up`은 다릅니다.
-
-`Vector3.up`은 항상 월드 공간의 고정된 방향 (0, 1, 0)을 가리키지만, `transform.up`은 해당 오브젝트가 회전한 상태에서의 위쪽 방향을 가리킵니다. 오브젝트가 45도 기울어져 있다면 `transform.up`은 (0, 1, 0)이 아닌 기울어진 방향을 가리킵니다.
+`Vector3.up`과 `transform.up`은 이름이 비슷하지만 의미가 다릅니다. `Vector3.up`은 월드 공간의 고정된 방향 (0, 1, 0)을 가리키고, `transform.up`은 오브젝트가 회전한 뒤의 위쪽 방향을 가리킵니다. 오브젝트가 기울어져 있다면 `transform.up`도 그 기울어진 방향을 따라갑니다.
 
 ---
 
 ### Unity의 좌표계
 
-외적의 방향이 좌표계에 따라 달라진다는 점을 앞에서 확인했습니다. Unity는 **왼손 좌표계(Left-Handed Coordinate System)**를 사용하며, **Y축이 위쪽(Up)**, **Z축이 전방(Forward)**, **X축이 오른쪽(Right)**입니다.
+앞에서 `Transform.forward`와 외적의 방향을 설명하면서 Unity의 축 방향을 여러 번 사용했습니다. 여기서는 그 기준만 정리합니다. Unity는 **왼손 좌표계(Left-Handed Coordinate System)**를 사용하며, **X축은 오른쪽**, **Y축은 위쪽**, **Z축은 전방**을 가리킵니다.
 
-<div style="text-align: center; margin: 1.5em 0;">
+<div style="text-align: center; margin: 1.5em 0; overflow-x: auto;">
 <svg viewBox="0 0 320 210" xmlns="http://www.w3.org/2000/svg" style="max-width: 320px; width: 100%;">
   <circle cx="120" cy="140" r="3" fill="currentColor" fill-opacity="0.3"/>
   <!-- Y (위) -->
@@ -1037,56 +997,20 @@ Vector3 rt  = transform.right;          // 오른쪽 단위 벡터
 </svg>
 </div>
 
-수학 교과서와 일부 3D 소프트웨어(Blender, OpenGL)는 **오른손 좌표계**를 사용합니다. 오른손 좌표계에서는 Z축이 화면 밖(시점 쪽, 즉 카메라를 향하는 방향)을 향합니다. Unity의 왼손 좌표계에서는 Z축이 화면 안쪽(전방, 즉 카메라가 바라보는 방향)을 향합니다.
-
-<br>
-
-<div style="text-align: center; margin: 1.5em 0;">
-<svg viewBox="0 0 520 210" xmlns="http://www.w3.org/2000/svg" style="max-width: 520px; width: 100%;">
-  <!-- 왼손 좌표계 -->
-  <text fill="currentColor" x="125" y="16" text-anchor="middle" font-size="12" font-weight="bold" font-family="sans-serif">왼손 좌표계 (Unity, DirectX)</text>
-  <circle cx="95" cy="140" r="3" fill="currentColor" fill-opacity="0.3"/>
-  <line x1="95" y1="140" x2="95" y2="42" stroke="currentColor" stroke-width="1.8"/>
-  <polygon points="95,38 91,46 99,46" fill="currentColor"/>
-  <text fill="currentColor" x="107" y="48" font-size="11" font-family="sans-serif" font-weight="bold">Y</text>
-  <line x1="95" y1="140" x2="223" y2="140" stroke="currentColor" stroke-width="1.8"/>
-  <polygon points="225,140 219,136 219,144" fill="currentColor"/>
-  <text fill="currentColor" x="229" y="153" font-size="11" font-family="sans-serif" font-weight="bold">X</text>
-  <line x1="95" y1="140" x2="52" y2="178" stroke="currentColor" stroke-width="1.8"/>
-  <polygon points="49,181 57,178 55,171" fill="currentColor"/>
-  <text fill="currentColor" x="16" y="198" font-size="10" font-family="sans-serif">Z (전방)</text>
-  <!-- 오른손 좌표계 -->
-  <text fill="currentColor" x="395" y="16" text-anchor="middle" font-size="12" font-weight="bold" font-family="sans-serif">오른손 좌표계 (OpenGL, Blender)</text>
-  <circle cx="365" cy="140" r="3" fill="currentColor" fill-opacity="0.3"/>
-  <line x1="365" y1="140" x2="365" y2="42" stroke="currentColor" stroke-width="1.8"/>
-  <polygon points="365,38 361,46 369,46" fill="currentColor"/>
-  <text fill="currentColor" x="377" y="48" font-size="11" font-family="sans-serif" font-weight="bold">Y</text>
-  <line x1="365" y1="140" x2="493" y2="140" stroke="currentColor" stroke-width="1.8"/>
-  <polygon points="495,140 489,136 489,144" fill="currentColor"/>
-  <text fill="currentColor" x="499" y="153" font-size="11" font-family="sans-serif" font-weight="bold">X</text>
-  <line x1="365" y1="140" x2="322" y2="178" stroke="currentColor" stroke-width="1.8"/>
-  <polygon points="319,181 327,178 325,171" fill="currentColor"/>
-  <text fill="currentColor" x="286" y="198" font-size="10" font-family="sans-serif">Z (후방)</text>
-</svg>
-</div>
-
-<br>
-
-Blender 같은 오른손 좌표계 도구에서 만든 모델을 Unity로 가져올 때 축 변환이 발생하는 이유가 이 좌표계 차이입니다. Unity는 임포트 과정에서 자동으로 축을 변환합니다.
-
-다만, 스크립트에서 수동으로 벡터 연산을 수행할 때는 Unity가 왼손 좌표계라는 점을 기억해야 합니다. 앞서 외적에서 언급했듯이, 같은 외적 공식이라도 왼손 좌표계에서는 결과 방향을 왼손 법칙으로 해석해야 합니다.
+수학 교과서나 일부 3D 도구는 z축 방향을 Unity와 다르게 잡는 경우가 있습니다. 그래서 외부 도구에서 만든 모델을 가져오거나, 스크립트에서 외적과 방향 벡터를 직접 계산할 때는 Unity의 기준인 **+Z = Forward**를 먼저 확인해야 합니다.
 
 ---
 
 ### 주요 Vector3 메서드 정리
 
-위에서 다룬 벡터 연산들을 Unity API 기준으로 정리하면 다음과 같습니다.
+앞에서 다룬 벡터 연산을 Unity API 기준으로 모으면 다음과 같습니다.
 
 | 연산 | Unity API | 결과 |
 |:---|:---|:---|
 | 덧셈 | `a + b` | Vector3 |
 | 뺄셈 | `a - b` | Vector3 |
 | 스칼라 곱 | `v * s` 또는 `s * v` | Vector3 |
+| 스칼라 나눗셈 | `v / s` | Vector3 |
 | 크기 | `v.magnitude` | float |
 | 크기의 제곱 | `v.sqrMagnitude` | float |
 | 정규화 | `v.normalized` | Vector3 |
@@ -1095,36 +1019,30 @@ Blender 같은 오른손 좌표계 도구에서 만든 모델을 Unity로 가져
 | 두 점 사이 거리 | `Vector3.Distance(a, b)` | float |
 | 선형 보간 | `Vector3.Lerp(a, b, t)` | Vector3 |
 
-`Vector3.Distance(a, b)`는 `(a - b).magnitude`와 동일합니다. 거리의 대소만 비교하는 경우에는 `(a - b).sqrMagnitude`를 사용하면 제곱근 연산을 생략할 수 있어 더 효율적입니다.
-
 <br>
 
-`Vector3.Lerp(a, b, t)`는 두 벡터 a와 b 사이를 t 비율(0~1)로 **선형 보간(Linear Interpolation)**한 벡터를 반환합니다.
+`Vector3.Distance(a, b)`는 `(a - b).magnitude`와 같은 의미입니다. 거리의 대소만 비교한다면 `(a - b).sqrMagnitude`를 사용해 제곱근 계산을 피할 수 있습니다.
 
-내부적으로 $\mathbf{a} + (\mathbf{b} - \mathbf{a}) \cdot t$를 계산하며,
+`Vector3.Lerp(a, b, t)`는 두 벡터 a와 b 사이를 t 비율(0~1)로 **선형 보간(Linear Interpolation)**합니다.
 
-$t = 0$이면 $\mathbf{a}$,
-
-$t = 1$이면 $\mathbf{b}$,
-
-$t = 0.5$이면 두 벡터의 정확한 중간점입니다.
-
-이동이나 카메라 추적에서 부드러운 전환을 만들 때 사용됩니다.
+내부적으로 $\mathbf{a} + (\mathbf{b} - \mathbf{a}) \cdot t$를 계산하므로, $t = 0$이면 $\mathbf{a}$, $t = 1$이면 $\mathbf{b}$, $t = 0.5$이면 두 벡터의 중간점이 됩니다. 이동이나 카메라 추적처럼 두 값 사이를 부드럽게 이어야 할 때 사용합니다.
 
 ---
 
 ## 마무리
 
+이번 글에서는 Unity와 렌더링에서 자주 만나는 벡터 연산을 기본 개념부터 API 사용까지 연결했습니다.
+
 - 스칼라는 크기만 가진 양이고, 벡터는 크기와 방향을 동시에 가진 양입니다. 3D 벡터는 x, y, z 세 성분으로 표현됩니다.
-- 벡터의 덧셈은 이동의 합성, 뺄셈은 두 점 사이의 방향 벡터, 스칼라 곱은 크기 변경이나 방향 반전입니다.
+- 벡터의 덧셈은 이동의 합성, 뺄셈은 두 점 사이의 방향 벡터, 스칼라 곱과 나눗셈은 크기 변경이나 방향 반전입니다.
 - 벡터의 크기는 $\sqrt{x^2 + y^2 + z^2}$로 계산되며, 정규화는 크기 1인 단위 벡터로 변환하는 연산입니다. `sqrMagnitude`는 제곱근을 생략하여 거리 비교에서 성능 이점을 줍니다.
 - 내적(Dot Product)은 두 벡터 사이의 각도 관계를 스칼라로 표현하며, 단위 벡터의 내적은 $\cos\theta$로 조명 계산($\mathbf{N} \cdot \mathbf{L}$)의 수학적 기반입니다.
 - 외적(Cross Product)은 두 벡터에 수직인 새 벡터를 만들며, 삼각형의 법선 벡터 계산에 사용됩니다. 외적 결과의 크기는 $\lvert\mathbf{a}\rvert\lvert\mathbf{b}\rvert\sin\theta$로 평행사변형의 넓이와 같습니다.
-- Unity는 왼손 좌표계(Y-up, Z-forward)를 사용하며, 외적의 방향은 왼손 법칙을 따릅니다. 시계 방향 감기(CW)가 앞면입니다.
+- Unity는 왼손 좌표계(Y-up, Z-forward)를 사용하므로, 외적 방향과 삼각형 감기 순서를 Unity의 좌표계 기준으로 확인해야 합니다.
 
-벡터가 공간에서 점과 방향을 표현하는 도구라면, **행렬(Matrix)**은 벡터를 변환하는 도구입니다. 이동, 회전, 스케일 같은 변환은 모두 행렬 곱셈으로 수행됩니다.
+벡터는 공간의 위치와 방향을 표현하지만, 오브젝트를 이동하거나 회전시키려면 벡터를 다른 벡터로 바꾸는 변환이 필요합니다. 이 변환을 체계적으로 다루는 도구가 **행렬(Matrix)**입니다.
 
-[그래픽스 수학 (2) - 행렬과 변환](/dev/unity/GraphicsMath-2/)에서 행렬의 구조와 변환의 원리를 이어 설명합니다.
+[그래픽스 수학 (2) - 행렬과 변환](/dev/unity/GraphicsMath-2/)에서는 이동, 회전, 스케일이 행렬 곱셈으로 표현되는 방식을 다룹니다.
 
 <br>
 
@@ -1133,12 +1051,6 @@ $t = 0.5$이면 두 벡터의 정확한 중간점입니다.
 **관련 글**
 - [렌더링 기초 (1) - 메쉬의 구조](/dev/unity/RenderingFoundation-1/)
 - [렌더링 기초 (3) - 머티리얼과 셰이더 기초](/dev/unity/RenderingFoundation-3/)
-
-**시리즈**
-- **그래픽스 수학 (1) - 벡터와 벡터 연산 (현재 글)**
-- [그래픽스 수학 (2) - 행렬과 변환](/dev/unity/GraphicsMath-2/)
-- [그래픽스 수학 (3) - 좌표 공간의 전환](/dev/unity/GraphicsMath-3/)
-- [그래픽스 수학 (4) - 투영](/dev/unity/GraphicsMath-4/)
 
 **전체 시리즈**
 - [하드웨어 기초 (1) - CPU 아키텍처와 파이프라인](/dev/unity/HardwareBasics-1/)
