@@ -519,7 +519,7 @@ Unity에서도 같은 방식으로 오브젝트 변환을 다룹니다. Transfor
 
 ## Unity의 Transform과 행렬
 
-Unity에서 Transform 컴포넌트의 `position`, `rotation`, `localScale`은 오브젝트를 배치하기 위한 입력값입니다. 렌더링이나 좌표 변환이 실제로 수행될 때는 이 값들이 4x4 행렬로 바뀌어 사용됩니다.
+Unity에서 Transform 컴포넌트의 `position`, `rotation`, `localScale`은 오브젝트를 배치하기 위한 정보입니다. 렌더링이나 좌표 변환이 실제로 수행될 때는 이 값들이 4x4 행렬로 바뀌어 사용됩니다.
 
 <br>
 
