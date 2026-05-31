@@ -13,21 +13,15 @@ tags:
 
 ## 3D를 2D로 변환하는 문제
 
-[그래픽스 수학 (3) - 좌표 공간의 전환](/dev/unity/GraphicsMath-3/)에서 Projection 행렬이 절두체를 직육면체로 변환하고, 원근 나눗셈(w로 나누기)을 통해 원근감이 만들어지는 과정을 살펴봤습니다.
+[그래픽스 수학 (3) - 좌표 공간의 전환](/dev/unity/GraphicsMath-3/)에서는 정점 좌표가 Projection 행렬을 거쳐 클립 공간에 도달하고, 이후 원근 나눗셈과 뷰포트 변환을 통해 화면 공간으로 이어지는 흐름을 살펴봤습니다. 이번 글에서는 그중 Projection 단계 자체에 집중합니다.
 
-3D 세계를 2D 화면에 그리려면 차원을 하나 줄여야 합니다.
+3D 장면을 2D 화면에 그린다는 것은 카메라가 보는 입체 공간의 점들을 렌더 타깃의 픽셀 위치로 대응시키는 일입니다. 화면에서 실제로 보이는 위치는 x, y 두 축으로 표현되지만, 렌더링 과정에서 z 정보를 단순히 버릴 수는 없습니다. z를 무시하면 거리에 따른 크기 변화가 사라지고, 같은 픽셀을 덮는 여러 표면 중 어느 쪽이 앞에 있는지도 판단할 수 없기 때문입니다.
 
-x, y, z 세 축을 x, y 두 축의 평면으로 눌러야 하는데, 단순히 z를 버리면 모든 오브젝트가 거리와 무관하게 같은 크기로 그려집니다. 멀리 있는 산과 눈앞의 캐릭터가 같은 크기가 되고, z 정보가 없으니 어떤 오브젝트가 앞에 있는지도 판단할 수 없습니다.
+투영(Projection)은 이 두 가지 문제를 함께 다룹니다. 원근 투영은 가까운 물체는 크게, 먼 물체는 작게 보이도록 좌표를 변환하고, 동시에 깊이 비교에 사용할 값을 만들어 냅니다. 이 깊이 값은 깊이 버퍼(depth buffer)에 저장되며, 같은 픽셀을 그리려는 여러 표면 중 카메라에 더 가까운 표면을 남기는 기준이 됩니다.
 
-<br>
+다만 원근 투영의 깊이 값은 카메라로부터의 거리에 대해 균일하게 분포하지 않습니다. 정밀도는 near 평면 근처에 많이 몰리고, far 평면에 가까워질수록 한 깊이 값이 담당하는 실제 거리 범위가 커집니다. 그래서 먼 곳에 거의 같은 거리로 놓인 두 표면은 깊이 버퍼 안에서 구분하기 어려운 값으로 기록될 수 있습니다.
 
-투영(Projection)은 이 문제를 해결합니다. Projection 행렬과 원근 나눗셈을 거쳐 3D 좌표가 2D 화면 좌표로 바뀌는 과정에서, 화면의 각 픽셀 위치마다 깊이 값이 깊이 버퍼(depth buffer)에 따로 저장됩니다. 덕분에 원근감을 표현하면서, 어떤 오브젝트가 다른 오브젝트 뒤에 가려지는지도 판정할 수 있습니다.
-
-다만 원근 투영의 수학적 구조에는 한계가 있습니다. 깊이 버퍼의 정밀도가 카메라 가까이에 편중되어 있어서, 먼 곳에서는 정밀도가 급격히 부족해집니다.
-
-먼 곳에서 거의 같은 거리에 놓인 두 표면의 깊이 차이가 이 정밀도보다 작으면, GPU가 앞뒤를 구별할 수 없습니다. 매 프레임 판정이 뒤바뀌면서 화면이 깜빡이는 Z-fighting이 발생합니다.
-
-<br>
+이 차이가 깊이 버퍼의 표현 정밀도보다 작아지면 GPU는 어느 표면이 앞에 있는지 안정적으로 판정하지 못합니다. 그 결과 프레임마다 앞뒤 판정이 흔들리면서 표면이 깜빡이는 Z-fighting이 발생합니다.
 
 이 글에서는 원근 투영과 직교 투영의 Projection 행렬 구조, 비선형성의 원인, 그리고 이를 완화하는 Reversed-Z 기법을 다룹니다.
 
@@ -35,99 +29,155 @@ x, y, z 세 축을 x, y 두 축의 평면으로 눌러야 하는데, 단순히 z
 
 ## 원근 투영
 
+원근 투영(Perspective Projection)은 카메라에서 먼 오브젝트일수록 화면에서 작게, 가까운 오브젝트일수록 크게 그리는 투영 방식입니다. 카메라의 위치를 하나의 시점으로 두고, 그 시점에서 퍼져 나가는 시야 안의 3D 점들을 2D 화면 위로 대응시키기 때문에 거리감이 생깁니다. Projection 행렬은 이 시야 영역을 클립 공간으로 옮기고, 이후 원근 나눗셈을 거치면서 거리에 따른 화면상의 크기 차이가 만들어집니다.
+
+원근 투영을 이해하려면 먼저 카메라가 볼 수 있는 영역이 어떻게 정해지는지 봐야 합니다.
+
 ### 절두체(Frustum)의 구성 요소
 
-원근 투영(Perspective Projection)은 카메라에서 먼 오브젝트일수록 화면에서 작게, 가까운 오브젝트일수록 크게 그리는 투영 방식입니다.
-
-사람의 눈이 세계를 보는 방식과 같은 원리이며, 3D 게임에서 깊이감을 표현하는 기본 수단입니다.
-
-<br>
-
-원근 투영에서 카메라가 볼 수 있는 영역은 **절두체(Frustum)**라는 잘린 사각뿔 형태이며, 네 가지 파라미터가 그 모양을 결정합니다.
+카메라의 원근 시야는 카메라 앞쪽으로 갈수록 넓어지는 사각뿔 형태입니다. 실제 렌더링에서는 이 시야를 near plane과 far plane으로 앞뒤에서 잘라 내며, 이렇게 남은 잘린 사각뿔 모양의 영역을 **절두체(Frustum)**라고 합니다. near plane과 far plane은 렌더링할 깊이 범위를 정하고, FOV와 aspect ratio는 절두체 단면의 높이와 너비 비율을 정합니다.
 
 <div style="text-align: center; margin: 1.5em 0;">
-<svg viewBox="0 0 520 340" xmlns="http://www.w3.org/2000/svg" style="max-width: 520px; width: 100%;">
-  <!-- FOV angle lines (camera to near plane edges, dashed) -->
-  <line x1="40" y1="150" x2="140" y2="115" stroke="currentColor" stroke-width="1" stroke-dasharray="4,3" opacity="0.4"/>
-  <line x1="40" y1="150" x2="140" y2="185" stroke="currentColor" stroke-width="1" stroke-dasharray="4,3" opacity="0.4"/>
-  <!-- Frustum (trapezoid) — edges converge to camera at (40,150) -->
-  <!-- near half-height=35 at dist=100, far half-height=35×400/100=140 at dist=400 -->
-  <polygon points="140,115 440,10 440,290 140,185" fill="currentColor" fill-opacity="0.06" stroke="none"/>
-  <!-- Near plane -->
-  <line x1="140" y1="115" x2="140" y2="185" stroke="currentColor" stroke-width="2"/>
-  <!-- Far plane -->
-  <line x1="440" y1="10" x2="440" y2="290" stroke="currentColor" stroke-width="2"/>
-  <!-- Top edge -->
-  <line x1="140" y1="115" x2="440" y2="10" stroke="currentColor" stroke-width="1.5"/>
-  <!-- Bottom edge -->
-  <line x1="140" y1="185" x2="440" y2="290" stroke="currentColor" stroke-width="1.5"/>
-  <!-- Center axis (dashed) -->
-  <line x1="40" y1="150" x2="440" y2="150" stroke="currentColor" stroke-dasharray="6,4" stroke-width="0.7" opacity="0.3"/>
-  <!-- Camera point -->
-  <circle cx="40" cy="150" r="5" fill="currentColor"/>
-  <!-- FOV angle arc (radius 40, half-angle = atan(35/100) ≈ 19.3°) -->
-  <!-- endpoints at radius 40: x=40*cos(19.3°)=37.8, y=40*sin(19.3°)=13.2 -->
-  <path d="M 37.8,-13.2 A 40,40 0 0,1 37.8,13.2" stroke="currentColor" fill="none" stroke-width="1.2" transform="translate(40, 150)"/>
+<svg viewBox="0 0 680 420" xmlns="http://www.w3.org/2000/svg" style="max-width: 680px; width: 100%;" role="img" aria-label="3D view frustum: camera, near plane, far plane, FOV, aspect ratio">
+  <defs>
+    <marker id="frustum-arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="currentColor"/>
+    </marker>
+  </defs>
+
+  <!-- Example geometry: vertical FOV=60deg, aspect=16:9, near=1, far=3. -->
+  <!-- Projected points are based on height(d)=2d*tan(FOV/2), width(d)=height(d)*aspect. -->
+
+  <!-- Clipped pyramid rays before the near plane -->
+  <line x1="80" y1="230" x2="178.9" y2="181.7" stroke="currentColor" stroke-width="1" stroke-dasharray="5,4" opacity="0.28"/>
+  <line x1="80" y1="230" x2="261.1" y2="206.3" stroke="currentColor" stroke-width="1" stroke-dasharray="5,4" opacity="0.28"/>
+  <line x1="80" y1="230" x2="261.1" y2="258.3" stroke="currentColor" stroke-width="1" stroke-dasharray="5,4" opacity="0.28"/>
+  <line x1="80" y1="230" x2="178.9" y2="233.7" stroke="currentColor" stroke-width="1" stroke-dasharray="5,4" opacity="0.28"/>
+
+  <!-- Vertical FOV plane -->
+  <line x1="80" y1="230" x2="500" y2="122.1" stroke="currentColor" stroke-width="1.2" stroke-dasharray="6,4" opacity="0.48"/>
+  <line x1="80" y1="230" x2="500" y2="277.9" stroke="currentColor" stroke-width="1.2" stroke-dasharray="6,4" opacity="0.48"/>
+  <path d="M 128.5 217.5 A 50 50 0 0 1 129.6 235.7" stroke="currentColor" fill="none" stroke-width="1" opacity="0.55"/>
+  <text fill="currentColor" x="126" y="210" text-anchor="middle" font-size="11" font-family="sans-serif" opacity="0.75">세로 FOV</text>
+
+  <!-- Frustum faces: near plane N, far plane F -->
+  <polygon points="178.9,181.7 261.1,206.3 623.2,159.1 376.8,85.1" fill="currentColor" fill-opacity="0.045"/>
+  <polygon points="178.9,233.7 261.1,258.3 623.2,315 376.8,240.9" fill="currentColor" fill-opacity="0.055"/>
+  <polygon points="178.9,181.7 178.9,233.7 376.8,240.9 376.8,85.1" fill="currentColor" fill-opacity="0.035"/>
+  <polygon points="261.1,206.3 261.1,258.3 623.2,315 623.2,159.1" fill="currentColor" fill-opacity="0.07"/>
+  <polygon points="376.8,85.1 623.2,159.1 623.2,315 376.8,240.9" fill="currentColor" fill-opacity="0.055" stroke="currentColor" stroke-width="1.4" stroke-opacity="0.65"/>
+  <polygon points="178.9,181.7 261.1,206.3 261.1,258.3 178.9,233.7" fill="currentColor" fill-opacity="0.13" stroke="currentColor" stroke-width="1.8"/>
+
+  <!-- Frustum edges -->
+  <line x1="178.9" y1="181.7" x2="376.8" y2="85.1" stroke="currentColor" stroke-width="1.4"/>
+  <line x1="261.1" y1="206.3" x2="623.2" y2="159.1" stroke="currentColor" stroke-width="1.4"/>
+  <line x1="261.1" y1="258.3" x2="623.2" y2="315" stroke="currentColor" stroke-width="1.4"/>
+  <line x1="178.9" y1="233.7" x2="376.8" y2="240.9" stroke="currentColor" stroke-width="1.4"/>
+
+  <!-- View axis -->
+  <line x1="80" y1="230" x2="500" y2="200" stroke="currentColor" stroke-width="1" stroke-dasharray="7,5" opacity="0.36"/>
+  <circle cx="220" cy="220" r="3" fill="currentColor" opacity="0.65"/>
+  <circle cx="500" cy="200" r="3" fill="currentColor" opacity="0.65"/>
+  <text fill="currentColor" x="176" y="261" font-size="10" font-family="sans-serif" opacity="0.65">near 거리 n</text>
+  <text fill="currentColor" x="468" y="224" font-size="10" font-family="sans-serif" opacity="0.65">far 거리 f</text>
+
+  <!-- Far plane dimensions -->
+  <line x1="376.8" y1="73" x2="623.2" y2="147" stroke="currentColor" stroke-width="0.9" marker-start="url(#frustum-arrow)" marker-end="url(#frustum-arrow)" opacity="0.48"/>
+  <text fill="currentColor" x="500" y="94" text-anchor="middle" font-size="10" font-family="sans-serif" opacity="0.72">너비 = 높이 x aspect</text>
+  <line x1="642" y1="159.1" x2="642" y2="315" stroke="currentColor" stroke-width="0.9" marker-start="url(#frustum-arrow)" marker-end="url(#frustum-arrow)" opacity="0.48"/>
+  <text fill="currentColor" x="636" y="240" text-anchor="end" font-size="10" font-family="sans-serif" opacity="0.72">높이: FOV</text>
+
   <!-- Labels -->
-  <text fill="currentColor" x="40" y="175" text-anchor="middle" font-size="10" font-family="sans-serif" opacity="0.6">카메라</text>
-  <text fill="currentColor" x="95" y="153" font-size="11" font-family="sans-serif">FOV</text>
-  <text fill="currentColor" x="290" y="155" text-anchor="middle" font-size="12" font-family="sans-serif" opacity="0.4">절두체</text>
-  <text fill="currentColor" x="140" y="207" text-anchor="middle" font-size="10" font-family="sans-serif">Near Plane</text>
-  <text fill="currentColor" x="440" y="308" text-anchor="middle" font-size="10" font-family="sans-serif">Far Plane</text>
-  <!-- Distance indicators: n -->
-  <line x1="40" y1="248" x2="140" y2="248" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
-  <line x1="40" y1="243" x2="40" y2="253" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
-  <line x1="140" y1="243" x2="140" y2="253" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
-  <text fill="currentColor" x="90" y="262" text-anchor="middle" font-size="10" font-family="sans-serif" opacity="0.6">n</text>
-  <!-- Distance indicators: f -->
-  <line x1="40" y1="273" x2="440" y2="273" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
-  <line x1="40" y1="268" x2="40" y2="278" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
-  <line x1="440" y1="268" x2="440" y2="278" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
-  <text fill="currentColor" x="240" y="287" text-anchor="middle" font-size="10" font-family="sans-serif" opacity="0.6">f</text>
-  <!-- Parameter list -->
-  <text fill="currentColor" x="30" y="310" font-size="10" font-family="sans-serif" opacity="0.7">1. Near Plane: 이 평면보다 가까운 오브젝트는 렌더링하지 않음</text>
-  <text fill="currentColor" x="30" y="325" font-size="10" font-family="sans-serif" opacity="0.7">2. Far Plane: 이 평면보다 먼 오브젝트는 렌더링하지 않음  ·  3. FOV: 세로 시야각 (60°~90°)  ·  4. Aspect Ratio: 가로/세로 비율</text>
+  <circle cx="80" cy="230" r="5" fill="currentColor"/>
+  <text fill="currentColor" x="80" y="253" text-anchor="middle" font-size="10" font-family="sans-serif" opacity="0.7">카메라</text>
+  <text fill="currentColor" x="220" y="286" text-anchor="middle" font-size="11" font-family="sans-serif">Near Plane</text>
+  <text fill="currentColor" x="560" y="340" text-anchor="middle" font-size="11" font-family="sans-serif">Far Plane</text>
+  <text fill="currentColor" x="405" y="193" text-anchor="middle" font-size="13" font-family="sans-serif" opacity="0.55">절두체</text>
+
+  <!-- Parameter summary -->
+  <text fill="currentColor" x="340" y="382" text-anchor="middle" font-size="11" font-family="sans-serif" opacity="0.72">near/far plane은 카메라 방향의 렌더링 범위를 자릅니다.</text>
+  <text fill="currentColor" x="340" y="400" text-anchor="middle" font-size="10" font-family="sans-serif" opacity="0.62">단면 높이 = 2d tan(FOV/2), 단면 너비 = 단면 높이 x aspect</text>
 </svg>
 </div>
 
 <br>
 
-Near plane과 far plane 사이에 있는 오브젝트만 렌더링 대상이며, 이 범위 밖의 오브젝트는 클리핑되어 버려집니다.
+Near plane과 far plane은 카메라가 렌더링할 깊이 범위를 정합니다. near plane보다 가까운 부분과 far plane보다 먼 부분은 절두체 밖으로 판정되어 클리핑되며, 프리미티브가 경계를 걸치면 경계 안쪽에 남은 부분만 다음 단계로 넘어갑니다.
 
-FOV가 넓으면 화면에 더 많은 영역이 들어오지만, 같은 해상도에 더 넓은 범위를 담으므로 개별 오브젝트가 작아집니다.
+FOV는 같은 깊이에 있는 절두체 단면의 높이를 정합니다. FOV가 넓어지면 단면이 커져 더 넓은 공간이 NDC의 제한된 범위 안으로 압축되므로, 같은 거리와 크기의 오브젝트는 화면에서 더 작게 보입니다.
 
-FOV가 좁으면 망원 렌즈처럼 좁은 범위만 크게 보입니다.
+반대로 FOV가 좁아지면 단면이 작아져 좁은 공간이 화면을 더 크게 채우므로, 같은 오브젝트가 확대되어 망원 렌즈나 줌 인처럼 보입니다.
 
 <div style="text-align: center; margin: 1.5em 0;">
-<svg viewBox="0 0 560 420" xmlns="http://www.w3.org/2000/svg" style="max-width: 560px; width: 100%;">
-  <text fill="currentColor" x="140" y="22" text-anchor="middle" font-size="14" font-weight="bold" font-family="sans-serif">좁은 FOV (30°)</text>
-  <text fill="currentColor" x="420" y="22" text-anchor="middle" font-size="14" font-weight="bold" font-family="sans-serif">넓은 FOV (90°)</text>
-  <g transform="translate(35, 195)">
-    <polygon points="0,0 160,-43 160,43" fill="currentColor" fill-opacity="0.07" stroke="none"/>
-    <line x1="0" y1="0" x2="160" y2="0" stroke="currentColor" stroke-dasharray="5,4" stroke-width="0.7" opacity="0.3"/>
-    <line x1="0" y1="0" x2="160" y2="-43" stroke="currentColor" stroke-width="1.5"/>
-    <line x1="0" y1="0" x2="160" y2="43" stroke="currentColor" stroke-width="1.5"/>
-    <line x1="160" y1="-43" x2="160" y2="43" stroke="currentColor" stroke-width="2.5"/>
-    <circle cx="0" cy="0" r="4" fill="currentColor"/>
-    <path d="M 48.3,-12.9 A 50,50 0 0,1 48.3,12.9" stroke="currentColor" fill="none" stroke-width="1.2"/>
-    <text fill="currentColor" x="62" y="5" font-size="12" font-family="sans-serif">30°</text>
-    <text fill="currentColor" x="0" y="24" text-anchor="middle" font-size="10" font-family="sans-serif" opacity="0.6">카메라</text>
+<svg viewBox="0 0 760 460" xmlns="http://www.w3.org/2000/svg" style="max-width: 760px; width: 100%;" role="img" aria-label="FOV changes how the same view-space object maps to screen space">
+  <!-- Same object in view space: distance d=115, half-height h=20. -->
+  <!-- Screen mapping uses y_ndc = y / (d * tan(vertical FOV / 2)). -->
+
+  <text fill="currentColor" x="190" y="28" text-anchor="middle" font-size="14" font-weight="bold" font-family="sans-serif">좁은 FOV (30°)</text>
+  <text fill="currentColor" x="570" y="28" text-anchor="middle" font-size="14" font-weight="bold" font-family="sans-serif">넓은 FOV (90°)</text>
+
+  <g transform="translate(0, 0)">
+    <text fill="currentColor" x="112" y="60" text-anchor="middle" font-size="11" font-family="sans-serif" opacity="0.65">View Space 세로 단면</text>
+    <text fill="currentColor" x="305" y="60" text-anchor="middle" font-size="11" font-family="sans-serif" opacity="0.65">Screen / NDC</text>
+
+    <!-- View-space FOV wedge. At the object depth, half-height = 115*tan(15deg) = 30.8. -->
+    <polygon points="40,210 185,171.1 185,248.9" fill="currentColor" fill-opacity="0.06"/>
+    <line x1="40" y1="210" x2="185" y2="210" stroke="currentColor" stroke-dasharray="6,4" stroke-width="0.8" opacity="0.35"/>
+    <line x1="40" y1="210" x2="185" y2="171.1" stroke="currentColor" stroke-width="1.4"/>
+    <line x1="40" y1="210" x2="185" y2="248.9" stroke="currentColor" stroke-width="1.4"/>
+    <line x1="185" y1="171.1" x2="185" y2="248.9" stroke="currentColor" stroke-width="1.7" opacity="0.75"/>
+
+    <!-- Same object and its angular rays. -->
+    <rect x="149" y="190" width="12" height="40" fill="currentColor" fill-opacity="0.24" stroke="currentColor" stroke-width="1.2"/>
+    <line x1="40" y1="210" x2="155" y2="190" stroke="currentColor" stroke-width="1" stroke-dasharray="4,3" opacity="0.6"/>
+    <line x1="40" y1="210" x2="155" y2="230" stroke="currentColor" stroke-width="1" stroke-dasharray="4,3" opacity="0.6"/>
+    <circle cx="40" cy="210" r="4.5" fill="currentColor"/>
+    <path d="M 88.3 197.1 A 50 50 0 0 1 88.3 222.9" stroke="currentColor" fill="none" stroke-width="1.1"/>
+    <text fill="currentColor" x="99" y="214" font-size="11" font-family="sans-serif">30°</text>
+    <text fill="currentColor" x="40" y="235" text-anchor="middle" font-size="10" font-family="sans-serif" opacity="0.65">카메라</text>
+    <text fill="currentColor" x="155" y="184" text-anchor="middle" font-size="10" font-family="sans-serif" opacity="0.7">같은 오브젝트</text>
+
+    <!-- Screen-space result: object occupies about 65% of screen height. -->
+    <rect x="270" y="140" width="70" height="140" fill="none" stroke="currentColor" stroke-width="1.4"/>
+    <line x1="270" y1="210" x2="340" y2="210" stroke="currentColor" stroke-dasharray="4,3" stroke-width="0.8" opacity="0.35"/>
+    <rect x="294" y="164.6" width="22" height="90.8" fill="currentColor" fill-opacity="0.24" stroke="currentColor" stroke-width="1.2"/>
+    <text fill="currentColor" x="346" y="143" font-size="9" font-family="sans-serif" opacity="0.6">y=1</text>
+    <text fill="currentColor" x="346" y="283" font-size="9" font-family="sans-serif" opacity="0.6">y=-1</text>
+    <text fill="currentColor" x="305" y="306" text-anchor="middle" font-size="11" font-family="sans-serif">스크린에서 크게 보임</text>
   </g>
-  <g transform="translate(315, 195)">
-    <polygon points="0,0 160,-160 160,160" fill="currentColor" fill-opacity="0.07" stroke="none"/>
-    <line x1="0" y1="0" x2="160" y2="0" stroke="currentColor" stroke-dasharray="5,4" stroke-width="0.7" opacity="0.3"/>
-    <line x1="0" y1="0" x2="160" y2="-160" stroke="currentColor" stroke-width="1.5"/>
-    <line x1="0" y1="0" x2="160" y2="160" stroke="currentColor" stroke-width="1.5"/>
-    <line x1="160" y1="-160" x2="160" y2="160" stroke="currentColor" stroke-width="2.5"/>
-    <circle cx="0" cy="0" r="4" fill="currentColor"/>
-    <path d="M 24.7,-24.7 A 35,35 0 0,1 24.7,24.7" stroke="currentColor" fill="none" stroke-width="1.2"/>
-    <text fill="currentColor" x="42" y="5" font-size="12" font-family="sans-serif">90°</text>
-    <text fill="currentColor" x="0" y="24" text-anchor="middle" font-size="10" font-family="sans-serif" opacity="0.6">카메라</text>
+
+  <g transform="translate(380, 0)">
+    <text fill="currentColor" x="112" y="60" text-anchor="middle" font-size="11" font-family="sans-serif" opacity="0.65">View Space 세로 단면</text>
+    <text fill="currentColor" x="305" y="60" text-anchor="middle" font-size="11" font-family="sans-serif" opacity="0.65">Screen / NDC</text>
+
+    <!-- View-space FOV wedge. At the object depth, half-height = 115*tan(45deg) = 115. -->
+    <polygon points="40,210 185,65 185,355" fill="currentColor" fill-opacity="0.06"/>
+    <line x1="40" y1="210" x2="185" y2="210" stroke="currentColor" stroke-dasharray="6,4" stroke-width="0.8" opacity="0.35"/>
+    <line x1="40" y1="210" x2="185" y2="65" stroke="currentColor" stroke-width="1.4"/>
+    <line x1="40" y1="210" x2="185" y2="355" stroke="currentColor" stroke-width="1.4"/>
+    <line x1="185" y1="65" x2="185" y2="355" stroke="currentColor" stroke-width="1.7" opacity="0.75"/>
+
+    <!-- Same object and its angular rays. -->
+    <rect x="149" y="190" width="12" height="40" fill="currentColor" fill-opacity="0.24" stroke="currentColor" stroke-width="1.2"/>
+    <line x1="40" y1="210" x2="155" y2="190" stroke="currentColor" stroke-width="1" stroke-dasharray="4,3" opacity="0.6"/>
+    <line x1="40" y1="210" x2="155" y2="230" stroke="currentColor" stroke-width="1" stroke-dasharray="4,3" opacity="0.6"/>
+    <circle cx="40" cy="210" r="4.5" fill="currentColor"/>
+    <path d="M 64.7 185.3 A 35 35 0 0 1 64.7 234.7" stroke="currentColor" fill="none" stroke-width="1.1"/>
+    <text fill="currentColor" x="78" y="214" font-size="11" font-family="sans-serif">90°</text>
+    <text fill="currentColor" x="40" y="235" text-anchor="middle" font-size="10" font-family="sans-serif" opacity="0.65">카메라</text>
+    <text fill="currentColor" x="155" y="184" text-anchor="middle" font-size="10" font-family="sans-serif" opacity="0.7">같은 오브젝트</text>
+
+    <!-- Screen-space result: object occupies about 17% of screen height. -->
+    <rect x="270" y="140" width="70" height="140" fill="none" stroke="currentColor" stroke-width="1.4"/>
+    <line x1="270" y1="210" x2="340" y2="210" stroke="currentColor" stroke-dasharray="4,3" stroke-width="0.8" opacity="0.35"/>
+    <rect x="294" y="197.8" width="22" height="24.4" fill="currentColor" fill-opacity="0.24" stroke="currentColor" stroke-width="1.2"/>
+    <text fill="currentColor" x="346" y="143" font-size="9" font-family="sans-serif" opacity="0.6">y=1</text>
+    <text fill="currentColor" x="346" y="283" font-size="9" font-family="sans-serif" opacity="0.6">y=-1</text>
+    <text fill="currentColor" x="305" y="306" text-anchor="middle" font-size="11" font-family="sans-serif">스크린에서 작게 보임</text>
   </g>
-  <text fill="currentColor" x="140" y="385" text-anchor="middle" font-size="12" font-family="sans-serif">좁은 영역을 크게 표시</text>
-  <text fill="currentColor" x="140" y="403" text-anchor="middle" font-size="11" font-family="sans-serif" opacity="0.5">망원 렌즈 효과</text>
-  <text fill="currentColor" x="420" y="385" text-anchor="middle" font-size="12" font-family="sans-serif">넓은 영역을 작게 표시</text>
-  <text fill="currentColor" x="420" y="403" text-anchor="middle" font-size="11" font-family="sans-serif" opacity="0.5">광각 렌즈 효과</text>
+
+  <text fill="currentColor" x="380" y="405" text-anchor="middle" font-size="11" font-family="sans-serif" opacity="0.72">같은 뷰 공간 좌표라도 Projection 행렬과 원근 나눗셈을 거치면 FOV에 따라 NDC상의 y 비율이 달라집니다.</text>
+  <text fill="currentColor" x="380" y="425" text-anchor="middle" font-size="10" font-family="sans-serif" opacity="0.62">y_ndc = y / (d tan(FOV/2)) 이므로 FOV가 좁을수록 같은 오브젝트가 스크린 공간에서 더 크게 매핑됩니다.</text>
 </svg>
 </div>
 
@@ -233,100 +283,129 @@ w가 5인 A는 나눈 뒤에도 x, y가 크게 남고, w가 20인 B는 나눈 �
 카메라로부터의 거리와 관계없이 오브젝트의 크기가 동일하게 표현됩니다.
 
 <div style="text-align: center; margin: 1.5em 0;">
-<svg viewBox="0 0 560 375" xmlns="http://www.w3.org/2000/svg" style="max-width: 560px; width: 100%;">
-  <!-- Titles -->
-  <text fill="currentColor" x="140" y="20" text-anchor="middle" font-size="13" font-weight="bold" font-family="sans-serif">원근 투영</text>
-  <text fill="currentColor" x="420" y="20" text-anchor="middle" font-size="13" font-weight="bold" font-family="sans-serif">직교 투영</text>
-  <!-- ═══ Left: Perspective ═══ -->
-  <g transform="translate(25, 130)">
-    <!-- Frustum fill & edges -->
-    <polygon points="0,0 210,-84 210,84" fill="currentColor" fill-opacity="0.04" stroke="none"/>
-    <line x1="0" y1="0" x2="210" y2="-84" stroke="currentColor" stroke-width="1.5"/>
-    <line x1="0" y1="0" x2="210" y2="84" stroke="currentColor" stroke-width="1.5"/>
-    <line x1="210" y1="-84" x2="210" y2="84" stroke="currentColor" stroke-width="1.8"/>
-    <!-- Center axis -->
-    <line x1="0" y1="0" x2="210" y2="0" stroke="currentColor" stroke-dasharray="5,4" stroke-width="0.7" opacity="0.2"/>
-    <!-- Camera -->
-    <circle cx="0" cy="0" r="4" fill="currentColor"/>
-    <text fill="currentColor" x="0" y="22" text-anchor="middle" font-size="9" font-family="sans-serif" opacity="0.5">카메라</text>
-    <!-- Object A at (80, -15), r=9 — offset above axis -->
-    <circle cx="80" cy="-15" r="9" stroke="currentColor" stroke-width="1.5" fill="currentColor" fill-opacity="0.12"/>
-    <text fill="currentColor" x="80" y="-11" text-anchor="middle" font-size="10" font-family="sans-serif">A</text>
-    <!-- Object B at (170, 18), r=9 — offset below axis, same real size -->
-    <circle cx="170" cy="18" r="9" stroke="currentColor" stroke-width="1.5" fill="currentColor" fill-opacity="0.12"/>
-    <text fill="currentColor" x="170" y="22" text-anchor="middle" font-size="10" font-family="sans-serif">B</text>
-    <!-- Projection lines: camera → A edges → far plane (converging) -->
-    <!-- A top: (80,-24) → far plane y = -24×(210/80) = -63 -->
-    <!-- A bottom: (80,-6) → far plane y = -6×(210/80) = -15.75 -->
-    <line x1="0" y1="0" x2="210" y2="-63" stroke="currentColor" stroke-width="0.6" stroke-dasharray="3,3" opacity="0.25"/>
-    <line x1="0" y1="0" x2="210" y2="-15.75" stroke="currentColor" stroke-width="0.6" stroke-dasharray="3,3" opacity="0.25"/>
-    <!-- Projection lines: camera → B edges → far plane -->
-    <!-- B top: (170,9) → far plane y = 9×(210/170) = 11.1 -->
-    <!-- B bottom: (170,27) → far plane y = 27×(210/170) = 33.4 -->
-    <line x1="0" y1="0" x2="210" y2="11.1" stroke="currentColor" stroke-width="0.6" stroke-dasharray="3,3" opacity="0.25"/>
-    <line x1="0" y1="0" x2="210" y2="33.4" stroke="currentColor" stroke-width="0.6" stroke-dasharray="3,3" opacity="0.25"/>
-    <!-- Projected sizes on far plane -->
-    <!-- A': span = 63 - 15.75 = 47.25 -->
-    <line x1="213" y1="-63" x2="213" y2="-15.75" stroke="currentColor" stroke-width="3.5" opacity="0.4"/>
-    <!-- B': span = 33.4 - 11.1 = 22.3 -->
-    <line x1="213" y1="11.1" x2="213" y2="33.4" stroke="currentColor" stroke-width="3.5" opacity="0.4"/>
-    <!-- Labels -->
-    <text fill="currentColor" x="226" y="-36" font-size="9" font-family="sans-serif" opacity="0.5">A' (크게)</text>
-    <text fill="currentColor" x="226" y="26" font-size="9" font-family="sans-serif" opacity="0.5">B' (작게)</text>
-  </g>
-  <!-- Perspective caption -->
-  <text fill="currentColor" x="140" y="237" text-anchor="middle" font-size="10" font-family="sans-serif" opacity="0.7">A, B는 같은 크기 · 투영선이 카메라에서 수렴</text>
-  <text fill="currentColor" x="140" y="252" text-anchor="middle" font-size="10" font-family="sans-serif" opacity="0.7">→ 가까운 A가 더 크게 투영됨</text>
-  <!-- ═══ Right: Orthographic ═══ -->
-  <g transform="translate(310, 130)">
-    <!-- Rectangle view volume -->
-    <rect x="0" y="-70" width="210" height="140" fill="currentColor" fill-opacity="0.04" stroke="currentColor" stroke-width="1.5"/>
-    <line x1="210" y1="-70" x2="210" y2="70" stroke="currentColor" stroke-width="1.8"/>
-    <!-- Camera -->
-    <circle cx="-18" cy="0" r="4" fill="currentColor"/>
-    <line x1="-14" y1="0" x2="0" y2="0" stroke="currentColor" stroke-dasharray="3,2" stroke-width="0.8" opacity="0.3"/>
-    <text fill="currentColor" x="-18" y="22" text-anchor="middle" font-size="9" font-family="sans-serif" opacity="0.5">카메라</text>
-    <!-- Object A at (55, -15), r=9 — same offset as perspective -->
-    <circle cx="55" cy="-15" r="9" stroke="currentColor" stroke-width="1.5" fill="currentColor" fill-opacity="0.12"/>
-    <text fill="currentColor" x="55" y="-11" text-anchor="middle" font-size="10" font-family="sans-serif">A</text>
-    <!-- Object B at (160, 18), r=9 — same real size, same offset -->
-    <circle cx="160" cy="18" r="9" stroke="currentColor" stroke-width="1.5" fill="currentColor" fill-opacity="0.12"/>
-    <text fill="currentColor" x="160" y="22" text-anchor="middle" font-size="10" font-family="sans-serif">B</text>
-    <!-- Parallel projection lines from A edges (horizontal) -->
-    <line x1="55" y1="-24" x2="210" y2="-24" stroke="currentColor" stroke-width="0.6" stroke-dasharray="3,3" opacity="0.25"/>
-    <line x1="55" y1="-6" x2="210" y2="-6" stroke="currentColor" stroke-width="0.6" stroke-dasharray="3,3" opacity="0.25"/>
-    <!-- Parallel projection lines from B edges (horizontal) -->
-    <line x1="160" y1="9" x2="210" y2="9" stroke="currentColor" stroke-width="0.6" stroke-dasharray="3,3" opacity="0.25"/>
-    <line x1="160" y1="27" x2="210" y2="27" stroke="currentColor" stroke-width="0.6" stroke-dasharray="3,3" opacity="0.25"/>
-    <!-- Projected sizes on right edge — both same span (18) -->
-    <line x1="213" y1="-24" x2="213" y2="-6" stroke="currentColor" stroke-width="3.5" opacity="0.4"/>
-    <line x1="213" y1="9" x2="213" y2="27" stroke="currentColor" stroke-width="3.5" opacity="0.4"/>
-    <!-- Labels -->
-    <text fill="currentColor" x="226" y="-11" font-size="9" font-family="sans-serif" opacity="0.5">A'</text>
-    <text fill="currentColor" x="234" y="8" font-size="8" font-family="sans-serif" opacity="0.35">같은</text>
-    <text fill="currentColor" x="234" y="17" font-size="8" font-family="sans-serif" opacity="0.35">크기</text>
-    <text fill="currentColor" x="226" y="30" font-size="9" font-family="sans-serif" opacity="0.5">B'</text>
-  </g>
-  <!-- Orthographic caption -->
-  <text fill="currentColor" x="420" y="237" text-anchor="middle" font-size="10" font-family="sans-serif" opacity="0.7">A, B는 같은 크기 · 투영선이 평행</text>
-  <text fill="currentColor" x="420" y="252" text-anchor="middle" font-size="10" font-family="sans-serif" opacity="0.7">→ 거리와 무관하게 같은 크기로 투영됨</text>
-  <!-- ═══ Bottom: Screen results ═══ -->
-  <line x1="30" y1="268" x2="250" y2="268" stroke="currentColor" stroke-width="0.5" opacity="0.15"/>
-  <line x1="310" y1="268" x2="530" y2="268" stroke="currentColor" stroke-width="0.5" opacity="0.15"/>
-  <text fill="currentColor" x="140" y="285" text-anchor="middle" font-size="10" font-family="sans-serif" opacity="0.4">카메라에서 바라본 결과</text>
-  <text fill="currentColor" x="420" y="285" text-anchor="middle" font-size="10" font-family="sans-serif" opacity="0.4">카메라에서 바라본 결과</text>
-  <!-- Perspective result: A large, B small (ratio ≈ 2.1:1) -->
-  <circle cx="100" cy="325" r="20" stroke="currentColor" stroke-width="1.5" fill="currentColor" fill-opacity="0.1"/>
-  <text fill="currentColor" x="100" y="329" text-anchor="middle" font-size="12" font-family="sans-serif">A</text>
-  <circle cx="190" cy="325" r="9" stroke="currentColor" stroke-width="1.5" fill="currentColor" fill-opacity="0.1"/>
-  <text fill="currentColor" x="190" y="329" text-anchor="middle" font-size="9" font-family="sans-serif">B</text>
-  <text fill="currentColor" x="140" y="362" text-anchor="middle" font-size="10" font-family="sans-serif" opacity="0.6">가까운 A는 크게, 먼 B는 작게</text>
-  <!-- Orthographic result: A and B same size -->
-  <circle cx="385" cy="325" r="14" stroke="currentColor" stroke-width="1.5" fill="currentColor" fill-opacity="0.1"/>
-  <text fill="currentColor" x="385" y="329" text-anchor="middle" font-size="11" font-family="sans-serif">A</text>
-  <circle cx="460" cy="325" r="14" stroke="currentColor" stroke-width="1.5" fill="currentColor" fill-opacity="0.1"/>
-  <text fill="currentColor" x="460" y="329" text-anchor="middle" font-size="11" font-family="sans-serif">B</text>
-  <text fill="currentColor" x="420" y="362" text-anchor="middle" font-size="10" font-family="sans-serif" opacity="0.6">거리와 무관하게 동일 크기</text>
+<svg viewBox="0 0 760 520" xmlns="http://www.w3.org/2000/svg" style="max-width: 760px; width: 100%;" role="img" aria-label="Perspective and orthographic projection compared from view volume to normalized device coordinates">
+  <defs>
+    <marker id="projection-compare-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="currentColor"/>
+    </marker>
+  </defs>
+
+  <!-- Perspective row -->
+  <text fill="currentColor" x="380" y="24" text-anchor="middle" font-size="13" font-weight="bold" font-family="sans-serif">원근 투영: 절두체를 NDC로 매핑</text>
+  <text fill="currentColor" x="180" y="51" text-anchor="middle" font-size="10" font-family="sans-serif" opacity="0.62">View Volume: Frustum</text>
+  <text fill="currentColor" x="522" y="51" text-anchor="middle" font-size="10" font-family="sans-serif" opacity="0.62">NDC x-y 평면</text>
+
+  <!-- Frustum: far rectangle is a scaled version of the near rectangle from the camera point. -->
+  <line x1="55" y1="150" x2="115" y2="115" stroke="currentColor" stroke-width="0.8" stroke-dasharray="4,3" opacity="0.3"/>
+  <line x1="55" y1="150" x2="160" y2="125" stroke="currentColor" stroke-width="0.8" stroke-dasharray="4,3" opacity="0.3"/>
+  <line x1="55" y1="150" x2="160" y2="185" stroke="currentColor" stroke-width="0.8" stroke-dasharray="4,3" opacity="0.3"/>
+  <line x1="55" y1="150" x2="115" y2="175" stroke="currentColor" stroke-width="0.8" stroke-dasharray="4,3" opacity="0.3"/>
+
+  <polygon points="115,115 160,125 307,90 199,66" fill="currentColor" fill-opacity="0.04"/>
+  <polygon points="115,175 160,185 307,234 199,210" fill="currentColor" fill-opacity="0.05"/>
+  <polygon points="115,115 115,175 199,210 199,66" fill="currentColor" fill-opacity="0.035"/>
+  <polygon points="160,125 160,185 307,234 307,90" fill="currentColor" fill-opacity="0.065"/>
+  <polygon points="199,66 307,90 307,234 199,210" fill="currentColor" fill-opacity="0.055" stroke="currentColor" stroke-width="1.2" stroke-opacity="0.62"/>
+  <polygon points="115,115 160,125 160,185 115,175" fill="currentColor" fill-opacity="0.13" stroke="currentColor" stroke-width="1.45"/>
+  <line x1="115" y1="115" x2="199" y2="66" stroke="currentColor" stroke-width="1.2"/>
+  <line x1="160" y1="125" x2="307" y2="90" stroke="currentColor" stroke-width="1.2"/>
+  <line x1="160" y1="185" x2="307" y2="234" stroke="currentColor" stroke-width="1.2"/>
+  <line x1="115" y1="175" x2="199" y2="210" stroke="currentColor" stroke-width="1.2"/>
+  <line x1="55" y1="150" x2="253" y2="150" stroke="currentColor" stroke-dasharray="6,4" stroke-width="0.8" opacity="0.32"/>
+  <circle cx="55" cy="150" r="4.5" fill="currentColor"/>
+  <text fill="currentColor" x="55" y="173" text-anchor="middle" font-size="9" font-family="sans-serif" opacity="0.62">카메라</text>
+  <text fill="currentColor" x="137" y="204" text-anchor="middle" font-size="8.5" font-family="sans-serif" opacity="0.58">near</text>
+  <text fill="currentColor" x="253" y="255" text-anchor="middle" font-size="8.5" font-family="sans-serif" opacity="0.58">far</text>
+
+  <!-- Same real size in view space. -->
+  <circle cx="145" cy="145" r="11.5" stroke="currentColor" stroke-width="1.4" fill="currentColor" fill-opacity="0.14"/>
+  <text fill="currentColor" x="145" y="149" text-anchor="middle" font-size="10" font-family="sans-serif">A</text>
+  <text fill="currentColor" x="145" y="126" text-anchor="middle" font-size="9" font-family="sans-serif" opacity="0.6">가까움</text>
+  <circle cx="245" cy="180" r="11.5" stroke="currentColor" stroke-width="1.4" fill="currentColor" fill-opacity="0.14"/>
+  <text fill="currentColor" x="245" y="184" text-anchor="middle" font-size="10" font-family="sans-serif">B</text>
+  <text fill="currentColor" x="245" y="203" text-anchor="middle" font-size="9" font-family="sans-serif" opacity="0.6">멀리 있음</text>
+
+  <line x1="55" y1="150" x2="145" y2="133.5" stroke="currentColor" stroke-width="0.6" stroke-dasharray="3,3" opacity="0.28"/>
+  <line x1="55" y1="150" x2="145" y2="156.5" stroke="currentColor" stroke-width="0.6" stroke-dasharray="3,3" opacity="0.28"/>
+  <line x1="55" y1="150" x2="245" y2="168.5" stroke="currentColor" stroke-width="0.6" stroke-dasharray="3,3" opacity="0.28"/>
+  <line x1="55" y1="150" x2="245" y2="191.5" stroke="currentColor" stroke-width="0.6" stroke-dasharray="3,3" opacity="0.28"/>
+
+  <line x1="335" y1="150" x2="410" y2="150" stroke="currentColor" stroke-width="1.1" marker-end="url(#projection-compare-arrow)" opacity="0.65"/>
+  <text fill="currentColor" x="372" y="135" text-anchor="middle" font-size="10" font-family="sans-serif" opacity="0.65">Projection</text>
+  <text fill="currentColor" x="372" y="165" text-anchor="middle" font-size="10" font-family="sans-serif" opacity="0.65">w = d</text>
+
+  <!-- NDC is shown as a canonical x-y square, not a screen aspect rectangle. -->
+  <polygon points="482,73 587,73 610,55 505,55" fill="currentColor" fill-opacity="0.025" stroke="currentColor" stroke-width="0.8" opacity="0.45"/>
+  <rect x="482" y="73" width="105" height="105" fill="none" stroke="currentColor" stroke-width="1.35"/>
+  <line x1="505" y1="55" x2="505" y2="160" stroke="currentColor" stroke-width="0.8" opacity="0.35"/>
+  <line x1="587" y1="73" x2="610" y2="55" stroke="currentColor" stroke-width="0.8" opacity="0.35"/>
+  <line x1="587" y1="178" x2="610" y2="160" stroke="currentColor" stroke-width="0.8" opacity="0.35"/>
+  <line x1="482" y1="125.5" x2="587" y2="125.5" stroke="currentColor" stroke-dasharray="4,3" stroke-width="0.8" opacity="0.35"/>
+  <line x1="534.5" y1="73" x2="534.5" y2="178" stroke="currentColor" stroke-dasharray="4,3" stroke-width="0.8" opacity="0.35"/>
+  <text fill="currentColor" x="592" y="77" font-size="8" font-family="sans-serif" opacity="0.58">x,y = 1</text>
+  <text fill="currentColor" x="592" y="181" font-size="8" font-family="sans-serif" opacity="0.58">-1</text>
+  <circle cx="516" cy="107" r="22" stroke="currentColor" stroke-width="1.4" fill="currentColor" fill-opacity="0.14"/>
+  <text fill="currentColor" x="516" y="111" text-anchor="middle" font-size="11" font-family="sans-serif">A</text>
+  <circle cx="558" cy="148" r="10" stroke="currentColor" stroke-width="1.4" fill="currentColor" fill-opacity="0.14"/>
+  <text fill="currentColor" x="558" y="151" text-anchor="middle" font-size="8" font-family="sans-serif">B</text>
+
+  <text fill="currentColor" x="380" y="230" text-anchor="middle" font-size="10" font-family="sans-serif" opacity="0.72">원근 투영은 원근 나눗셈에서 w가 거리 d에 비례하므로, 같은 크기의 먼 물체가 더 작은 NDC 범위를 차지합니다.</text>
+
+  <line x1="35" y1="265" x2="725" y2="265" stroke="currentColor" stroke-width="0.7" opacity="0.14"/>
+
+  <!-- Orthographic row -->
+  <text fill="currentColor" x="380" y="292" text-anchor="middle" font-size="13" font-weight="bold" font-family="sans-serif">직교 투영: 직육면체를 NDC로 매핑</text>
+  <text fill="currentColor" x="180" y="319" text-anchor="middle" font-size="10" font-family="sans-serif" opacity="0.62">View Volume: Box</text>
+  <text fill="currentColor" x="522" y="319" text-anchor="middle" font-size="10" font-family="sans-serif" opacity="0.62">NDC x-y 평면</text>
+
+  <!-- Orthographic volume shown with a horizontal depth axis: no tilt, same near/far size. -->
+  <rect x="105" y="350" width="195" height="90" fill="currentColor" fill-opacity="0.045" stroke="currentColor" stroke-width="1.35"/>
+  <rect x="105" y="350" width="50" height="90" fill="currentColor" fill-opacity="0.13" stroke="currentColor" stroke-width="1.45"/>
+  <rect x="250" y="350" width="50" height="90" fill="currentColor" fill-opacity="0.055" stroke="currentColor" stroke-width="1.2" stroke-opacity="0.62"/>
+  <line x1="105" y1="350" x2="250" y2="350" stroke="currentColor" stroke-width="1.2"/>
+  <line x1="155" y1="350" x2="300" y2="350" stroke="currentColor" stroke-width="1.2"/>
+  <line x1="155" y1="440" x2="300" y2="440" stroke="currentColor" stroke-width="1.2"/>
+  <line x1="105" y1="440" x2="250" y2="440" stroke="currentColor" stroke-width="1.2"/>
+
+  <!-- Orthographic camera plane and parallel rays. -->
+  <rect x="45" y="350" width="50" height="90" fill="currentColor" fill-opacity="0.018" stroke="currentColor" stroke-width="0.8" stroke-dasharray="4,3" opacity="0.62"/>
+  <line x1="45" y1="350" x2="105" y2="350" stroke="currentColor" stroke-width="0.8" stroke-dasharray="4,3" opacity="0.34"/>
+  <line x1="95" y1="350" x2="155" y2="350" stroke="currentColor" stroke-width="0.8" stroke-dasharray="4,3" opacity="0.34"/>
+  <line x1="95" y1="440" x2="155" y2="440" stroke="currentColor" stroke-width="0.8" stroke-dasharray="4,3" opacity="0.34"/>
+  <line x1="45" y1="440" x2="105" y2="440" stroke="currentColor" stroke-width="0.8" stroke-dasharray="4,3" opacity="0.34"/>
+  <line x1="70" y1="395" x2="275" y2="395" stroke="currentColor" stroke-dasharray="6,4" stroke-width="0.8" opacity="0.32"/>
+  <circle cx="70" cy="395" r="4.5" fill="currentColor"/>
+  <text fill="currentColor" x="70" y="456" text-anchor="middle" font-size="9" font-family="sans-serif" opacity="0.62">카메라</text>
+  <text fill="currentColor" x="130" y="456" text-anchor="middle" font-size="8.5" font-family="sans-serif" opacity="0.58">near</text>
+  <text fill="currentColor" x="275" y="476" text-anchor="middle" font-size="8.5" font-family="sans-serif" opacity="0.58">far</text>
+  <text fill="currentColor" x="200" y="340" text-anchor="middle" font-size="9" font-family="sans-serif" opacity="0.58">깊이축 수평 표시: near/far 단면 크기가 동일</text>
+
+  <circle cx="145" cy="390" r="11.5" stroke="currentColor" stroke-width="1.4" fill="currentColor" fill-opacity="0.14"/>
+  <text fill="currentColor" x="145" y="394" text-anchor="middle" font-size="10" font-family="sans-serif">A</text>
+  <text fill="currentColor" x="145" y="373" text-anchor="middle" font-size="9" font-family="sans-serif" opacity="0.6">가까움</text>
+  <circle cx="245" cy="425" r="11.5" stroke="currentColor" stroke-width="1.4" fill="currentColor" fill-opacity="0.14"/>
+  <text fill="currentColor" x="245" y="429" text-anchor="middle" font-size="10" font-family="sans-serif">B</text>
+  <text fill="currentColor" x="245" y="448" text-anchor="middle" font-size="9" font-family="sans-serif" opacity="0.6">멀리 있음</text>
+
+  <line x1="335" y1="395" x2="410" y2="395" stroke="currentColor" stroke-width="1.1" marker-end="url(#projection-compare-arrow)" opacity="0.65"/>
+  <text fill="currentColor" x="372" y="380" text-anchor="middle" font-size="10" font-family="sans-serif" opacity="0.65">Projection</text>
+  <text fill="currentColor" x="372" y="410" text-anchor="middle" font-size="10" font-family="sans-serif" opacity="0.65">w = 1</text>
+
+  <polygon points="482,338 587,338 610,320 505,320" fill="currentColor" fill-opacity="0.025" stroke="currentColor" stroke-width="0.8" opacity="0.45"/>
+  <rect x="482" y="338" width="105" height="105" fill="none" stroke="currentColor" stroke-width="1.35"/>
+  <line x1="505" y1="320" x2="505" y2="425" stroke="currentColor" stroke-width="0.8" opacity="0.35"/>
+  <line x1="587" y1="338" x2="610" y2="320" stroke="currentColor" stroke-width="0.8" opacity="0.35"/>
+  <line x1="587" y1="443" x2="610" y2="425" stroke="currentColor" stroke-width="0.8" opacity="0.35"/>
+  <line x1="482" y1="390.5" x2="587" y2="390.5" stroke="currentColor" stroke-dasharray="4,3" stroke-width="0.8" opacity="0.35"/>
+  <line x1="534.5" y1="338" x2="534.5" y2="443" stroke="currentColor" stroke-dasharray="4,3" stroke-width="0.8" opacity="0.35"/>
+  <text fill="currentColor" x="592" y="342" font-size="8" font-family="sans-serif" opacity="0.58">x,y = 1</text>
+  <text fill="currentColor" x="592" y="446" font-size="8" font-family="sans-serif" opacity="0.58">-1</text>
+  <circle cx="514" cy="385" r="12" stroke="currentColor" stroke-width="1.4" fill="currentColor" fill-opacity="0.14"/>
+  <text fill="currentColor" x="514" y="389" text-anchor="middle" font-size="9" font-family="sans-serif">A</text>
+  <circle cx="558" cy="420" r="12" stroke="currentColor" stroke-width="1.4" fill="currentColor" fill-opacity="0.14"/>
+  <text fill="currentColor" x="558" y="424" text-anchor="middle" font-size="9" font-family="sans-serif">B</text>
+
+  <text fill="currentColor" x="380" y="503" text-anchor="middle" font-size="10" font-family="sans-serif" opacity="0.72">직교 투영은 w가 항상 1이므로, 깊이가 달라도 같은 크기의 물체는 같은 크기의 NDC 범위를 차지합니다.</text>
 </svg>
 </div>
 
@@ -335,24 +414,60 @@ w가 5인 A는 나눈 뒤에도 x, y가 크게 남고, w가 20인 B는 나눈 �
 직교 투영의 시야 영역은 절두체가 아니라 **직육면체**입니다. 원근 투영에서는 시야 영역이 카메라에서 멀어질수록 넓어지는 절두체였지만, 직교 투영에서는 모든 거리에서 시야 영역의 폭과 높이가 동일합니다.
 
 <div style="text-align: center; margin: 1.5em 0;">
-<svg viewBox="0 0 480 200" xmlns="http://www.w3.org/2000/svg" style="max-width: 480px; width: 100%;">
-  <rect x="100" y="25" width="300" height="100" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.8" rx="2"/>
-  <circle cx="45" cy="75" r="5" fill="currentColor"/>
-  <line x1="50" y1="75" x2="100" y2="75" stroke="currentColor" stroke-dasharray="4,3" stroke-width="1" opacity="0.4"/>
-  <text fill="currentColor" x="45" y="97" text-anchor="middle" font-size="9" font-family="sans-serif" opacity="0.5">카메라</text>
-  <text fill="currentColor" x="250" y="80" text-anchor="middle" font-size="12" font-family="sans-serif" opacity="0.35">모든 거리에서 동일한 폭/높이</text>
-  <text fill="currentColor" x="100" y="148" text-anchor="middle" font-size="10" font-family="sans-serif">Near Plane</text>
-  <text fill="currentColor" x="400" y="148" text-anchor="middle" font-size="10" font-family="sans-serif">Far Plane</text>
-  <!-- n distance -->
-  <line x1="45" y1="165" x2="100" y2="165" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
-  <line x1="45" y1="161" x2="45" y2="169" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
-  <line x1="100" y1="161" x2="100" y2="169" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
-  <text fill="currentColor" x="72" y="178" text-anchor="middle" font-size="10" font-family="sans-serif" opacity="0.6">n</text>
-  <!-- f distance -->
-  <line x1="45" y1="188" x2="400" y2="188" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
-  <line x1="45" y1="184" x2="45" y2="192" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
-  <line x1="400" y1="184" x2="400" y2="192" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
-  <text fill="currentColor" x="222" y="200" text-anchor="middle" font-size="10" font-family="sans-serif" opacity="0.6">f</text>
+<svg viewBox="0 0 620 310" xmlns="http://www.w3.org/2000/svg" style="max-width: 620px; width: 100%;" role="img" aria-label="Orthographic camera view volume is a rectangular box with parallel view rays">
+  <defs>
+    <marker id="ortho-volume-arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="currentColor"/>
+    </marker>
+  </defs>
+
+  <text fill="currentColor" x="310" y="28" text-anchor="middle" font-size="13" font-weight="bold" font-family="sans-serif">직교 시야 볼륨</text>
+  <text fill="currentColor" x="310" y="52" text-anchor="middle" font-size="10" font-family="sans-serif" opacity="0.62">깊이축 수평 표시: near plane과 far plane의 크기가 같은 직육면체</text>
+
+  <!-- Orthographic camera plane and parallel rays. -->
+  <rect x="30" y="95" width="100" height="110" fill="currentColor" fill-opacity="0.018" stroke="currentColor" stroke-width="0.8" stroke-dasharray="5,4" opacity="0.62"/>
+  <line x1="30" y1="95" x2="105" y2="95" stroke="currentColor" stroke-width="0.9" stroke-dasharray="5,4" opacity="0.36"/>
+  <line x1="130" y1="95" x2="205" y2="95" stroke="currentColor" stroke-width="0.9" stroke-dasharray="5,4" opacity="0.36"/>
+  <line x1="130" y1="205" x2="205" y2="205" stroke="currentColor" stroke-width="0.9" stroke-dasharray="5,4" opacity="0.36"/>
+  <line x1="30" y1="205" x2="105" y2="205" stroke="currentColor" stroke-width="0.9" stroke-dasharray="5,4" opacity="0.36"/>
+
+  <!-- Orthographic cuboid: near and far rectangles are identical in size. -->
+  <rect x="105" y="95" width="395" height="110" fill="currentColor" fill-opacity="0.045" stroke="currentColor" stroke-width="1.4"/>
+  <rect x="105" y="95" width="100" height="110" fill="currentColor" fill-opacity="0.13" stroke="currentColor" stroke-width="1.7"/>
+  <rect x="400" y="95" width="100" height="110" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.4" stroke-opacity="0.65"/>
+
+  <!-- Parallel volume edges. -->
+  <line x1="105" y1="95" x2="400" y2="95" stroke="currentColor" stroke-width="1.3"/>
+  <line x1="205" y1="95" x2="500" y2="95" stroke="currentColor" stroke-width="1.3"/>
+  <line x1="205" y1="205" x2="500" y2="205" stroke="currentColor" stroke-width="1.3"/>
+  <line x1="105" y1="205" x2="400" y2="205" stroke="currentColor" stroke-width="1.3"/>
+
+  <!-- Camera origin and center axis. -->
+  <circle cx="80" cy="150" r="4.8" fill="currentColor"/>
+  <text fill="currentColor" x="80" y="246" text-anchor="middle" font-size="9" font-family="sans-serif" opacity="0.62">카메라</text>
+  <line x1="80" y1="150" x2="450" y2="150" stroke="currentColor" stroke-dasharray="7,5" stroke-width="0.9" opacity="0.36"/>
+  <text fill="currentColor" x="282" y="132" text-anchor="middle" font-size="11" font-family="sans-serif" opacity="0.42">평행한 시선 방향</text>
+
+  <text fill="currentColor" x="155" y="228" text-anchor="middle" font-size="10" font-family="sans-serif">Near Plane</text>
+  <text fill="currentColor" x="450" y="228" text-anchor="middle" font-size="10" font-family="sans-serif">Far Plane</text>
+  <text fill="currentColor" x="302" y="154" text-anchor="middle" font-size="12" font-family="sans-serif" opacity="0.36">직교 시야 직육면체</text>
+
+  <!-- Constant cross-section dimensions on the far plane. -->
+  <line x1="400" y1="81" x2="500" y2="81" stroke="currentColor" stroke-width="0.85" marker-start="url(#ortho-volume-arrow)" marker-end="url(#ortho-volume-arrow)" opacity="0.52"/>
+  <text fill="currentColor" x="450" y="76" text-anchor="middle" font-size="9" font-family="sans-serif" opacity="0.7">너비 = 높이 x aspect</text>
+  <line x1="515" y1="95" x2="515" y2="205" stroke="currentColor" stroke-width="0.85" marker-start="url(#ortho-volume-arrow)" marker-end="url(#ortho-volume-arrow)" opacity="0.52"/>
+  <text fill="currentColor" x="510" y="152" text-anchor="end" font-size="9" font-family="sans-serif" opacity="0.7">높이 = 2 x Size</text>
+
+  <!-- Distances from the camera origin to clipping planes. -->
+  <line x1="80" y1="270" x2="155" y2="270" stroke="currentColor" stroke-width="0.8" opacity="0.48"/>
+  <line x1="80" y1="266" x2="80" y2="274" stroke="currentColor" stroke-width="0.8" opacity="0.48"/>
+  <line x1="155" y1="266" x2="155" y2="274" stroke="currentColor" stroke-width="0.8" opacity="0.48"/>
+  <text fill="currentColor" x="118" y="284" text-anchor="middle" font-size="10" font-family="sans-serif" opacity="0.65">n</text>
+
+  <line x1="80" y1="292" x2="450" y2="292" stroke="currentColor" stroke-width="0.8" opacity="0.48"/>
+  <line x1="80" y1="288" x2="80" y2="296" stroke="currentColor" stroke-width="0.8" opacity="0.48"/>
+  <line x1="450" y1="288" x2="450" y2="296" stroke="currentColor" stroke-width="0.8" opacity="0.48"/>
+  <text fill="currentColor" x="265" y="306" text-anchor="middle" font-size="10" font-family="sans-serif" opacity="0.65">f</text>
 </svg>
 </div>
 
