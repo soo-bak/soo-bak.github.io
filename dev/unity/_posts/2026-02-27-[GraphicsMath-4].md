@@ -19,7 +19,7 @@ tags:
 
 투영(Projection)은 이 두 가지 문제를 함께 다룹니다. 원근 투영은 가까운 물체는 크게, 먼 물체는 작게 보이도록 좌표를 변환하고, 동시에 깊이 비교에 사용할 값을 만들어 냅니다. 이 깊이 값은 깊이 버퍼(depth buffer)에 저장되며, 같은 픽셀을 그리려는 여러 표면 중 카메라에 더 가까운 표면을 남기는 기준이 됩니다.
 
-다만 원근 투영의 깊이 값은 카메라로부터의 거리에 대해 균일하게 분포하지 않습니다. 정밀도는 near 평면 근처에 많이 몰리고, far 평면에 가까워질수록 한 깊이 값이 담당하는 실제 거리 범위가 커집니다. 그래서 먼 곳에 거의 같은 거리로 놓인 두 표면은 깊이 버퍼 안에서 구분하기 어려운 값으로 기록될 수 있습니다.
+다만 원근 투영의 깊이 값은 카메라로부터의 거리에 대해 균일하게 분포하지 않습니다. 정밀도는 near 평면 근처에 많이 몰리고, far 평면에 가까워질수록 한 깊이 값이 담당하는 실제 거리 범위가 커집니다. 그 결과 먼 곳에 거의 같은 거리로 놓인 두 표면은 깊이 버퍼 안에서 구분하기 어려운 값으로 기록될 수 있습니다.
 
 이 차이가 깊이 버퍼의 표현 정밀도보다 작아지면 GPU는 어느 표면이 앞에 있는지 안정적으로 판정하지 못합니다. 그 결과 프레임마다 앞뒤 판정이 흔들리면서 표면이 깜빡이는 Z-fighting이 발생합니다.
 
@@ -104,9 +104,9 @@ tags:
 
 Near plane과 far plane은 카메라가 렌더링할 깊이 범위를 정합니다. near plane보다 가까운 부분과 far plane보다 먼 부분은 절두체 밖으로 판정되어 클리핑되며, 프리미티브가 경계를 걸치면 경계 안쪽에 남은 부분만 다음 단계로 넘어갑니다.
 
-FOV는 같은 깊이에 있는 절두체 단면의 높이를 정합니다. FOV가 넓어지면 단면이 커져 더 넓은 공간이 NDC의 제한된 범위 안으로 압축되므로, 같은 거리와 크기의 오브젝트는 화면에서 더 작게 보입니다.
+FOV(Field of View)는 카메라의 시야각을 뜻합니다. 이 글에서는 Unity의 `Camera.fieldOfView`처럼 **세로 FOV**를 기준으로 다루며, 이 값은 같은 깊이에 있는 절두체 단면의 세로 크기를 정합니다. FOV가 넓어지면 같은 거리에서 절두체 단면이 커지고, 더 넓은 공간이 NDC의 `[-1, 1]` 범위로 매핑됩니다. 따라서 같은 거리와 같은 크기의 오브젝트는 화면에서 더 작게 보입니다.
 
-반대로 FOV가 좁아지면 단면이 작아져 좁은 공간이 화면을 더 크게 채우므로, 같은 오브젝트가 확대되어 망원 렌즈나 줌 인처럼 보입니다.
+반대로 FOV가 좁아지면 같은 거리에서 절두체 단면이 작아지고, 좁은 공간이 화면 범위를 더 크게 차지합니다. 따라서 같은 오브젝트가 확대되어 보이며, 망원 렌즈나 줌 인과 비슷한 효과가 납니다.
 
 <div style="text-align: center; margin: 1.5em 0;">
 <svg viewBox="0 0 760 460" xmlns="http://www.w3.org/2000/svg" style="max-width: 760px; width: 100%;" role="img" aria-label="FOV changes how the same view-space object maps to screen space">
@@ -181,98 +181,102 @@ FOV는 같은 깊이에 있는 절두체 단면의 높이를 정합니다. FOV�
 </svg>
 </div>
 
-Aspect ratio는 가로 시야각을 결정합니다.
+Aspect ratio는 화면의 가로/세로 비율이며, 기준 FOV가 정해졌을 때 반대 축의 시야 범위를 계산하는 데 사용됩니다.
 
-화면이 16:9 비율이면, 세로 FOV가 60도일 때 가로 시야각은 약 91도가 됩니다.
+Unity의 `Camera.fieldOfView`처럼 세로 FOV를 기준으로 하면, aspect ratio는 같은 깊이에 있는 절두체 단면의 가로 폭을 정합니다. 예를 들어 16:9 화면에서 세로 FOV가 60도라면, 가로 FOV는 `2 atan(aspect * tan(60° / 2))`로 계산되어 약 91.5도가 됩니다.
 
-투영 행렬은 이 세로 FOV와 aspect ratio를 조합하여 절두체의 가로·세로 범위를 계산합니다.
+즉 투영 행렬은 세로 FOV로 절두체의 높이를 정하고, aspect ratio로 그 높이에 대응하는 너비를 계산합니다. 반대로 가로 FOV를 기준으로 삼는 설정에서는 aspect ratio를 이용해 세로 범위를 계산합니다.
 
 ---
 
 ### 투영 행렬의 구성 원리
 
-원근 투영 행렬은 절두체 안의 3D 좌표를 클립 공간(clip space)으로 변환합니다.
+원근 투영 행렬은 3D 좌표를 화면 픽셀 좌표로 한 번에 바꾸는 행렬이 아닙니다. 이 행렬의 결과는 클립 공간(clip space) 좌표이며, 아직 최종 화면 위치가 확정된 상태가 아닙니다.
 
-<br>
+중요한 점은 이 단계에서 `x`, `y`는 FOV와 aspect ratio에 맞게 스케일되고, `w`에는 카메라로부터의 거리가 들어간다는 것입니다. 이후 GPU는 클립 공간 좌표의 `x`, `y`, `z`를 `w`로 나누어 NDC 좌표를 만듭니다. 가까운 점은 작은 `w`로 나뉘기 때문에 화면상 변화가 크게 남고, 먼 점은 큰 `w`로 나뉘기 때문에 같은 크기의 변화도 작게 압축됩니다. 이 때문에 같은 크기의 물체라도 멀리 있을수록 화면에서 작게 보입니다.
 
-행렬의 역할은 크게 두 가지입니다.
-
-하나는 x, y를 화면 비율에 맞게 스케일하는 것이고, 다른 하나는 z와 w를 조작하여 깊이 판정과 원근감을 준비하는 것입니다.
-
-<br>
-
-x, y 스케일부터 보면, 절두체 경계에 있는 좌표가 원근 나눗셈(w로 나누기) 후 NDC의 [-1, 1] 범위에 딱 맞도록 조정됩니다.
-
-FOV가 넓으면 카메라가 넓은 범위를 보고 있으므로, 그 넓은 범위를 [-1, 1]에 우겨넣기 위해 모든 x, y가 축소됩니다. 화면에서 보면 개별 오브젝트가 작아지는 광각 효과입니다.
-
-반대로 FOV가 좁으면 좁은 범위만 [-1, 1]에 채우므로, x, y가 확대되어 망원 렌즈처럼 오브젝트가 크게 보입니다.
-
-<br>
-
-z, w 쪽에서는 행렬이 z 좌표를 near~far 범위에 맞게 재배치하면서, 뷰 공간의 z값(카메라로부터의 거리)을 w 성분에 복사합니다.
-
-이후 GPU가 수행하는 원근 나눗셈(x/w, y/w, z/w)에서 이 w가 분모가 되므로, 먼 오브젝트일수록 x, y가 더 많이 줄어들어 화면에서 작게 표시됩니다.
-
-<br>
-
-이 구조를 행렬로 표현하면 다음과 같습니다.
+세로 FOV를 기준으로 보면, 카메라에서 거리 `d`만큼 떨어진 절두체 단면의 절반 높이는 다음과 같습니다.
 
 $$
-P_{\text{persp}} = \begin{bmatrix} \frac{1}{\text{aspect} \cdot \tan(\text{FOV}/2)} & 0 & 0 & 0 \\ 0 & \frac{1}{\tan(\text{FOV}/2)} & 0 & 0 \\ 0 & 0 & \frac{f}{n - f} & \frac{nf}{n - f} \\ 0 & 0 & -1 & 0 \end{bmatrix}
+d \tan(\text{FOV}/2)
 $$
 
-$$n$$ = near plane 거리, $$f$$ = far plane 거리, $$\text{FOV}$$ = 세로 시야각(라디안), $$\text{aspect}$$ = 가로/세로 비율
+절반 너비는 여기에 aspect ratio를 곱한 값입니다.
 
-(그래픽스 API에 따라 부호와 배치가 다를 수 있음)
+$$
+\text{aspect} \cdot d \tan(\text{FOV}/2)
+$$
 
-<br>
+즉 절두체 위쪽 경계에 있는 점은 원근 나눗셈 후 `y_ndc = 1`이 되어야 하고, 오른쪽 경계에 있는 점은 `x_ndc = 1`이 되어야 합니다. 따라서 `x`, `y`에는 다음 스케일이 곱해집니다.
 
-**`(1,1)` 원소 — `1/(aspect * tan(FOV/2))`** : 절두체 좌우 경계에 있는 점이 원근 나눗셈 후 NDC에서 정확히 -1 또는 1이 되도록 x를 스케일합니다. FOV가 넓으면 tan(FOV/2)가 커지고, 그 역수를 곱하므로 x 스케일 값이 줄어들어 좌표가 원점 쪽으로 압축됩니다. aspect로도 나누어, 16:9처럼 가로가 넓은 화면에서 x축 범위를 비율에 맞게 보정합니다.
+$$
+s_y = \frac{1}{\tan(\text{FOV}/2)}, \qquad
+s_x = \frac{1}{\text{aspect} \cdot \tan(\text{FOV}/2)}
+$$
 
-<br>
+FOV가 넓어지면 `tan(FOV/2)`가 커지므로 `s_x`, `s_y`는 작아집니다. 더 넓은 시야를 같은 NDC 범위 안에 넣어야 하므로 물체가 작게 보입니다. 반대로 FOV가 좁아지면 스케일 값이 커져 망원 렌즈처럼 물체가 크게 보입니다.
 
-**`(2,2)` 원소 — `1/tan(FOV/2)`** : y 좌표를 같은 원리로 스케일합니다. FOV가 세로 시야각 기준으로 정의되어 있으므로, y축에는 aspect 보정 없이 FOV만으로 스케일 값이 결정됩니다.
+`x`, `y` 스케일과 깊이 변환, 그리고 `w`에 거리를 넣는 과정을 한 행렬로 묶으면 다음 형태가 됩니다.
 
-<br>
+$$
+P_{\text{persp}} =
+\begin{bmatrix}
+\frac{1}{\text{aspect} \cdot \tan(\text{FOV}/2)} & 0 & 0 & 0 \\
+0 & \frac{1}{\tan(\text{FOV}/2)} & 0 & 0 \\
+0 & 0 & \frac{f}{n - f} & \frac{nf}{n - f} \\
+0 & 0 & -1 & 0
+\end{bmatrix}
+$$
 
-**세 번째 행 — z 변환** : z 좌표를 near~far 범위 안에서 재배치합니다. 행렬 곱 직후 z_clip = A * z_view + B (A, B는 near·far로 결정되는 상수) 형태이므로, 이 시점까지 z_clip은 뷰 공간 z에 대해 선형입니다.
+여기서 `n`은 near plane 거리, `f`는 far plane 거리입니다.
 
-비선형성은 원근 나눗셈 단계에서 생깁니다. z_ndc = z_clip / w에서 w(카메라로부터의 거리)가 분모에 들어가기 때문에, 카메라 가까이에서는 1m 차이가 NDC z값을 크게 바꾸지만 먼 곳에서는 같은 1m 차이가 NDC z값을 거의 바꾸지 못합니다. 깊이 정밀도가 카메라 근처에 편중되는 이 비선형 분포가, 뒤에서 다룰 Z-fighting의 원인입니다.
+첫 번째 행과 두 번째 행은 `x`, `y`를 FOV와 aspect ratio에 맞게 스케일합니다.
 
-<br>
+세 번째 행은 깊이 버퍼에 사용할 `z` 값을 만듭니다. near plane과 far plane 사이의 `z` 값을 깊이 비교에 적합한 범위로 재배치하는 역할입니다.
 
-**네 번째 행 — w 복사 `(0, 0, -1, 0)`** : 원근 나눗셈의 분모가 될 w를 준비하는 행입니다. 네 번째 행과 입력 좌표 (x, y, z, 1)의 내적은 0·x + 0·y + (-1)·z + 0·1 = -z_view이므로, 뷰 공간에서 카메라로부터의 거리가 그대로 w에 들어갑니다(부호는 API 관례에 따라 다름). GPU는 이후 x, y, z 각각을 이 w로 나누어 NDC 좌표를 생성합니다.
+네 번째 행은 원근감의 핵심입니다.
 
-<br>
+$$
+w_{clip} = -z_{view}
+$$
 
-w 나눗셈이 원근감을 만드는 과정을 구체적인 수치로 확인할 수 있습니다.
+많은 그래픽스 API와 엔진은 뷰 공간에서 카메라가 `-z` 방향을 바라보는 관례를 사용합니다. 이 관례에서는 카메라 앞에 있는 점의 `z_view`가 음수이므로, `-z_view`는 카메라로부터의 양수 거리로 볼 수 있습니다. 이후 원근 나눗셈을 하면 `x`, `y`는 다음처럼 거리로 한 번 더 나뉩니다.
 
-<div style="text-align: center; margin: 1.5em 0;">
-<svg viewBox="0 0 620 360" xmlns="http://www.w3.org/2000/svg" style="max-width: 620px; width: 100%;">
-  <text x="310" y="20" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="currentColor">w 나눗셈으로 만들어지는 원근감</text>
-  <text x="40" y="48" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">뷰 공간의 두 점</text>
-  <text x="60" y="68" font-family="monospace" font-size="11" fill="currentColor">A = (1, 1, -5, 1)</text>
-  <text x="260" y="68" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.7">카메라에서 5m 앞</text>
-  <text x="60" y="88" font-family="monospace" font-size="11" fill="currentColor">B = (1, 1, -20, 1)</text>
-  <text x="260" y="88" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.7">카메라에서 20m 앞</text>
-  <line x1="40" y1="106" x2="580" y2="106" stroke="currentColor" stroke-width="0.6" opacity="0.3"/>
-  <text x="40" y="130" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">투영 행렬 적용 후 (간략화)</text>
-  <text x="60" y="150" font-family="monospace" font-size="11" fill="currentColor">A_clip = (s·1, s·1, z_a, 5)</text>
-  <text x="320" y="150" font-family="monospace" font-size="11" fill="currentColor" opacity="0.85">w = 5</text>
-  <text x="60" y="170" font-family="monospace" font-size="11" fill="currentColor">B_clip = (s·1, s·1, z_b, 20)</text>
-  <text x="320" y="170" font-family="monospace" font-size="11" fill="currentColor" opacity="0.85">w = 20</text>
-  <line x1="40" y1="188" x2="580" y2="188" stroke="currentColor" stroke-width="0.6" opacity="0.3"/>
-  <text x="40" y="212" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">원근 나눗셈 (w로 나누기)</text>
-  <text x="60" y="232" font-family="monospace" font-size="11" fill="currentColor">A_ndc = (s/5,  s/5,  ...)</text>
-  <text x="340" y="232" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.85">x, y 비교적 큼</text>
-  <text x="60" y="252" font-family="monospace" font-size="11" fill="currentColor">B_ndc = (s/20, s/20, ...)</text>
-  <text x="340" y="252" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.85">x, y 비교적 작음</text>
-  <line x1="40" y1="278" x2="580" y2="278" stroke="currentColor" stroke-width="0.6" opacity="0.3"/>
-  <text x="310" y="306" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">A는 화면에서 크게, B는 화면에서 작게 표시됨</text>
-</svg>
-</div>
+$$
+\begin{aligned}
+x_{ndc} &= \frac{x_{clip}}{w_{clip}} = \frac{x_{clip}}{d} \\
+y_{ndc} &= \frac{y_{clip}}{w_{clip}} = \frac{y_{clip}}{d}
+\end{aligned}
+$$
 
-w가 5인 A는 나눈 뒤에도 x, y가 크게 남고, w가 20인 B는 나눈 뒤 x, y가 1/4로 줄어듭니다. 뷰 공간에서 동일한 (1, 1) 좌표였던 두 점이, 카메라까지의 거리 차이만으로 화면에서 서로 다른 크기로 그려집니다. 원근감은 이 w 나눗셈 한 단계에서 만들어집니다.
+계산을 단순하게 보기 위해 FOV와 aspect ratio에 따른 스케일 값은 `1`로 두고, 뷰 공간에서 세로 길이가 `2`인 물체를 가정하겠습니다. 이 물체의 위쪽 점이 `y = 1`, 아래쪽 점이 `y = -1`에 있다면 원래 세로 길이는 `1 - (-1) = 2`입니다.
+
+이 물체가 카메라에서 `5`만큼 떨어져 있으면 원근 나눗셈 후 위쪽 점은 `1 / 5 = 0.2`, 아래쪽 점은 `-1 / 5 = -0.2`가 됩니다. 따라서 NDC에서 차지하는 높이는 `0.2 - (-0.2) = 0.4`입니다.
+
+같은 물체가 거리 `20`에 있으면 위쪽 점은 `1 / 20 = 0.05`, 아래쪽 점은 `-1 / 20 = -0.05`가 됩니다. 이때 NDC에서 차지하는 높이는 `0.05 - (-0.05) = 0.1`입니다. 같은 물체라도 거리가 4배 멀어지면, `w`도 4배 커지고, 원근 나눗셈 결과 화면상 높이는 4분의 1로 줄어듭니다.
+
+원근 나눗셈은 화면상의 크기만 바꾸지 않습니다. `z`도 `w`로 나뉘기 때문에, 깊이 버퍼에 저장되는 깊이 값 역시 이 영향을 받습니다.
+
+깊이 값의 목적은 간단합니다. 같은 픽셀에 여러 표면이 겹쳤을 때 어느 표면이 더 앞에 있는지 비교하기 위한 값입니다. 이를 위해 near plane에 있는 점은 깊이 범위의 앞쪽 값으로, far plane에 있는 점은 뒤쪽 값으로 보내야 합니다.
+
+문제는 이 매핑이 실제 거리와 균등하지 않다는 점입니다. 원근감을 만들기 위해 `w`에 거리 `d`를 넣었고, 최종 단계에서 `z`도 그 `d`로 나뉩니다. 그 결과 깊이 값은 거리 자체가 아니라, 거리의 역수에 가까운 형태로 변합니다.
+
+$$
+z_{ndc} = \frac{f}{f - n}\left(1 - \frac{n}{d}\right)
+$$
+
+여기서 중요한 부분은 `1 / d`입니다. 예를 들어 `n = 1`, `f = 100`이라고 하면 깊이 값은 대략 다음처럼 변합니다.
+
+| 카메라로부터의 거리 `d` | 깊이 값 `z_ndc` |
+|---:|---:|
+| `1` | `0` |
+| `2` | `0.505` |
+| `10` | `0.909` |
+| `100` | `1` |
+
+거리 `1`에서 `2`로 이동하는 아주 가까운 구간이 깊이 범위의 절반 이상을 차지합니다. 반면 거리 `10`에서 `100`까지의 넓은 구간은 깊이 값으로 보면 `0.909`에서 `1` 사이의 좁은 범위에 압축됩니다.
+
+이 때문에 깊이 버퍼의 정밀도는 카메라 가까이에 많이 배정되고, 멀리 갈수록 부족해집니다. 먼 곳에 있는 두 표면은 실제 거리 차이가 어느 정도 있어도 깊이 버퍼 안에서는 거의 같은 값으로 기록될 수 있고, 이것이 뒤에서 다룰 Z-fighting의 원인이 됩니다.
 
 ---
 
@@ -331,7 +335,7 @@ w가 5인 A는 나눈 뒤에도 x, y가 크게 남고, w가 20인 B는 나눈 �
   <line x1="55" y1="150" x2="245" y2="191.5" stroke="currentColor" stroke-width="0.6" stroke-dasharray="3,3" opacity="0.28"/>
 
   <line x1="335" y1="150" x2="410" y2="150" stroke="currentColor" stroke-width="1.1" marker-end="url(#projection-compare-arrow)" opacity="0.65"/>
-  <text fill="currentColor" x="372" y="135" text-anchor="middle" font-size="10" font-family="sans-serif" opacity="0.65">Projection</text>
+  <text fill="currentColor" x="372" y="135" text-anchor="middle" font-size="10" font-family="sans-serif" opacity="0.65">Projection + w 나눗셈</text>
   <text fill="currentColor" x="372" y="165" text-anchor="middle" font-size="10" font-family="sans-serif" opacity="0.65">w = d</text>
 
   <!-- NDC is shown as a canonical x-y square, not a screen aspect rectangle. -->
@@ -349,7 +353,7 @@ w가 5인 A는 나눈 뒤에도 x, y가 크게 남고, w가 20인 B는 나눈 �
   <circle cx="558" cy="148" r="10" stroke="currentColor" stroke-width="1.4" fill="currentColor" fill-opacity="0.14"/>
   <text fill="currentColor" x="558" y="151" text-anchor="middle" font-size="8" font-family="sans-serif">B</text>
 
-  <text fill="currentColor" x="380" y="230" text-anchor="middle" font-size="10" font-family="sans-serif" opacity="0.72">원근 투영은 원근 나눗셈에서 w가 거리 d에 비례하므로, 같은 크기의 먼 물체가 더 작은 NDC 범위를 차지합니다.</text>
+  <text fill="currentColor" x="380" y="230" text-anchor="middle" font-size="10" font-family="sans-serif" opacity="0.72">원근 투영에서는 x, y가 거리 d에 비례하는 w로 나뉘므로, 먼 물체가 더 작은 NDC 영역을 차지합니다.</text>
 
   <line x1="35" y1="265" x2="725" y2="265" stroke="currentColor" stroke-width="0.7" opacity="0.14"/>
 
@@ -388,7 +392,7 @@ w가 5인 A는 나눈 뒤에도 x, y가 크게 남고, w가 20인 B는 나눈 �
   <text fill="currentColor" x="245" y="448" text-anchor="middle" font-size="9" font-family="sans-serif" opacity="0.6">멀리 있음</text>
 
   <line x1="335" y1="395" x2="410" y2="395" stroke="currentColor" stroke-width="1.1" marker-end="url(#projection-compare-arrow)" opacity="0.65"/>
-  <text fill="currentColor" x="372" y="380" text-anchor="middle" font-size="10" font-family="sans-serif" opacity="0.65">Projection</text>
+  <text fill="currentColor" x="372" y="380" text-anchor="middle" font-size="10" font-family="sans-serif" opacity="0.65">Projection + w 나눗셈</text>
   <text fill="currentColor" x="372" y="410" text-anchor="middle" font-size="10" font-family="sans-serif" opacity="0.65">w = 1</text>
 
   <polygon points="482,338 587,338 610,320 505,320" fill="currentColor" fill-opacity="0.025" stroke="currentColor" stroke-width="0.8" opacity="0.45"/>
@@ -411,7 +415,7 @@ w가 5인 A는 나눈 뒤에도 x, y가 크게 남고, w가 20인 B는 나눈 �
 
 <br>
 
-직교 투영의 시야 영역은 절두체가 아니라 **직육면체**입니다. 원근 투영에서는 시야 영역이 카메라에서 멀어질수록 넓어지는 절두체였지만, 직교 투영에서는 모든 거리에서 시야 영역의 폭과 높이가 동일합니다.
+직교 투영의 시야 영역은 원근 투영처럼 멀어질수록 넓어지는 절두체가 아니라, near plane과 far plane의 크기가 같은 **직육면체** 형태입니다. 따라서 카메라로부터의 거리가 달라져도 시야 영역의 폭과 높이는 변하지 않습니다.
 
 <div style="text-align: center; margin: 1.5em 0;">
 <svg viewBox="0 0 620 310" xmlns="http://www.w3.org/2000/svg" style="max-width: 620px; width: 100%;" role="img" aria-label="Orthographic camera view volume is a rectangular box with parallel view rays">
@@ -471,7 +475,9 @@ w가 5인 A는 나눈 뒤에도 x, y가 크게 남고, w가 20인 B는 나눈 �
 </svg>
 </div>
 
-직교 투영 행렬은 원근 투영 행렬보다 구조가 간단합니다. 원근감을 만들 필요가 없으므로 w 성분을 건드리지 않고, x, y, z를 스케일과 오프셋만으로 정해진 범위에 매핑합니다.
+직교 투영 행렬은 직육면체 형태의 시야 영역을 NDC의 정해진 범위로 맞춰 변환합니다. 원근 투영처럼 멀어질수록 시야 단면이 커지는 구조가 아니므로, `w`에 카메라 거리를 넣어 `x`, `y`를 줄이지 않습니다.
+
+따라서 직교 투영에서는 `x`, `y`, `z`를 각각 정해진 범위에서 NDC 범위로 선형 변환합니다.
 
 $$
 P_{\text{ortho}} = \begin{bmatrix} \frac{2}{r - l} & 0 & 0 & -\frac{r + l}{r - l} \\ 0 & \frac{2}{t - b} & 0 & -\frac{t + b}{t - b} \\ 0 & 0 & \frac{-1}{f - n} & -\frac{n}{f - n} \\ 0 & 0 & 0 & 1 \end{bmatrix}
@@ -479,35 +485,29 @@ $$
 
 $$l, r$$ = 왼쪽, 오른쪽 경계, $$b, t$$ = 아래, 위 경계, $$n, f$$ = near, far plane
 
-(그래픽스 API에 따라 부호와 배치가 다를 수 있음)
+이 행렬에서 `x`는 `[l, r]` 범위에서 `[-1, 1]` 범위로, `y`는 `[b, t]` 범위에서 `[-1, 1]` 범위로 옮겨집니다. `z`도 near~far 범위 안에서 깊이 비교에 사용할 값으로 변환됩니다. 중요한 점은 이 과정이 모두 선형이라는 것입니다.
 
-<br>
+원근 투영과의 가장 큰 차이는 마지막 행에 있습니다.
 
-원근 투영 행렬과의 핵심 차이는 **네 번째 행**에 있습니다.
+$$
+w_{clip} = 1
+$$
 
-원근 투영에서는 네 번째 행 `(0, 0, -1, 0)`이 뷰 공간의 z를 w에 복사하여 원근 나눗셈의 분모를 만들었지만, 직교 투영에서는 네 번째 행이 `(0, 0, 0, 1)`이므로 w가 항상 1로 유지됩니다.
+원근 투영에서는 `w`가 카메라로부터의 거리 `d`에 비례합니다. 따라서 원근 나눗셈을 거치면 먼 물체일수록 `x`, `y`가 더 크게 나뉘어 작게 보입니다.
 
-<br>
-
-원근 투영에서 원근감이 생기는 이유는 각 정점의 w가 카메라로부터의 거리에 비례하여 **정점마다 다른 값**을 갖기 때문입니다. 가까운 정점은 w가 작아 x/w, y/w 결과가 크고, 먼 정점은 w가 커서 결과가 작습니다. 같은 크기의 오브젝트라도 거리에 따라 화면에서 다른 크기로 보이는 것이 이 원리입니다.
-
-직교 투영에서는 w가 거리와 무관하게 항상 1이므로, 원근 나눗셈이 x/1 = x, y/1 = y가 됩니다. 거리가 다른 두 정점이라도 나눗셈의 분모가 동일하기 때문에 x, y 좌표가 거리에 의해 변하지 않고, 같은 크기의 오브젝트는 카메라로부터의 거리와 무관하게 화면에서 동일한 크기로 표시됩니다.
-
-<br>
-
-직교 투영은 거리에 따른 크기 변화가 없어야 하는 상황에서 사용됩니다. 2D 게임에서는 모든 오브젝트가 카메라 거리와 무관하게 지정된 크기로 표시되어야 하고, UI 요소는 화면에 고정된 픽셀 크기로 렌더링되어야 합니다. 미니맵이나 탑다운 전략 게임에서도 거리에 따른 크기 왜곡 없이 정확한 비율이 유지되어야 합니다.
+직교 투영에서는 `w`가 항상 `1`입니다. GPU가 원근 나눗셈을 수행해도 `x / 1`, `y / 1`이 되므로 `x`, `y`가 거리 때문에 줄어들지 않습니다. 가까운 물체와 먼 물체가 뷰 공간에서 같은 크기라면, NDC에서도 같은 크기를 차지합니다.
 
 ---
 
 ## 깊이 값의 비선형성
 
-원근 나눗셈이 z(깊이)에도 적용되면서, NDC의 z값은 뷰 공간에서의 실제 거리와 **비선형(non-linear)** 관계를 갖게 됩니다.
+앞에서 본 것처럼 원근 투영에서는 `z`값이 `w`로 나뉩니다. 이 때문에 깊이 버퍼에 저장되는 값은 카메라로부터의 실제 거리와 같은 비율로 증가하지 않습니다.
 
-앞서 투영 행렬의 세 번째 행을 다룰 때 이 비선형성을 간략히 언급했는데, 이 섹션에서는 변환 공식과 구체적 수치를 통해 비선형 분포가 깊이 버퍼 정밀도에 어떤 영향을 미치는지 정량적으로 살펴봅니다.
+예를 들어 카메라에서 `1m` 떨어진 지점과 `2m` 떨어진 지점의 차이는 깊이 값에 크게 반영됩니다. 하지만 `100m`와 `101m`의 차이는 실제로는 같은 `1m` 차이여도, 깊이 값에서는 훨씬 작게 나타납니다. 깊이 값이 실제 거리 전체에 균등하게 배분되지 않는다는 뜻입니다.
 
 <br>
 
-뷰 공간에서 카메라로부터의 거리를 d라 하면, NDC의 깊이값 z_ndc는 다음 공식으로 결정됩니다 (DirectX 관례, $$[0, 1]$$ 범위).
+이 글에서 사용하는 NDC 깊이 범위 `[0, 1]`을 기준으로, 카메라로부터의 거리를 `d`라고 하면 깊이 값은 다음과 같이 계산됩니다.
 
 $$
 z_{\text{ndc}} = \frac{f}{f - n} - \frac{f \cdot n}{(f - n) \cdot d}
@@ -515,15 +515,15 @@ $$
 
 $$n$$ = near plane 거리, $$f$$ = far plane 거리, $$d$$ = 뷰 공간에서의 실제 거리 ($$n \leq d \leq f$$)
 
-$$d = n \;\Rightarrow\; z_{\text{ndc}} = 0$$ (가장 가까움), $$d = f \;\Rightarrow\; z_{\text{ndc}} = 1$$ (가장 멀음)
+이 식은 near plane에서 `0`, far plane에서 `1`이 되도록 깊이 값을 만듭니다.
 
-공식의 두 번째 항 $$\frac{f \cdot n}{(f - n) \cdot d}$$에서 d가 분모에 있으므로, z_ndc는 1/d에 비례하는 성분을 포함합니다.
-
-d가 작을 때(카메라에 가까울 때) z_ndc의 변화율이 크고, d가 클 때(카메라에서 멀 때) 변화율이 급격히 작아집니다.
+중요한 부분은 두 번째 항의 분모에 `d`가 들어간다는 점입니다. 깊이 값은 거리 `d` 자체에 비례하는 것이 아니라, `1 / d`가 섞인 형태로 변합니다. 이 때문에 가까운 거리 구간은 깊이 값 안에서 크게 벌어지고, 먼 거리 구간은 깊이 값의 끝부분에 작게 압축됩니다.
 
 <br>
 
-아래 그래프는 n=0.3, f=1000일 때 d에 따른 z_ndc의 변화를 보여줍니다. 가로축이 로그 스케일임에도 곡선이 near 근처에서 급경사를 이루고, far 쪽에서는 거의 수평에 가깝습니다.
+아래 그래프는 `n = 0.3`, `f = 1000`일 때 거리 `d`에 따라 깊이 값 `z_ndc`가 어떻게 변하는지 보여줍니다. 카메라에 가까운 구간에서는 거리가 조금만 증가해도 `z_ndc`가 빠르게 커집니다. 반대로 어느 정도 멀어진 뒤에는 거리가 크게 증가해도 `z_ndc`는 거의 `1` 근처에서 조금만 변합니다.
+
+즉 깊이 값의 넓은 구간은 카메라 가까이에 사용되고, 먼 거리는 `1`에 가까운 좁은 구간 안에 압축됩니다. 이 분포 때문에 깊이 버퍼 정밀도는 near plane 근처에 많이 몰리고, far plane 쪽으로 갈수록 부족해집니다.
 
 <div style="text-align: center; margin: 1.5em 0;">
 <svg viewBox="0 0 480 290" xmlns="http://www.w3.org/2000/svg" style="max-width: 480px; width: 100%;">
@@ -591,19 +591,7 @@ d가 작을 때(카메라에 가까울 때) z_ndc의 변화율이 크고, d가 �
 
 24비트 정수 깊이 버퍼는 NDC의 $$[0, 1]$$ 범위를 균일한 간격의 정수 단계로 나눕니다. 균일한 간격이므로, 어떤 거리 구간이 NDC 범위에서 차지하는 비율만큼 깊이 버퍼의 정수 단계도 배분됩니다. 그런데 비선형 변환 때문에 NDC 범위 대부분이 near 근처의 좁은 거리 구간에 몰리므로, **깊이 버퍼의 정수 단계도 near 근처에 집중되고 far 근처에는 거의 배분되지 않습니다.**
 
-아래 표는 near = 0.1, far = 1000인 경우의 구체적인 분포입니다 (그래프와 near 값이 다른 점에 주의).
-
-**깊이 정밀도 분포 예시** (near=0.1, far=1000)
-
-| 뷰 공간 거리 범위 | NDC 깊이 범위 | 깊이 버퍼의 비율 |
-|:---|:---|:---:|
-| 0.1 ~ 1.0 (근거리) | 0.0 ~ 0.90 | 약 90% |
-| 1.0 ~ 10 (중거리) | 0.90 ~ 0.99 | 약 9% |
-| 10 ~ 1000 (원거리) | 0.99 ~ 1.0 | 약 1% |
-
-깊이 버퍼 정밀도의 90%가 카메라에서 1미터 이내에 집중되고, 10미터부터 1000미터 구간에는 정밀도의 1%만 배분됩니다.
-
-24비트 깊이 버퍼의 총 단계 수는 $$2^{24}$$ = 16,777,216입니다. 위 표에서 NDC 범위의 약 90%가 카메라에서 1미터 이내에 집중되므로, 약 1,510만 단계가 이 좁은 구간에 사용됩니다. 반면 10미터에서 1,000미터까지의 넓은 구간에는 약 17만 단계만 남습니다. 이 불균형이 원거리에서의 깊이 정밀도 부족을 만듭니다.
+24비트 깊이 버퍼의 총 단계 수는 $$2^{24}$$ = 16,777,216입니다. 단계 수 자체는 많지만, 원근 투영의 비선형 깊이 분포 때문에 이 단계들이 실제 거리 전체에 고르게 쓰이지 않습니다. 가까운 구간에는 많은 단계가 배정되고, 먼 구간에는 훨씬 적은 단계만 남습니다. 이 불균형이 원거리에서의 깊이 정밀도 부족을 만듭니다.
 
 ---
 
@@ -611,44 +599,73 @@ d가 작을 때(카메라에 가까울 때) z_ndc의 변화율이 크고, d가 �
 
 이 정밀도 부족이 실제 렌더링에서 일으키는 문제가 **Z-fighting**입니다. 거의 같은 깊이에 있는 두 표면의 깊이 값이 구분되지 않아, 어느 표면이 앞인지 판정할 수 없게 됩니다.
 
-**양자화(quantization)**는 연속적인 깊이 값을 정해진 비트 수의 정수로 변환하는 과정입니다. 깊이 버퍼는 이 양자화를 통해 깊이를 저장합니다. 24비트 깊이 버퍼라면 16,777,216개의 정수 단계로 깊이를 표현합니다. 원거리에서 정밀도가 부족하면, 서로 다른 두 깊이 값이 양자화 과정에서 같은 정수로 변환됩니다.
+깊이 버퍼는 연속적인 깊이 값을 그대로 무한히 저장하지 못합니다. 정해진 비트 수 안에서 표현해야 하므로, 계산된 깊이 값은 가장 가까운 저장 단계로 반올림됩니다. 이처럼 연속적인 값을 제한된 단계 중 하나로 바꾸는 과정을 **양자화(quantization)**라고 합니다.
+
+문제는 먼 거리에서 서로 다른 표면의 깊이 값 차이가 매우 작아진다는 점입니다. 두 값의 차이가 깊이 버퍼의 한 단계보다 작으면, 실제로는 서로 다른 거리에 있어도 같은 깊이 값으로 저장될 수 있습니다. 이 순간 깊이 테스트는 두 표면의 앞뒤를 안정적으로 구분할 수 없게 됩니다.
 
 <div style="text-align: center; margin: 1.5em 0;">
-<svg viewBox="0 0 620 320" xmlns="http://www.w3.org/2000/svg" style="max-width: 620px; width: 100%;">
-  <text x="310" y="20" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="currentColor">Z-fighting 현상</text>
-  <text x="40" y="50" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">카메라에서 먼 거리에 있는 두 표면</text>
-  <text x="60" y="72" font-family="sans-serif" font-size="11" fill="currentColor"><tspan font-weight="bold">표면 A</tspan>: 뷰 공간 깊이 = 500.0</text>
-  <text x="60" y="92" font-family="sans-serif" font-size="11" fill="currentColor"><tspan font-weight="bold">표면 B</tspan>: 뷰 공간 깊이 = 500.1 <tspan opacity="0.7">(0.1 차이)</tspan></text>
-  <line x1="40" y1="112" x2="580" y2="112" stroke="currentColor" stroke-width="0.6" opacity="0.3"/>
-  <text x="40" y="138" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">깊이 버퍼 (24비트) 값</text>
-  <text x="60" y="160" font-family="sans-serif" font-size="11" fill="currentColor"><tspan font-weight="bold">표면 A</tspan>: 0.999899990…  →  양자화 후  16775537</text>
-  <text x="60" y="180" font-family="sans-serif" font-size="11" fill="currentColor"><tspan font-weight="bold">표면 B</tspan>: 0.999900030…  →  양자화 후  <tspan font-weight="bold">16775537 (같은 값!)</tspan></text>
-  <line x1="40" y1="202" x2="580" y2="202" stroke="currentColor" stroke-width="0.6" opacity="0.3"/>
-  <text x="40" y="228" font-family="sans-serif" font-size="11" fill="currentColor" opacity="0.85">→ 두 표면의 깊이 값이 같아져 버림</text>
-  <text x="40" y="252" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">→ 어느 표면이 앞인지 판단 불가</text>
+<svg viewBox="0 0 620 330" xmlns="http://www.w3.org/2000/svg" style="max-width: 620px; width: 100%;">
+  <defs>
+    <marker id="zf-quant-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="currentColor"/>
+    </marker>
+  </defs>
+
+  <text x="310" y="22" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="currentColor">Z-fighting: 서로 다른 깊이가 같은 저장 단계로 묶이는 경우</text>
+  <text x="310" y="43" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.62">near = 0.1, far = 1000, 24비트 깊이 버퍼 예시</text>
+
+  <rect x="32" y="68" width="164" height="108" rx="3" fill="currentColor" fill-opacity="0.035" stroke="currentColor" stroke-width="0.9" stroke-opacity="0.32"/>
+  <text x="114" y="91" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">뷰 공간 거리</text>
+  <text x="52" y="119" font-family="sans-serif" font-size="11" fill="currentColor"><tspan font-weight="bold">표면 A</tspan> d = 500.0</text>
+  <text x="52" y="143" font-family="sans-serif" font-size="11" fill="currentColor"><tspan font-weight="bold">표면 B</tspan> d = 500.1</text>
+  <text x="52" y="164" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.66">실제 거리 차이 = 0.1</text>
+
+  <line x1="203" y1="122" x2="225" y2="122" stroke="currentColor" stroke-width="1" marker-end="url(#zf-quant-arrow)" opacity="0.55"/>
+
+  <rect x="232" y="68" width="174" height="108" rx="3" fill="currentColor" fill-opacity="0.035" stroke="currentColor" stroke-width="0.9" stroke-opacity="0.32"/>
+  <text x="319" y="91" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">NDC 깊이 값</text>
+  <text x="250" y="119" font-family="sans-serif" font-size="10.5" fill="currentColor"><tspan font-weight="bold">A</tspan> 0.999899990...</text>
+  <text x="250" y="143" font-family="sans-serif" font-size="10.5" fill="currentColor"><tspan font-weight="bold">B</tspan> 0.999900030...</text>
+  <text x="250" y="164" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.66">차이 ≈ 0.000000040</text>
+
+  <line x1="413" y1="122" x2="435" y2="122" stroke="currentColor" stroke-width="1" marker-end="url(#zf-quant-arrow)" opacity="0.55"/>
+
+  <rect x="442" y="68" width="146" height="108" rx="3" fill="currentColor" fill-opacity="0.035" stroke="currentColor" stroke-width="0.9" stroke-opacity="0.32"/>
+  <text x="515" y="91" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">저장 단계</text>
+  <text x="462" y="119" font-family="sans-serif" font-size="10.5" fill="currentColor"><tspan font-weight="bold">A</tspan> 16775537</text>
+  <text x="462" y="143" font-family="sans-serif" font-size="10.5" fill="currentColor"><tspan font-weight="bold">B</tspan> 16775537</text>
+  <text x="462" y="164" font-family="sans-serif" font-size="10" font-weight="bold" fill="currentColor">같은 값으로 저장</text>
+
+  <text x="310" y="207" text-anchor="middle" font-family="sans-serif" font-size="11" fill="currentColor" opacity="0.82">두 깊이 값의 차이가 깊이 버퍼 한 단계보다 작으면 같은 정수 값으로 양자화됩니다.</text>
+
+  <line x1="115" y1="248" x2="505" y2="248" stroke="currentColor" stroke-width="1.2" opacity="0.55"/>
+  <rect x="244" y="226" width="132" height="44" rx="3" fill="currentColor" fill-opacity="0.055" stroke="currentColor" stroke-width="1" stroke-opacity="0.35"/>
+  <text x="310" y="221" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.62">하나의 깊이 버퍼 저장 단계</text>
+  <circle cx="302" cy="248" r="4" fill="currentColor"/>
+  <circle cx="318" cy="248" r="4" fill="currentColor" fill-opacity="0.55" stroke="currentColor" stroke-width="1"/>
+  <text x="302" y="287" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor">A</text>
+  <text x="318" y="287" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor">B</text>
+  <text x="310" y="309" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">깊이 테스트는 두 표면의 앞뒤를 안정적으로 구분할 수 없습니다.</text>
 </svg>
 </div>
 
-GPU는 각 픽셀을 그릴 때 깊이 테스트(depth test)를 수행합니다. 새로 그리려는 픽셀의 깊이 값과 깊이 버퍼에 이미 저장된 값을 비교하여, 더 가까운 쪽만 화면에 남기는 과정입니다. 두 표면의 양자화된 깊이 값이 동일하면, 이 비교에서 앞뒤를 가릴 수 없습니다.
+GPU는 픽셀을 그릴 때마다 깊이 테스트(depth test)를 수행합니다. 이미 그려진 표면의 깊이 값이 깊이 버퍼에 저장되어 있고, 새로 그리려는 표면의 깊이 값이 들어오면 두 값을 비교합니다. 새 표면이 더 가깝다고 판단되면 기존 값을 덮어쓰고, 더 멀다고 판단되면 버립니다.
 
-이때 어느 표면이 남는지는 GPU가 삼각형을 처리하는 순서에 따라 달라지는데, 이 순서는 프레임마다 카메라 위치, 컬링 결과, 드라이버의 내부 스케줄링 등에 의해 미세하게 바뀔 수 있습니다.
+두 표면의 깊이 차이가 충분히 크면 비교 결과는 명확합니다. 같은 픽셀에 표면 A와 표면 B가 겹쳐도, 더 가까운 표면의 깊이 값이 확실히 구분되므로 뒤쪽 표면은 깊이 테스트에서 제외됩니다. 이 경우 화면에는 앞쪽 표면만 안정적으로 남습니다.
 
-같은 픽셀 안에서도 부동소수점 보간의 미세한 차이로 인해 인접 픽셀끼리 다른 표면이 선택되기도 합니다.
+Z-fighting은 두 표면의 깊이 차이가 깊이 버퍼가 구분할 수 있는 간격보다 작을 때 발생합니다. 실제 공간에서는 표면 A가 조금 더 앞에 있더라도, 깊이 버퍼에는 A와 B가 거의 같은 값으로 저장될 수 있습니다. 이렇게 되면 깊이 테스트가 항상 같은 표면을 선택하지 못하고, 작은 계산 차이나 카메라 움직임에 따라 선택 결과가 달라질 수 있습니다.
 
-그 결과 두 표면이 프레임마다, 픽셀마다 번갈아 나타나며 화면이 깜빡입니다.
+그 결과 화면에서는 두 표면이 한자리를 두고 번갈아 나타나는 것처럼 보입니다. 프레임마다 선택되는 표면이 바뀌면 깜빡임으로 보이고, 픽셀마다 선택이 갈리면 얼룩지거나 찢어진 패턴처럼 보입니다.
 
 <div style="text-align: center; margin: 1.5em 0;">
 <svg viewBox="0 0 490 175" xmlns="http://www.w3.org/2000/svg" style="max-width: 490px; width: 100%;">
   <!-- ═══ Left: Normal rendering ═══ -->
   <text fill="currentColor" x="115" y="16" text-anchor="middle" font-size="11" font-weight="bold" font-family="sans-serif">정상 렌더링</text>
-  <!-- Surface B (behind — drawn first, offset right+down to peek out) -->
-  <rect x="55" y="43" width="150" height="88" fill="currentColor" fill-opacity="0.28" stroke="currentColor" stroke-width="1" stroke-opacity="0.35" rx="2"/>
-  <!-- Surface A (in front — drawn on top, covers most of B) -->
-  <rect x="30" y="28" width="150" height="88" fill="currentColor" fill-opacity="0.10" stroke="currentColor" stroke-width="1" rx="2"/>
-  <text fill="currentColor" x="105" y="70" text-anchor="middle" font-size="11" font-family="sans-serif">표면 A</text>
-  <text fill="currentColor" x="105" y="84" text-anchor="middle" font-size="9" font-family="sans-serif" opacity="0.4">(A가 앞 → A만 보임)</text>
-  <!-- B label on exposed bottom strip -->
-  <text fill="currentColor" x="130" y="127" text-anchor="middle" font-size="9" font-family="sans-serif" opacity="0.5">표면 B (뒤)</text>
+  <!-- Only the front surface remains visible after a stable depth test. -->
+  <rect x="40" y="28" width="150" height="88" fill="currentColor" fill-opacity="0.12" stroke="currentColor" stroke-width="1" rx="2"/>
+  <text fill="currentColor" x="115" y="68" text-anchor="middle" font-size="11" font-family="sans-serif">표면 A</text>
+  <text fill="currentColor" x="115" y="84" text-anchor="middle" font-size="9" font-family="sans-serif" opacity="0.45">앞쪽 표면</text>
+  <text fill="currentColor" x="115" y="107" text-anchor="middle" font-size="9" font-family="sans-serif" opacity="0.45">표면 B는 깊이 테스트에서 제외</text>
   <!-- Caption -->
   <text fill="currentColor" x="115" y="150" text-anchor="middle" font-size="9.5" font-family="sans-serif" opacity="0.5">깊이 값이 구분됨</text>
   <text fill="currentColor" x="115" y="164" text-anchor="middle" font-size="9.5" font-family="sans-serif" opacity="0.5">→ 앞 표면만 안정적으로 표시</text>
@@ -664,7 +681,7 @@ GPU는 각 픽셀을 그릴 때 깊이 테스트(depth test)를 수행합니다.
   <line x1="270" y1="50" x2="420" y2="50" stroke="currentColor" stroke-width="0.3" opacity="0.15"/>
   <line x1="270" y1="72" x2="420" y2="72" stroke="currentColor" stroke-width="0.3" opacity="0.15"/>
   <line x1="270" y1="94" x2="420" y2="94" stroke="currentColor" stroke-width="0.3" opacity="0.15"/>
-  <!-- B cells (darker overlay) — 무작위 패턴 -->
+  <!-- B cells (darker overlay) — unstable selection pattern -->
   <!-- Row 0: _B_B_ -->
   <rect x="300" y="28" width="30" height="22" fill="currentColor" fill-opacity="0.30"/>
   <rect x="360" y="28" width="30" height="22" fill="currentColor" fill-opacity="0.30"/>
@@ -685,115 +702,77 @@ GPU는 각 픽셀을 그릴 때 깊이 테스트(depth test)를 수행합니다.
   <rect x="430" y="56" width="12" height="12" fill="currentColor" fill-opacity="0.38" stroke="currentColor" stroke-width="0.5" stroke-opacity="0.25"/>
   <text fill="currentColor" x="446" y="67" font-size="9" font-family="sans-serif" opacity="0.5">표면 B</text>
   <!-- Caption -->
-  <text fill="currentColor" x="345" y="150" text-anchor="middle" font-size="9.5" font-family="sans-serif" opacity="0.5">같은 깊이 값 → 픽셀마다 A/B 무작위 결정</text>
-  <text fill="currentColor" x="345" y="164" text-anchor="middle" font-size="9.5" font-family="sans-serif" opacity="0.5">매 프레임 패턴이 바뀌어 깜빡거림</text>
+  <text fill="currentColor" x="345" y="150" text-anchor="middle" font-size="9.5" font-family="sans-serif" opacity="0.5">깊이 값이 거의 같음 → 픽셀마다 선택이 갈림</text>
+  <text fill="currentColor" x="345" y="164" text-anchor="middle" font-size="9.5" font-family="sans-serif" opacity="0.5">작은 변화에도 패턴이 바뀌어 깜빡임</text>
 </svg>
 </div>
 
 <br>
 
-Z-fighting이 발생하기 쉬운 대표적인 상황은 세 가지입니다.
+Z-fighting이 잘 발생하는 상황은 크게 세 가지로 볼 수 있습니다.
 
-카메라에서 먼 거리에 있는 두 표면은 Z-fighting에 취약합니다. 앞서 살펴본 것처럼, 원근 투영의 비선형성 때문에 깊이 버퍼의 정수 단계 대부분이 near 근처에 집중됩니다. 원거리에 배분되는 단계 수가 적으므로, 가까운 곳에서는 구분되던 거리 차이가 먼 곳에서는 같은 정수 단계로 양자화됩니다.
+첫 번째는 카메라에서 먼 곳에 있는 표면들입니다. 원근 투영의 깊이 값은 far 쪽으로 갈수록 실제 거리 차이를 작게 반영합니다. 따라서 가까운 곳에서는 충분히 구분되던 간격도, 먼 곳에서는 깊이 버퍼의 같은 저장 단계로 묶일 수 있습니다. 멀리 있는 지형, 도로, 건물 외벽처럼 넓은 표면들이 서로 가까이 놓일 때 이런 문제가 잘 드러납니다.
 
-같은 위치에 겹쳐 배치된 면도 Z-fighting을 일으킵니다. 데칼(바닥에 붙은 혈흔, 타이어 자국 등)이나 코플래너(coplanar, 같은 평면 위에 놓인) 면은 두 표면 사이의 물리적 간격이 거의 없습니다. 물리적 간격이 없으면 깊이 값 자체가 동일하거나 한 단계 이내의 차이만 남으므로, 깊이 정밀도와 무관하게 기하학적으로 구분이 불가능합니다.
+두 번째는 거의 같은 평면에 겹쳐 있는 표면입니다. 예를 들어 바닥 위에 붙인 데칼, 같은 위치에 중복된 메시, 코플래너(coplanar) 면처럼 두 표면의 위치가 거의 같으면 깊이 값도 처음부터 거의 같습니다. 이 경우에는 깊이 버퍼 정밀도가 충분하더라도 깊이 값만으로는 어느 쪽을 우선할지 안정적으로 정하기 어렵습니다. 따라서 렌더링 순서를 명확히 하거나, 깊이 오프셋을 적용하거나, 데칼 전용 처리처럼 깊이 값 외의 기준을 함께 사용해야 합니다.
 
-near 평면 값이 지나치게 작거나 far 평면 값이 지나치게 큰 경우에도 Z-fighting 가능성이 높아집니다. near 값이 0에 가까워질수록 $$1/d$$ 곡선의 급변 구간이 확장되어, 깊이 버퍼 단계가 극단적으로 near 쪽에 편중됩니다. far 값이 커지면 이미 단계가 부족한 원거리 구간이 더 넓어져, 한 단계당 커버하는 실제 거리가 길어집니다. 이 두 조건은 각각 독립적으로 정밀도를 악화시키며, 동시에 해당하면 효과가 중첩됩니다.
+세 번째는 카메라의 near/far 범위를 지나치게 넓게 잡은 경우입니다. 깊이 버퍼의 단계 수는 정해져 있으므로, 표현해야 할 거리 범위가 넓어질수록 같은 단계가 더 넓은 실제 거리를 담당하게 됩니다.
 
 ---
 
 ### Near/Far 평면 설정의 중요성
 
-깊이 정밀도 부족으로 인한 Z-fighting을 줄이는 가장 직접적인 방법은 **near 평면을 카메라에서 가능한 한 멀리, far 평면을 가능한 한 가까이** 설정하는 것입니다.
+near plane과 far plane은 단순히 보이는 범위의 시작과 끝을 정하는 값이 아닙니다. 깊이 버퍼가 가진 한정된 정밀도를 그 범위 안에서 나누어 쓰게 만드는 기준이기도 합니다.
+
+따라서 목표는 렌더링에 필요한 거리 범위만 남기는 것입니다. near plane은 카메라에 너무 붙이지 않고, far plane은 실제로 보여야 하는 최대 거리보다 과하게 멀리 두지 않는 편이 좋습니다.
 
 <div style="text-align: center; margin: 1.5em 0;">
 <svg viewBox="0 0 620 460" xmlns="http://www.w3.org/2000/svg" style="max-width: 620px; width: 100%;">
-  <text x="310" y="20" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="currentColor">near, far 설정에 따른 정밀도 변화</text>
-  <text x="40" y="52" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">설정 1: near=0.01, far=10000</text>
+  <text x="310" y="20" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="currentColor">near/far 범위가 깊이 정밀도에 미치는 영향</text>
+  <text x="40" y="52" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">설정 1: near = 0.01, far = 10000</text>
   <line x1="40" y1="60" x2="580" y2="60" stroke="currentColor" stroke-width="0.6" opacity="0.3"/>
-  <text x="60" y="84" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.85">→ near가 0에 매우 가까워 깊이 단계가 극단적으로 near 쪽에 편중</text>
-  <text x="60" y="102" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.85">→ far가 커서 정밀도가 부족한 원거리 구간이 넓음</text>
-  <text x="60" y="122" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">→ Z-fighting 빈번</text>
-  <text x="40" y="162" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">설정 2: near=0.1, far=1000</text>
+  <text x="60" y="84" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.85">→ 카메라 바로 앞의 매우 좁은 구간까지 깊이 범위에 포함</text>
+  <text x="60" y="102" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.85">→ 매우 먼 거리까지 포함되어 전체 깊이 범위가 과도하게 넓음</text>
+  <text x="60" y="122" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">→ 원거리 깊이 정밀도에 불리</text>
+  <text x="40" y="162" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">설정 2: near = 0.1, far = 1000</text>
   <line x1="40" y1="170" x2="580" y2="170" stroke="currentColor" stroke-width="0.6" opacity="0.3"/>
-  <text x="60" y="194" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.85">→ near가 0에서 멀어져 편중이 크게 완화</text>
-  <text x="60" y="212" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.85">→ far가 줄어 원거리 구간이 좁아짐</text>
-  <text x="60" y="232" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">→ 원거리 Z-fighting 감소</text>
-  <text x="40" y="272" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">설정 3: near=0.5, far=500</text>
+  <text x="60" y="194" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.85">→ 불필요하게 가까운 영역을 줄여 near 쪽 편중을 완화</text>
+  <text x="60" y="212" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.85">→ 필요한 원거리까지만 포함하여 깊이 범위를 줄임</text>
+  <text x="60" y="232" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">→ 같은 깊이 버퍼에서도 더 나은 정밀도 확보</text>
+  <text x="40" y="272" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">설정 3: near = 0.5, far = 500</text>
   <line x1="40" y1="280" x2="580" y2="280" stroke="currentColor" stroke-width="0.6" opacity="0.3"/>
-  <text x="60" y="304" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.85">→ near가 0에서 충분히 떨어져 편중이 적음</text>
-  <text x="60" y="322" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.85">→ far가 작아 깊이 범위 전체가 좁음</text>
-  <text x="60" y="342" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">→ Z-fighting 거의 발생하지 않음</text>
+  <text x="60" y="304" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.85">→ 장면이 허용한다면 더 가까운 불필요 구간을 제외</text>
+  <text x="60" y="322" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.85">→ far도 필요한 거리까지만 두어 깊이 범위를 더 좁힘</text>
+  <text x="60" y="342" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">→ Z-fighting 위험을 낮추기 쉬움</text>
 </svg>
 </div>
 
-near를 0에서 멀리 놓을수록 $1/d$ 곡선의 급변 구간이 줄어들고, far를 줄일수록 정밀도가 부족한 원거리 구간이 좁아집니다. 게임에서 카메라 바로 앞 0.01미터까지 렌더링해야 하는 경우는 드물기 때문에, near를 0.1~1.0 수준으로 설정하는 것이 일반적입니다.
+near plane은 깊이 정밀도에 특히 큰 영향을 줍니다. 원근 투영에서는 정밀도가 near 근처에 몰리므로, near를 지나치게 낮추면 가장 세밀하게 구분할 수 있는 깊이 단계가 카메라 바로 앞의 아주 짧은 구간에 쓰입니다. 대부분의 장면에서는 카메라 앞 몇 센티미터까지 렌더링할 필요가 없습니다. 그런데도 near를 0에 가깝게 두면 그 불필요한 구간까지 깊이 범위에 포함되고, 중거리와 원거리에서 사용할 정밀도는 그만큼 줄어듭니다. 결과적으로 먼 표면들의 작은 깊이 차이를 구분하기 어려워져 Z-fighting에 더 취약해집니다.
 
-<br>
+far plane은 해당 카메라가 실제 지오메트리로 그려야 하는 가장 먼 거리까지만 포함하는 편이 좋습니다. far를 과도하게 멀리 두면 깊이 버퍼가 같은 단계 수로 더 넓은 거리 범위를 감당해야 합니다. 특히 원거리 구간은 이미 깊이 값 변화가 작게 압축되어 있으므로, far가 멀어질수록 한 단계가 담당하는 실제 거리가 더 커집니다. 그 결과 중거리 이후에 가까이 놓인 표면들은 깊이 버퍼에서 같은 값으로 묶이기 쉬워지고, Z-fighting도 더 쉽게 발생합니다.
 
-far 평면도 실제로 필요한 거리까지만 설정해야 합니다. 오픈 월드 게임에서 먼 곳까지 대비하여 far를 100,000으로 설정하면, 대부분의 깊이 정밀도가 가까운 곳에 몰려서 중거리 이후의 모든 오브젝트가 Z-fighting에 노출됩니다.
-
-<div style="text-align: center; margin: 1.5em 0;">
-<svg viewBox="0 0 440 210" xmlns="http://www.w3.org/2000/svg" style="max-width: 440px; width: 100%;">
-  <!-- Title -->
-  <text fill="currentColor" x="220" y="18" text-anchor="middle" font-size="11" font-weight="bold" font-family="sans-serif">near/far 설정 가이드</text>
-  <!-- Header row -->
-  <rect x="20" y="30" width="160" height="28" fill="currentColor" fill-opacity="0.10" stroke="currentColor" stroke-width="0.8" stroke-opacity="0.3" rx="2"/>
-  <rect x="180" y="30" width="120" height="28" fill="currentColor" fill-opacity="0.10" stroke="currentColor" stroke-width="0.8" stroke-opacity="0.3" rx="2"/>
-  <rect x="300" y="30" width="120" height="28" fill="currentColor" fill-opacity="0.10" stroke="currentColor" stroke-width="0.8" stroke-opacity="0.3" rx="2"/>
-  <text fill="currentColor" x="100" y="49" text-anchor="middle" font-size="10" font-weight="bold" font-family="sans-serif">게임 유형</text>
-  <text fill="currentColor" x="240" y="49" text-anchor="middle" font-size="10" font-weight="bold" font-family="sans-serif">near 권장</text>
-  <text fill="currentColor" x="360" y="49" text-anchor="middle" font-size="10" font-weight="bold" font-family="sans-serif">far 권장</text>
-  <!-- Row 1 -->
-  <rect x="20" y="58" width="160" height="28" fill="none" stroke="currentColor" stroke-width="0.5" stroke-opacity="0.2"/>
-  <rect x="180" y="58" width="120" height="28" fill="none" stroke="currentColor" stroke-width="0.5" stroke-opacity="0.2"/>
-  <rect x="300" y="58" width="120" height="28" fill="none" stroke="currentColor" stroke-width="0.5" stroke-opacity="0.2"/>
-  <text fill="currentColor" x="100" y="77" text-anchor="middle" font-size="10" font-family="sans-serif">1인칭 슈팅</text>
-  <text fill="currentColor" x="240" y="77" text-anchor="middle" font-size="10" font-family="sans-serif">0.1 ~ 0.3</text>
-  <text fill="currentColor" x="360" y="77" text-anchor="middle" font-size="10" font-family="sans-serif">500 ~ 1000</text>
-  <!-- Row 2 -->
-  <rect x="20" y="86" width="160" height="28" fill="currentColor" fill-opacity="0.03" stroke="currentColor" stroke-width="0.5" stroke-opacity="0.2"/>
-  <rect x="180" y="86" width="120" height="28" fill="currentColor" fill-opacity="0.03" stroke="currentColor" stroke-width="0.5" stroke-opacity="0.2"/>
-  <rect x="300" y="86" width="120" height="28" fill="currentColor" fill-opacity="0.03" stroke="currentColor" stroke-width="0.5" stroke-opacity="0.2"/>
-  <text fill="currentColor" x="100" y="105" text-anchor="middle" font-size="10" font-family="sans-serif">3인칭 액션</text>
-  <text fill="currentColor" x="240" y="105" text-anchor="middle" font-size="10" font-family="sans-serif">0.3 ~ 1.0</text>
-  <text fill="currentColor" x="360" y="105" text-anchor="middle" font-size="10" font-family="sans-serif">300 ~ 800</text>
-  <!-- Row 3 -->
-  <rect x="20" y="114" width="160" height="28" fill="none" stroke="currentColor" stroke-width="0.5" stroke-opacity="0.2"/>
-  <rect x="180" y="114" width="120" height="28" fill="none" stroke="currentColor" stroke-width="0.5" stroke-opacity="0.2"/>
-  <rect x="300" y="114" width="120" height="28" fill="none" stroke="currentColor" stroke-width="0.5" stroke-opacity="0.2"/>
-  <text fill="currentColor" x="100" y="133" text-anchor="middle" font-size="10" font-family="sans-serif">탑다운 전략</text>
-  <text fill="currentColor" x="240" y="133" text-anchor="middle" font-size="10" font-family="sans-serif">1.0 ~ 5.0</text>
-  <text fill="currentColor" x="360" y="133" text-anchor="middle" font-size="10" font-family="sans-serif">200 ~ 500</text>
-  <!-- Row 4 -->
-  <rect x="20" y="142" width="160" height="28" fill="currentColor" fill-opacity="0.03" stroke="currentColor" stroke-width="0.5" stroke-opacity="0.2"/>
-  <rect x="180" y="142" width="120" height="28" fill="currentColor" fill-opacity="0.03" stroke="currentColor" stroke-width="0.5" stroke-opacity="0.2"/>
-  <rect x="300" y="142" width="120" height="28" fill="currentColor" fill-opacity="0.03" stroke="currentColor" stroke-width="0.5" stroke-opacity="0.2"/>
-  <text fill="currentColor" x="100" y="161" text-anchor="middle" font-size="10" font-family="sans-serif">모바일 캐주얼</text>
-  <text fill="currentColor" x="240" y="161" text-anchor="middle" font-size="10" font-family="sans-serif">0.1 ~ 0.5</text>
-  <text fill="currentColor" x="360" y="161" text-anchor="middle" font-size="10" font-family="sans-serif">100 ~ 300</text>
-  <!-- Footer -->
-  <text fill="currentColor" x="220" y="193" text-anchor="middle" font-size="9.5" font-family="sans-serif" opacity="0.5">원칙: near는 카메라에서 가능한 한 멀리, far는 가능한 한 가까이</text>
-</svg>
-</div>
+따라서 near와 far는 장르별 권장값이나 고정된 숫자로 정하기보다, 카메라가 반드시 그려야 하는 가장 가까운 표면과 가장 먼 표면을 기준으로 잡아야 합니다. 1인칭 손이나 무기처럼 카메라에 매우 가까운 모델이 필요하다면 전체 장면의 near를 무리하게 낮추기보다, 별도 카메라나 렌더링 레이어로 분리하는 방법을 고려할 수 있습니다. 반대로 먼 산, 하늘, 배경처럼 정확한 깊이 비교가 중요하지 않은 요소는 fog, LOD, culling, skybox 같은 방식으로 처리하는 편이 낫습니다. 이렇게 하면 far를 불필요하게 키우지 않으면서도 필요한 시각적 범위를 유지할 수 있습니다.
 
 ---
 
 ## Reversed-Z
 
-near/far 비율을 줄이는 것이 Z-fighting 완화의 기본 전략이지만, 근본적인 해결책은 아닙니다.
+near/far 범위를 좁히는 것은 Z-fighting을 줄이기 위해 가장 먼저 확인해야 할 설정입니다. 필요한 깊이 범위만 남기면 같은 깊이 버퍼 단계가 더 좁은 실제 거리 범위에 배분되기 때문입니다.
 
-near/far 비율을 아무리 줄여도 원근 투영 자체의 수학적 구조가 깊이 정밀도의 편향을 만들기 때문입니다.
+하지만 범위를 좁혀도 깊이 정밀도가 near 쪽에 치우치는 구조 자체는 그대로입니다. 원근 투영에서는 깊이 값이 여전히 near 근처에서 크게 변하고, far 쪽으로 갈수록 실제 거리 차이를 작게 반영합니다. 장면의 스케일이 크거나 원거리 표면이 많다면, near/far를 적절히 잡아도 원거리 정밀도 부족이 다시 드러날 수 있습니다.
 
-이 편향을 구조적으로 개선하는 기법이 **Reversed-Z**입니다.
+이 구조적 편향을 줄이기 위해 깊이 값의 방향을 뒤집어 사용하는 기법이 **Reversed-Z**입니다.
 
-### 부동소수점의 정밀도 특성
+Reversed-Z가 왜 효과를 내는지는 원근 투영의 깊이 분포만으로는 설명이 부족합니다. 깊이 값이 버퍼에 어떤 숫자 간격으로 저장되는지도 함께 봐야 합니다. 특히 D32_FLOAT 같은 부동소수점 깊이 버퍼에서는 `0`과 `1` 사이의 값 간격이 균일하지 않기 때문에, near와 far를 어느 쪽 값에 대응시키느냐가 정밀도 분포를 크게 바꿉니다.
 
-Reversed-Z의 원리를 이해하려면 먼저 **부동소수점(floating-point)** 숫자의 정밀도 분포를 알아야 합니다. IEEE 754 부동소수점 표준에서 32비트 float의 정밀도는 **0에 가까울수록 높고, 1에 가까울수록 낮습니다**.
+### 부동소수점 깊이 버퍼의 값 간격
+
+D32_FLOAT는 깊이 값을 32비트 float로 저장합니다. 계산된 깊이 값이 임의의 실수처럼 보이더라도, 실제 버퍼에는 float 형식이 표현할 수 있는 가장 가까운 값으로 기록됩니다. 따라서 이웃한 float 값 사이의 간격이 좁을수록 더 작은 깊이 차이를 구분할 수 있고, 간격이 넓을수록 가까운 깊이 값들이 같은 값으로 묶이기 쉽습니다.
+
+그런데 float의 `0.0`부터 `1.0`까지의 구간은 일정한 간격으로 나뉜 눈금자가 아닙니다. `0.0`에 가까운 곳에는 표현 가능한 값이 촘촘하게 모여 있고, `1.0`에 가까운 곳으로 갈수록 값 사이의 절대 간격이 넓어집니다.
 
 <div style="text-align: center; margin: 1.5em 0;">
 <svg viewBox="0 0 480 110" xmlns="http://www.w3.org/2000/svg" style="max-width: 480px; width: 100%;">
-  <text fill="currentColor" x="240" y="16" text-anchor="middle" font-size="12" font-weight="bold" font-family="sans-serif">32비트 float에서 구분 가능한 값의 분포</text>
+  <text fill="currentColor" x="240" y="16" text-anchor="middle" font-size="12" font-weight="bold" font-family="sans-serif">32비트 float의 [0, 1] 값 간격</text>
   <!-- Number line -->
   <line x1="50" y1="45" x2="430" y2="45" stroke="currentColor" stroke-width="1.2"/>
   <!-- Tick marks — each tick represents a representable float value -->
@@ -826,20 +805,18 @@ Reversed-Z의 원리를 이해하려면 먼저 **부동소수점(floating-point)
   <text fill="currentColor" x="50" y="75" text-anchor="middle" font-size="11" font-family="sans-serif">0.0</text>
   <text fill="currentColor" x="430" y="75" text-anchor="middle" font-size="11" font-family="sans-serif">1.0</text>
   <!-- Annotations -->
-  <text fill="currentColor" x="120" y="97" font-size="10" font-family="sans-serif" opacity="0.6">← 정밀도 높음 (촘촘)</text>
-  <text fill="currentColor" x="320" y="97" font-size="10" font-family="sans-serif" opacity="0.6">정밀도 낮음 (듬성듬성) →</text>
+  <text fill="currentColor" x="120" y="97" font-size="10" font-family="sans-serif" opacity="0.6">← 값 간격이 좁음</text>
+  <text fill="currentColor" x="320" y="97" font-size="10" font-family="sans-serif" opacity="0.6">값 간격이 넓음 →</text>
 </svg>
 </div>
 
-이 특성은 부동소수점의 표현 방식(부호 + 지수 + 가수)에서 비롯됩니다.
+이 차이는 float이 값을 유효숫자와 지수로 나누어 저장하기 때문에 생깁니다. 유효숫자에 쓸 수 있는 비트 수는 정해져 있고, 지수가 작을수록 그 비트 하나가 나타내는 절대 크기도 작아집니다. 그래서 float은 값의 상대 정밀도는 비슷하게 유지하지만, 절대 간격은 작은 값 근처에서 더 좁고 큰 값 근처에서 더 넓어집니다.
 
-부동소수점은 과학적 표기법처럼 "1.xxxx x 2^n" 형태로 값을 저장하는데, 값이 작을수록 지수(n)가 작아지고, 지수가 작을수록 가수부의 각 비트가 표현하는 간격이 좁아집니다. 0에 가까울수록 구분 가능한 값이 촘촘하고, 1에 가까울수록 듬성듬성합니다.
-
-이 부동소수점 정밀도 분포가 원근 투영의 깊이 분포와 겹치면서 문제가 심화됩니다.
+문제는 이 저장 간격이 원근 투영의 깊이 분포와 어떤 방향으로 겹치느냐입니다. 기본 깊이 매핑에서는 near plane이 NDC `0`, far plane이 NDC `1`에 대응합니다. 원근 투영은 near 쪽에 깊이 변화를 많이 배정하고, far 쪽의 깊이 변화는 작게 압축합니다. 여기에 float 깊이 버퍼를 사용하면 float의 촘촘한 구간도 near 쪽에 놓이고, 성긴 구간은 far 쪽에 놓입니다.
 
 <div style="text-align: center; margin: 1.5em 0;">
 <svg viewBox="0 0 620 380" xmlns="http://www.w3.org/2000/svg" style="max-width: 620px; width: 100%;">
-  <text x="310" y="20" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="currentColor">기본 깊이 매핑 (near→NDC 0, far→NDC 1)</text>
+  <text x="310" y="20" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="currentColor">기본 깊이 매핑에서 정밀도가 겹치는 방식</text>
   <text x="60" y="56" font-family="sans-serif" font-size="11" fill="currentColor">NDC 깊이</text>
   <text x="160" y="56" font-family="sans-serif" font-size="11" fill="currentColor">0</text>
   <line x1="180" y1="52" x2="540" y2="52" stroke="currentColor" stroke-width="1" opacity="0.6"/>
@@ -849,26 +826,22 @@ Reversed-Z의 원리를 이해하려면 먼저 **부동소수점(floating-point)
   <line x1="220" y1="76" x2="510" y2="76" stroke="currentColor" stroke-width="1" opacity="0.6"/>
   <text x="520" y="80" font-family="sans-serif" font-size="10" fill="currentColor">far plane</text>
   <line x1="40" y1="100" x2="580" y2="100" stroke="currentColor" stroke-width="0.6" opacity="0.3"/>
-  <text x="40" y="124" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">원근 투영의 정밀도 분포</text>
-  <text x="60" y="146" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.85">near 근처 (0에 가까움): 깊이 변화가 큼 → 정밀도 높음</text>
-  <text x="60" y="164" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.85">far 근처 (1에 가까움): 깊이 변화가 작음 → 정밀도 낮음</text>
+  <text x="40" y="124" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">원근 투영이 만든 깊이 변화</text>
+  <text x="60" y="146" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.85">near 쪽: 깊이 값 변화가 큼 → 실제 거리 구분이 쉬움</text>
+  <text x="60" y="164" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.85">far 쪽: 깊이 값 변화가 작음 → 실제 거리 구분이 어려움</text>
   <line x1="40" y1="184" x2="580" y2="184" stroke="currentColor" stroke-width="0.6" opacity="0.3"/>
-  <text x="40" y="208" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">부동소수점의 정밀도 분포</text>
-  <text x="60" y="230" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.85">0 근처: 표현 가능한 값이 많음 → 정밀도 높음</text>
-  <text x="60" y="248" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.85">1 근처: 표현 가능한 값이 적음 → 정밀도 낮음</text>
+  <text x="40" y="208" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">float이 저장할 수 있는 값 간격</text>
+  <text x="60" y="230" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.85">NDC 0 근처: 값 간격이 좁음 → 저장 정밀도 높음</text>
+  <text x="60" y="248" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.85">NDC 1 근처: 값 간격이 넓음 → 저장 정밀도 낮음</text>
   <line x1="40" y1="268" x2="580" y2="268" stroke="currentColor" stroke-width="0.6" opacity="0.3"/>
-  <text x="40" y="294" font-family="sans-serif" font-size="11" fill="currentColor"><tspan font-weight="bold">→ near 근처</tspan>: 이미 정밀도가 높은 곳에 float 정밀도까지 높음 <tspan opacity="0.7">(과잉)</tspan></text>
-  <text x="40" y="318" font-family="sans-serif" font-size="11" fill="currentColor"><tspan font-weight="bold">→ far 근처</tspan>: 이미 정밀도가 낮은 곳에 float 정밀도까지 낮음 <tspan opacity="0.7">(부족)</tspan></text>
+  <text x="40" y="294" font-family="sans-serif" font-size="11" fill="currentColor"><tspan font-weight="bold">→ near 쪽</tspan>: 두 분포가 모두 촘촘함 <tspan opacity="0.7">(정밀도 집중)</tspan></text>
+  <text x="40" y="318" font-family="sans-serif" font-size="11" fill="currentColor"><tspan font-weight="bold">→ far 쪽</tspan>: 두 분포가 모두 성김 <tspan opacity="0.7">(정밀도 부족)</tspan></text>
 </svg>
 </div>
 
-<br>
+결과적으로 기본 매핑에서는 정밀도가 이미 많은 near 쪽에 float의 촘촘한 값 간격이 더해집니다. 반대로 정밀도가 부족한 far 쪽에는 원근 투영의 압축과 float의 넓은 값 간격이 함께 겹칩니다.
 
-기본 매핑에서는 near plane이 NDC 0에, far plane이 NDC 1에 대응합니다.
-
-원근 투영의 비선형성은 near 근처에 깊이 값을 집중시키고, 부동소수점도 0 근처에 표현 가능한 값이 촘촘합니다.
-
-두 분포가 같은 방향으로 겹치므로, near 근처에는 정밀도가 남아돌지만 far 근처에는 둘 다 희박하여 정밀도 부족이 심화됩니다.
+즉 가까운 곳에는 정밀도가 과하게 몰리고, 먼 곳에는 정밀도가 더 부족해집니다. 원거리 정밀도를 보완하려면 float이 `0` 근처에 가진 촘촘한 값 간격을 far 쪽에서 쓰도록 깊이 매핑을 뒤집어야 합니다.
 
 ---
 
