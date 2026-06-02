@@ -425,7 +425,7 @@ $$
     </marker>
   </defs>
 
-  <text fill="currentColor" x="310" y="28" text-anchor="middle" font-size="13" font-weight="bold" font-family="sans-serif">직교 시야 볼륨</text>
+  <text fill="currentColor" x="310" y="28" text-anchor="middle" font-size="13" font-weight="bold" font-family="sans-serif">직교 투영의 시야 영역</text>
   <text fill="currentColor" x="310" y="52" text-anchor="middle" font-size="10" font-family="sans-serif" opacity="0.62">깊이축 수평 표시: near plane과 far plane의 크기가 같은 직육면체</text>
 
   <!-- Orthographic camera plane and parallel rays. -->
@@ -454,7 +454,7 @@ $$
 
   <text fill="currentColor" x="155" y="228" text-anchor="middle" font-size="10" font-family="sans-serif">Near Plane</text>
   <text fill="currentColor" x="450" y="228" text-anchor="middle" font-size="10" font-family="sans-serif">Far Plane</text>
-  <text fill="currentColor" x="302" y="154" text-anchor="middle" font-size="12" font-family="sans-serif" opacity="0.36">직교 시야 직육면체</text>
+  <text fill="currentColor" x="302" y="154" text-anchor="middle" font-size="12" font-family="sans-serif" opacity="0.36">직육면체 형태의 시야 영역</text>
 
   <!-- Constant cross-section dimensions on the far plane. -->
   <line x1="400" y1="81" x2="500" y2="81" stroke="currentColor" stroke-width="0.85" marker-start="url(#ortho-volume-arrow)" marker-end="url(#ortho-volume-arrow)" opacity="0.52"/>
@@ -762,17 +762,19 @@ near/far 범위를 좁히는 것은 Z-fighting을 줄이기 위해 가장 먼저
 
 이 구조적 편향을 줄이기 위해 깊이 값의 방향을 뒤집어 사용하는 기법이 **Reversed-Z**입니다.
 
-Reversed-Z가 왜 효과를 내는지는 원근 투영의 깊이 분포만으로는 설명이 부족합니다. 깊이 값이 버퍼에 어떤 숫자 간격으로 저장되는지도 함께 봐야 합니다. 특히 D32_FLOAT 같은 부동소수점 깊이 버퍼에서는 `0`과 `1` 사이의 값 간격이 균일하지 않기 때문에, near와 far를 어느 쪽 값에 대응시키느냐가 정밀도 분포를 크게 바꿉니다.
+기본 깊이 매핑에서는 near plane이 `0`, far plane이 `1`에 대응합니다. 따라서 카메라에서 멀어질수록 깊이 값은 `1`에 가까워집니다. Reversed-Z는 이 관계를 뒤집어 near를 `1`, far를 `0`에 대응시킵니다.
 
-### 부동소수점 깊이 버퍼의 값 간격
+이 반전이 정밀도 향상으로 이어지는지는 깊이 값이 `0`과 `1` 사이에서 어떤 간격으로 저장되는지에 달려 있습니다. D16, D24 같은 정규화 정수 깊이 형식은 `0`부터 `1`까지의 깊이 범위를 균일하게 나누므로, 깊이 매핑을 뒤집어도 저장 간격의 분포는 달라지지 않습니다. 반면 D32_FLOAT 같은 부동소수점 깊이 형식은 값이 `0`에 가까울수록 표현 간격이 좁아집니다. 따라서 Reversed-Z처럼 far를 `0`에 대응시키면, 정밀도가 부족했던 원거리 깊이 값이 float의 촘촘한 구간에 저장되어 더 잘 구분됩니다.
 
-D32_FLOAT는 깊이 값을 32비트 float로 저장합니다. 계산된 깊이 값이 임의의 실수처럼 보이더라도, 실제 버퍼에는 float 형식이 표현할 수 있는 가장 가까운 값으로 기록됩니다. 따라서 이웃한 float 값 사이의 간격이 좁을수록 더 작은 깊이 차이를 구분할 수 있고, 간격이 넓을수록 가까운 깊이 값들이 같은 값으로 묶이기 쉽습니다.
+### 부동소수점 깊이 형식의 값 간격
 
-그런데 float의 `0.0`부터 `1.0`까지의 구간은 일정한 간격으로 나뉜 눈금자가 아닙니다. `0.0`에 가까운 곳에는 표현 가능한 값이 촘촘하게 모여 있고, `1.0`에 가까운 곳으로 갈수록 값 사이의 절대 간격이 넓어집니다.
+부동소수점 깊이 형식은 깊이 값을 float으로 저장합니다. float이 표현할 수 있는 값은 연속적이지 않으므로, 계산된 깊이는 가장 가까운 표현값으로 기록됩니다. 이때 인접한 표현값 사이의 간격이 깊이를 구분할 수 있는 최소 단위가 됩니다.
+
+앞에서 본 것처럼 float은 `0.0` 근처에서 간격이 좁고, `1.0`에 가까워질수록 간격이 넓어집니다. 이를 값의 배치로 보면 다음과 같습니다.
 
 <div style="text-align: center; margin: 1.5em 0;">
 <svg viewBox="0 0 480 110" xmlns="http://www.w3.org/2000/svg" style="max-width: 480px; width: 100%;">
-  <text fill="currentColor" x="240" y="16" text-anchor="middle" font-size="12" font-weight="bold" font-family="sans-serif">32비트 float의 [0, 1] 값 간격</text>
+  <text fill="currentColor" x="240" y="16" text-anchor="middle" font-size="12" font-weight="bold" font-family="sans-serif">float의 [0, 1] 값 간격</text>
   <!-- Number line -->
   <line x1="50" y1="45" x2="430" y2="45" stroke="currentColor" stroke-width="1.2"/>
   <!-- Tick marks — each tick represents a representable float value -->
@@ -810,13 +812,15 @@ D32_FLOAT는 깊이 값을 32비트 float로 저장합니다. 계산된 깊이 �
 </svg>
 </div>
 
-이 차이는 float이 값을 유효숫자와 지수로 나누어 저장하기 때문에 생깁니다. 유효숫자에 쓸 수 있는 비트 수는 정해져 있고, 지수가 작을수록 그 비트 하나가 나타내는 절대 크기도 작아집니다. 그래서 float은 값의 상대 정밀도는 비슷하게 유지하지만, 절대 간격은 작은 값 근처에서 더 좁고 큰 값 근처에서 더 넓어집니다.
+이런 간격 차이는 float의 지수 구조에서 나옵니다. float은 값을 유효숫자와 지수로 나누어 저장하는데, 유효숫자에 쓸 수 있는 비트 수는 정해져 있습니다. 지수가 작아 값의 규모가 작아지면 같은 유효숫자 한 칸이 나타내는 절대 크기도 작아집니다. 반대로 값의 규모가 커질수록 한 칸이 나타내는 절대 크기는 커집니다. 그래서 float은 작은 값 근처에서는 촘촘하고, 큰 값 근처에서는 간격이 넓어집니다.
 
-문제는 이 저장 간격이 원근 투영의 깊이 분포와 어떤 방향으로 겹치느냐입니다. 기본 깊이 매핑에서는 near plane이 NDC `0`, far plane이 NDC `1`에 대응합니다. 원근 투영은 near 쪽에 깊이 변화를 많이 배정하고, far 쪽의 깊이 변화는 작게 압축합니다. 여기에 float 깊이 버퍼를 사용하면 float의 촘촘한 구간도 near 쪽에 놓이고, 성긴 구간은 far 쪽에 놓입니다.
+### 기본 깊이 매핑에서의 정밀도 겹침
+
+기본 매핑에서는 float의 촘촘한 구간이 정밀도가 부족한 원거리 쪽에 쓰이지 않습니다. 원근 투영만 보아도 near 근처는 깊이 값이 크게 변해 서로 구분되기 쉽고, far 근처는 깊이 값 변화가 작아 구분되기 어렵습니다. 그런데 기본 매핑은 near를 NDC `0`, far를 NDC `1`에 대응시킵니다. 부동소수점 깊이 버퍼에서는 `0` 근처의 표현 간격이 좁으므로, 저장 정밀도까지 near 쪽에 더해집니다. 반대로 far 쪽은 원근 투영으로 이미 깊이 변화가 작게 압축되어 있는데, 저장되는 값도 간격이 넓은 `1` 근처를 사용하게 됩니다.
 
 <div style="text-align: center; margin: 1.5em 0;">
 <svg viewBox="0 0 620 380" xmlns="http://www.w3.org/2000/svg" style="max-width: 620px; width: 100%;">
-  <text x="310" y="20" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="currentColor">기본 깊이 매핑에서 정밀도가 겹치는 방식</text>
+  <text x="310" y="20" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="currentColor">기본 깊이 매핑에서 정밀도가 near 쪽에 몰리는 방식</text>
   <text x="60" y="56" font-family="sans-serif" font-size="11" fill="currentColor">NDC 깊이</text>
   <text x="160" y="56" font-family="sans-serif" font-size="11" fill="currentColor">0</text>
   <line x1="180" y1="52" x2="540" y2="52" stroke="currentColor" stroke-width="1" opacity="0.6"/>
@@ -826,36 +830,32 @@ D32_FLOAT는 깊이 값을 32비트 float로 저장합니다. 계산된 깊이 �
   <line x1="220" y1="76" x2="510" y2="76" stroke="currentColor" stroke-width="1" opacity="0.6"/>
   <text x="520" y="80" font-family="sans-serif" font-size="10" fill="currentColor">far plane</text>
   <line x1="40" y1="100" x2="580" y2="100" stroke="currentColor" stroke-width="0.6" opacity="0.3"/>
-  <text x="40" y="124" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">원근 투영이 만든 깊이 변화</text>
+  <text x="40" y="124" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">원근 투영의 깊이 값 변화</text>
   <text x="60" y="146" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.85">near 쪽: 깊이 값 변화가 큼 → 실제 거리 구분이 쉬움</text>
   <text x="60" y="164" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.85">far 쪽: 깊이 값 변화가 작음 → 실제 거리 구분이 어려움</text>
   <line x1="40" y1="184" x2="580" y2="184" stroke="currentColor" stroke-width="0.6" opacity="0.3"/>
-  <text x="40" y="208" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">float이 저장할 수 있는 값 간격</text>
+  <text x="40" y="208" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">float의 저장 간격</text>
   <text x="60" y="230" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.85">NDC 0 근처: 값 간격이 좁음 → 저장 정밀도 높음</text>
   <text x="60" y="248" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.85">NDC 1 근처: 값 간격이 넓음 → 저장 정밀도 낮음</text>
   <line x1="40" y1="268" x2="580" y2="268" stroke="currentColor" stroke-width="0.6" opacity="0.3"/>
-  <text x="40" y="294" font-family="sans-serif" font-size="11" fill="currentColor"><tspan font-weight="bold">→ near 쪽</tspan>: 두 분포가 모두 촘촘함 <tspan opacity="0.7">(정밀도 집중)</tspan></text>
-  <text x="40" y="318" font-family="sans-serif" font-size="11" fill="currentColor"><tspan font-weight="bold">→ far 쪽</tspan>: 두 분포가 모두 성김 <tspan opacity="0.7">(정밀도 부족)</tspan></text>
+  <text x="40" y="294" font-family="sans-serif" font-size="11" fill="currentColor"><tspan font-weight="bold">→ near 쪽</tspan>: 깊이 변화도 크고 저장 간격도 좁음 <tspan opacity="0.7">(정밀도 중복)</tspan></text>
+  <text x="40" y="318" font-family="sans-serif" font-size="11" fill="currentColor"><tspan font-weight="bold">→ far 쪽</tspan>: 깊이 변화는 작고 저장 간격은 넓음 <tspan opacity="0.7">(정밀도 부족)</tspan></text>
 </svg>
 </div>
 
-결과적으로 기본 매핑에서는 정밀도가 이미 많은 near 쪽에 float의 촘촘한 값 간격이 더해집니다. 반대로 정밀도가 부족한 far 쪽에는 원근 투영의 압축과 float의 넓은 값 간격이 함께 겹칩니다.
-
-즉 가까운 곳에는 정밀도가 과하게 몰리고, 먼 곳에는 정밀도가 더 부족해집니다. 원거리 정밀도를 보완하려면 float이 `0` 근처에 가진 촘촘한 값 간격을 far 쪽에서 쓰도록 깊이 매핑을 뒤집어야 합니다.
+즉 기본 매핑은 이미 구분이 쉬운 가까운 곳에 정밀도를 더 보태고, 정작 필요한 먼 곳에는 넓은 저장 간격을 남깁니다. 원거리 정밀도를 보완하려면 이 배치를 뒤집어, float의 촘촘한 `0` 근처 구간을 far 쪽에 대응시켜야 합니다.
 
 ---
 
 ### Reversed-Z의 원리
 
-Reversed-Z는 깊이 매핑을 **뒤집어서** near plane에 NDC 1을, far plane에 NDC 0을 대응시킵니다. 기본 매핑에서 near가 NDC 0, far가 NDC 1이었다면, Reversed-Z에서는 near가 NDC 1, far가 NDC 0입니다.
+Reversed-Z는 앞에서 본 배치를 그대로 뒤집습니다. near plane을 NDC `1`에, far plane을 NDC `0`에 대응시켜 먼 거리가 `0` 근처의 깊이 값을 사용하게 만듭니다.
 
-이렇게 뒤집으면 원근 투영의 정밀도 분포와 부동소수점의 정밀도 분포가 **상보적으로** 작용합니다.
+이렇게 해도 원근 투영의 비선형성 자체가 사라지는 것은 아닙니다. near 근처에서는 여전히 깊이 값 변화가 크고, far 쪽으로 갈수록 변화가 작게 압축됩니다. 달라지는 것은 그 압축된 far 구간이 float의 어느 영역에 저장되느냐입니다.
 
-near 근처(NDC 1 근처)에서는 원근 투영이 정밀도를 집중시키지만 float는 1 근처에서 정밀도가 낮으므로, 한쪽의 과잉이 다른 쪽의 부족을 메웁니다.
+Reversed-Z에서는 far 쪽이 float의 `0` 근처에 놓입니다. float은 `0` 근처에서 표현 간격이 좁으므로, 기본 매핑에서 부족했던 원거리 저장 정밀도를 보완할 수 있습니다. 반대로 near 쪽은 float의 `1` 근처를 사용하게 되지만, near에서는 원근 투영이 이미 깊이 값을 크게 변화시키기 때문에 상대적으로 손실이 작습니다.
 
-far 근처(NDC 0 근처)에서는 반대로, 원근 투영의 정밀도는 낮지만 float가 0 근처에서 정밀도가 높아 이를 보상합니다.
-
-두 정밀도 곡선이 겹치지 않고 교차하면서, 전체적으로 균일한 깊이 정밀도를 얻게 됩니다.
+결과적으로 정밀도가 가까운 곳에만 과하게 몰리지 않고, 깊이 범위 전체에 더 고르게 퍼집니다.
 
 <br>
 
@@ -874,129 +874,118 @@ far 근처(NDC 0 근처)에서는 반대로, 원근 투영의 정밀도는 낮�
   <polyline points="55,30 65,42 80,58 100,78 120,95 145,112 175,130 210,148 250,162 290,172 330,178 370,182 415,185" stroke="currentColor" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
   <!-- Float precision in Reversed-Z (rising): low at near/NDC≈1, high at far/NDC≈0 -->
   <polyline points="55,185 65,173 80,157 100,137 120,120 145,103 175,85 210,67 250,53 290,43 330,37 370,33 415,30" stroke="currentColor" fill="none" stroke-width="1.8" stroke-dasharray="4,3" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
-  <!-- Combined effective precision (≈ uniform) -->
-  <line x1="55" y1="108" x2="415" y2="108" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-  <!-- Crossing point of two component curves -->
-  <circle cx="138" cy="108" r="3.5" fill="currentColor" fill-opacity="0.4" stroke="currentColor" stroke-width="1"/>
   <!-- Curve labels -->
   <text fill="currentColor" x="95" y="47" font-size="10" font-family="sans-serif" opacity="0.6">원근 투영 정밀도</text>
   <text fill="currentColor" x="95" y="165" font-size="10" font-family="sans-serif" opacity="0.6">float 정밀도 (Reversed-Z)</text>
-  <text fill="currentColor" x="275" y="95" font-size="11" font-family="sans-serif">결합 정밀도 ≈ 균일</text>
-  <text fill="currentColor" x="158" y="96" font-size="9" font-family="sans-serif" opacity="0.5">교차</text>
+  <text fill="currentColor" x="275" y="62" font-size="10" font-family="sans-serif" opacity="0.72">near: 원근 투영 정밀도 높음</text>
+  <text fill="currentColor" x="260" y="182" font-size="10" font-family="sans-serif" opacity="0.72">far: float의 0 근처 정밀도가 보완</text>
   <!-- Bottom note -->
-  <text fill="currentColor" x="240" y="245" text-anchor="middle" font-size="10" font-family="sans-serif" opacity="0.5">두 정밀도 분포가 반대 방향 → 서로 상쇄하여 전 구간 균일</text>
+  <text fill="currentColor" x="240" y="245" text-anchor="middle" font-size="10" font-family="sans-serif" opacity="0.5">부족한 원거리 쪽에 float의 촘촘한 구간을 배치</text>
 </svg>
 </div>
-
-Reversed-Z의 효과는 깊이 버퍼의 형식에 따라 다릅니다.
-
-정수형 깊이 버퍼(D24 등)에서는 정밀도 분포가 개선되지만 그 폭은 제한적입니다.
-
-반면 부동소수점 깊이 버퍼(D32_FLOAT)에서는 효과가 극적입니다. 부동소수점은 0.0 근처에서 정밀도가 높고 1.0 근처에서 낮은데, Reversed-Z가 far를 0.0에, near를 1.0에 매핑하므로 원근 투영의 비선형 편향과 부동소수점의 정밀도 분포가 서로 상쇄되어 전 구간에서 정밀도가 크게 향상됩니다.
 
 ---
 
 ### Reversed-Z 적용 시 변경사항
 
-Reversed-Z를 적용하려면 세 가지를 변경해야 합니다.
+Reversed-Z는 깊이 값을 읽는 방식만 바꾸는 기법이 아닙니다. 깊이 값을 만들고, 비교하고, 초기화하는 기준이 모두 반대로 맞춰져야 합니다. 직접 적용한다면 다음 세 가지가 함께 바뀌어야 합니다.
 
-첫째, **투영 행렬의 깊이 매핑을 뒤집습니다**. 기본 매핑에서 near=0, far=1이던 것을 near=1, far=0으로 바꾸도록 투영 행렬의 세 번째 행(0-indexed row 2)을 수정합니다.
+첫째, **투영 행렬이 만드는 깊이 매핑을 뒤집습니다**. 기본 매핑에서는 원근 나눗셈을 거친 뒤 near plane이 NDC `0`, far plane이 NDC `1`에 놓이지만, Reversed-Z에서는 이 결과가 반대로 나와야 합니다. 따라서 near가 `1`, far가 `0`에 대응하도록 투영 행렬의 깊이 계산을 바꿉니다.
 
-둘째, **깊이 테스트의 비교 방향을 뒤집습니다**. 깊이 테스트는 같은 픽셀에 여러 프래그먼트가 겹칠 때, 카메라에 더 가까운 프래그먼트를 남기는 역할을 합니다. 기본 매핑에서는 가까운 물체일수록 깊이 값이 작으므로 Less 비교(값이 작으면 통과)를 사용하지만, Reversed-Z에서는 가까운 물체일수록 깊이 값이 크므로 Greater 비교(값이 크면 통과)로 변경해야 합니다.
+둘째, **깊이 테스트의 비교 방향을 뒤집습니다**. 깊이 테스트는 새로 그리려는 프래그먼트의 깊이와 이미 깊이 버퍼에 저장된 값을 비교해, 카메라에 더 가까운 쪽을 남깁니다. 기본 매핑에서는 가까울수록 깊이 값이 작기 때문에 더 작은 값이 통과하는 `Less` 또는 `LessEqual` 비교를 사용합니다. Reversed-Z에서는 가까울수록 깊이 값이 커지므로, 더 큰 값이 통과하도록 `Greater` 또는 `GreaterEqual` 비교로 바꿔야 합니다.
 
-셋째, **깊이 버퍼의 클리어 값을 변경합니다**. 렌더링 시작 시 깊이 버퍼는 "가장 먼 거리"를 뜻하는 값으로 초기화됩니다. 기본 매핑에서 가장 먼 거리는 NDC 1이므로 클리어 값이 1.0이지만, Reversed-Z에서는 가장 먼 거리가 NDC 0이므로 클리어 값을 0.0으로 바꿔야 합니다.
+셋째, **깊이 버퍼의 클리어 값을 바꿉니다**. 프레임을 시작할 때 깊이 버퍼는 먼저 기본값으로 채워지는데, 이 값은 이후 그려질 프래그먼트들이 깊이 테스트를 통과할 수 있도록 가장 먼 깊이를 뜻해야 합니다. 기본 매핑에서는 far가 `1.0`에 놓이므로 `1.0`으로 클리어하지만, Reversed-Z에서는 far가 `0.0`에 놓이기 때문에 클리어 값도 `0.0`이 되어야 합니다.
+
+정리하면, 원근 투영을 거친 깊이 값은 far 쪽으로 갈수록 변화 폭이 작아집니다. Reversed-Z는 이렇게 압축된 원거리 깊이 값이 부동소수점 깊이 버퍼의 `0` 근처에 기록되도록 매핑을 뒤집습니다. float은 `0` 근처에서 표현 간격이 좁기 때문에, 원거리에서 부족해진 깊이 구분 능력을 저장 단계에서 보완할 수 있습니다.
+
+이 방식이 제대로 동작하려면 깊이 값을 만드는 기준, 비교하는 기준, 초기화하는 기준이 모두 같아야 합니다. 투영 행렬은 near가 `1`, far가 `0`이 되도록 깊이 값을 만들고, 깊이 테스트는 더 큰 값을 더 가까운 값으로 받아들여야 합니다. 깊이 버퍼도 가장 먼 값인 `0`으로 클리어해야 합니다. 이 중 하나라도 기존 기준으로 남아 있으면 깊이 판정이 어긋나거나, 화면에 아무것도 그려지지 않는 문제가 생길 수 있습니다.
 
 ---
 
 ### Unity에서의 Reversed-Z 지원
 
-Unity는 그래픽스 API에 따라 Reversed-Z를 자동 적용합니다.
+Unity는 사용 중인 그래픽스 API에 맞춰 깊이 버퍼의 방향을 자동으로 정합니다. DirectX 11/12, Metal, Vulkan에서는 Reversed-Z가 사용되며, 이때 깊이 버퍼와 깊이 텍스처의 값은 near plane에서 `1`, far plane에서 `0`에 가까워집니다. 반대로 OpenGL ES, WebGL, OpenGL 계열에서는 전통적인 깊이 방향을 사용하므로 near plane이 `0`, far plane이 `1`에 대응합니다.
 
-NDC 깊이 범위가 [0, 1]인 API(DirectX 11/12, Metal, Vulkan)에서는 기본 활성화되고, NDC 깊이 범위가 [-1, 1]인 OpenGL 계열에서는 적용되지 않습니다.
-
-OpenGL은 깊이 범위의 중심이 0이므로, near→1 / far→0으로 뒤집는 Reversed-Z 기법을 그대로 적용할 수 없기 때문입니다.
-
-| 그래픽스 API | NDC 깊이 | Reversed-Z | 비고 |
+| 그래픽스 API | 깊이 값 방향 | Reversed-Z | 대표 플랫폼 |
 |---|---|---|---|
-| DirectX 11 / 12 | [0, 1] | 적용 | Windows PC |
-| Metal | [0, 1] | 적용 | iOS, macOS |
-| Vulkan | [0, 1] | 적용 | Android, PC |
-| OpenGL ES | [-1, 1] | 미적용 | 일부 Android |
-| OpenGL | [-1, 1] | 미적용 | Linux 등 |
-
-Reversed-Z가 활성화된 플랫폼에서는 Unity의 투영 행렬과 깊이 테스트가 이미 뒤집힌 매핑을 반영합니다.
-
-`UnityObjectToClipPos()`로 클립 공간 좌표를 구하고 내장 깊이 테스트를 그대로 사용하면, 셰이더에서 별도 처리 없이 Reversed-Z가 동작합니다.
+| DirectX 11 / 12 | near `1` → far `0` | 적용 | Windows, Xbox |
+| Metal | near `1` → far `0` | 적용 | iOS, macOS |
+| Vulkan | near `1` → far `0` | 적용 | Android, Windows, Linux |
+| OpenGL ES / WebGL | near `0` → far `1` | 미적용 | Android 구형 기기, Web |
+| OpenGL 계열 | near `0` → far `1` | 미적용 | 일부 데스크톱 환경 |
 
 <br>
 
-단, 깊이 버퍼를 **직접 읽거나 비교하는** 커스텀 셰이더에서는 깊이 값의 의미가 달라지는 점을 고려해야 합니다.
+일반적인 URP 렌더링에서는 이 차이를 직접 처리하지 않아도 됩니다. Unity와 URP가 현재 그래픽스 API에 맞춰 GPU 투영 행렬, 깊이 테스트 방향, 깊이 버퍼 초기값을 내부에서 맞춰 주기 때문입니다. 카메라, 머티리얼, 렌더 패스가 기본 깊이 흐름을 따른다면 클립 공간 좌표와 깊이 비교도 플랫폼의 깊이 방향에 맞게 동작합니다.
 
-Reversed-Z 환경에서 깊이 값 0은 가장 먼 거리, 1은 가장 가까운 거리이므로, 기본 매핑(0=near, 1=far)을 가정한 계산은 near/far 판정이 반전됩니다.
+문제가 되는 경우는 깊이 값을 **직접 읽거나 직접 비교하는** 코드입니다. 예를 들어 `_CameraDepthTexture`나 URP의 `SampleSceneDepth()`로 얻은 raw depth를 그대로 비교하거나, 포스트 프로세싱에서 깊이 기반 효과를 만들거나, 커스텀 섀도우/깊이 패스에서 투영 행렬을 직접 조합할 때는 깊이 방향 차이를 고려해야 합니다.
 
-Unity는 `UNITY_REVERSED_Z` 매크로를 제공하며, 이 매크로로 플랫폼별 분기를 처리할 수 있습니다.
+Reversed-Z에서는 깊이 값 `1`이 가까운 쪽, `0`이 먼 쪽을 의미합니다. 반대로 전통적인 깊이 버퍼에서는 `0`이 near, `1`이 far입니다. 따라서 raw depth를 항상 `0 = near`, `1 = far`라고 가정하면 가까움과 멂의 판정이 플랫폼에 따라 뒤집힐 수 있습니다.
 
-모바일에서는 Vulkan이나 Metal을 사용하는 기기라면 Reversed-Z가 자동 적용되지만, OpenGL ES만 지원하는 구형 Android 기기에서는 Reversed-Z 없이 동작합니다. 이 경우 앞서 다룬 near/far 비율 관리가 깊이 정밀도 확보의 주요 수단이 됩니다.
+이런 코드는 셰이더에서 `UNITY_REVERSED_Z`로 분기하거나, 가능하면 Unity가 제공하는 `Linear01Depth()`, `LinearEyeDepth()`, `UNITY_Z_0_FAR_FROM_CLIPSPACE()` 같은 헬퍼를 사용하는 편이 안전합니다. C#에서는 `SystemInfo.usesReversedZBuffer`로 현재 플랫폼이 Reversed-Z를 사용하는지 확인할 수 있습니다.
+
+모바일도 하나의 규칙으로 묶을 수 없습니다. iOS와 macOS처럼 Metal을 사용하는 환경은 Reversed-Z를 사용하고, Android도 Vulkan으로 실행하면 Reversed-Z가 적용됩니다. 반면 OpenGL ES 기반의 구형 Android 기기나 WebGL 환경은 전통적인 깊이 방향을 사용할 수 있습니다. 여러 플랫폼을 대상으로 한다면 raw depth 값에 고정된 의미를 부여하지 말고, Unity의 매크로와 깊이 변환 함수를 기준으로 처리하는 것이 가장 안전합니다.
 
 ---
 
 ## Unity 카메라의 투영 설정
 
-원근 투영과 직교 투영은 Unity Camera 컴포넌트의 속성으로 직접 제어됩니다. 깊이 정밀도는 near/far 평면 설정을 통해 간접적으로 조절되고, Reversed-Z는 Unity가 플랫폼별로 자동 적용하므로 별도 속성은 없습니다.
+Unity Camera에서 투영 방식은 `Projection`으로 선택합니다. `Perspective`는 원근감이 있는 절두체를 만들고, `Orthographic`은 거리와 관계없이 같은 크기로 보이는 직육면체 형태의 시야 영역을 만듭니다. 깊이 정밀도는 별도 품질 옵션보다 `Near`와 `Far` 사이의 범위에 크게 좌우됩니다. Reversed-Z는 Unity가 그래픽스 API에 맞춰 처리하므로, Camera 컴포넌트에서 직접 켜고 끄는 설정은 없습니다.
 
 | 속성 | 기본값 | 모드 | 설명 |
 |---|---|---|---|
-| Projection | — | — | Perspective / Orthographic 선택 |
-| Field of View | 60 | Perspective | 세로 시야각 (도) |
-| Size | 5 | Orthographic | 세로 절반 크기 (월드 단위) |
-| Near Clip Plane | 0.3 | 공통 | near 평면 거리 |
-| Far Clip Plane | 1000 | 공통 | far 평면 거리 |
+| Projection | Perspective | 공통 | 원근 / 직교 투영 방식 선택 |
+| Field of View | 60 | Perspective | 시야각. 기본은 세로 기준 |
+| Size | 5 | Orthographic | 화면 세로 절반 크기 |
+| Near Clip Plane | 0.3 | 공통 | 렌더링을 시작하는 거리 |
+| Far Clip Plane | 1000 | 공통 | 렌더링을 끝내는 거리 |
 
-**Camera.fieldOfView** 는 Perspective 모드에서의 세로 FOV를 도 단위로 지정하며, 기본값은 60도입니다. 스크립트에서 `camera.fieldOfView = 90f;` 처럼 동적으로 변경할 수 있고, 줌 인/아웃 효과나 대시 시 시야 확장 연출에 활용됩니다.
+<br>
 
-**Camera.orthographicSize** 는 Orthographic 모드에서 화면 세로 절반의 크기를 월드 단위로 지정합니다. Size가 5이면 화면의 세로 전체가 월드의 10단위를 표시합니다. 가로는 aspect ratio에 따라 자동 결정됩니다.
+Perspective 모드에서는 `Camera.fieldOfView`가 시야각을 정합니다. 값이 커질수록 더 넓은 영역이 보이고 원근감도 강해지며, 값이 작아질수록 좁게 당겨 보입니다. 기본값은 `60`도이고, 스크립트에서 `camera.fieldOfView = 90f;`처럼 바꿔 줌 인/아웃, 조준, 대시 시야 확장 같은 연출에 사용할 수 있습니다.
 
-**Camera.nearClipPlane** 과 **Camera.farClipPlane** 은 near/far 평면 거리입니다. near 평면을 카메라에서 가능한 한 멀리, far 평면을 가능한 한 가까이 설정해야 깊이 정밀도를 확보할 수 있습니다. 기본값은 각각 0.3과 1000이며, 장면의 실제 필요 범위에 맞춰 조정하는 것이 좋습니다.
+Orthographic 모드에서는 `Camera.orthographicSize`가 화면에 들어오는 세로 범위를 정합니다. 이 값은 화면 세로 절반의 크기이므로, `Size`가 `5`이면 화면의 세로 전체는 월드 공간 `10`단위를 표시합니다. 가로 범위는 카메라의 aspect ratio에 따라 자동으로 결정됩니다.
 
-투영 모드 전환은 Camera 컴포넌트의 Projection 드롭다운 또는 스크립트에서 `camera.orthographic = true/false`로 제어합니다.
+`Camera.nearClipPlane`과 `Camera.farClipPlane`은 카메라가 실제로 그리는 거리 범위를 정합니다. near보다 가까운 물체와 far보다 먼 물체는 렌더링되지 않습니다. 깊이 정밀도를 확보하려면 이 범위를 불필요하게 넓히지 않는 것이 중요합니다. 장면에서 허용되는 한 near는 멀리 두고, far는 가까이 두는 편이 좋습니다.
+
+다만 near를 너무 멀리 두면 카메라 가까이의 물체가 잘리고, far를 너무 가까이 두면 먼 배경이나 대형 오브젝트가 사라집니다. 기본값 `0.3`과 `1000`은 출발점일 뿐이며, 실제 장면의 크기와 카메라 동선에 맞춰 조정해야 합니다.
+
+투영 모드는 Camera 컴포넌트의 `Projection` 드롭다운에서 바꾸거나, 스크립트에서 `camera.orthographic = true` 또는 `false`로 전환합니다. `true`이면 `orthographicSize`가, `false`이면 `fieldOfView`가 화면 범위를 결정합니다.
 
 ---
 
 ### projectionMatrix 직접 설정
 
-`camera.projectionMatrix`에 커스텀 행렬을 대입하면 투영 행렬을 직접 지정할 수 있습니다. 비대칭 절두체(Oblique Frustum, 물 반사나 포털 렌더링에서 클리핑 평면을 기울여야 할 때), 비표준 FOV 구성, VR/AR 렌즈 왜곡 보정 등 기본 투영 설정만으로는 표현할 수 없는 경우에 사용됩니다.
+`camera.projectionMatrix`에 행렬을 대입하면 Unity가 `fieldOfView`, `orthographicSize`, `nearClipPlane`, `farClipPlane`, `aspect`로 계산하던 투영 행렬을 직접 지정할 수 있습니다. 일반적인 카메라 설정은 앞의 속성만으로 충분하지만, 한쪽으로 치우친 절두체, 포털이나 반사 렌더링을 위한 기울어진 클리핑 평면, 특수한 렌즈 보정처럼 기본 Camera 설정으로 표현하기 어려운 경우에는 투영 행렬을 직접 다룹니다.
 
-이렇게 직접 설정한 투영 행렬은 Unity의 자동 조정(화면 비율 변경에 따른 aspect 갱신 등)을 무시합니다. 따라서 필요한 시점에만 사용하고, 이후 `camera.ResetProjectionMatrix()`를 호출하여 자동 계산 모드로 되돌리는 것이 일반적입니다.
+평소에는 Unity가 Camera 속성을 바탕으로 투영 행렬을 만들어 줍니다. 예를 들어 `fieldOfView`, `orthographicSize`, `nearClipPlane`, `farClipPlane`, `aspect`가 바뀌면 그 값들을 반영한 투영 행렬이 다시 계산됩니다.
 
-<br>
+하지만 `camera.projectionMatrix`에 직접 행렬을 넣으면, 그 순간부터 카메라는 Unity가 계산한 행렬 대신 사용자가 넣은 행렬을 사용합니다. 이 상태에서는 `fieldOfView` 같은 속성값이 바뀌어도 렌더링에 쓰이는 투영 행렬이 자동으로 따라 바뀌지 않습니다. 기본 방식으로 돌아가려면 `camera.ResetProjectionMatrix()`를 호출해야 합니다.
 
-모바일에서 투영 행렬을 직접 설정하는 경우는 드물지만, near/far 평면 값을 스크립트에서 동적으로 조정하는 것은 실용적입니다. 실내 장면에서는 far를 100으로 줄이고, 야외 장면에서는 500으로 늘리는 식으로, 장면 규모에 맞게 깊이 정밀도를 확보할 수 있습니다.
+따라서 커스텀 투영 행렬은 필요한 렌더링 구간에만 제한해서 쓰는 편이 좋습니다. 특히 투영 행렬을 셰이더나 커맨드 버퍼에서 직접 조합해 사용한다면, 앞에서 본 플랫폼별 깊이 방향과 GPU 투영 행렬 차이까지 함께 고려해야 합니다.
+
+한편 단순히 깊이 정밀도를 조정하려는 목적이라면 `projectionMatrix`를 직접 만들 필요가 없습니다. 스크립트에서 `nearClipPlane`과 `farClipPlane`을 장면 규모에 맞게 바꾸는 것으로도 충분한 경우가 많습니다. 예를 들어 실내 장면에서는 far를 작게 줄이고, 야외 장면에서는 필요한 거리까지만 늘려 near/far 범위를 좁게 유지하는 식으로 관리할 수 있습니다.
 
 ---
 
 ## 마무리
 
-투영은 3D 공간을 2D 화면으로 변환하는 과정이며, 이 과정의 수학적 구조가 깊이 정밀도를 결정합니다.
+이번 글에서는 Projection 행렬이 카메라의 시야 영역을 클립 공간으로 바꾸는 방식과, 그 과정에서 깊이 값이 어떻게 만들어지는지 살펴봤습니다. 원근 투영과 직교 투영은 화면상의 크기 변화를 만드는 방식이 다르고, 특히 원근 투영의 깊이 값은 near/far 범위와 깊이 버퍼 형식에 크게 영향을 받습니다.
 
-<br>
+- **원근 투영**은 near, far, FOV, aspect ratio로 정해지는 절두체를 클립 공간으로 변환하고, 원근 나눗셈을 통해 가까운 물체는 크게, 먼 물체는 작게 보이게 만듭니다.
+- **직교 투영**은 near plane과 far plane의 크기가 같은 직육면체 형태의 시야 영역을 사용합니다. `w`가 항상 `1`이므로, 거리가 달라도 같은 크기의 물체는 화면에서도 같은 크기로 보입니다.
+- **깊이 값의 비선형성**은 원근 투영에서 생기는 중요한 특징입니다. 깊이 정밀도는 near 근처에 많이 몰리고, far 쪽으로 갈수록 같은 깊이 값 하나가 더 넓은 실제 거리 범위를 담당합니다.
+- **Z-fighting**은 깊이 버퍼가 두 표면의 앞뒤를 안정적으로 구분하지 못할 때 발생합니다. near를 가능한 한 멀리 두고, far를 필요한 범위까지만 줄이면 near/far 비율이 줄어 깊이 정밀도를 확보하기 쉬워집니다.
+- **Reversed-Z**는 깊이 매핑을 near = `1`, far = `0`으로 뒤집는 기법입니다. 부동소수점 깊이 버퍼에서는 float의 `0` 근처 정밀도를 far 쪽에 배치해 원거리 깊이 정밀도를 보완합니다.
+- **Unity의 Reversed-Z 처리**는 그래픽스 API에 따라 자동으로 적용됩니다. DirectX, Metal, Vulkan에서는 Reversed-Z가 사용되고, OpenGL ES나 WebGL처럼 전통적인 깊이 방향을 쓰는 환경에서는 raw depth를 직접 해석할 때 주의해야 합니다.
+- **Unity Camera 설정**에서는 `fieldOfView`, `orthographicSize`, `nearClipPlane`, `farClipPlane`이 투영과 깊이 범위를 정합니다. 일반적인 경우에는 이 속성들을 조정하면 충분하고, 비표준 투영이 필요할 때만 `projectionMatrix`를 직접 설정합니다.
 
-- **원근 투영**은 절두체(near, far, FOV, aspect ratio)를 직육면체로 변환하고, w 성분으로 원근 나눗셈을 수행하여 원근감을 구현합니다. **직교 투영**은 거리에 따른 크기 변화가 없는 평행 투영이며, 2D 게임이나 UI 렌더링에 사용됩니다.
-- 원근 투영 후 **깊이 값은 비선형**으로, near 근처에 정밀도가 집중되고 far 근처에는 부족합니다.
-- **Z-fighting**은 이 정밀도 부족으로 두 표면이 번갈아 보이는 현상이며, near를 크게, far를 작게 설정하여 완화할 수 있습니다.
-- **Reversed-Z**는 깊이 매핑을 뒤집어(near=1, far=0) 부동소수점의 정밀도 분포와 상보적으로 작용하게 하여, 전 구간에서 균일한 깊이 정밀도를 얻는 기법입니다. Unity는 DirectX, Metal, Vulkan 플랫폼에서 자동 적용합니다.
-- Reversed-Z 적용 시 **투영 행렬의 깊이 매핑**, **깊이 테스트 비교 방향**, **깊이 클리어 값** 세 가지를 변경해야 하며, Unity는 지원 플랫폼에서 이를 자동으로 처리합니다.
-- Unity 카메라의 `fieldOfView`, `nearClipPlane`, `farClipPlane`이 투영 설정의 핵심이며, `projectionMatrix`를 직접 설정하여 커스텀 투영도 가능합니다.
+여기까지가 정점이 화면에 놓이기 전까지의 수학적 변환입니다. 실제 렌더링에서는 이 좌표들이 래스터화, 깊이 테스트, 셰이딩 단계를 거치며 최종 픽셀 색으로 이어집니다.
 
 ---
 
 **관련 글**
 - [GPU 아키텍처 (1) - GPU 병렬 처리와 렌더링 파이프라인](/dev/unity/GPUArchitecture-1/)
-
-**시리즈**
-- [그래픽스 수학 (1) - 벡터와 벡터 연산](/dev/unity/GraphicsMath-1/)
-- [그래픽스 수학 (2) - 행렬과 변환](/dev/unity/GraphicsMath-2/)
-- [그래픽스 수학 (3) - 좌표 공간의 전환](/dev/unity/GraphicsMath-3/)
-- **그래픽스 수학 (4) - 투영 (현재 글)**
 
 **전체 시리즈**
 - [하드웨어 기초 (1) - CPU 아키텍처와 파이프라인](/dev/unity/HardwareBasics-1/)
