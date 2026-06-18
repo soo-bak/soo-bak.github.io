@@ -13,86 +13,79 @@ tags:
 
 ## 메모리를 자동으로 관리하는 대가
 
-[C# 런타임 기초 (2) - .NET 런타임과 IL2CPP](/dev/unity/CSharpRuntime-2/)에서는 C# 코드가 IL로 한 번 옮겨진 뒤 다시 기계어로 바뀌어 CPU 위에서 도는 과정을 따라갔습니다. 같은 IL이라도 빌드 시점에 C++로 풀어 네이티브로 미리 컴파일하면 IL2CPP의 AOT 방식이 되고, 실행 도중 그때그때 기계어로 옮기면 Mono의 JIT 방식이 됩니다.
+[C# 런타임 기초 (2) - .NET 런타임과 IL2CPP](/dev/unity/CSharpRuntime-2/)에서는 C# 코드가 IL을 거쳐 기계어로 바뀌는 과정을 살펴봤습니다. 런타임이 맡는 또 하나의 핵심 역할은 다 쓴 메모리를 회수하는 일입니다.
 
-<br>
+C#에서 `new`로 참조 타입 객체를 만들면 런타임은 관리 힙에 메모리를 할당합니다. 이후 그 객체에 더 이상 도달할 수 없게 되면 **가비지 컬렉터(Garbage Collector, GC)**가 해당 메모리를 회수합니다.
 
-그런데 런타임이 떠맡는 일은 코드를 돌리는 데서 그치지 않습니다. 그 핵심 역할 가운데 하나가 바로 **메모리의 자동 관리**입니다.
+GC 덕분에 개발자는 메모리를 직접 해제하지 않아도 됩니다. 그 대신 런타임이 회수할 객체를 찾아 정리해야 하며, Unity에서는 이 작업이 프레임 시간에 영향을 줄 수 있습니다. 특히 GC가 동작하는 동안에는 C# 코드 실행이 잠시 멈추므로, 프레임 드롭이나 스파이크로 이어질 수 있습니다.
 
-[C# 런타임 기초 (1)](/dev/unity/CSharpRuntime-1/)에서 짚었듯, C# 코드에서 `new`로 참조 타입 객체를 만들면 런타임이 힙에 그만큼의 메모리를 잡아 줍니다. 그리고 그 객체를 가리키는 참조가 모두 사라지면, 런타임을 이루는 구성 요소인 **가비지 컬렉터(Garbage Collector, GC)**가 해당 메모리를 알아서 거두어 갑니다.
-
-<br>
-
-C나 C++에서는 이 일을 개발자가 손수 해야 합니다. 어디서 메모리를 비울지 직접 정해 주어야 하고, 그 판단이 어긋나면 메모리 누수나 댕글링 포인터처럼 프로그램을 무너뜨리는 버그로 이어집니다.
-
-GC는 이 해제 작업을 대신 떠맡아, 개발자가 메모리를 언제 비울지 신경 쓰지 않아도 되게 합니다. 다만 공짜로 얻는 편의는 아닙니다. GC가 도는 동안에는 CPU 시간이 그쪽으로 쏠리고, Unity가 쓰는 Boehm GC는 힙 전체를 훑는 사이 C# 스크립트 실행을 통째로 멈추는 Stop-the-World를 일으킵니다.
-
-<br>
-
-이 글에서는 GC가 왜 필요한지부터 시작해, GC의 바탕이 되는 Mark-and-Sweep 알고리즘, Unity의 Boehm GC가 .NET GC와 어디서 갈리는지, 그리고 이 모든 것이 게임 성능에 어떻게 영향을 주는지를 차례로 살펴봅니다.
+이 글에서는 GC가 왜 필요한지, Mark-and-Sweep 알고리즘이 객체를 어떻게 찾고 회수하는지, Unity의 Boehm GC와 Incremental GC가 게임 성능에 어떤 영향을 주는지 차례로 살펴봅니다.
 
 ---
 
 ## GC의 필요성
 
+프로그램이 할당한 메모리는 언젠가 해제되어야 합니다. 메모리는 한정된 자원이라, 다 쓴 객체가 계속 남아 있으면 새로 할당할 공간이 줄어들기 때문입니다.
+
+문제는 어떤 객체를 더 이상 쓰지 않는지, 그래서 언제 메모리를 돌려줄지를 누가 판단하느냐입니다. 개발자가 코드에서 직접 해제하는 방법도 있고, 런타임이 대신 판단하도록 맡기는 방법도 있습니다. 먼저 직접 관리하는 방식의 위험을 짚은 뒤, GC가 그 일을 어떻게 대신하는지 다룹니다.
+
 ### 수동 메모리 관리의 위험
 
-C나 C++에서는 메모리를 비우는 일까지 개발자의 몫입니다. `malloc()`이나 `new`로 필요한 만큼 메모리를 잡고, 다 쓰고 나면 `free()`나 `delete`로 직접 돌려줍니다.
+C나 C++에서는 메모리를 언제 해제할지 개발자가 직접 정합니다. `malloc()`이나 `new`로 확보한 메모리는 더 쓰지 않는 순간 `free()`나 `delete`로 직접 돌려줘야 합니다.
 
-언제 잡고 언제 돌려줄지를 개발자가 정하므로, 손에 익으면 군더더기 없이 효율적입니다. 다만 그 판단이 한 번 어긋나면 세 갈래의 위험이 비집고 들어옵니다.
+이 방식은 제어가 정확한 대신, 어떤 메모리를 언제 돌려줄지를 사람이 일일이 따라가야 합니다. 그 판단은 두 방향으로 어긋날 수 있습니다. 해제할 메모리를 끝내 그대로 두면, 그리고 아직 살아 있는 메모리를 너무 일찍 해제하면 문제가 생깁니다.
 
 <br>
 
 <div style="text-align: center; margin: 1.5em 0;">
-<svg viewBox="0 0 620 270" xmlns="http://www.w3.org/2000/svg" style="max-width: 620px; width: 100%;">
-  <rect x="0" y="0" width="620" height="270" rx="8" fill="currentColor" fill-opacity="0.04" stroke="currentColor" stroke-width="1.2"/>
-  <text fill="currentColor" x="310" y="32" text-anchor="middle" font-size="15" font-weight="bold" font-family="sans-serif">수동 메모리 관리의 세 가지 위험</text>
-  <!-- 1. 메모리 누수 -->
-  <text fill="currentColor" x="30" y="66" font-size="13" font-weight="bold" font-family="sans-serif">1. 메모리 누수 (Memory Leak)</text>
-  <text fill="currentColor" x="50" y="86" font-size="12" font-family="sans-serif" opacity="0.8">할당한 메모리를 해제하지 않음</text>
-  <text fill="currentColor" x="50" y="104" font-size="11" font-family="sans-serif" opacity="0.55">→ 메모리가 계속 쌓여 결국 부족해짐</text>
-  <!-- 2. 댕글링 포인터 -->
-  <text fill="currentColor" x="30" y="136" font-size="13" font-weight="bold" font-family="sans-serif">2. 댕글링 포인터 (Dangling Pointer)</text>
-  <text fill="currentColor" x="50" y="156" font-size="12" font-family="sans-serif" opacity="0.8">이미 해제된 메모리를 다시 참조함</text>
-  <text fill="currentColor" x="50" y="174" font-size="11" font-family="sans-serif" opacity="0.55">→ 엉뚱한 데이터를 읽거나 프로그램이 충돌함</text>
-  <!-- 3. 이중 해제 -->
-  <text fill="currentColor" x="30" y="206" font-size="13" font-weight="bold" font-family="sans-serif">3. 이중 해제 (Double Free)</text>
-  <text fill="currentColor" x="50" y="226" font-size="12" font-family="sans-serif" opacity="0.8">같은 메모리를 두 번 해제함</text>
-  <text fill="currentColor" x="50" y="244" font-size="11" font-family="sans-serif" opacity="0.55">→ 메모리 관리 구조가 손상되어 예측 불가능한 동작</text>
+<svg viewBox="0 0 640 300" xmlns="http://www.w3.org/2000/svg" style="max-width: 640px; width: 100%;">
+  <rect x="0" y="0" width="640" height="300" rx="8" fill="currentColor" fill-opacity="0.04" stroke="currentColor" stroke-width="1.2"/>
+  <text fill="currentColor" x="320" y="32" text-anchor="middle" font-size="15" font-weight="bold" font-family="sans-serif">해제 시점 판단이 어긋나는 두 방향</text>
+  <!-- root -->
+  <rect x="240" y="50" width="160" height="38" rx="6" fill="currentColor" fill-opacity="0.07" stroke="currentColor" stroke-width="1"/>
+  <text fill="currentColor" x="320" y="74" text-anchor="middle" font-size="13" font-weight="bold" font-family="sans-serif">해제 책임이 흐려진다</text>
+  <!-- connectors -->
+  <path d="M320 88 V104 M160 104 H480 M160 104 V128 M480 104 V128 M160 168 V190 M480 168 V190" fill="none" stroke="currentColor" stroke-width="1" opacity="0.45"/>
+  <!-- 왼쪽: 해제 안 함 -->
+  <rect x="40" y="128" width="240" height="40" rx="6" fill="currentColor" fill-opacity="0.05" stroke="currentColor" stroke-width="1"/>
+  <text fill="currentColor" x="160" y="153" text-anchor="middle" font-size="12" font-weight="bold" font-family="sans-serif">① 다 쓴 메모리를 해제하지 않는다</text>
+  <text fill="currentColor" x="160" y="206" text-anchor="middle" font-size="13" font-weight="bold" font-family="sans-serif">메모리 누수</text>
+  <text fill="currentColor" x="160" y="228" text-anchor="middle" font-size="11" font-family="sans-serif" opacity="0.6">안 쓰는 메모리가 남아 사용량이 늘어남</text>
+  <text fill="currentColor" x="160" y="247" text-anchor="middle" font-size="11" font-family="sans-serif" opacity="0.6">(C#도 참조가 남으면 회수 불가)</text>
+  <!-- 오른쪽: 너무 일찍 해제 -->
+  <rect x="360" y="128" width="240" height="40" rx="6" fill="currentColor" fill-opacity="0.05" stroke="currentColor" stroke-width="1"/>
+  <text fill="currentColor" x="480" y="153" text-anchor="middle" font-size="12" font-weight="bold" font-family="sans-serif">② 살아 있는 메모리를 일찍 해제한다</text>
+  <text fill="currentColor" x="480" y="206" text-anchor="middle" font-size="13" font-weight="bold" font-family="sans-serif">댕글링 포인터 · 이중 해제</text>
+  <text fill="currentColor" x="480" y="228" text-anchor="middle" font-size="11" font-family="sans-serif" opacity="0.6">해제된 자리 접근 → 잘못된 값·충돌</text>
+  <text fill="currentColor" x="480" y="247" text-anchor="middle" font-size="11" font-family="sans-serif" opacity="0.6">두 번 해제 → 할당자 구조 손상</text>
 </svg>
 </div>
 
 <br>
 
-첫 번째 위험인 메모리 누수는 메모리를 잡아 두고 돌려주는 일을 빠뜨릴 때 생깁니다. 한 번 빠뜨린 메모리는 다시 손댈 길이 없어, 프로그램이 오래 돌수록 쓰지도 않는 메모리가 차곡차곡 쌓여 갑니다.
+첫 번째는 **메모리 누수(Memory Leak)**입니다. 다 쓴 메모리를 제때 해제하지 않으면, 그 영역은 프로그램이 도는 동안 계속 남고 실행이 길어질수록 쓰지도 않는 메모리가 늘어 사용량이 올라갑니다.
 
-이 문제는 메모리 여유가 빠듯한 모바일에서 특히 날카롭게 드러납니다. iOS는 메모리 압박이 심해지면 앱에 `didReceiveMemoryWarning`을 보내 메모리를 비우라고 재촉하지만, 앱이 제때 충분히 비우지 못하면 jetsam이 그 앱을 강제로 끊어 버립니다.
+특히 모바일은 메모리 여유가 제한적이라, 누수가 계속되면 그 영향이 더 빨리 나타납니다. 사용량이 한계에 다가가면 OS가 앱을 강제로 종료하거나, 그 전부터 앱 반응이 느려지기도 합니다.
 
-문제는 이 경고에 응하기가 쉽지 않다는 데 있습니다. 관리 힙의 메모리는 GC가 한 번 돌아야 비로소 회수되고, 설령 회수되더라도 Boehm GC는 비워 낸 공간을 OS에 되돌려주지 않으므로 프로세스가 차지한 메모리 총량 자체는 그대로 남습니다. Android 역시 메모리가 모자라면 백그라운드에 밀려난 앱부터 차례로 끊어 나갑니다.
+이런 누수는 C# 환경에서도 예외가 아닙니다. 관리 힙에 있는 객체라도 어딘가에 참조가 남아 있으면 GC가 회수하지 못하므로, 더 쓰지 않는 객체의 참조를 놓지 않으면 논리적 누수로 이어집니다.
 
-<br>
+두 번째 방향은 반대로, 아직 쓰고 있는 메모리를 너무 일찍 해제할 때 생깁니다. 그 대표적인 경우가 **댕글링 포인터(Dangling Pointer)**입니다. 이미 해제한 메모리를 가리키는 포인터가 그대로 남고, 그 자리가 다른 데이터로 재사용된 뒤 포인터로 접근하면 엉뚱한 값을 읽거나 프로그램이 충돌할 수 있습니다.
 
-두 번째 위험인 댕글링 포인터는 이미 돌려준 메모리를 여전히 가리키는 포인터가 남아 있을 때 생깁니다. 해제된 영역은 곧 다른 용도로 재사용되는데, 그 자리에 다른 데이터가 덮어써진 뒤 옛 포인터로 접근하면 전혀 엉뚱한 값을 읽게 됩니다.
+게다가 이런 충돌은 메모리 상태에 따라 나타났다 사라졌다 하므로, 원인을 추적하기가 까다롭습니다.
 
-게다가 그 자리에 무엇이 언제 덮어써지느냐에 따라 증상이 매번 달라지므로, 재현조차 들쭉날쭉합니다. 디버깅하기 까다로운 버그가 대개 여기서 비롯됩니다.
+같은 방향에서 한 단계 더 나아간 실수가 **이중 해제(Double Free)**입니다. 이미 해제한 메모리를 다시 해제하면, 할당자가 빈 영역을 추적하려고 유지하는 내부 자료구조가 어긋나면서 그 뒤의 동작을 예측하기 어렵게 됩니다.
 
-<br>
+두 방향 모두 해제 책임이 흐려질수록 잦아집니다. 어느 코드가 객체를 해제할지 분명하지 않으면, 한쪽은 상대가 해제할 거라 여기며 미루다 누수를 남기고, 다른 쪽은 아직 쓰이는 메모리를 먼저 해제해 댕글링 포인터를 만듭니다.
 
-세 번째 위험인 이중 해제는 이미 돌려준 메모리를 또 한 번 돌려줄 때 생깁니다. 두 번째 해제가 메모리 할당자가 안에서 관리하던 자료구조를 헝클어뜨려, 그 뒤로는 할당이든 해제든 무엇 하나 예측대로 굴러가지 않게 됩니다.
-
-<br>
-
-세 위험 모두 코드가 복잡해질수록 빠지기 쉬워집니다. 객체끼리 참조가 얽히고설키면, 어느 객체를 어느 시점에 비워야 안전한지 가늠하기가 어려워지기 때문입니다.
-
-가령 객체 X를 A가 아직 쓰고 있는데 B가 먼저 비워 버리면 A의 참조는 댕글링 포인터가 되고, 반대로 A도 B도 서로 미루다 아무도 비우지 않으면 그대로 메모리 누수로 남습니다.
+결국 수동 관리가 안전하려면, 개발자가 모든 객체의 수명을 빠짐없이 직접 추적해야 합니다. 그런데 소유권이 여러 코드에 걸칠수록 이 추적은 점점 어려워집니다. 그래서 C#은 해제 시점을 정하는 일을 사람이 아니라 런타임에 넘깁니다.
 
 ---
 
 ### GC의 역할
 
-이 위험들의 뿌리는 메모리를 비울 책임이 개발자에게 있다는 데 있습니다. GC는 그 책임을 개발자에게서 런타임으로 옮겨 와 문제를 풀어냅니다. 개발자는 메모리를 잡기만 하고, 비우는 일은 GC가 알아서 떠맡습니다.
+GC는 메모리 해제 책임을 개발자 대신 런타임이 맡도록 만든 장치입니다. 개발자는 객체를 생성하고 사용하며, 회수 시점은 GC가 판단합니다.
 
-판단 기준은 단순합니다. 어떤 객체를 가리키는 참조가 더 이상 하나도 남지 않으면, GC가 그 객체의 메모리를 거두어 갑니다.
+기준은 도달 가능성입니다. 어떤 객체에 도달할 수 있는 참조가 더 이상 없으면, GC는 그 객체를 회수 가능한 대상으로 봅니다.
 
 <br>
 
@@ -119,25 +112,21 @@ C나 C++에서는 메모리를 비우는 일까지 개발자의 몫입니다. `m
 
 <br>
 
-그래서 개발자는 `free()`나 `delete`를 직접 부를 일이 없습니다. 객체를 `new`로 만들어 쓰다가, 다 쓴 뒤 그 객체를 가리키던 참조만 끊어 두면 됩니다. 비우는 시점을 손으로 정하지 않으니, 이미 비운 메모리를 다시 가리키거나 한 번 더 비우는 일 자체가 생기지 않아 댕글링 포인터와 이중 해제는 처음부터 봉쇄됩니다. 참조가 끊긴 객체는 다음 번 GC가 돌 때 회수됩니다.
+그래서 C#에서는 일반적으로 `free()`나 `delete`를 직접 호출하지 않습니다. 객체를 더 이상 사용하지 않게 되면 참조가 사라지고, 이후 GC가 실행될 때 해당 객체가 회수됩니다. 이 방식은 댕글링 포인터와 이중 해제 위험을 크게 줄입니다.
 
-<br>
-
-물론 GC라고 거저 얻는 것은 아닙니다. GC가 도는 동안에는 CPU 시간이 그쪽으로 들어가고, 때에 따라서는 프로그램 실행이 잠깐 멈추기도 합니다. 이 비용이 언제 얼마나 드는지 가늠하고 다스리려면, 결국 GC가 안에서 어떻게 움직이는지를 알아야 합니다.
+다만 GC가 회수할 객체를 찾아 정리하는 작업에는 CPU 시간이 듭니다. Unity에서는 이 작업이 프레임 시간에 영향을 줄 수 있습니다. 이 비용이 어디서 생기는지 이해하려면, GC가 어떤 객체를 회수할지 판단하는 방식부터 살펴봐야 합니다.
 
 ---
 
 ## Mark-and-Sweep 알고리즘
 
-앞 절에서 보았듯 GC는 참조가 모두 끊긴 객체를 알아서 거두어 갑니다. 그러려면 먼저 지금 힙에 놓인 객체 가운데 어느 것이 아직 살아 있고 어느 것이 죽었는지부터 가려내야 합니다. 이 판정을 도맡는 가장 기본적인 알고리즘이 **Mark-and-Sweep**이며, 그 판정의 잣대로 삼는 것이 바로 **도달 가능성(Reachability)**입니다.
+GC가 객체를 회수하려면 먼저 어떤 객체가 아직 사용 중인지 판단해야 합니다. 이 판단의 기본 기준은 **도달 가능성(Reachability)**이고, 이를 이용한 대표적인 알고리즘이 **Mark-and-Sweep**입니다.
 
 ### 도달 가능성 (Reachability)
 
-GC는 객체의 생존 여부를 그 객체가 쓸모 있느냐가 아니라 도달 가능성으로 가립니다. 프로그램이 지금 돌리는 코드에서 참조를 타고 따라가 닿을 수 있는 객체라면 살아 있는 것으로, 어떤 참조를 거쳐도 닿을 수 없는 객체라면 죽은 것으로 봅니다.
+GC는 객체가 “의미상 필요한지”를 직접 판단하지 않습니다. 대신 현재 실행 중인 프로그램에서 참조를 따라 도달할 수 있는지를 봅니다. 도달 가능한 객체는 살아 있는 객체로 보고, 어떤 경로로도 도달할 수 없는 객체는 회수 가능한 객체로 봅니다.
 
-<br>
-
-이 도달 가능성을 따질 때 출발점이 되는 것이 **GC 루트(GC Root)**입니다. GC 루트는 프로그램이 지금 직접 손에 쥐고 있는 참조의 진입점으로, 스택 변수와 정적 필드, CPU 레지스터가 여기에 해당합니다.
+도달 가능성 탐색의 출발점은 **GC 루트(GC Root)**입니다. GC 루트에는 현재 실행 중인 스택 변수, 정적 필드, CPU 레지스터에 들어 있는 참조 등이 포함됩니다.
 
 <br>
 
@@ -162,15 +151,15 @@ GC는 객체의 생존 여부를 그 객체가 쓸모 있느냐가 아니라 도
 
 <br>
 
-GC 루트가 직접 가리키는 객체는 도달 가능하며, 그 객체가 다시 가리키는 객체도 도달 가능합니다. 이렇게 참조를 한 단계씩 끝까지 타고 들어가면, 도달 가능한 객체 전체가 하나의 집합으로 추려집니다.
+GC 루트가 직접 가리키는 객체는 도달 가능합니다. 그 객체가 다시 가리키는 객체도 도달 가능합니다. GC는 이런 식으로 참조를 따라가며 살아 있는 객체 집합을 만듭니다.
 
-이 집합에 끝내 들지 못한 객체는 어떤 루트에서도 닿을 수 없으니 프로그램이 다시 손댈 길이 없고, 그래서 거두어 가도 아무 탈이 없습니다.
+이 집합에 포함되지 않은 객체는 어떤 루트에서도 도달할 수 없으므로, 프로그램이 다시 사용할 수 없습니다. 이런 객체는 회수 대상이 됩니다.
 
 ---
 
 ### Mark 단계
 
-도달 가능성을 가려내는 일이 GC가 가장 먼저 거치는 **Mark(표시)** 단계입니다. GC는 앞서 추린 GC 루트에서 출발해 참조 그래프를 타고 들어가며, 그렇게 닿은 객체마다 "살아 있음" 표시를 하나씩 남깁니다.
+**Mark(표시)** 단계에서 GC는 루트에서 시작해 참조를 따라 객체 그래프를 순회합니다. 이렇게 도달한 객체는 아직 살아 있다는 뜻이므로, GC는 그 객체를 살아 있는 것으로 표시합니다.
 
 <br>
 
@@ -234,15 +223,15 @@ GC 루트가 직접 가리키는 객체는 도달 가능하며, 그 객체가 �
 
 <br>
 
-루트에서 시작한 탐색은 참조 그래프를 한 갈래씩 파고듭니다. 대부분의 GC 구현은 이 탐색에 **마크 스택(mark stack)**을 둔 깊이 우선 탐색을 택하는데, 여기에는 두 가지 이점이 맞물려 있습니다. 스택은 값을 인접한 메모리에 차곡차곡 쌓아 올려 캐시 적중률이 높고, 너비 우선 탐색이라면 따로 들고 있어야 할 큐보다 보조 메모리도 덜 잡아먹습니다.
+세부 순회 방식은 구현마다 다르지만, 루트에서 시작해 참조를 따라간다는 기본 골격은 어디서나 같습니다.
 
-GC는 이렇게 닿은 객체마다 "도달 가능" 표시를 남깁니다. 그래서 탐색이 다 끝나고 나면, 끝내 표시를 받지 못한 객체는 어느 루트에서도 닿지 못한, 곧 죽은 객체로 가려집니다.
+순회가 끝나면, 표시가 남은 객체는 그대로 살아남습니다. 반대로 표시가 없는 객체는 어떤 루트에서도 도달할 수 없으므로, 이어지는 Sweep 단계에서 회수됩니다.
 
 ---
 
 ### Sweep 단계
 
-살아 있는 객체를 다 표시했으니, 이제 표시가 없는 객체를 실제로 거두어 갈 차례입니다. 이것이 Mark에 뒤이은 **Sweep(소거)** 단계로, GC가 힙에 놓인 객체를 처음부터 끝까지 훑으며 Mark 표시가 붙지 않은 객체의 메모리를 하나씩 풀어 줍니다.
+**Sweep(소거)** 단계에서는 힙을 훑으며 Mark 표시가 없는 객체를 회수합니다. 표시된 객체는 유지하고, 표시되지 않은 객체의 공간은 다시 사용할 수 있는 빈 공간으로 돌립니다.
 
 <br>
 
@@ -308,86 +297,99 @@ GC는 이렇게 닿은 객체마다 "도달 가능" 표시를 남깁니다. 그�
 
 <br>
 
-Sweep까지 마치고 나면 힙에는 살아 있는 객체만 남고, 죽은 객체가 비워 준 자리는 다음 할당에 그대로 내어 줄 수 있는 빈 공간으로 돌아갑니다. 도달 가능한 객체를 표시하는 Mark와 표시 없는 객체를 거두는 Sweep, 이 두 단계를 묶은 것이 **Mark-and-Sweep 알고리즘**이며, 이것이 GC가 죽은 객체를 가려내는 가장 기본적인 틀입니다.
+Sweep이 끝나면 살아남은 객체만 힙에 남고, 회수된 자리는 이후 새 할당에 다시 쓸 수 있게 됩니다. 이렇게 Mark-and-Sweep은 살아 있는 객체를 가려내는 Mark 단계와, 나머지를 회수하는 Sweep 단계로 일을 나눕니다.
 
-<br>
+객체가 살아 있는지 판단하는 기준은 도달 가능성 하나만이 아닙니다. 더 직관적인 방법으로, 객체마다 자신을 가리키는 참조가 몇 개인지 세어 둘 수도 있습니다. 이 방식이 **참조 카운팅(Reference Counting)**입니다. 어떤 객체의 참조 수가 0이 되면, 런타임이 그 객체를 곧바로 해제합니다.
 
-죽은 객체를 가려내는 길이 Mark-and-Sweep 하나만 있는 것은 아닙니다. 대표적인 다른 길이 **참조 카운팅(Reference Counting)**입니다. 객체마다 자신을 가리키는 참조가 몇 개인지를 세어 두었다가, 그 수가 0으로 떨어지는 순간 곧바로 해당 객체를 해제합니다.
+문제는 참조 수가 0이 되지 않는 경우입니다. **순환 참조(Circular Reference)**가 그렇습니다. A가 B를 가리키고 B가 다시 A를 가리키면, 바깥의 어떤 루트에서도 둘에 도달할 수 없게 된 뒤에도 서로를 향한 참조가 남아 참조 수가 0으로 내려가지 않고, 두 객체는 죽은 채 메모리에 남습니다.
 
-다만 이 방식에는 빈틈이 있습니다. A가 B를 가리키고 B가 다시 A를 가리키는 **순환 참조**가 끼어 있으면, 바깥에서는 이미 어느 쪽에도 닿을 수 없는데도 서로가 서로를 세어 주는 탓에 참조 수가 0으로 떨어지지 않아, 두 객체가 영영 해제되지 못한 채 힙에 눌러앉습니다.
-
-반면 Mark-and-Sweep은 객체끼리 어떻게 얽혀 있든 따지지 않고 오직 루트에서 닿느냐만 잣대로 삼습니다. 그래서 이런 순환 참조도 루트에서 닿지 못하는 한 죽은 것으로 가려, 군더더기 없이 거두어 갑니다.
+Mark-and-Sweep은 참조 수가 아니라 루트에서 도달 가능한지를 봅니다. 따라서 순환 참조가 있어도 루트에서 닿지 않으면 회수 대상으로 판단할 수 있습니다.
 
 ---
 
 ## 세대별 GC (Generational GC)
 
-Mark-and-Sweep은 GC가 죽은 객체를 가려내는 기본 틀이지만, 세대를 나누지 않는 비세대(non-generational) 방식으로 돌리면 GC가 한 번 돌 때마다 힙에 놓인 객체를 빠짐없이 훑어야 합니다. Mark도 Sweep도 힙 전체를 대상으로 삼기 때문입니다.
+기본 Mark-and-Sweep은 GC가 돌 때마다 힙 전체를 훑습니다. Mark 단계에서 루트부터 살아 있는 객체를 따라가고, Sweep 단계에서 힙에 놓인 객체를 차례로 확인해 표시되지 않은 것을 해제하기 때문입니다. 그래서 힙이 커질수록 한 번의 GC에 걸리는 시간이 길어집니다.
 
-그래서 힙에 객체가 10만 개 쌓여 있으면 GC는 매번 그 10만 개를 모두 표시하고 또 모두 소거합니다. 힙이 불어날수록 한 번의 GC에 드는 시간도 그만큼 늘어납니다.
-
-데스크톱과 서버를 겨냥한 .NET 런타임은 이 비용을 덜기 위해 **세대별 GC(Generational GC)**를 들였습니다. 힙 전체를 매번 훑는 대신, 쓰레기가 자주 나오는 자리만 집중해서 살피자는 발상입니다.
+데스크톱과 서버를 겨냥한 .NET 런타임은 이 부담을 줄이려고 **세대별 GC(Generational GC)**를 씁니다. 힙 전체를 같은 빈도로 훑지 않고, 금방 사라지는 객체가 모인 영역은 자주, 오래 살아남은 객체가 모인 영역은 드물게 검사합니다.
 
 ### 세대 가설
 
-세대별 GC가 딛고 선 토대가 바로 **세대 가설(Generational Hypothesis)**입니다. 객체의 수명을 두고 경험적으로 거듭 확인된 두 가지 경향을 묶어 부르는 말입니다.
+세대별 GC는 **세대 가설(Generational Hypothesis)**을 바탕으로 합니다. 객체의 수명에는 반복해서 나타나는 두 가지 경향이 있는데, 이를 이용하면 한 번에 검사할 양을 줄일 수 있습니다.
 
-<br>
+첫째, **대부분의 객체는 수명이 짧습니다**. 임시 문자열, 루프 안에서 만들어지는 중간 결과, 메서드 안에서만 쓰이는 객체가 그렇습니다. 이런 객체는 생성된 뒤 금방 쓸모가 없어집니다.
 
-첫째, **대부분의 객체는 수명이 짧습니다**. 잠깐 쓰고 버리는 임시 문자열이나 루프를 돌며 생기는 중간 결과물, 메서드 안에서만 쓰이는 임시 객체처럼, 만들어지자마자 곧 쓸모를 잃는 객체가 전체의 대부분을 차지합니다.
-
-둘째, **한 번 오래 살아남은 객체는 그 뒤로도 계속 살아남기 쉽습니다**. 캐시나 설정 데이터, 게임이 도는 내내 자리를 지키는 매니저 클래스 인스턴스가 여기 듭니다. 초기에 한 번 만들어진 뒤로는 프로그램이 끝날 때까지 줄곧 살아 있는 객체들입니다.
+둘째, **오래 살아남은 객체는 이후에도 계속 살아남는 경향이 있습니다**. 캐시나 설정 데이터, 게임이 실행되는 동안 유지되는 매니저 객체가 그렇습니다. 초기에 만들어진 뒤로 프로그램이 끝날 때까지 남아 있곤 합니다.
 
 <br>
 
 <div style="text-align: center; margin: 1.5em 0;">
-<svg viewBox="0 0 600 320" xmlns="http://www.w3.org/2000/svg" style="max-width: 600px; width: 100%;">
-  <text fill="currentColor" x="300" y="28" text-anchor="middle" font-size="15" font-weight="bold" font-family="sans-serif">객체 수명 분포 (개념적)</text>
-  <!-- Y axis -->
-  <text fill="currentColor" x="55" y="80" text-anchor="end" font-size="11" font-family="sans-serif" opacity="0.55" transform="rotate(-90,30,140)">객체 수</text>
-  <line x1="70" y1="50" x2="70" y2="240" stroke="currentColor" stroke-width="1.5"/>
-  <!-- X axis -->
-  <line x1="70" y1="240" x2="560" y2="240" stroke="currentColor" stroke-width="1.5"/>
-  <polygon points="560,236 570,240 560,244" fill="currentColor"/>
-  <text fill="currentColor" x="320" y="262" text-anchor="middle" font-size="11" font-family="sans-serif" opacity="0.55">수명</text>
-  <!-- X axis labels -->
-  <text fill="currentColor" x="110" y="255" text-anchor="middle" font-size="11" font-family="sans-serif" opacity="0.55">짧음</text>
-  <text fill="currentColor" x="520" y="255" text-anchor="middle" font-size="11" font-family="sans-serif" opacity="0.55">긴 수명</text>
-  <!-- Bars (object count decreasing as lifetime grows) -->
-  <rect x="85" y="60" width="40" height="180" rx="2" fill="currentColor" opacity="0.9"/>
-  <rect x="135" y="100" width="40" height="140" rx="2" fill="currentColor" opacity="0.75"/>
-  <rect x="185" y="140" width="40" height="100" rx="2" fill="currentColor" opacity="0.6"/>
-  <rect x="235" y="175" width="40" height="65" rx="2" fill="currentColor" opacity="0.45"/>
-  <rect x="285" y="200" width="40" height="40" rx="2" fill="currentColor" opacity="0.35"/>
-  <rect x="335" y="215" width="40" height="25" rx="2" fill="currentColor" opacity="0.28"/>
-  <rect x="385" y="222" width="40" height="18" rx="2" fill="currentColor" opacity="0.22"/>
-  <rect x="435" y="228" width="40" height="12" rx="2" fill="currentColor" opacity="0.18"/>
-  <rect x="485" y="232" width="40" height="8" rx="2" fill="currentColor" opacity="0.15"/>
-  <!-- Annotations -->
-  <line x1="105" y1="275" x2="105" y2="285" stroke="currentColor" stroke-width="1" opacity="0.7"/>
-  <line x1="105" y1="285" x2="200" y2="285" stroke="currentColor" stroke-width="1" opacity="0.7"/>
-  <line x1="200" y1="275" x2="200" y2="285" stroke="currentColor" stroke-width="1" opacity="0.7"/>
-  <text fill="currentColor" x="152" y="302" text-anchor="middle" font-size="11" font-family="sans-serif" opacity="0.7">대부분의 객체가</text>
-  <text fill="currentColor" x="152" y="316" text-anchor="middle" font-size="11" font-family="sans-serif" opacity="0.7">여기에 집중 (짧은 수명)</text>
-  <line x1="400" y1="275" x2="400" y2="285" stroke="currentColor" stroke-width="1" opacity="0.5"/>
-  <line x1="400" y1="285" x2="520" y2="285" stroke="currentColor" stroke-width="1" opacity="0.5"/>
-  <line x1="520" y1="275" x2="520" y2="285" stroke="currentColor" stroke-width="1" opacity="0.5"/>
-  <text fill="currentColor" x="460" y="302" text-anchor="middle" font-size="11" font-family="sans-serif" opacity="0.55">소수의 객체가</text>
-  <text fill="currentColor" x="460" y="316" text-anchor="middle" font-size="11" font-family="sans-serif" opacity="0.55">오래 생존</text>
+<svg viewBox="0 0 680 380" xmlns="http://www.w3.org/2000/svg" style="max-width: 680px; width: 100%;">
+  <defs>
+    <marker id="gen-hypothesis-arrow" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0,10 3.5,0 7" fill="currentColor"/>
+    </marker>
+  </defs>
+
+  <text fill="currentColor" x="340" y="24" text-anchor="middle" font-size="15" font-weight="bold" font-family="sans-serif">세대 가설이 수집 범위를 줄이는 방식</text>
+
+  <!-- Stage 1: allocation burst -->
+  <rect x="28" y="58" width="170" height="110" rx="7" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.4"/>
+  <text fill="currentColor" x="113" y="82" text-anchor="middle" font-size="13" font-weight="bold" font-family="sans-serif">새 객체 할당</text>
+  <text fill="currentColor" x="113" y="103" text-anchor="middle" font-size="11" font-family="sans-serif" opacity="0.6">짧은 계산 중 많이 생성</text>
+  <rect x="48" y="122" width="44" height="22" rx="11" fill="currentColor" fill-opacity="0.10"/>
+  <text fill="currentColor" x="70" y="137" text-anchor="middle" font-size="10" font-family="sans-serif">문자열</text>
+  <rect x="98" y="122" width="52" height="22" rx="11" fill="currentColor" fill-opacity="0.10"/>
+  <text fill="currentColor" x="124" y="137" text-anchor="middle" font-size="10" font-family="sans-serif">임시 배열</text>
+  <rect x="63" y="146" width="70" height="22" rx="11" fill="currentColor" fill-opacity="0.10"/>
+  <text fill="currentColor" x="98" y="161" text-anchor="middle" font-size="10" font-family="sans-serif">중간 결과</text>
+
+  <!-- Arrow to Gen 0 collection -->
+  <line x1="198" y1="113" x2="248" y2="113" stroke="currentColor" stroke-width="1.5" marker-end="url(#gen-hypothesis-arrow)"/>
+  <text fill="currentColor" x="223" y="100" text-anchor="middle" font-size="10" font-family="sans-serif" opacity="0.55">할당 영역이 참</text>
+
+  <!-- Stage 2: Gen 0 collection -->
+  <rect x="252" y="58" width="176" height="110" rx="7" fill="currentColor" fill-opacity="0.08" stroke="currentColor" stroke-width="1.4"/>
+  <text fill="currentColor" x="340" y="82" text-anchor="middle" font-size="13" font-weight="bold" font-family="sans-serif">Gen 0 수집</text>
+  <text fill="currentColor" x="340" y="104" text-anchor="middle" font-size="11" font-family="sans-serif" opacity="0.6">최근 생성 객체만 먼저 검사</text>
+  <line x1="284" y1="130" x2="396" y2="130" stroke="currentColor" stroke-width="1" opacity="0.25"/>
+  <text fill="currentColor" x="302" y="151" text-anchor="middle" font-size="11" font-family="sans-serif" opacity="0.65">죽음</text>
+  <text fill="currentColor" x="378" y="151" text-anchor="middle" font-size="11" font-family="sans-serif" opacity="0.65">생존</text>
+
+  <!-- Branch to collected -->
+  <path d="M300 168 V216 H142 V242" fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#gen-hypothesis-arrow)"/>
+  <rect x="52" y="244" width="180" height="70" rx="7" fill="currentColor" fill-opacity="0.04" stroke="currentColor" stroke-width="1.2" stroke-dasharray="5,3"/>
+  <text fill="currentColor" x="142" y="268" text-anchor="middle" font-size="13" font-weight="bold" font-family="sans-serif">참조가 끊긴 객체</text>
+  <text fill="currentColor" x="142" y="289" text-anchor="middle" font-size="11" font-family="sans-serif" opacity="0.6">첫 수집에서 바로 회수</text>
+  <text fill="currentColor" x="142" y="306" text-anchor="middle" font-size="10" font-family="sans-serif" opacity="0.5">짧게 쓰인 임시 객체</text>
+
+  <!-- Branch to promotion -->
+  <path d="M380 168 V216 H538 V242" fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#gen-hypothesis-arrow)"/>
+  <rect x="448" y="244" width="180" height="70" rx="7" fill="currentColor" fill-opacity="0.10" stroke="currentColor" stroke-width="1.2"/>
+  <text fill="currentColor" x="538" y="268" text-anchor="middle" font-size="13" font-weight="bold" font-family="sans-serif">살아남은 객체</text>
+  <text fill="currentColor" x="538" y="289" text-anchor="middle" font-size="11" font-family="sans-serif" opacity="0.6">높은 세대로 승격</text>
+  <text fill="currentColor" x="538" y="306" text-anchor="middle" font-size="10" font-family="sans-serif" opacity="0.5">캐시 · 매니저 · 설정 데이터</text>
+
+  <!-- Result band -->
+  <rect x="250" y="244" width="180" height="70" rx="7" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.2"/>
+  <text fill="currentColor" x="340" y="268" text-anchor="middle" font-size="13" font-weight="bold" font-family="sans-serif">수집 전략</text>
+  <text fill="currentColor" x="340" y="289" text-anchor="middle" font-size="11" font-family="sans-serif" opacity="0.6">Gen 0은 자주 검사</text>
+  <text fill="currentColor" x="340" y="306" text-anchor="middle" font-size="11" font-family="sans-serif" opacity="0.6">오래 산 세대는 드물게 검사</text>
+
+  <text fill="currentColor" x="340" y="342" text-anchor="middle" font-size="10" font-family="sans-serif" opacity="0.55">핵심은 정확한 통계 그래프가 아니라 첫 수집에서 갈리는 흐름임</text>
+  <text fill="currentColor" x="340" y="358" text-anchor="middle" font-size="10" font-family="sans-serif" opacity="0.55">바로 죽는 객체는 빨리 회수하고, 계속 살아남는 객체는 높은 세대로 보냄</text>
 </svg>
 </div>
 
 <br>
 
-분포를 이렇게 읽으면 GC가 어디에 힘을 쏟아야 하는지가 분명해집니다. 쓰레기의 대부분이 수명 짧은 객체에서 나온다면, 그런 객체가 갓 모여드는 영역만 자주 들여다봐도 쓰레기를 거의 다 걷어 낼 수 있습니다. 오래 살아남아 좀처럼 죽지 않는 객체까지 매번 힙 전체에 끼워 다시 훑을 까닭은 그만큼 줄어듭니다.
+그래서 GC가 모든 객체를 같은 빈도로 검사할 이유는 없습니다. 새로 만들어진 객체는 대부분 금방 쓸모가 없어지므로, 이들이 모인 영역만 자주 검사해도 그 대부분을 회수할 수 있기 때문입니다. 반면 여러 번 살아남은 객체는 다음에도 남을 가능성이 크니, 자주 확인하지 않아도 됩니다.
 
 ---
 
 ### Gen 0, Gen 1, Gen 2
 
-세대 가설을 실제 구조로 옮기기 위해, .NET의 세대별 GC는 힙을 Gen 0, Gen 1, Gen 2라는 세 영역으로 가릅니다. 객체가 살아온 시간에 따라 머무는 자리를 달리 정합니다.
-
-갓 만들어진 객체는 모두 Gen 0에서 출발하고, GC 수집을 한 번씩 견뎌 살아남을 때마다 한 단계 위 세대로 옮겨 갑니다. 세대가 높을수록 영역은 더 넓게 잡아 두지만, GC가 들여다보는 빈도는 오히려 낮아집니다. 오래 살아남은 객체일수록 다시 죽을 가능성이 낮아 자주 검사할 까닭이 적기 때문입니다.
+.NET의 세대별 GC는 객체를 나이에 따라 다른 빈도로 검사하려고, 관리 힙을 **Gen 0, Gen 1, Gen 2** 세 영역으로 나눕니다. 여기서 객체의 나이는 GC가 돌 때마다 살아남은 횟수를 뜻합니다.
 
 <br>
 
@@ -403,7 +405,7 @@ Mark-and-Sweep은 GC가 죽은 객체를 가려내는 기본 틀이지만, 세�
   <text fill="currentColor" x="105" y="122" text-anchor="middle" font-size="12" font-family="sans-serif" opacity="0.8">새 객체</text>
   <text fill="currentColor" x="105" y="138" text-anchor="middle" font-size="12" font-family="sans-serif" opacity="0.8">할당</text>
   <line x1="55" y1="155" x2="155" y2="155" stroke="currentColor" stroke-width="1" opacity="0.25"/>
-  <text fill="currentColor" x="105" y="174" text-anchor="middle" font-size="11" font-family="sans-serif" opacity="0.55">크기: ~256KB</text>
+  <text fill="currentColor" x="105" y="174" text-anchor="middle" font-size="11" font-family="sans-serif" opacity="0.55">크기: 작음</text>
   <line x1="55" y1="185" x2="155" y2="185" stroke="currentColor" stroke-width="1" opacity="0.25"/>
   <text fill="currentColor" x="105" y="204" text-anchor="middle" font-size="11" font-family="sans-serif" opacity="0.55">수집: 자주</text>
   <rect x="55" y="218" width="100" height="22" rx="4" fill="currentColor" fill-opacity="0.06"/>
@@ -414,7 +416,7 @@ Mark-and-Sweep은 GC가 죽은 객체를 가려내는 기본 틀이지만, 세�
   <text fill="currentColor" x="280" y="122" text-anchor="middle" font-size="12" font-family="sans-serif" opacity="0.8">Gen 0에서</text>
   <text fill="currentColor" x="280" y="138" text-anchor="middle" font-size="12" font-family="sans-serif" opacity="0.8">살아남은 객체</text>
   <line x1="205" y1="155" x2="355" y2="155" stroke="currentColor" stroke-width="1" opacity="0.25"/>
-  <text fill="currentColor" x="280" y="174" text-anchor="middle" font-size="11" font-family="sans-serif" opacity="0.55">크기: ~2MB</text>
+  <text fill="currentColor" x="280" y="174" text-anchor="middle" font-size="11" font-family="sans-serif" opacity="0.55">크기: 중간</text>
   <line x1="205" y1="185" x2="355" y2="185" stroke="currentColor" stroke-width="1" opacity="0.25"/>
   <text fill="currentColor" x="280" y="204" text-anchor="middle" font-size="11" font-family="sans-serif" opacity="0.55">수집: 가끔</text>
   <rect x="215" y="218" width="130" height="22" rx="4" fill="currentColor" fill-opacity="0.06"/>
@@ -425,7 +427,7 @@ Mark-and-Sweep은 GC가 죽은 객체를 가려내는 기본 틀이지만, 세�
   <text fill="currentColor" x="525" y="122" text-anchor="middle" font-size="12" font-family="sans-serif" opacity="0.8">Gen 1에서</text>
   <text fill="currentColor" x="525" y="138" text-anchor="middle" font-size="12" font-family="sans-serif" opacity="0.8">살아남은 객체 (장기 생존)</text>
   <line x1="405" y1="155" x2="645" y2="155" stroke="currentColor" stroke-width="1" opacity="0.25"/>
-  <text fill="currentColor" x="525" y="174" text-anchor="middle" font-size="11" font-family="sans-serif" opacity="0.55">크기: 제한 없음</text>
+  <text fill="currentColor" x="525" y="174" text-anchor="middle" font-size="11" font-family="sans-serif" opacity="0.55">크기: 큼</text>
   <line x1="405" y1="185" x2="645" y2="185" stroke="currentColor" stroke-width="1" opacity="0.25"/>
   <text fill="currentColor" x="525" y="204" text-anchor="middle" font-size="11" font-family="sans-serif" opacity="0.55">수집: 드물게</text>
   <rect x="430" y="218" width="190" height="22" rx="4" fill="currentColor" fill-opacity="0.06"/>
@@ -435,15 +437,11 @@ Mark-and-Sweep은 GC가 죽은 객체를 가려내는 기본 틀이지만, 세�
 
 <br>
 
-**Gen 0**은 갓 할당된 객체가 가장 먼저 들어서는 세대입니다. 영역을 작게(보통 수백 KB) 잡아 두고 GC가 가장 자주 들여다보므로, 짧게 살다 가는 객체 대부분이 여기서 생겨났다가 여기서 거두어집니다. 새 객체가 차곡차곡 쌓이다 Gen 0이 가득 차면 그 세대만 따로 떼어 수집하는데, 이때 Mark 단계에서 루트로부터 닿아 살아남은 객체만 한 단계 위인 **Gen 1**로 옮겨지고, 이렇게 세대를 올려 보내는 일을 **승격(Promotion)**이라 부릅니다.
+**Gen 0**은 새로 할당된 객체가 처음 들어가는 세대입니다. 영역이 작고 GC가 가장 자주 검사하므로, 짧게 쓰이고 사라지는 객체 대부분은 여기서 회수됩니다. Gen 0 수집에서 살아남은 객체는 **Gen 1**로 이동하며, 이렇게 객체를 높은 세대로 옮기는 일을 **승격(Promotion)**이라고 합니다.
 
-<br>
+**Gen 1**은 Gen 0 수집에서 살아남은 객체가 머무는 중간 세대입니다. 한 번 살아남은 객체는 더 오래 쓰일 가능성이 있으므로, GC는 Gen 1을 Gen 0보다 덜 자주 검사합니다. Gen 1 수집에서도 살아남은 객체는 **Gen 2**로 승격됩니다.
 
-**Gen 1**은 Gen 0 수집을 한 차례 견뎌 낸 객체가 머무는 영역입니다. 한 번 살아남았다는 것은 그만큼 더 오래 쓰일 객체라는 신호이므로, GC는 Gen 1을 Gen 0보다 뜸하게 들여다봅니다. 그러다 Gen 1 수집까지 다시 통과한 객체는 한 단계 더 올라 **Gen 2**로 승격됩니다.
-
-<br>
-
-**Gen 2**는 프로그램 내내 살아남는 장기 생존 객체가 자리 잡는 영역으로, 세 세대 가운데 GC가 가장 드물게 손대는 곳입니다. 다만 Gen 2를 수집하려면 그 아래 세대까지 한꺼번에 훑는 전체 힙 수집, 곧 **Full GC**가 되므로, 한 번 돌 때 드는 비용은 가장 무겁습니다.
+**Gen 2**는 오래 유지되는 객체가 머무는 세대입니다. 세 세대 중 가장 드물게 수집되지만, Gen 2 수집은 아래 세대까지 함께 검사하는 **Full GC**가 되므로 한 번 실행될 때의 비용은 가장 큽니다.
 
 <br>
 
@@ -506,33 +504,28 @@ Mark-and-Sweep은 GC가 죽은 객체를 가려내는 기본 틀이지만, 세�
 
 <br>
 
-이 흐름이 곧 세대 가설을 비용으로 환산한 결과입니다. 대부분의 객체가 수명이 짧다면, 크기가 작아 금세 끝나는 Gen 0 수집만 자주 돌려도 쓰레기의 대부분이 걸러집니다. 그래서 비용이 무거운 Full GC는 아래 세대에서 미처 거르지 못한 객체가 쌓일 때만, 그것도 어쩌다 한 번씩만 돌면 됩니다.
+이렇게 세대를 나누면, 짧게 쓰이는 객체가 모이는 Gen 0은 범위가 작아 자주 수집해도 부담이 적습니다. 객체 대부분이 여기서 회수되므로, 힙 전체를 훑는 비싼 Full GC는 오래된 객체가 어느 정도 모인 뒤에야 가끔 실행됩니다.
 
-<br>
+.NET의 세대별 GC는 수집을 마친 뒤 **압축(Compaction)**도 수행할 수 있습니다. 살아남은 객체를 힙의 한쪽으로 모아 두면, 그 사이에 흩어져 있던 빈 공간이 반대쪽에 연속된 한 덩어리로 남습니다.
 
-.NET의 세대별 GC는 여기에 더해 수집을 마친 뒤 **압축(Compaction)**까지 거칩니다. 살아남은 객체들을 힙 한쪽으로 차곡차곡 밀어붙여, 그 사이사이 비어 있던 자리를 한데 모아 연속된 빈 공간으로 정리하는 작업입니다.
-
-이렇게 빈자리를 한 덩어리로 모아 두면, 새 객체를 할당할 때 그 연속된 공간을 곧바로 떼어 줄 수 있습니다. 작은 빈틈이 힙 곳곳에 흩어져 쓰지 못하게 되는 메모리 단편화도 이 과정에서 함께 풀립니다.
+빈 공간이 이렇게 한 덩어리로 모이면, 새 객체에 필요한 자리를 잡기가 쉬워집니다. 작은 빈틈이 힙 곳곳에 흩어져 막상 쓰기는 어려운 상태, 즉 **메모리 단편화(Memory Fragmentation)**도 이 과정에서 줄어듭니다.
 
 ---
 
 ## Unity의 Boehm GC
 
-앞 절에서 본 .NET의 세대별 GC는 데스크톱과 서버를 겨냥한 런타임의 이야기입니다. Unity의 Mono 런타임은 정작 이 세대별 GC를 쓰지 않고, **Boehm GC(Boehm-Demers-Weiser Garbage Collector)**라는 다른 수집기를 얹어 돌립니다.
+앞 절에서 본 세대별 GC는 일반적인 .NET 런타임에 해당합니다. Unity의 Mono 런타임은 이 방식 대신 **Boehm GC(Boehm-Demers-Weiser Garbage Collector)**라는 다른 수집기를 씁니다.
 
-<br>
+Boehm GC는 .NET의 세대별 GC와 세 가지 점에서 다릅니다.
+세대를 나누지 않아 수집할 때마다 힙 전체를 검사하고(**비세대**, Non-generational), 수집한 뒤에도 살아남은 객체를 그대로 두며(**비압축**, Non-compacting), 일부 메모리 값이 실제 참조인지 일반 정수인지 정확히 구분하지 못합니다(**보수적**, Conservative).
 
-Boehm GC는 앞서 본 .NET GC와 세 군데에서 갈립니다. 세대를 따로 나누지 않아 수집할 때마다 힙을 통째로 훑고(**비세대**, Non-generational), 수집을 마쳐도 살아남은 객체를 옮기지 않으며(**비압축**, Non-compacting), 스택에 놓인 값이 객체를 가리키는 참조인지 그저 정수인지를 또렷이 가려내지 못합니다(**보수적**, Conservative).
-
-이 세 성격이 곧 .NET GC와 Boehm GC를 가르는 핵심 차이이며, Unity에서 GC 비용이 유독 무거운 까닭의 뿌리이기도 합니다. 아래에서 하나씩 짚어 보겠습니다.
-
----
+이 세 특성 때문에 Unity에서는 GC 비용이 더 커집니다. 각각이 어떤 비용으로 이어지는지 차례로 살펴봅니다.
 
 ### 비세대 (Non-generational)
 
-Boehm GC와 .NET GC가 처음으로 갈리는 지점은 힙을 세대로 나누느냐입니다. Boehm GC는 세대를 따로 두지 않으므로, .NET GC가 Gen 0만 떼어 살피던 부분 수집이라는 길 자체가 없습니다.
+Boehm GC와 .NET GC의 첫 번째 차이는 힙을 세대로 나누는지 여부입니다. Boehm GC는 세대를 나누지 않으므로, .NET GC처럼 Gen 0만 따로 검사하는 부분 수집을 할 수 없습니다.
 
-그래서 한 번 GC가 돌 때마다 힙에 놓인 객체를 처음부터 끝까지 빠짐없이 훑어야 합니다.
+따라서 GC가 한 번 실행될 때마다 힙 전체가 검사 대상이 됩니다.
 
 <br>
 
@@ -567,17 +560,14 @@ Boehm GC와 .NET GC가 처음으로 갈리는 지점은 힙을 세대로 나누�
 
 <br>
 
-가령 힙에 객체가 1000개 쌓여 있다면, 그중 990개가 한참 전부터 자리를 지켜 온 장기 생존 객체라 해도 Boehm GC는 1000개를 빠짐없이 검사 대상에 올립니다. 오래 살아남은 객체만 따로 건너뛸 길이 없기 때문입니다.
-
-여기서 Mark 단계에 드는 비용은 살아남은 객체 수를 따라가고, Sweep 단계에 드는 비용은 힙 전체 크기를 따라갑니다. 그래서 힙이 불어날수록 한 번의 GC에 걸리는 시간도 그만큼 길어지게 됩니다.
-
----
+예를 들어 객체 1000개 중 990개가 이미 오래 살아남은 것이라도, Boehm GC는 매 수집마다 1000개를 전부 검사합니다. 오래된 객체를 따로 두고 덜 자주 검사하는 구조가 없기 때문입니다.
+그래서 힙에 객체가 많을수록 한 번의 수집에서 살펴야 할 양도 그만큼 커지고, 수집 시간이 길어집니다. 특히 좀처럼 사라지지 않는 오래된 객체가 늘어날수록, 매 수집이 점점 무거워집니다.
 
 ### 비압축 (Non-compacting)
 
-두 번째 차이는 수집을 마친 뒤 살아남은 객체를 옮기느냐입니다. 앞서 .NET GC는 압축으로 객체를 한쪽에 차곡차곡 밀어붙인다고 했는데, Boehm GC는 Sweep을 끝내고도 객체를 제자리에 그대로 둡니다.
+두 번째 차이는 수집을 마친 뒤 살아남은 객체를 옮기는지 여부입니다. .NET GC는 압축으로 이들을 힙 한쪽에 모으지만, Boehm GC는 Sweep을 끝낸 뒤에도 객체를 원래 자리에 그대로 둡니다.
 
-그러다 보니 죽은 객체를 해제한 자리는 빈틈으로 남고, 그 빈틈이 살아남은 객체 사이사이에 점점이 흩어집니다. 이렇게 작은 빈 공간이 힙 곳곳에 조각조각 끼어드는 것을 **메모리 단편화(Fragmentation)**라고 부릅니다.
+그래서 죽은 객체가 비운 자리가 살아남은 객체 사이사이에 빈틈으로 남습니다. 객체를 한데 모으는 단계가 없는 Boehm GC에서는 이런 단편화가 수집을 거듭할수록 심해집니다.
 
 <br>
 
@@ -637,33 +627,25 @@ Boehm GC와 .NET GC가 처음으로 갈리는 지점은 힙을 세대로 나누�
 
 <br>
 
-위 그림처럼 빈자리가 조각나면 묘한 상황이 빚어집니다. 비어 있는 공간을 모두 더하면 120B에 이르는데도, 한 덩어리로 이어진 가장 큰 빈자리는 40B뿐이라 50B짜리 객체 하나 들여놓을 자리가 없습니다. .NET GC라면 압축으로 살아남은 객체를 한쪽에 몰아붙여 빈자리를 늘 한 덩어리로 모아 두므로 이런 일이 생기지 않지만, 객체를 옮기지 않는 Boehm GC에서는 빈 공간 총량이 넉넉해도 이어진 블록이 모자라면 새 객체를 받아 줄 수 없습니다. 결국 힙은 실제로 쓰는 양보다 더 부풀어 오릅니다.
+그림처럼 빈자리가 잘게 조각나면, 전체 여유는 넉넉해도 새 객체를 들이지 못할 수 있습니다. 흩어진 빈자리를 모두 합치면 120B나 되지만 연속된 자리는 가장 큰 것이 40B뿐이라, 50B짜리 객체를 놓을 자리가 없습니다. 객체를 옮기지 않는 Boehm GC에서는 빈 공간의 총량보다 연속된 한 덩어리의 크기가 중요해지고, 결국 힙은 실제 사용량보다 더 커집니다.
 
-<br>
+게다가 한 번 커진 힙은 좀처럼 다시 줄지 않습니다. GC가 죽은 객체를 회수해도 힙이 확보해 둔 전체 크기는 그대로 남고, 그만큼 Boehm GC가 매번 훑어야 하는 범위도 넓은 채로 유지됩니다.
 
-더 까다로운 점은, 이렇게 한 번 넓어진 힙이 다시 좁아지지 않는다는 데 있습니다. GC가 죽은 객체를 거두어 메모리를 비워 내더라도 힙이 차지한 크기 자체는 그대로 유지되므로, 비세대 방식이 매번 훑어야 하는 검사 범위도 넓어진 채로 남습니다.
-
-가령 게임 초반에 임시 객체를 한꺼번에 쏟아내 힙이 한 차례 넓어졌다면, 그 임시 객체를 모두 거두어 간 뒤에도 GC가 힙 전체를 훑는 시간은 줄지 않고 그대로 길게 남게 됩니다.
-
----
+예를 들어 게임 초반 로딩에서 임시 객체가 많이 생겨 힙이 한 번 커졌다면, 그 객체들이 나중에 회수되어도 GC가 훑는 범위는 넓어진 채로 남습니다.
 
 ### 보수적 (Conservative)
 
-세 번째 차이는 어떤 값이 객체를 가리키는 참조인지 가려내는 정확도입니다. Boehm GC는 본래 C와 C++ 같은 언어를 두루 받쳐 주려고 만든 범용 수집기라, 타입 정보가 주어지지 않아도 돌아가도록 설계되어 있습니다.
+세 번째 차이는 메모리에 놓인 값이 실제 객체 참조인지 판별하는 정확도입니다. Boehm GC는 C와 C++ 같은 환경에서도 사용할 수 있도록 만들어진 범용 수집기라, 모든 위치에 정확한 타입 정보가 없어도 동작하도록 설계되어 있습니다.
 
-다만 타입 정보가 없으면, 메모리에 놓인 어떤 값이 객체를 가리키는 포인터인지 그저 평범한 정수인지를 가려낼 길이 없습니다.
+문제는 타입 정보가 없으면 어떤 값이 객체 주소를 담은 참조인지, 단순한 정수값인지 확실히 구분할 수 없다는 점입니다.
 
-<br>
+이 한계는 **스택과 레지스터**에서 특히 중요합니다. 스택의 지역 변수와 레지스터에는 객체 참조뿐 아니라 해시 코드, 계산 중간값, 인덱스 같은 일반 정수도 함께 들어갈 수 있기 때문입니다.
 
-이 한계가 특히 또렷하게 드러나는 자리가 **스택과 레지스터**입니다. 스택의 지역 변수나 레지스터에는 객체를 가리키는 포인터만 담기는 것이 아니라, 해시 코드나 연산 중간값 같은 평범한 정수도 함께 들어앉기 때문입니다.
+보수적 GC는 이런 값이 참조인지 정수인지 확실하지 않을 때 안전한 쪽으로 판단합니다. 어떤 정수값이 우연히 힙 객체의 주소 범위와 맞으면, GC는 그 값을 참조일 가능성이 있다고 보고 해당 객체를 살아 있는 객체로 취급합니다. 이처럼 애매한 값을 버리지 않고 보수적으로 살려 두기 때문에 **보수적(Conservative)** GC라고 부릅니다.
 
-보수적 GC는 이 슬롯이 포인터를 담았는지 정수를 담았는지 알려 주는 타입 정보를 갖고 있지 않습니다. 그래서 어떤 슬롯의 정수값이 마침 힙에 놓인 객체의 주소와 우연히 맞아떨어지면, GC는 그 값을 포인터로 받아들여 해당 객체를 아직 살아 있는 것으로 묶어 둡니다. 이렇게 멀쩡한 정수까지 참조일지 모른다며 안전하게 넘겨짚는 태도에서 **보수적(Conservative)**이라는 이름이 나왔습니다.
+다만 Unity의 Mono가 모든 영역을 똑같이 보수적으로 훑는 것은 아닙니다. **힙 객체의 필드**에 대해서는 타입 디스크립터를 사용해 어느 필드가 참조이고 어느 필드가 값인지 더 정확하게 알 수 있습니다.
 
-<br>
-
-다만 Unity의 Mono는 이 보수적 스캔의 범위를 한쪽에서 좁혀 둡니다. Boehm GC에 타입 디스크립터를 건네주어, **힙 객체의 필드**만큼은 정확하게 훑도록 다듬어 두었습니다. 객체의 어느 필드가 참조이고 어느 필드가 정수인지 타입 정보로 또렷이 가려낼 수 있기 때문입니다.
-
-그러나 **스택과 레지스터**에는 이런 타입 정보가 끝내 주어지지 않아 여전히 보수적으로 훑을 수밖에 없으며, 뒤에서 볼 거짓 참조도 주로 이 자리에서 생겨납니다.
+반면 **스택과 레지스터**는 여전히 보수적으로 검사해야 하며, 여기서 잘못 살아남는 객체가 생길 수 있습니다.
 
 <br>
 
@@ -719,15 +701,13 @@ Boehm GC와 .NET GC가 처음으로 갈리는 지점은 힙을 세대로 나누�
 
 <br>
 
-그림 속 객체 Y처럼, 이렇게 우연히 빚어지는 **거짓 참조(False Reference)** 탓에 정작 아무도 쓰지 않는 죽은 객체가 거두어지지 못한 채 힙에 눌러앉을 수 있습니다.
+그림의 객체 Y가 그런 경우입니다. 이렇게 참조로 오인된 값을 **거짓 참조(False Reference)**라고 합니다.
 
-이런 거짓 참조가 곳곳에서 생기면 쓰지도 않는 쓰레기가 힙에 쌓여 크기가 군더더기로 불어나고, 앞서 본 비세대 특성과 맞물려 GC가 힙 전체를 훑는 시간까지 덩달아 길어지게 됩니다.
+거짓 참조가 생기면 회수되어야 할 객체가 힙에 남습니다. 이런 객체가 누적되면 힙 크기가 불필요하게 커지고, 비세대 방식과 맞물려 GC가 전체 힙을 검사하는 시간도 길어집니다.
 
-<br>
+반면 .NET GC는 참조 위치를 정확히 아는 **정확한(Precise)** GC입니다. .NET 런타임은 실행 코드와 함께 GC가 참고할 타입 정보(GC Info)를 유지하므로, 스택의 어느 위치가 객체 참조이고 어느 위치가 일반 값인지 구분할 수 있습니다.
 
-반면 .NET GC는 이런 넘겨짚기 없이 참조를 또렷이 가려내는 **정확한(Precise)** GC입니다. .NET 런타임은 JIT 컴파일 시점에 각 스택 프레임마다 타입 정보(GC Info)를 함께 만들어 두므로, 스택의 어느 슬롯이 객체 참조이고 어느 슬롯이 정수인지를 정확히 구분할 수 있습니다.
-
-그래서 정수를 참조로 잘못 넘겨짚는 거짓 참조가 끼어들 여지가 없습니다. 앞 절에서 본 압축, 곧 살아남은 객체를 마음 놓고 옮겨 빈자리를 모으는 일이 가능한 것도 바로 이렇게 참조를 정확히 짚어 두는 덕분입니다.
+이 정보가 있으면 정수를 참조로 잘못 판단할 가능성이 줄어듭니다. 또한 살아남은 객체를 옮기는 압축을 수행하려면 모든 참조를 새 주소로 갱신해야 하므로, 정확한 참조 정보가 필요합니다.
 
 ---
 
@@ -740,33 +720,27 @@ Boehm GC와 .NET GC가 처음으로 갈리는 지점은 힙을 세대로 나누�
 | 참조 정확도 | 정확 (Precise) | 스택: 보수적 / 힙: 부분 정확 |
 | Gen 0 수집 속도 | 빠름 | 해당 없음 |
 | 힙 크기와 GC 시간 | 세대별 분리 | 비례 증가 |
-| 힙 축소 | 가능 | 불가능 |
+| 힙 축소 | 가능 | 제한적 |
 
 <br>
 
-표를 보면 Boehm GC가 .NET GC에 견주어 거의 모든 칸에서 뒤처지는데, 그런데도 Unity가 이 수집기를 그대로 안고 가는 까닭은 성능보다 역사적 사정에 있습니다.
+표에서 볼 수 있듯 Boehm GC는 Unity의 프레임 시간 관점에서 불리한 특성을 많이 가집니다. 그럼에도 Unity가 이 수집기를 오래 사용해 온 이유는 단순히 성능 선택의 문제가 아니라 런타임과 엔진 구조의 역사와 관련이 있습니다.
 
-Unity가 Mono 런타임을 처음 들이던 시절(Unity 1.x, 2005년경)에 Boehm GC가 그 일부로 함께 따라 들어왔고, 그 뒤로 엔진의 네이티브 코드와 직렬화 시스템, 스크립팅 바인딩에 이르기까지 엔진의 여러 갈래가 이 GC를 발판으로 쌓여 올라갔습니다. 이제 와 .NET의 세대별 GC로 갈아 끼우려면 이렇게 얽힌 의존 관계를 통째로 다시 설계해야 합니다.
+Unity는 초기부터 Mono 런타임을 기반으로 C# 스크립팅 환경을 구성했는데, 당시 Mono가 기본 수집기로 삼은 것이 Boehm GC였습니다. 이후 네이티브 엔진 코드, 직렬화 시스템, 스크립팅 바인딩이 이 런타임 구조와 맞물려 발전했습니다. GC를 다른 방식으로 교체하려면 단순히 수집기 하나를 바꾸는 수준이 아니라, 런타임과 엔진 사이의 여러 연결을 다시 설계해야 합니다.
 
-그래서 Unity는 이 교체를 멀리 둔 목표로만 잡아 둔 채, 지금까지도 Boehm GC를 그대로 쓰고 있습니다.
+따라서 Unity의 GC 비용을 이해할 때는 “왜 .NET GC처럼 동작하지 않는가”보다 “현재 Unity 런타임이 어떤 제약을 갖고 있는가”를 기준으로 보는 편이 실용적입니다.
 
 ---
 
 ## Stop-the-World와 GC 스파이크
 
-세대를 나누지도, 살아남은 객체를 한쪽으로 모으지도, 무엇이 참조인지 단정하지도 않는 Boehm GC의 성격은 한 번 GC가 돌 때 드는 비용을 끌어올립니다. 매번 힙 전체를 보수적으로 훑어야 하니, 그 한 번이 가볍게 끝나기 어렵기 때문입니다.
+앞서 본 비세대·비압축·보수적 특성 때문에, Boehm GC는 한 번 실행될 때마다 시간이 오래 걸립니다.
 
-<br>
-
-이 비용은 코드 위에서만 머무는 추상이 아니라, 게임이 도는 현장에서 두 가지 모습으로 드러납니다. GC가 도는 동안 게임 로직이 잠시 멎는 **Stop-the-World**, 그리고 그 멈춤이 한 프레임의 시간을 위로 솟구치게 하는 **GC 스파이크(GC Spike)**입니다. 앞은 멈춤이라는 동작 자체를, 뒤는 그 동작이 프레임에 남기는 자국을 가리킵니다.
+이렇게 느린 GC는 게임에서 두 가지 문제를 일으킵니다. 하나는 GC가 도는 동안 C# 코드 실행이 멈추는 **Stop-the-World**이고, 다른 하나는 그 멈춤으로 한 프레임이 유독 오래 걸리는 **GC 스파이크(GC Spike)**입니다.
 
 ### Stop-the-World
 
-두 모습 가운데 먼저 짚을 것은 멈춤 그 자체입니다. **Stop-the-World**는 GC가 도는 동안 모든 C# 스크립트의 실행을 한꺼번에 멈춰 세우는 동작을 가리킵니다.
-
-<br>
-
-GC가 굳이 스크립트를 멈추는 까닭은 Mark 단계의 결과를 어긋나지 않게 지키기 위해서입니다. GC가 힙을 훑으며 어느 객체가 살아 있는지 표시하는 사이에 스크립트가 끼어들어 새 객체를 만들거나 객체끼리의 참조를 바꿔 버리면, 방금 표시해 둔 결과가 실제 상태와 어긋나게 됩니다. 그래서 GC는 힙 검사를 마칠 때까지 스크립트를 손대지 못하도록 잡아 둡니다.
+GC가 검사하는 도중에도 코드가 계속 실행되면, 새 객체가 생기거나 참조가 바뀌어 GC가 보던 객체 그래프와 실제 그래프가 어긋날 수 있습니다. 그래서 GC는 Mark와 Sweep을 도는 짧은 시간 동안 코드 실행을 멈추고, 객체 그래프를 고정한 채 검사를 끝냅니다.
 
 <br>
 
@@ -825,21 +799,15 @@ GC가 굳이 스크립트를 멈추는 까닭은 Mark 단계의 결과를 어긋
 
 <br>
 
-한 프레임 안에서 일어나는 일은 입력 처리와 게임 로직, 렌더링 명령으로 정해져 있는데, GC가 끼어든 프레임에서는 그 사이에 Stop-the-World로 멎어 있던 시간이 고스란히 더해집니다. 위 그림에서 5ms 로직과 4ms 렌더링만으로 끝났을 프레임이, 15ms짜리 GC가 한가운데 들어서면서 24.5ms까지 불어나는 것이 바로 이 합산입니다.
+게임은 매 프레임마다 입력을 처리하고, 게임 로직을 돌리고, 렌더링 명령을 만듭니다. GC가 실행되는 프레임에서는 여기에 코드가 멈춰 있던 시간이 그대로 보태집니다. 위 그림에서 5ms 로직과 4ms 렌더링이면 끝났을 프레임에 15ms GC가 더해지면, 전체 시간이 24.5ms까지 늘어납니다.
 
-<br>
-
-이렇게 더해진 시간이 60fps 기준의 16.6ms 프레임 예산을 넘어서면, 그 프레임은 제때 화면에 그려지지 못합니다. 화면 갱신이 한 박자 늦어지는 셈이라, 플레이어는 매끄럽게 이어지던 화면이 순간 걸리는 끊김, 곧 **스터터링(Stuttering)**으로 이 지연을 느끼게 됩니다.
+이렇게 늘어난 시간이 60fps 기준의 한 프레임 예산 16.6ms를 넘으면, 그 프레임은 제때 표시되지 못합니다. 플레이어는 이를 화면이 잠깐 끊기는 **스터터링(Stuttering)**으로 느낍니다.
 
 ---
 
 ### GC 스파이크
 
-앞의 Stop-the-World가 프레임을 멎게 하는 동작이라면, 그 멈춤이 프레임 시간 그래프에 남기는 자국이 바로 **GC 스파이크(GC Spike)**입니다. GC가 끼어든 한 프레임만 시간이 유독 높이 솟아오르는 모양이라 이런 이름이 붙었습니다.
-
-<br>
-
-이 모양은 Unity Profiler로 프레임마다의 시간을 늘어놓고 보면 한눈에 드러납니다. 평소 10~15ms 안팎에서 고르게 이어지던 막대들 사이로, GC가 든 프레임 하나만 25~50ms까지 불쑥 솟아 다른 막대를 한참 웃돕니다.
+앞서 본 그 부푼 프레임은 Unity Profiler의 프레임 시간 그래프에서 뾰족한 막대 하나로 나타납니다. 고르게 이어지던 다른 막대들 사이에서 GC가 실행된 프레임만 유독 높이 솟기 때문입니다.
 
 <br>
 
@@ -890,25 +858,23 @@ GC가 굳이 스크립트를 멈추는 까닭은 Mark 단계의 결과를 어긋
 
 <br>
 
-막대가 얼마나 높이 솟느냐, 곧 스파이크의 크기를 가르는 것은 **힙 크기**와 **살아 있는 객체의 참조 구조** 두 가지입니다. 둘 다 GC가 한 번 도는 데 걸리는 시간을 좌우하는 요인입니다.
+스파이크의 크기는 GC 한 번이 오래 걸릴수록 커집니다. 그 시간을 정하는 것은 두 가지입니다. 하나는 GC가 처리해야 할 일의 양이고, 다른 하나는 그 일을 실행하는 기기의 속도입니다.
 
-먼저 힙 크기에 따라 검사할 대상의 양이 달라집니다. 세대를 나누지 않는 Boehm GC는 GC가 돌 때마다 힙에 놓인 객체를 빠짐없이 훑으므로, 힙에 쌓인 객체가 많을수록 Mark 단계에서 살펴야 할 객체도 그만큼 불어나 한 번의 GC가 길어집니다. 여기에 객체끼리의 참조가 이리저리 얽혀 있으면, 그 참조를 한 갈래씩 타고 들어가는 그래프 탐색에도 더 많은 시간이 들어갑니다.
+일의 양부터 보면, 힙이 클수록 검사할 객체가 늘어납니다. Boehm GC는 세대를 나누지 않아 매번 힙 전체를 훑으므로, 객체가 많을수록 Mark와 Sweep에 걸리는 시간이 길어집니다. 참조 구조가 복잡할 때도 마찬가지여서, 루트에서 참조를 따라가는 Mark 단계가 더 오래 걸립니다.
 
-<br>
-
-같은 크기의 힙이라도 어느 기기에서 도느냐에 따라 스파이크의 높이는 또 달라집니다. GC는 결국 CPU가 떠맡는 일이라, CPU 성능이 데스크톱보다 처지는 모바일에서는 똑같은 힙을 훑는 데에도 시간이 더 걸리기 때문입니다. 데스크톱에서 5ms로 끝나던 GC가 모바일에서는 15~20ms까지 늘어나기도 합니다.
+처리 속도는 실행 기기가 정합니다. GC는 결국 CPU가 하는 일이라, 성능이 낮거나 발열로 클럭이 떨어진 모바일에서는 같은 양을 검사해도 더 오래 걸립니다.
 
 ---
 
 ## Incremental GC
 
-앞서 본 GC 스파이크는 한 프레임에 GC 작업이 통째로 몰리면서 그 프레임만 예산을 넘겨 버리는 데서 비롯됩니다. 그렇다면 그 작업을 한 프레임에 다 끝내려 들지 않고 여러 프레임에 잘게 나눠 흘려보내면, 프레임 하나가 솟구치는 일은 누그러뜨릴 수 있습니다. Unity가 2019.1부터 들인 **Incremental GC(점진적 GC)**가 바로 이 발상에서 나온 방식입니다.
+이런 GC 스파이크는 플레이 도중 프레임을 끊기게 만드는 직접적인 원인입니다. Unity는 이 스파이크를 누그러뜨리려고 **Incremental GC(점진적 GC)**를 제공합니다.
 
 ### GC 작업의 분산
 
-Boehm GC의 기본 모드는 GC가 한 번 시작되면 Mark-and-Sweep 전체를 그 프레임 안에 끝까지 마쳐야 합니다. 그래서 힙이 무거운 순간에 GC가 끼어들면, 그 한 프레임에 GC 시간이 고스란히 얹혀 예산을 훌쩍 넘기게 됩니다.
+기존 Boehm GC는 한 번 시작하면 Mark-and-Sweep을 그 프레임 안에서 끝까지 마칩니다. 힙이 클수록 이 한 프레임이 통째로 길어집니다.
 
-Incremental GC는 같은 Mark-and-Sweep을 한 번에 몰아치지 않고, 프레임마다 일부만 떼어 조금씩 밀고 나가는 방식으로 풀어냅니다. 한 프레임에서는 GC 작업의 한 조각만 처리하고 나머지는 다음 프레임으로 넘기므로, 프레임 하나에 얹히는 GC 비용 자체가 작게 쪼개집니다.
+Incremental GC는 같은 Mark-and-Sweep을 여러 조각으로 나눠, 프레임마다 일부만 처리합니다. 한 프레임에서 못 끝낸 부분은 다음 프레임으로 넘기므로, 한 프레임에 더해지는 GC 시간이 그만큼 짧아집니다.
 
 <br>
 
@@ -932,7 +898,7 @@ Incremental GC는 같은 Mark-and-Sweep을 한 번에 몰아치지 않고, 프�
   <text fill="currentColor" x="254" y="104" text-anchor="middle" font-size="9" font-family="monospace" opacity="0.8">20ms</text>
   <!-- Frame 2 total -->
   <line x1="140" y1="120" x2="330" y2="120" stroke="currentColor" stroke-width="1"/>
-  <text fill="currentColor" x="235" y="137" text-anchor="middle" font-size="10" font-family="monospace" font-weight="bold">25ms → 프레임 드롭!</text>
+  <text fill="currentColor" x="235" y="137" text-anchor="middle" font-size="10" font-family="monospace" font-weight="bold">25ms → 예산 초과</text>
   <!-- Frame 3 & 4: normal -->
   <rect x="340" y="68" width="90" height="45" rx="3" fill="currentColor" fill-opacity="0.1" stroke="currentColor" stroke-width="1"/>
   <text fill="currentColor" x="385" y="88" text-anchor="middle" font-size="10" font-family="sans-serif" opacity="0.8">정상</text>
@@ -1009,21 +975,19 @@ Incremental GC는 같은 Mark-and-Sweep을 한 번에 몰아치지 않고, 프�
 
 <br>
 
-위 그림에서 보듯, GC를 여러 프레임에 흩뿌리는 대신 치르는 값이 하나 있습니다. 뒤에서 다룰 쓰기 장벽 비용이 더해지면서 GC 총 작업량이 원래 20ms에서 ~26ms로 다소 불어난다는 점입니다. 다만 그렇게 늘어난 작업도 프레임마다 잘게 쪼개져 흘러가므로, 한 프레임이 떠안는 GC 비용은 5ms 안팎으로 가벼워집니다. 그래서 게임 로직과 합쳐도 프레임마다 15ms 안팎에 머물러 16.6ms 예산을 넘지 않고, 눈에 띄던 끊김도 가라앉게 됩니다.
+위 그림처럼 Incremental GC는 GC 작업을 여러 프레임에 나누어 한 프레임의 부담을 줄입니다. 대신 뒤에서 볼 쓰기 장벽 비용이 추가되어 총 GC 작업량은 약간 늘 수 있습니다. 핵심은 총량을 없애는 것이 아니라, 한 프레임에 몰리던 시간을 여러 프레임으로 분산해 프레임 예산을 넘기기 어렵게 만드는 것입니다.
 
 ---
 
 ### 쓰기 장벽 (Write Barrier)
 
-GC 작업을 여러 프레임에 쪼개 놓으면 기본 모드에는 없던 빈틈이 하나 벌어집니다. GC가 한 프레임에서 객체 A를 검사해 두고 멈춘 뒤, 다음 프레임에서 다시 일을 잡기까지 그 사이에 스크립트가 멀쩡히 돌아간다는 점입니다.
+GC 작업을 여러 프레임에 나누면 새로운 문제가 생깁니다. GC가 객체 A를 검사하고 잠시 멈춘 사이에도 코드는 계속 실행되며, 그동안 A의 참조를 바꿀 수 있기 때문입니다.
 
-이 틈에 스크립트가 `A.child = newObject`처럼 A의 참조를 바꿔 새 객체를 매달면 문제가 불거집니다. GC는 A를 이미 다 살펴본 뒤라 그 너머에 새로 붙은 newObject를 알 길이 없고, 어느 루트에서도 닿지 못하는 것으로 잘못 가려 멀쩡히 살아 있는 객체를 거두어 버릴 수 있습니다.
+예를 들어 코드가 `A.child = newObject`로 A에 새 객체를 연결한다면, GC는 A를 이미 검사한 것으로 처리하므로 뒤늦게 연결된 `newObject`가 검사에서 빠질 수 있습니다. 그러면 살아 있는 객체가 도달 불가능한 것으로 잘못 분류되어 회수될 위험이 생깁니다.
 
-<br>
+Incremental GC는 이 문제를 **쓰기 장벽(Write Barrier)**으로 막습니다. 코드가 참조 필드를 바꿀 때마다 런타임이 그 변경을 따로 기록해 둡니다.
 
-Incremental GC는 이 틈을 **쓰기 장벽(Write Barrier)**으로 메웁니다. 스크립트가 참조 필드를 고쳐 쓸 때마다 런타임이 그 자리에 끼어들어, 이 객체의 참조가 바뀌었다는 사실을 따로 기록해 둡니다.
-
-그러다 다음 프레임에서 GC가 일을 다시 잡으면, 먼저 이 기록부터 들춰 봅니다. 바뀐 자리로 짚어 들어가 A를 한 번 더 검사하면, 그 사이 새로 매달린 newObject까지 빠짐없이 표시되므로 살아 있는 객체를 잘못 거두는 일이 막힙니다.
+다음 GC 단계에서는 이 기록을 확인해, 참조가 바뀐 객체를 다시 검사합니다. 그러면 중간에 새로 연결된 객체도 Mark에 포함되어, 살아 있는 객체가 잘못 회수되지 않습니다.
 
 <br>
 
@@ -1065,15 +1029,13 @@ Incremental GC는 이 틈을 **쓰기 장벽(Write Barrier)**으로 메웁니다
 
 <br>
 
-다만 이 안전장치는 공짜로 얻어지지 않습니다. 쓰기 장벽은 참조 필드를 고쳐 쓰는 자리마다 빠짐없이 끼어들어 기록을 남기므로, 참조를 자주 갈아 끼우는 코드일수록 그 기록 비용이 차곡차곡 더해집니다.
+다만 이 기록을 남기는 데에도 시간이 들고, 참조를 자주 바꾸는 코드에서는 그 부담이 거듭 누적됩니다.
 
-앞 그림에서 GC 총 작업량이 원래 20ms에서 ~26ms로 불어난 대목이 바로 이 쓰기 장벽 몫입니다. 한 프레임의 스파이크를 잘게 흩어 주는 대신, 그 대가로 총 작업량이 다소 늘어나는 맞바꿈인 셈입니다.
-
----
+따라서 Incremental GC는 한 프레임의 큰 스파이크를 줄이는 대신, 전체 GC 관련 작업량은 조금 늘 수 있습니다.
 
 ### Incremental GC의 한계
 
-여기까지 보면 Incremental GC가 스파이크를 다스리는 든든한 장치처럼 비치지만, 한 가지 선만큼은 분명히 그어 두어야 합니다. Incremental GC는 GC가 남기는 자국을 잘게 흩어 누그러뜨릴 뿐, GC라는 비용 자체를 걷어 내지는 못합니다.
+Incremental GC는 스파이크를 줄여 주지만, GC가 해야 할 일의 총량까지 줄이지는 않습니다. 힙에 남은 객체를 검사하고 회수하는 작업은 그대로 남고, 새 객체가 계속 생기는 한 GC도 계속 돌아야 합니다.
 
 <br>
 
@@ -1096,71 +1058,55 @@ Incremental GC는 이 틈을 **쓰기 장벽(Write Barrier)**으로 메웁니다
   <text fill="currentColor" x="340" y="186" font-size="12" font-family="sans-serif" opacity="0.8">· 할당 속도 > 해제 속도이면</text>
   <text fill="currentColor" x="348" y="202" font-size="12" font-family="sans-serif" opacity="0.8">결국 큰 스파이크 발생</text>
   <text fill="currentColor" x="340" y="230" font-size="12" font-family="sans-serif" opacity="1.0" font-weight="bold">· 힙 할당 자체를 줄이지 않으면</text>
-  <text fill="currentColor" x="348" y="246" font-size="12" font-family="sans-serif" opacity="1.0" font-weight="bold">근본 해결 안 됨</text>
+  <text fill="currentColor" x="348" y="246" font-size="12" font-family="sans-serif" opacity="1.0" font-weight="bold">비용이 계속 남음</text>
   <!-- 하단 결론 -->
   <rect x="100" y="265" width="420" height="35" rx="6" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1"/>
-  <text fill="currentColor" x="310" y="288" text-anchor="middle" font-size="12" font-family="sans-serif" opacity="0.8">스파이크 완화 수단이지 근본적 해결책이 아님</text>
+  <text fill="currentColor" x="310" y="288" text-anchor="middle" font-size="12" font-family="sans-serif" opacity="0.8">스파이크 완화 수단이며 할당 감소를 대체하지 않음</text>
 </svg>
 </div>
 
 <br>
 
-그림의 오른쪽이 짚듯, Incremental GC가 손대는 것은 어디까지나 GC가 한 번 돌 때 남기는 자국의 모양일 뿐, GC가 돌아야 하는 상황 자체는 그대로 남습니다. 힙에 새 객체가 계속 쌓이면 GC는 변함없이 다시 돌고, 매 프레임 2~3ms의 GC 비용도 끊이지 않고 따라붙습니다.
+Incremental GC를 켜도, 할당 속도가 GC가 정리하는 속도를 앞지르면 줄였던 스파이크가 다시 나타납니다. 예를 들어 `Update()`에서 프레임마다 `new string()`이나 `new List<>()`를 만들면, 할당이 계속 늘어 GC가 따라잡지 못합니다.
 
-이 한계가 가장 선명하게 드러나는 자리가 매 프레임 새로 할당을 일으키는 코드입니다. `Update()` 안에서 프레임마다 `new string()`이나 `new List<>()`로 객체를 찍어 내면, Incremental GC를 켜 두었더라도 할당이 해제를 앞질러 쌓이면서 GC 비용이 프레임마다 더해지고, 끝내 잘게 흩어 내지 못한 큰 스파이크가 다시 솟구치게 됩니다.
-
-<br>
-
-그래서 GC 문제를 뿌리째 잡으려면 힙 할당 자체를 줄여야 합니다. Incremental GC는 할당을 최대한 덜어 낸 뒤에도 끝내 남는 불가피한 GC 비용을, 한 프레임에 몰리지 않게 여러 프레임으로 흩어 주는 보조 장치로 두는 것이 맞습니다.
+결국 GC 부담을 근본적으로 덜려면, 여전히 힙 할당을 줄여야 합니다. Incremental GC는 피할 수 없는 GC 비용을 프레임마다 잘게 쪼개, 체감 스파이크를 낮추는 보조 수단일 뿐입니다.
 
 ---
 
 ### Incremental GC 활성화
 
-Incremental GC는 Unity 에디터의 **Project Settings > Player > Other Settings > Configuration**에서 **Use Incremental GC** 체크박스로 켭니다. Unity 2019.3 이후 버전에서는 이 옵션이 처음부터 켜진 채로 들어가 있습니다.
+Incremental GC는 Unity 에디터의 **Project Settings > Player > Other Settings > Configuration**에서 **Use Incremental GC** 옵션으로 설정할 수 있습니다. 프로젝트와 Unity 버전에 따라 기본 상태가 다를 수 있으므로, 대상 플랫폼 빌드 설정에서 직접 확인하는 것이 좋습니다.
 
-<br>
-
-한 가지 짚어 둘 것은, Incremental GC가 GC 알고리즘 자체를 갈아 끼우는 기능은 아니라는 점입니다. 세대를 나누는 세대별 GC로 바뀌는 것이 아니라, 앞서 본 Boehm GC 위에 얹혀 그 Mark-and-Sweep을 여러 프레임에 나누어 돌리도록 손보는 방식에 가깝습니다.
-
-그러므로 비세대, 비압축, 보수적이라는 Boehm GC의 근본 성격은 Incremental GC를 켜도 그대로입니다. 달라지는 것은 같은 Mark-and-Sweep을 한 프레임에 몰아치느냐, 여러 프레임에 잘게 나누어 흘려보내느냐 하는 처리 시점뿐입니다.
+Incremental GC는 GC 알고리즘을 바꾸는 기능이 아닙니다. Boehm GC를 그대로 둔 채 Mark-and-Sweep을 여러 프레임에 나눠 실행할 뿐이라, 비세대·비압축·보수적이라는 기본 특성은 이 옵션을 켜도 그대로 남습니다.
 
 ---
 
 ## GC.Collect()와 프로파일링
 
-지금까지는 GC가 언제 어떻게 도는지를 런타임의 판단에 맡겨 둔 그림이었습니다. 그런데 C# 코드 쪽에서 GC를 직접 불러내는 손잡이도 하나 마련되어 있는데, 바로 `System.GC.Collect()`입니다. 이 메서드를 호출하면 Unity의 Boehm GC가 그 자리에서 전체 힙을 훑는 Mark-and-Sweep을 돌립니다.
+GC 실행 시점은 보통 런타임이 정하지만, C#에는 이를 직접 요청하는 `System.GC.Collect()`도 있습니다. 이 메서드를 호출하면 Unity의 Boehm GC가 그 자리에서 전체 힙을 Mark-and-Sweep합니다.
 
-.NET이라면 몇 세대까지 거둘지를 인자로 넘길 수 있지만, Unity의 Boehm GC는 애초에 세대를 나누지 않으므로 그런 인자는 받아도 무시한 채 언제나 힙 전체를 검사합니다.
+.NET의 세대별 GC에서는 특정 세대까지만 수집하도록 지정할 수 있지만, 세대를 나누지 않는 Boehm GC에는 그런 선택이 없습니다. 그래서 세대 인자를 넘겨도 Unity에서는 늘 전체 힙을 수집합니다.
 
-<br>
+`GC.Collect()`는 GC 비용을 줄여 주는 도구가 아닙니다. 호출하면 그 자리에서 C# 코드 실행이 멈추고(Stop-the-World), 그러면서도 GC가 할 일의 양은 그대로이기 때문입니다. 바꿀 수 있는 것은 GC가 도는 시점뿐이므로, 씬 전환이나 로딩 화면처럼 멈춤이 자연스러운 순간에 한해 제한적으로 씁니다.
 
-다만 이 호출에는 Stop-the-World가 따라붙습니다. 부르는 순간 C# 스크립트가 통째로 멈추므로, 한창 플레이가 돌아가는 도중에 끼워 넣는 것은 피하는 편이 원칙입니다. 대신 씬을 새로 불러오거나 화면이 페이드 아웃되는 것처럼 플레이어가 잠깐의 멈춤을 알아채지 못하는 길목을 골라, 그 틈에 호출해 힙을 한 번 비워 두는 식으로 씁니다.
-
-<br>
-
-힙 할당이 어디서 얼마나 일어나는지를 손으로 가늠하기는 어렵고, 이를 짚어 주는 도구가 Unity Profiler입니다. CPU 모듈에 찍히는 `GC.Alloc` 마커를 따라가면, 매 프레임 어느 메서드가 힙을 얼마나 집어삼키는지 메서드 단위로 드러납니다. GC 스파이크를 다스리는 첫걸음은 결국 이 마커로 할당이 쏠리는 지점을 찾아내, 그 할당 자체를 덜어 내거나 아예 없애는 데 있습니다.
+GC 비용을 근본적으로 낮추려면 호출 시점이 아니라 할당량을 줄여야 합니다. 힙 할당이 어디서 얼마나 일어나는지는 Unity Profiler로 확인할 수 있습니다. CPU 모듈의 `GC.Alloc` 마커로 프레임마다 할당을 일으키는 메서드를 짚어낸 뒤, 그 지점의 할당을 줄이거나 없애는 것이 GC 스파이크를 줄이는 첫걸음입니다.
 
 ---
 
 ## 마무리
 
-GC는 메모리를 알아서 거두어 가는 대신 메모리 누수와 댕글링 포인터, 이중 해제 같은 수동 관리의 위험을 개발자의 손에서 덜어 줍니다. 다만 그 일을 하느라 도는 시간이 그대로 프레임 시간을 갉아먹는데, Unity의 Boehm GC는 비세대·비압축·보수적이라는 성격 탓에 .NET의 세대별 GC보다 이 비용을 더 무겁게 치릅니다.
+이번 글에서는 GC가 도달할 수 없는 객체를 회수하는 원리와, 그 편리함의 대가가 무엇인지 정리했습니다. 핵심은 다음과 같습니다.
 
-- Mark-and-Sweep은 GC 루트(스택 변수·정적 필드)에서 참조 그래프를 타고 도달 가능한 객체에 표시를 남긴 뒤, 표시가 없는 객체를 거두어 갑니다.
-- .NET의 세대별 GC는 힙을 Gen 0/1/2로 가르고, 수명 짧은 객체가 모여드는 Gen 0만 자주 들여다봅니다.
-- Unity의 Boehm GC는 매번 힙 전체를 훑는 비세대, 단편화를 남기는 비압축, 거짓 참조까지 살려 두는 보수적 성격을 함께 지녀 .NET GC보다 비용이 큽니다.
-- GC가 도는 동안 모든 스크립트가 멈추는 Stop-the-World가 프레임 예산을 넘기면 GC 스파이크로 이어집니다.
-- Incremental GC는 한 번의 GC를 여러 프레임에 잘게 나누어 스파이크를 누그러뜨리지만, 총 GC 시간 자체는 같거나 오히려 조금 늘기도 합니다.
-- `GC.Collect()`는 씬 전환처럼 잠깐의 멈춤이 허용되는 길목에서 불러 힙을 비워 두는 용도로 씁니다.
-- Unity Profiler의 `GC.Alloc` 마커로 힙 할당이 쏠리는 지점을 짚어 내는 것이 최적화의 출발점입니다.
-- GC 문제를 뿌리에서 푸는 길은 결국 힙 할당 자체를 덜어 내는 데 있습니다.
+- **Mark-and-Sweep**은 GC 루트에서 참조를 따라 도달 가능한 객체에 표시를 남기고, 표시가 없는 객체를 회수합니다.
+- **세대별 GC**는 힙을 Gen 0·1·2로 나누고, 수명이 짧은 객체가 모이는 Gen 0을 자주 검사해 비용을 줄입니다.
+- **Boehm GC**는 매번 힙 전체를 훑고(비세대), 객체를 옮기지 않아 단편화를 남기며(비압축), 거짓 참조까지 살려 두는(보수적) 탓에 .NET GC보다 비용이 큽니다.
+- GC가 도는 동안 코드 실행이 멈추는 **Stop-the-World**가 프레임 예산을 넘기면 **GC 스파이크**로 나타납니다.
+- **Incremental GC**는 한 번의 GC를 여러 프레임에 나눠 스파이크를 낮추지만, 총 GC 시간은 같거나 오히려 조금 늘기도 합니다.
+- **GC.Collect()**는 GC 시점을 옮길 뿐이라, 비용을 줄이려면 **Profiler**의 `GC.Alloc` 마커로 할당이 많은 지점부터 찾아야 합니다.
 
-이 항목들을 한 줄로 꿰면, GC 비용을 다스리는 일은 GC 알고리즘을 바꾸는 것이 아니라 GC가 거둘 거리를 애초에 적게 남기는 데로 모입니다. Boehm GC의 성격은 우리가 손댈 수 있는 영역이 아니지만, 매 프레임 얼마나 많은 객체를 새로 힙에 올리느냐는 코드를 쓰는 쪽의 몫이기 때문입니다.
+정리하면, Unity의 GC 최적화는 결국 GC가 회수할 객체를 처음부터 적게 만드는 일로 모입니다. Boehm GC의 기본 구조는 프로젝트 코드로 바꿀 수 없지만, 매 프레임 새로 만드는 힙 객체의 양은 코드를 쓰는 방식으로 줄일 수 있습니다.
 
-<br>
-
-이 글에서 짚은 GC의 원리는 실전에서 힙 할당을 덜어 내는 기법의 밑바탕이 됩니다. [메모리 관리 (1) - 가비지 컬렉션의 원리](/dev/unity/MemoryManagement-1/)에서는 Unity 프로젝트의 GC 비용을 직접 재고 할당 패턴을 걷어 내는 방법을, [스크립트 최적화 (1) - C# 실행과 메모리 할당](/dev/unity/ScriptOptimization-1/)에서는 코드에 숨어 있는 힙 할당 패턴과 오브젝트 풀링을 다룹니다. 이어지는 다음 글 [C# 런타임 기초 (4) - 스레딩과 비동기](/dev/unity/CSharpRuntime-4/)에서는 C# 런타임의 멀티스레딩과 비동기 프로그래밍으로 넘어갑니다.
+이 글에서 다룬 GC의 원리는 실전에서 힙 할당을 줄이는 기법의 기반이 됩니다. [메모리 관리 (1) - 가비지 컬렉션의 원리](/dev/unity/MemoryManagement-1/)에서는 Unity 프로젝트의 GC 비용을 측정하고 할당 패턴을 줄이는 방법을, [스크립트 최적화 (1) - C# 실행과 메모리 할당](/dev/unity/ScriptOptimization-1/)에서는 코드에 숨어 있는 힙 할당 패턴과 오브젝트 풀링을 다룹니다. 이어지는 다음 글 [C# 런타임 기초 (4) - 스레딩과 비동기](/dev/unity/CSharpRuntime-4/)에서는 C# 런타임의 멀티스레딩과 비동기 프로그래밍으로 넘어갑니다.
 
 <br>
 
@@ -1169,12 +1115,6 @@ GC는 메모리를 알아서 거두어 가는 대신 메모리 누수와 댕글�
 **관련 글**
 - [메모리 관리 (1) - 가비지 컬렉션의 원리](/dev/unity/MemoryManagement-1/)
 - [스크립트 최적화 (1) - C# 실행과 메모리 할당](/dev/unity/ScriptOptimization-1/)
-
-**시리즈**
-- [C# 런타임 기초 (1) - 값 타입과 참조 타입](/dev/unity/CSharpRuntime-1/)
-- [C# 런타임 기초 (2) - .NET 런타임과 IL2CPP](/dev/unity/CSharpRuntime-2/)
-- **C# 런타임 기초 (3) - 가비지 컬렉션의 기초 (현재 글)**
-- [C# 런타임 기초 (4) - 스레딩과 비동기](/dev/unity/CSharpRuntime-4/)
 
 **전체 시리즈**
 - [하드웨어 기초 (1) - CPU 아키텍처와 파이프라인](/dev/unity/HardwareBasics-1/)
