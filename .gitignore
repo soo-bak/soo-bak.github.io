@@ -27,3 +27,8 @@ codekit-config.json
 .sass-cache
 _asset_bundler_cache
 _site
+
+# soobak retrospect Stop-hook transient marker
+.claude/.retrospect_pending
+.claude/.numstat_laststop
+.claude/hooks/__pycache__/
