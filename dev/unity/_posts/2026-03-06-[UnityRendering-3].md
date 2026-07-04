@@ -2,7 +2,7 @@
 layout: single
 title: "Unity 렌더링 (3) - Render Pipeline 개요 - soo:bak"
 date: "2026-03-06 21:09:00 +0900"
-description: Built-in Render Pipeline, SRP, URP, HDRP, Custom SRP의 설계 철학과 선택 기준을 설명합니다.
+description: URP를 중심으로 한 Unity Render Pipeline 선택 기준과 Built-in, HDRP, Custom SRP의 위치를 설명합니다.
 tags:
   - Unity
   - 렌더링
@@ -14,153 +14,78 @@ tags:
 
 ## 렌더 파이프라인이라는 상위 구조
 
-[Unity 렌더링 (1) - Camera와 Rendering Layer](/dev/unity/UnityRendering-1/)에서 카메라가 무엇을 어떤 순서로 그리는지를, [Unity 렌더링 (2) - Render Target과 Frame Buffer](/dev/unity/UnityRendering-2/)에서 그 결과가 어디에 저장되는지를 다루었습니다.
-이 두 글에서 다룬 카메라 설정, 렌더링 순서, Render Target 관리를 하나의 흐름으로 엮는 상위 구조가 **렌더 파이프라인(Render Pipeline)**입니다.
+[Unity 렌더링 (1) - Camera와 Rendering Layer](/dev/unity/UnityRendering-1/)에서는 카메라가 무엇을 어떤 순서로 그리는지를 다루었습니다. [Unity 렌더링 (2) - Render Target과 Frame Buffer](/dev/unity/UnityRendering-2/)에서는 그 결과가 어느 버퍼에 저장되고, 그 버퍼가 메모리와 대역폭에 어떤 비용을 만드는지 살펴보았습니다.
 
-렌더 파이프라인은 한 프레임을 완성하기 위해 어떤 단계를 어떤 순서로 실행할지를 정의합니다. 컬링(카메라에 보이지 않는 오브젝트를 렌더링 대상에서 제외하는 과정) 방식, 불투명과 반투명의 정렬 방식, 조명 패스 횟수, 후처리(렌더링된 이미지에 블룸, 색보정 등의 화면 효과를 적용하는 단계) 순서가 모두 렌더 파이프라인의 설계에 따라 결정됩니다.
+실제 엔진에서 이 과정은 따로 떨어져 실행되지 않습니다. 한 프레임 안에서 카메라 수집, 컬링, 조명과 그림자 준비, 불투명과 반투명 렌더링, Render Target 기록, 후처리가 정해진 순서로 이어집니다. 이 전체 흐름을 묶는 상위 규칙이 **렌더 파이프라인(Render Pipeline)**입니다.
 
-<br>
+렌더 파이프라인은 단순한 옵션 묶음이 아닙니다. 파이프라인이 달라지면 조명 계산 방식, 셰이더와 머티리얼 구조, 후처리 시스템, Render Target 구성, 커스텀 렌더 패스를 삽입하는 방식까지 함께 달라집니다. 결국 파이프라인 선택은 화면 품질뿐 아니라 CPU/GPU 비용, 지원 플랫폼, 이후 확장 방식까지 결정합니다.
 
-Unity에서 렌더 파이프라인의 선택은 프로젝트의 시각적 품질, 성능 특성, 셰이더 작성 방식, 확장 가능성에 영향을 미칩니다.
-한 번 선택한 파이프라인을 프로젝트 중간에 변경하면 셰이더, 머티리얼, 라이팅 설정 등을 전면 수정해야 하므로 비용이 큽니다.
+이 선택은 프로젝트 중간에 바꾸기 어렵습니다. 파이프라인을 옮기면 머티리얼 변환, 셰이더 수정, 라이팅과 후처리 재설정, 커스텀 렌더링 코드 이전이 따라옵니다. 프로젝트가 커질수록 이 비용은 단순한 작업량을 넘어 구조적 리스크가 됩니다.
 
-이 글에서는 Unity가 제공하는 렌더 파이프라인의 종류와 각각의 설계 철학, 프로젝트에 맞는 선택 기준을 다룹니다.
+따라서 이 글은 렌더 파이프라인을 나열식으로 비교하지 않습니다. Built-in은 레거시와 이전 대상으로, HDRP는 고품질 요구가 분명할 때의 제한적 선택지로, Custom SRP는 특수한 직접 구현 선택지로 위치를 좁혀 봅니다. 중심은 URP입니다. 새 프로젝트에서 왜 URP가 기본 출발점이 되는지, 어떤 경우에만 다른 선택지를 검토해야 하는지를 기준으로 흐름을 잡습니다.
 
 <br>
 
 <div style="text-align: center; margin: 1.5em 0;">
-<svg viewBox="0 0 660 340" xmlns="http://www.w3.org/2000/svg" style="max-width: 660px; width: 100%;">
-  <!-- Built-in box -->
-  <rect x="190" y="12" width="280" height="50" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
-  <text x="330" y="34" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="currentColor">Built-in Render Pipeline</text>
-  <text x="330" y="52" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.6">최초, 레거시</text>
-  <!-- Arrow Built-in → SRP with label -->
-  <line x1="330" y1="62" x2="330" y2="112" stroke="currentColor" stroke-width="1.5"/>
-  <polygon points="324,109 330,119 336,109" fill="currentColor"/>
-  <text x="338" y="92" text-anchor="start" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.55">수정 불가능한 고정 렌더링 루프</text>
-  <!-- SRP box -->
-  <rect x="120" y="119" width="420" height="56" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
-  <text x="330" y="142" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="currentColor">SRP (Scriptable Render Pipeline)</text>
-  <text x="330" y="163" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.6">Unity 2018 도입 · 렌더링 루프를 C#으로 제어 가능</text>
-  <!-- Arrow → URP -->
-  <line x1="120" y1="175" x2="120" y2="232" stroke="currentColor" stroke-width="1.5"/>
-  <polygon points="114,229 120,239 126,229" fill="currentColor"/>
-  <!-- Arrow → HDRP -->
-  <line x1="330" y1="175" x2="330" y2="232" stroke="currentColor" stroke-width="1.5"/>
-  <polygon points="324,229 330,239 336,229" fill="currentColor"/>
-  <!-- Arrow → Custom SRP -->
-  <line x1="540" y1="175" x2="540" y2="232" stroke="currentColor" stroke-width="1.5"/>
-  <polygon points="534,229 540,239 546,229" fill="currentColor"/>
-  <!-- URP box -->
-  <rect x="15" y="240" width="210" height="82" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
-  <text x="120" y="262" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="currentColor">URP</text>
-  <text x="120" y="280" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor">Universal Render Pipeline</text>
-  <text x="120" y="312" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.6">모바일 ~ 중급 PC 대상</text>
-  <!-- HDRP box -->
-  <rect x="225" y="240" width="210" height="82" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
-  <text x="330" y="262" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="currentColor">HDRP</text>
-  <text x="330" y="280" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor">High Definition Render Pipeline</text>
-  <text x="330" y="312" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.6">고사양 PC / 콘솔 대상</text>
-  <!-- Custom SRP box -->
-  <rect x="435" y="240" width="210" height="82" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
-  <text x="540" y="262" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="currentColor">Custom SRP</text>
-  <text x="540" y="288" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor">직접 구현하는 파이프라인</text>
+<svg viewBox="0 0 660 300" xmlns="http://www.w3.org/2000/svg" style="max-width: 660px; width: 100%;">
+  <!-- Title -->
+  <text x="330" y="24" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="currentColor">새 프로젝트 기준의 렌더 파이프라인 선택</text>
+
+  <!-- URP center -->
+  <rect x="190" y="48" width="280" height="82" rx="5" fill="currentColor" fill-opacity="0.13" stroke="currentColor" stroke-width="2"/>
+  <text x="330" y="74" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="currentColor">URP</text>
+  <text x="330" y="94" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor">Universal Render Pipeline</text>
+  <text x="330" y="114" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.65">새 프로젝트의 기본 출발점 · 개발 집중</text>
+
+  <!-- SRP base -->
+  <rect x="140" y="154" width="380" height="54" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
+  <text x="330" y="176" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">SRP 기반</text>
+  <text x="330" y="196" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.65">렌더링 루프를 C#으로 구성하는 공통 프레임워크</text>
+
+  <!-- Side boxes -->
+  <rect x="20" y="230" width="190" height="52" rx="5" fill="currentColor" fill-opacity="0.04" stroke="currentColor" stroke-width="1"/>
+  <text x="115" y="252" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">Built-in</text>
+  <text x="115" y="270" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.65">Deprecated · 기존 프로젝트 유지/이전 대상</text>
+
+  <rect x="235" y="230" width="190" height="52" rx="5" fill="currentColor" fill-opacity="0.04" stroke="currentColor" stroke-width="1"/>
+  <text x="330" y="252" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">HDRP</text>
+  <text x="330" y="270" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.65">고품질 PC/콘솔 · 제한적 검토</text>
+
+  <rect x="450" y="230" width="190" height="52" rx="5" fill="currentColor" fill-opacity="0.04" stroke="currentColor" stroke-width="1"/>
+  <text x="545" y="252" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">Custom SRP</text>
+  <text x="545" y="270" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.65">특수한 렌더러를 직접 구현할 때</text>
 </svg>
 </div>
 
 <br>
 
-Built-in에서 시작하여, SRP 프레임워크의 등장으로 URP, HDRP, Custom SRP라는 선택지가 생긴 흐름입니다. 각 파이프라인을 순서대로 살펴봅니다.
+그림에서 먼저 볼 것은 중심이 URP라는 점입니다. SRP는 URP가 동작하는 기반이고, Built-in은 그 기반이 왜 필요해졌는지를 보여 주는 이전 구조입니다. HDRP와 Custom SRP는 일반적인 출발점이 아니라, URP로 요구를 해결하기 어려운 특정 상황에서만 검토할 선택지입니다.
 
 ---
 
-## Built-in Render Pipeline
+## Built-in Render Pipeline: 레거시 배경
 
-Built-in Render Pipeline은 Unity가 초기부터 제공한 렌더 파이프라인입니다. SRP가 도입된 Unity 2018.1 이전에는 유일한 파이프라인이었으며, 현재도 레거시 프로젝트에서 사용됩니다.
+Built-in Render Pipeline은 Unity가 오래 사용해 온 이전 세대의 렌더 파이프라인입니다. 기존 프로젝트, 오래된 튜토리얼, 에셋 스토어 자료에는 여전히 Built-in 기준 설명이 많이 남아 있습니다. 그래서 구조를 알아 둘 필요는 있지만, 새 프로젝트의 기본 선택지로 길게 검토할 대상은 아닙니다.
 
-### 구조적 특징
+가장 큰 차이는 렌더링 루프가 엔진 내부에 고정되어 있다는 점입니다. 컬링, 정렬, 라이팅 패스, 드로우콜 생성 순서를 개발자가 직접 재구성하기 어렵습니다. `OnPreRender`, `OnPostRender`, `CommandBuffer` 같은 확장 지점은 있지만, 이미 정해진 흐름 사이에 명령을 덧붙이는 방식에 가깝습니다.
 
-Built-in 파이프라인은 **Forward Rendering**과 **Deferred Rendering** 두 가지 렌더링 방식을 모두 지원합니다. 프로젝트 설정에서 둘 중 하나를 선택할 수 있으며, 카메라별로 다른 방식을 지정할 수도 있습니다.
+성능 특성도 명확합니다. Built-in Forward는 추가 픽셀 라이트가 늘어날수록 오브젝트를 여러 번 다시 그리는 멀티패스 구조입니다. 조명이 적은 장면에서는 단순하지만, 조명이 많아지면 드로우콜이 빠르게 늘어 CPU 비용이 커집니다. Built-in Deferred는 이 문제를 줄일 수 있지만, G-Buffer를 위해 여러 Render Target을 사용하므로 메모리와 대역폭 부담이 따라옵니다.
 
-Built-in의 Forward Rendering은 **멀티패스(Multi-pass)** 방식으로 동작합니다.
-멀티패스란 하나의 오브젝트를 조명별로 나누어 여러 번 그리는 구조입니다. 메인 Directional Light는 ForwardBase 패스에서 처리되지만, 추가 픽셀 라이트 하나마다 ForwardAdd 패스가 별도로 실행됩니다. 따라서 드로우콜 수가 `오브젝트 수 x (1 + 추가 픽셀 라이트 수)`에 비례합니다.
-조명이 적은 씬에서는 문제가 되지 않지만, 조명이 많아지면 드로우콜이 급증합니다. 드로우콜마다 CPU가 GPU 상태를 설정하고 명령을 제출해야 하므로, 이 증가는 곧 CPU 병목으로 이어집니다.
-이 멀티패스 구조의 상세한 흐름은 [Unity 렌더 파이프라인 (1) - Built-in과 URP의 구조](/dev/unity/UnityPipeline-1/)에서 다룹니다.
+셰이더도 Built-in에 묶입니다. Surface Shader처럼 Built-in 전용 작성 방식으로 만든 셰이더와 머티리얼은 URP로 그대로 옮길 수 없습니다. 기존 프로젝트를 이전하려면 셰이더 교체, 머티리얼 변환, 라이팅 재설정 비용을 함께 계산해야 합니다.
 
-<br>
-
-반면 Deferred Rendering은 렌더링을 두 단계로 나눕니다.
-먼저 씬의 모든 오브젝트에 대해 표면 색상(Albedo), 법선(Normal), 깊이(Depth) 등의 기하 정보를 G-Buffer라는 여러 장의 텍스처에 기록합니다. 이후 G-Buffer 데이터를 입력으로 라이팅을 화면 공간에서 한 번에 처리합니다. 조명 수에 드로우콜이 비례하지 않는다는 장점이 있지만, G-Buffer가 여러 장의 Render Target을 사용하므로 메모리와 대역폭 소비가 큽니다. [Unity 렌더링 (2)](/dev/unity/UnityRendering-2/)에서 다룬 것처럼, Full HD 해상도에서 RGBA32 포맷의 G-Buffer 4장이 약 32MB의 추가 메모리를 차지합니다.
-
-모바일에서는 이 메모리 비용에 대역폭 부담까지 겹칩니다. 모바일 GPU는 TBDR(Tile-Based Deferred Rendering — 화면을 타일 단위로 나누어 칩 내부의 고속 메모리에서 렌더링하는 구조) 방식을 사용하는데, G-Buffer 전체를 시스템 메모리에 Store한 뒤 조명 패스에서 다시 Load해야 하므로 대역폭 소비가 큽니다. 이 때문에 모바일에서 Built-in의 Deferred Rendering은 실용적이지 않습니다.
-
-### 확장성의 한계
-
-Built-in 파이프라인의 가장 큰 제약은 **렌더링 루프를 수정할 수 없다**는 점입니다. 컬링, 정렬, 라이팅 패스, 드로우콜 생성이 엔진 내부에 고정되어 있으며, 개발자가 이 과정을 변경하거나 재배치할 방법이 없습니다.
-
-확장 수단으로는 **OnPreRender**, **OnPostRender**, **OnRenderObject** 같은 렌더링 콜백과, **CommandBuffer**를 특정 이벤트 시점에 삽입하는 방식이 있습니다. 하지만 파이프라인의 정해진 시점에 추가 명령을 끼워넣는 것일 뿐, 파이프라인 자체의 구조를 바꾸지는 못합니다.
-
-### 셰이더
-
-Built-in 파이프라인에서는 **Surface Shader**라는 Unity 고유의 셰이더 작성 방식을 사용할 수 있습니다.
-개발자가 조명 모델과 표면의 속성(Albedo, Normal, Emission 등)만 지정하면, Unity가 멀티패스용 셰이더 코드를 자동 생성합니다. 조명 모델은 빛과 표면의 상호작용을 계산하는 수학적 공식이며, Lambert(확산광), Blinn-Phong(확산광 + 반사광) 등이 대표적입니다.
-
-<br>
-
-<div style="text-align: center; margin: 1.5em 0;">
-<svg viewBox="0 0 480 370" xmlns="http://www.w3.org/2000/svg" style="max-width: 480px; width: 100%;">
-  <!-- Top section: Developer code -->
-  <rect x="40" y="12" width="400" height="140" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
-  <text x="240" y="34" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="currentColor">개발자가 작성하는 부분</text>
-  <!-- Code block -->
-  <text x="65" y="62" font-family="monospace" font-size="11" fill="currentColor">void surf(Input IN,</text>
-  <text x="65" y="80" font-family="monospace" font-size="11" fill="currentColor">          inout SurfaceOutput o)</text>
-  <text x="65" y="98" font-family="monospace" font-size="11" fill="currentColor">{</text>
-  <text x="65" y="116" font-family="monospace" font-size="11" fill="currentColor">    o.Albedo = tex2D(_MainTex, IN.uv);</text>
-  <text x="65" y="134" font-family="monospace" font-size="11" fill="currentColor">    o.Normal = UnpackNormal(normalMap);</text>
-  <text x="65" y="148" font-family="monospace" font-size="11" fill="currentColor">}</text>
-  <!-- Arrow down -->
-  <line x1="240" y1="152" x2="240" y2="210" stroke="currentColor" stroke-width="1.5"/>
-  <polygon points="234,207 240,217 246,207" fill="currentColor"/>
-  <text x="248" y="188" text-anchor="start" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.6">Unity가 자동 생성</text>
-  <!-- Bottom section: Auto-generated passes -->
-  <rect x="40" y="218" width="400" height="138" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
-  <text x="240" y="240" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="currentColor">자동 생성되는 멀티패스 셰이더</text>
-  <!-- Pass items -->
-  <text x="65" y="268" font-family="sans-serif" font-size="11" fill="currentColor">ForwardBase 패스</text>
-  <text x="260" y="268" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.6">메인 라이트 처리</text>
-  <line x1="60" y1="278" x2="420" y2="278" stroke="currentColor" stroke-width="0.5" opacity="0.2"/>
-  <text x="65" y="298" font-family="sans-serif" font-size="11" fill="currentColor">ForwardAdd 패스</text>
-  <text x="260" y="298" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.6">추가 라이트마다 1개씩 실행</text>
-  <line x1="60" y1="308" x2="420" y2="308" stroke="currentColor" stroke-width="0.5" opacity="0.2"/>
-  <text x="65" y="328" font-family="sans-serif" font-size="11" fill="currentColor">ShadowCaster 패스</text>
-  <text x="260" y="328" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.6">그림자 생성</text>
-  <text x="240" y="350" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.5">→ 멀티패스 셰이더 코드 자동 생성</text>
-</svg>
-</div>
-
-<br>
-
-Surface Shader의 자동 생성은 편리하지만, 생성된 코드를 세밀하게 제어하기 어렵습니다. 불필요한 패스가 생성되거나 의도하지 않은 셰이더 배리언트가 포함될 수 있습니다. **셰이더 배리언트**는 하나의 셰이더 소스에서 키워드 조합에 따라 생성되는 여러 버전의 컴파일된 셰이더입니다. 배리언트 수가 늘어나면 빌드 크기와 셰이더 로딩 시간이 함께 증가합니다.
-
-### 현재 상태
-
-Built-in Render Pipeline은 더 이상 신규 기능이 추가되지 않는 레거시 상태입니다.
-Unity는 공식적으로 신규 프로젝트에 URP 또는 HDRP를 권장합니다. 기존 Built-in 프로젝트는 계속 동작하지만, SRP 기반에서만 제공되는 기능의 혜택을 받을 수 없습니다. 예를 들어, Render Graph는 렌더 패스 간 의존성을 분석하여 불필요한 패스를 자동 제거하고 메모리를 재사용하는 시스템인데, SRP 위에서만 동작합니다. 이후 다룰 SRP Batcher도 마찬가지입니다.
-
-<br>
-
-렌더링 루프를 수정할 수 없는 Built-in의 구조적 한계를 해소하기 위해 Unity가 도입한 프레임워크가 SRP입니다.
+따라서 여기서 Built-in은 추천 후보가 아니라 **SRP가 왜 필요해졌는지를 보여 주는 배경**으로 다룹니다. 고정된 렌더링 루프를 벗어나고, SRP Batcher와 Render Graph 같은 구조적 최적화를 활용하기 위해 Unity가 도입한 기반이 바로 SRP입니다.
 
 ---
 
 ## SRP (Scriptable Render Pipeline)
 
-**SRP(Scriptable Render Pipeline)**는 Unity 2018에서 도입된 프레임워크로, 렌더링 루프를 **C# 스크립트로 직접 제어**할 수 있게 해주는 기반 구조입니다. SRP 자체는 특정 렌더 파이프라인이 아니며, URP와 HDRP가 SRP 위에 구축된 구체적인 파이프라인 구현체에 해당합니다.
+SRP는 Built-in처럼 완성된 렌더 파이프라인의 이름이 아니라, 렌더 파이프라인을 만들기 위한 프레임워크입니다. 엔진 내부에 고정되어 있던 컬링, 정렬, 드로우콜 생성, Render Target 설정 흐름을 C# 코드에서 구성할 수 있게 해 주는 기반입니다.
 
-### 핵심 클래스
+이 기반 위에 실제 프로젝트에서 사용하는 파이프라인이 올라갑니다. URP는 SRP 위에 만들어진 Unity의 주된 공식 구현체이고, Custom SRP는 같은 기반을 사용해 프로젝트가 직접 렌더링 루프를 작성하는 방식입니다. 따라서 SRP를 이해한다는 것은 특정 파이프라인 하나를 외우는 것이 아니라, Unity가 한 프레임의 렌더링 명령을 어떤 구조로 조립하는지 보는 일에 가깝습니다.
 
-SRP의 구조는 세 개의 핵심 클래스를 중심으로 동작합니다.
+### SRP의 기본 구성 요소
+
+SRP의 실행 흐름은 세 역할로 나뉩니다. 프로젝트가 어떤 파이프라인을 사용할지 지정하는 `RenderPipelineAsset`, 한 프레임의 렌더링 순서를 실제로 구현하는 `RenderPipeline`, 그리고 그 과정에서 만들어진 명령을 Unity 렌더링 시스템에 제출하는 `ScriptableRenderContext`입니다.
 
 <br>
 
@@ -181,7 +106,7 @@ SRP의 구조는 세 개의 핵심 클래스를 중심으로 동작합니다.
   <rect x="60" y="170" width="400" height="100" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
   <text x="260" y="194" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="currentColor">RenderPipeline</text>
   <text x="260" y="214" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.6">렌더링 루프의 실제 구현</text>
-  <text x="80" y="238" font-family="monospace" font-size="11" fill="currentColor">Render(ScriptableRenderContext, Camera[])</text>
+  <text x="80" y="238" font-family="monospace" font-size="11" fill="currentColor">Render(ScriptableRenderContext, List&lt;Camera&gt;)</text>
   <text x="80" y="258" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.6">매 프레임 호출되어 렌더링 명령을 구성</text>
   <!-- Arrow 2 → 3 with label -->
   <line x1="260" y1="270" x2="260" y2="320" stroke="currentColor" stroke-width="1.5"/>
@@ -202,19 +127,17 @@ SRP의 구조는 세 개의 핵심 클래스를 중심으로 동작합니다.
 
 <br>
 
-`RenderPipelineAsset`은 ScriptableObject를 상속한 에셋입니다. 이 에셋을 Graphics Settings에서 프로젝트의 렌더 파이프라인으로 지정하면, `CreatePipeline()`을 통해 `RenderPipeline` 인스턴스가 생성됩니다. Unity는 매 프레임 이 인스턴스의 `Render()` 메서드를 호출합니다.
+먼저 프로젝트 설정에는 `RenderPipelineAsset`이 등록됩니다. 이 에셋은 파이프라인의 설정값을 담고 있으며, Unity가 렌더링을 시작할 때 `CreatePipeline()`을 통해 실제 실행 객체인 `RenderPipeline`을 만듭니다.
 
-`Render()` 메서드 안에서 개발자는 컬링, 정렬, 드로우콜 생성, Render Target 설정 등을 C# 코드로 직접 구성하고, `ScriptableRenderContext`를 통해 이 명령들을 GPU에 제출합니다.
+프레임이 시작되면 Unity는 이 `RenderPipeline`의 `Render()` 메서드를 호출합니다. 파이프라인 구현은 이 안에서 카메라를 순회하고, 컬링과 정렬을 수행하고, 어떤 Render Target에 어떤 순서로 그릴지 결정합니다. 이렇게 구성한 명령은 `ScriptableRenderContext`에 쌓인 뒤 `Submit()`을 통해 Unity 렌더링 시스템으로 전달됩니다.
 
 ### SRP Batcher
 
-SRP와 함께 도입된 **SRP Batcher**는 드로우콜의 CPU 오버헤드를 줄이는 배칭 시스템입니다.
+SRP가 가져온 중요한 최적화 중 하나가 **SRP Batcher**입니다. 이름에는 Batcher가 붙어 있지만, Built-in의 Static Batching이나 Dynamic Batching처럼 여러 메쉬를 하나로 합쳐 드로우콜 수를 줄이는 방식은 아닙니다.
 
-Built-in 파이프라인의 Static/Dynamic Batching은 여러 메쉬를 하나로 합쳐 드로우콜 수 자체를 줄이는 방식입니다.
+SRP Batcher의 초점은 드로우콜 사이의 **상태 전환 비용**입니다. CPU는 드로우콜을 보낼 때 셰이더 프로그램, 머티리얼 속성, 오브젝트별 상수 버퍼 같은 GPU 상태를 맞춰야 합니다. 같은 셰이더 배리언트를 쓰는 오브젝트가 이어져도 이 설정을 매번 반복하면, 화면에 그리는 일보다 상태를 준비하는 데 CPU 시간이 더 많이 쓰일 수 있습니다.
 
-반면 SRP Batcher는 드로우콜 수는 유지하되, **셰이더 배리언트별 GPU 상태를 캐싱**하여 드로우콜 사이의 상태 전환 비용을 줄입니다.
-
-여기서 상태 전환이란, 다음 드로우콜을 실행하기 전에 CPU가 셰이더 프로그램, 머티리얼 속성, 텍스처 바인딩 등을 GPU에 다시 설정하는 과정입니다. 같은 셰이더를 사용하는 드로우콜이 연속되더라도 매번 이 설정을 반복하면 CPU 시간이 소모됩니다.
+SRP Batcher는 이 비용을 줄이기 위해 셰이더 배리언트별 상태를 재사용하고, 머티리얼 데이터를 정해진 CBUFFER 구조로 GPU 메모리에 유지합니다. 드로우콜 수 자체는 그대로 남지만, 드로우콜마다 다시 설정해야 하는 항목이 줄어 CPU 오버헤드가 낮아집니다.
 
 <br>
 
@@ -288,52 +211,49 @@ Built-in 파이프라인의 Static/Dynamic Batching은 여러 메쉬를 하나�
 
 <br>
 
-SRP Batcher가 동작하려면 셰이더가 SRP Batcher **호환(Compatible)**이어야 합니다.
+SRP Batcher가 동작하려면 셰이더가 정해진 메모리 배치 규칙을 따라야 합니다. 머티리얼 속성은 `UnityPerMaterial` CBUFFER에, 오브젝트별 데이터는 `UnityPerDraw` CBUFFER에 선언해야 합니다. CBUFFER는 GPU에 전달할 값을 묶어 두는 상수 버퍼(Constant Buffer)입니다.
 
-호환 셰이더는 머티리얼 속성을 `UnityPerMaterial` CBUFFER에, 오브젝트 트랜스폼을 `UnityPerDraw` CBUFFER에 올바르게 선언해야 합니다. CBUFFER는 GPU에 데이터를 전달하기 위한 상수 버퍼(Constant Buffer)입니다.
+이 규칙을 지키면 머티리얼 데이터가 GPU 메모리에 유지되고, 드로우콜마다 같은 값을 다시 업로드할 필요가 줄어듭니다. 같은 셰이더 배리언트가 이어질 때는 셰이더 상태도 재사용할 수 있으므로, CPU가 드로우콜을 준비하는 시간이 짧아집니다. URP의 기본 Lit, Unlit 셰이더는 이 호환 규칙을 갖춘 상태로 제공됩니다.
 
-이 규칙을 따르면 머티리얼 속성이 GPU 메모리의 Persistent CBUFFER에 상주하므로, 매 드로우콜마다 CPU가 머티리얼 데이터를 다시 업로드할 필요가 없어집니다.
-같은 셰이더 배리언트를 사용하는 드로우콜이 연속되면 셰이더 프로그램 바인딩도 생략되어 CPU 오버헤드가 크게 줄어듭니다. URP의 기본 셰이더(Lit, Unlit 등)는 모두 SRP Batcher 호환입니다.
-
-<br>
-
-SRP가 제공하는 프레임워크 위에서, Unity는 대상 플랫폼과 시각적 품질 수준에 따라 두 가지 공식 파이프라인을 구현했습니다. 먼저 모바일~중급 PC를 겨냥한 URP를 살펴봅니다.
+이제 이 SRP 기반이 실제 프로젝트에서 어떤 형태로 쓰이는지 URP를 통해 살펴보겠습니다. URP는 Built-in의 고정 루프와 멀티패스 비용을 피하면서, SRP Batcher와 같은 구조적 최적화를 기본 전제로 삼는 파이프라인입니다.
 
 ---
 
 ## URP (Universal Render Pipeline)
 
-**URP(Universal Render Pipeline)**는 **모바일에서 중급 PC까지**를 대상으로 설계된 SRP 기반 렌더 파이프라인입니다. 성능 효율을 우선시하며, Unity가 가장 적극적으로 개발하는 주력 파이프라인입니다.
+**URP(Universal Render Pipeline)**는 모바일부터 PC/콘솔까지 하나의 파이프라인으로 대응하기 위해 만들어진 공식 렌더 파이프라인입니다. 목표는 모든 플랫폼에서 가장 높은 품질을 내는 것이 아니라, 넓은 플랫폼 범위에서 예측 가능한 성능과 충분한 시각적 품질을 함께 확보하는 데 있습니다.
+
+이 때문에 URP는 새 프로젝트의 기본 출발점으로 보기 좋습니다. SRP Batcher, Renderer Feature, Camera Stacking, Render Graph 같은 SRP 기반 기능을 바로 사용할 수 있고, 실시간 전역 조명(Real-time GI)이나 스크린 스페이스 반사(SSR)처럼 고급 기능도 점차 URP 쪽으로 들어오고 있습니다.
 
 ### 렌더링 방식
 
-URP의 기본 렌더링 방식은 **싱글패스 포워드 렌더링(Single-pass Forward Rendering)**입니다.
+URP의 기본 렌더링 방식은 **싱글패스 포워드 렌더링(Single-pass Forward Rendering)**입니다. 오브젝트를 한 번 그릴 때, 그 표면에 영향을 주는 조명을 하나의 셰이더 패스 안에서 함께 계산합니다.
 
-하나의 오브젝트를 그릴 때 모든 조명을 하나의 셰이더 패스 안에서 루프로 처리합니다. Built-in의 멀티패스가 조명 하나당 별도의 패스를 실행하여 드로우콜이 조명 수에 비례했던 것과 달리, URP의 싱글패스에서는 조명 수가 드로우콜 수에 영향을 미치지 않습니다.
-이 구조적 차이의 상세한 비교는 [Unity 렌더 파이프라인 (1)](/dev/unity/UnityPipeline-1/)에서 다룹니다.
+이 구조는 Built-in Forward의 멀티패스와 다릅니다. Built-in에서는 추가 픽셀 라이트가 붙을 때마다 오브젝트를 다시 그리는 패스가 늘어났지만, URP의 싱글패스 포워드는 조명을 한 패스 안에서 처리합니다. 그래서 기본 Forward에서는 조명 수가 곧바로 드로우콜 수로 늘어나지 않습니다.
 
-<br>
+> 멀티패스와 싱글패스가 드로우콜 수에 어떤 차이를 만드는지는 [Unity 렌더 파이프라인 (1)](/dev/unity/UnityPipeline-1/)에서 자세히 비교합니다.
 
-Unity 2021.2 이상(URP 12+)에서는 **Deferred Rendering**도 선택할 수 있습니다. URP의 Deferred는 G-Buffer에 기하 정보를 기록한 뒤 화면 공간에서 라이팅을 처리하는 방식으로, 조명 수가 많은 씬에서 Forward보다 효율적일 수 있습니다. 다만, G-Buffer의 추가 메모리와 대역폭이 필요하므로 모바일에서는 Forward가 여전히 기본 선택입니다.
+조명이 많은 씬에서는 **Forward+**나 **Deferred Rendering**을 검토할 수 있습니다. Forward+는 화면을 작은 타일로 나누고, 각 타일에 실제로 영향을 주는 조명만 추려 계산합니다. 기본 Forward의 오브젝트당 추가 라이트 한계를 피하면서도 포워드 렌더링의 단순한 흐름을 유지할 수 있습니다.
 
-<br>
+Deferred는 G-Buffer에 표면 정보를 먼저 기록한 뒤, 조명을 화면 공간에서 한꺼번에 계산합니다. 조명이 매우 많은 장면에서는 Forward보다 유리할 수 있지만, G-Buffer 때문에 Render Target 수가 늘고 메모리와 대역폭 비용도 커집니다. 그래서 모바일처럼 대역폭이 빠듯한 환경에서는 기본 Forward나 Forward+를 먼저 검토하는 편이 일반적입니다.
 
-Unity 2022.2 이상(URP 14.0+)에서는 **Forward+ 렌더링**도 선택할 수 있습니다. Forward+는 화면을 작은 타일 단위로 나눈 뒤, 각 타일에 실제로 영향을 미치는 조명만 골라내어 계산하는 방식입니다. 기본 싱글패스 포워드에서는 오브젝트당 추가 라이트 수가 제한되지만, Forward+에서는 이 제한이 사라집니다. 대신 카메라 단위의 최대 가시 라이트 수 제한이 적용되며, 데스크톱에서는 Main Light 포함 최대 256개, 모바일에서는 Main Light 포함 최대 32개까지 지원됩니다.
+### Forward의 라이트 제한
 
-### 라이트 제한
+여기서 말하는 라이트 제한은 URP의 기본 **Forward** 경로에 해당합니다. Forward+와 Deferred는 라이트를 고르는 방식이 다르므로, 아래의 `Per Object Limit`가 그대로 적용되지 않습니다.
 
-URP의 기본 설정에서 씬에 영향을 미치는 라이트는 **메인 Directional Light 1개 + 추가 라이트 N개**입니다.
-오브젝트 하나에 동시에 영향을 미치는 추가 라이트의 수는 URP Asset의 Per Object Limit 슬라이더로 지정하며, 기본값 4개에서 최대 8개까지 설정할 수 있습니다. 이 제한을 초과하는 추가 라이트는 자동으로 무시됩니다.
+기본 Forward에서는 모든 라이트를 한 오브젝트의 셰이더 루프에 무제한으로 넣지 않습니다. 먼저 카메라 기준의 **Main Light** 1개를 따로 처리하고, 나머지는 각 오브젝트에 영향이 큰 **Additional Light**만 제한된 수만큼 고릅니다. 이 한도가 URP Asset의 **Additional Lights > Per Object Limit**입니다.
+
+`Per Object Limit`의 기본값은 4이고, 일반적으로 8까지 올릴 수 있습니다. 한도를 넘는 추가 라이트는 그 오브젝트의 조명 계산에서 제외됩니다. 그래서 같은 씬 안에 라이트가 많이 놓여 있어도, 기본 Forward에서는 오브젝트 하나가 실제로 받는 추가 라이트 수가 이 값으로 잘립니다.
 
 <br>
 
 <div style="text-align: center; margin: 1.5em 0;">
 <svg viewBox="0 0 560 340" xmlns="http://www.w3.org/2000/svg" style="max-width: 560px; width: 100%;">
   <!-- Title -->
-  <text x="280" y="22" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="currentColor">URP의 라이트 구조</text>
+  <text x="280" y="22" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="currentColor">URP Forward의 라이트 구조</text>
   <!-- Main Light box (emphasized) -->
   <rect x="30" y="42" width="500" height="105" rx="5" fill="currentColor" fill-opacity="0.08" stroke="currentColor" stroke-width="1.5"/>
-  <text x="50" y="66" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">Main Light (Directional Light, 1개)</text>
+  <text x="50" y="66" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">Main Light (Directional Light, 카메라당 1개)</text>
   <line x1="50" y1="74" x2="510" y2="74" stroke="currentColor" stroke-width="0.5" opacity="0.2"/>
   <text x="50" y="94" font-family="sans-serif" font-size="11" fill="currentColor">씬 전체에 적용되는 주 조명</text>
   <text x="50" y="112" font-family="sans-serif" font-size="11" fill="currentColor">그림자 생성 가능</text>
@@ -348,364 +268,293 @@ URP의 기본 설정에서 씬에 영향을 미치는 라이트는 **메인 Dire
   <text x="50" y="266" font-family="sans-serif" font-size="11" fill="currentColor">추가 라이트별 그림자는 선택적</text>
   <!-- Mobile recommendation -->
   <rect x="30" y="295" width="500" height="32" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1" stroke-dasharray="5,3"/>
-  <text x="280" y="316" text-anchor="middle" font-family="sans-serif" font-size="11" fill="currentColor" opacity="0.7">모바일 권장: Main Light 1 + Additional Light 2~4</text>
+  <text x="280" y="316" text-anchor="middle" font-family="sans-serif" font-size="11" fill="currentColor" opacity="0.7">모바일 Forward 권장: Main Light 1 + Additional Light 2~4</text>
 </svg>
 </div>
 
 <br>
 
-모바일에서는 추가 라이트 수를 2~4개로 제한하고, 추가 라이트의 그림자는 꼭 필요한 경우에만 활성화하는 것이 일반적입니다.
+메인 라이트는 씬의 기준이 되는 주 조명이고, 추가 라이트는 오브젝트마다 가까우면서 영향이 큰 것부터 선택됩니다. 선택된 추가 라이트만 같은 패스의 루프에서 처리되므로, `Per Object Limit`을 올릴수록 한 오브젝트의 조명 계산 비용도 함께 커집니다.
+
+모바일에서는 이 값을 작게 잡는 편이 안전합니다. 보통 추가 라이트를 2~4개 정도로 제한하고, 추가 라이트 그림자는 꼭 필요한 라이트에만 켜는 식으로 비용을 관리합니다. 더 많은 라이트가 필요하다면 기본 Forward에서 한도를 무작정 올리기보다, Forward+나 라이트 베이킹을 먼저 검토하는 편이 좋습니다.
 
 ### Renderer Feature
 
-싱글패스 포워드 렌더링과 라이트 제한으로 기본 렌더링 흐름이 정해지지만, 프로젝트마다 기본 흐름에 없는 추가 효과가 필요한 경우가 있습니다.
-URP에서는 이러한 추가 효과를 **ScriptableRendererFeature**로 구현합니다. Renderer Feature는 URP의 렌더링 파이프라인 실행 도중 특정 시점(예: 불투명 렌더링 직후, 후처리 직전)에 개발자가 작성한 커스텀 렌더 패스를 삽입하는 구조입니다.
-여기서 렌더 패스(Render Pass)란 특정 종류의 오브젝트를 그리거나 화면 효과를 적용하는 하나의 렌더링 단위를 가리킵니다.
+URP가 기본 렌더링 경로만 제공한다면 프로젝트마다 필요한 특수 효과를 넣기 어렵습니다. 그래서 URP는 파이프라인 중간에 사용자가 만든 렌더링 단계를 끼워 넣을 수 있는 확장 지점을 제공합니다. 그 역할을 하는 API가 **ScriptableRendererFeature**입니다.
 
-<br>
+Renderer Feature는 하나 이상의 커스텀 렌더 패스를 등록하고, 그 패스를 어느 시점에 실행할지 정합니다. 예를 들어 불투명 오브젝트 렌더링 뒤, 투명 오브젝트 렌더링 전, 후처리 직전처럼 파이프라인의 특정 지점에 패스를 넣을 수 있습니다. 여기서 렌더 패스(Render Pass)는 특정 오브젝트를 다시 그리거나, Render Target을 읽고 쓰거나, 화면 전체에 효과를 적용하는 하나의 렌더링 단위입니다.
 
-아웃라인 효과를 위해 Opaque 렌더링 이후에 별도 패스를 추가하거나, 특정 레이어의 오브젝트만 별도로 렌더링하여 후처리용 마스크를 생성하거나, 커스텀 블러 패스를 삽입하는 것 등이 가능합니다.
-Built-in의 CommandBuffer 삽입과 달리, 파이프라인 구조 안에서 정식으로 패스를 추가하는 방식이므로 Render Graph의 자동 최적화 대상에도 포함됩니다.
+대표적인 예로는 아웃라인, 커스텀 블러, 특정 레이어만 따로 그려 만드는 마스크, 디버그 시각화가 있습니다. 기본 URP 렌더러를 통째로 바꾸지 않고도 필요한 단계만 추가할 수 있으므로, 대부분의 커스텀 렌더링 요구는 Custom SRP로 가기 전에 Renderer Feature에서 먼저 검토하는 편이 좋습니다.
+
+Built-in에서 `CommandBuffer`를 특정 이벤트 시점에 붙이던 방식과 비교하면, Renderer Feature는 URP 렌더러가 관리하는 패스 목록 안에 들어간다는 점이 다릅니다. Render Graph 경로로 작성한 패스라면 어떤 리소스를 읽고 쓰는지도 함께 선언할 수 있어, 뒤에서 다룰 Render Graph가 Render Target 수명과 패스 의존성을 분석하는 데 활용할 수 있습니다.
 
 ### Camera Stacking
 
-URP의 멀티 카메라 구조는 [Unity 렌더링 (1)](/dev/unity/UnityRendering-1/)에서 다룬 **Camera Stacking**입니다.
-Base Camera 위에 Overlay Camera를 쌓는 구조이며, Overlay Camera는 Base Camera의 렌더링 루프 안에서 실행됩니다.
+URP에서 여러 카메라를 한 화면에 합칠 때 사용하는 구조가 **Camera Stacking**입니다. 먼저 Base Camera가 장면의 기준 화면을 만들고, 그 위에 Overlay Camera가 등록된 순서대로 이어서 그립니다. Overlay Camera는 독립된 최종 출력 카메라처럼 동작하지 않고, Base Camera의 렌더링 흐름 안에 포함됩니다.
 
-Overlay Camera가 독립적인 Render Target을 생성하지 않고 Base Camera의 Render Target에 직접 그리므로, 별도의 RT 할당과 전환 비용이 줄어듭니다. UI, 무기 뷰, 미니맵 등 별도 레이어가 필요한 경우에 Camera Stacking으로 분리하면 렌더링 순서를 명확하게 관리할 수 있습니다.
+> Camera Stacking의 카메라 구성과 렌더링 순서는 [Unity 렌더링 (1)](/dev/unity/UnityRendering-1/)에서 자세히 다룹니다.
+
+이 구조의 장점은 출력 대상과 순서가 명확하다는 점입니다. Overlay Camera는 Base Camera가 사용하는 Render Target 위에 결과를 덧그리므로, 카메라별 결과를 따로 만든 뒤 다시 합성하는 구성을 줄일 수 있습니다.
+
+다만 Overlay Camera가 추가된다고 렌더링 비용이 사라지는 것은 아닙니다. Overlay Camera도 자신이 담당하는 레이어를 컬링하고, 필요한 오브젝트를 다시 그립니다. 따라서 UI, 1인칭 무기 뷰, 특정 효과처럼 별도 카메라가 필요한 경우에만 Stack에 올리고, Culling Mask를 좁혀 그 카메라가 처리할 대상을 제한하는 편이 좋습니다.
 
 ### 2D Renderer
 
-URP는 3D 렌더링뿐 아니라 **2D Renderer**도 제공합니다. 2D Renderer는 Sprite를 대상으로 한 2D 라이팅, 2D 그림자, Shape Light 등을 지원합니다.
+URP는 3D 렌더러만 제공하지 않습니다. 스프라이트 중심의 2D 게임을 위해 **2D Renderer**도 별도로 제공합니다. 이 렌더러를 선택하면 2D 전용 라이트, 2D 그림자, 스프라이트용 노멀 맵 같은 기능을 같은 URP 프로젝트 안에서 사용할 수 있습니다.
 
-Built-in 파이프라인에서는 2D 전용 라이팅 시스템이 없어 스프라이트에 동적 조명을 적용하려면 커스텀 셰이더를 직접 작성해야 했습니다. URP의 2D Renderer는 이 기능을 기본으로 제공하므로, 2D 게임에서도 커스텀 작업 없이 동적 조명과 그림자를 사용할 수 있습니다.
+Built-in에서는 2D 스프라이트에 동적인 조명을 넣으려면 커스텀 셰이더나 별도 구현에 의존하는 경우가 많았습니다. URP의 2D Renderer는 이 흐름을 파이프라인 기능으로 제공합니다. 스프라이트를 단순히 밝기만 입힌 이미지로 두지 않고, 2D 라이트의 영향을 받는 렌더링 대상으로 다룰 수 있게 해 줍니다.
 
-<br>
-
-**Shape Light**(Light 2D)는 URP의 2D 전용 광원 컴포넌트로, Freeform(자유 형태), Sprite(텍스처 기반), Point(점 광원), Global(전역 조명) 유형을 제공합니다. 3D 렌더링에서 라이트가 메쉬 표면의 Normal을 기준으로 밝기를 계산하듯, 2D Renderer에서도 스프라이트에 Normal Map을 적용하면 광원 방향에 따라 입체감 있는 조명을 표현할 수 있습니다.
+핵심 컴포넌트는 **Light 2D**입니다. 자유로운 윤곽을 그리는 Freeform, 텍스처를 광원처럼 쓰는 Sprite, 한 점에서 퍼지는 Point, 화면 전체를 비추는 Global 같은 유형을 제공합니다. 여기에 스프라이트용 Normal Map을 함께 쓰면, 빛이 들어오는 방향에 따라 평면 이미지에도 입체감과 재질감이 생깁니다.
 
 ### 모바일 최적화 특성
 
-URP가 모바일에 적합한 이유는 구조적입니다. 앞서 살펴본 싱글패스 포워드 렌더링으로 조명 수에 비례하는 드로우콜 증가를 방지하고, SRP Batcher로 드로우콜의 CPU 오버헤드를 줄입니다.
+URP가 모바일에서 유리한 이유는 개별 옵션 하나가 아니라 전체 구조에 있습니다. 기본 Forward 경로는 Built-in의 멀티패스처럼 조명 수에 따라 드로우콜을 반복해서 늘리지 않고, SRP Batcher는 드로우콜을 준비할 때 발생하는 CPU 상태 전환 비용을 줄입니다.
 
-<br>
+GPU 쪽에서는 Render Target 전환과 대역폭이 중요합니다. 모바일 GPU는 타일 메모리에서 렌더링한 결과를 시스템 메모리로 저장하거나 다시 불러오는 과정에서 비용이 커질 수 있습니다. URP는 렌더 패스를 명확한 단위로 구성하고, 필요한 경우 Render Graph를 통해 Render Target의 수명과 재사용을 관리해 불필요한 전환과 임시 버퍼 사용을 줄일 수 있습니다.
 
-렌더 패스 설계 측면에서도 Render Target 전환을 최소화하도록 구성되어 있습니다.
-[Unity 렌더링 (2)](/dev/unity/UnityRendering-2/)에서 다룬 것처럼, 모바일 GPU에서 Render Target 전환은 Resolve/Load 비용을 유발하므로 전환 횟수를 줄이는 것이 대역폭 절약에 직결됩니다.
-MSAA(Multi-Sample Anti-Aliasing)도 기본 지원하며, 모바일 GPU의 타일 메모리 구조에서는 MSAA 샘플이 타일 메모리 안에서만 유지되고 외부 메모리로 나가지 않으므로 대역폭 비용이 거의 발생하지 않습니다. Unity 6 이상에서는 Render Graph가 기본 적용되어, 불필요한 렌더 패스의 자동 제거와 RT 메모리 재사용으로 대역폭과 메모리 효율이 한층 개선됩니다.
+> 모바일 GPU에서 Render Target 전환이 왜 대역폭을 먹는지는 [Unity 렌더링 (2)](/dev/unity/UnityRendering-2/)에서 자세히 다룹니다.
 
-<br>
+안티에일리어싱도 모바일 구조와 맞물립니다. URP는 MSAA(Multi-Sample Anti-Aliasing)를 지원하며, 타일 기반 모바일 GPU에서는 MSAA 샘플이 타일 메모리 안에서 처리되는 동안에는 시스템 메모리 대역폭 부담이 상대적으로 작습니다. 그래서 모바일에서는 무거운 후처리 기반 안티에일리어싱보다 MSAA가 더 적합한 경우가 많습니다.
 
-URP가 성능 효율에 초점을 맞춘 파이프라인이라면, 시각적 품질의 상한을 끌어올리기 위한 파이프라인이 HDRP입니다.
+결국 URP의 강점은 "가볍다"는 한마디로 끝나지 않습니다. 모바일에서 시작해 PC와 콘솔까지 같은 파이프라인 안에서 확장할 수 있고, SRP Batcher, Renderer Feature, Camera Stacking, Render Graph 같은 핵심 기능을 함께 사용할 수 있습니다. 그래서 새 프로젝트에서는 URP를 먼저 검토하고, URP로 해결되지 않는 요구가 분명할 때만 다른 파이프라인을 검토하는 흐름이 자연스럽습니다.
 
 ---
 
-## HDRP (High Definition Render Pipeline)
+## HDRP: 고품질 요구가 분명할 때의 선택지
 
-**HDRP(High Definition Render Pipeline)**는 **고사양 PC와 콘솔**을 대상으로 설계된 SRP 기반 렌더 파이프라인입니다. 시각적 품질을 최우선으로 두며, Area Light, Volumetric Fog, Sub-Surface Scattering 등 물리 기반 라이팅의 고급 기능을 제공합니다.
+HDRP(High Definition Render Pipeline)는 고사양 PC와 콘솔을 목표로 만들어진 고품질 SRP 파이프라인입니다. 물리 기반 조명, 고급 머티리얼, Volumetric Fog, Sub-Surface Scattering, 고급 반사처럼 사실적인 화면을 만드는 기능을 폭넓게 갖추고 있습니다.
 
-### 렌더링 방식
+다만 이 글의 흐름에서 HDRP는 새 프로젝트의 기본 출발점이 아닙니다. Unity의 렌더링 개발 중심은 URP로 옮겨 갔고, HDRP는 새 기능 확장보다 안정성, 회귀 수정, 중요 문제 대응, 플랫폼 도달 범위 유지에 무게가 실린 상태입니다. 즉 HDRP가 사라진다는 뜻은 아니지만, 앞으로의 일반적인 확장 방향을 기대하고 선택할 파이프라인은 아닙니다.
 
-HDRP의 기본 렌더링 방식은 **Deferred Rendering**입니다. G-Buffer에 기하 정보를 먼저 기록하고 라이팅을 화면 공간에서 처리합니다.
-Forward Rendering도 선택할 수 있습니다. 다만 G-Buffer는 픽셀당 하나의 표면 정보만 저장하므로, 여러 표면의 색상을 겹쳐 혼합해야 하는 반투명 오브젝트는 처리할 수 없습니다.
+기술 비용도 분명합니다. HDRP는 고품질 표현을 위해 여러 Render Target, 복잡한 셰이더, 추가 렌더 패스를 적극적으로 사용합니다. 그만큼 GPU 메모리와 대역폭, 셰이더 비용이 커지고, Compute Shader를 포함한 현대적인 GPU 기능을 전제로 합니다. 모바일처럼 전력과 대역폭이 제한된 환경과는 맞지 않습니다.
 
-Hair(머리카락)나 Fabric(직물)처럼 복잡한 BRDF를 사용하는 셰이더도, G-Buffer의 한정된 채널로는 필요한 모든 표면 데이터를 저장할 수 없으므로 Forward로만 렌더링됩니다. 이런 머티리얼만 Forward로 처리하고 나머지는 Deferred로 처리하는 혼합 방식이 실무에서 자주 사용됩니다.
+따라서 HDRP는 두 경우에만 검토하는 편이 좋습니다. 이미 HDRP로 제작 중인 프로젝트를 유지해야 하거나, 목표 플랫폼이 고사양 PC/콘솔이고 URP로는 충족하기 어려운 고품질 조명과 머티리얼 요구가 명확할 때입니다. 그 외의 새 프로젝트라면 먼저 URP에서 필요한 화면을 만들 수 있는지 확인하는 쪽이 안전합니다.
 
-<br>
-
-Deferred Rendering은 조명 수에 드로우콜이 비례하지 않는다는 장점이 있지만, G-Buffer가 여러 장의 Render Target을 사용하므로 메모리와 대역폭 요구량이 큽니다.
-HDRP의 G-Buffer는 기본 4장의 RT로 구성되며, Light Layers나 Shadow Mask 기능을 활성화하면 각각 RT가 추가되어 최대 6장까지 확장됩니다. Full HD 해상도 기준, 4장일 때 약 32MB, 6장일 때 약 48MB의 추가 메모리를 소비합니다.
-
-### 고급 라이팅 기능
-
-HDRP는 URP에서 지원하지 않는 고급 라이팅 기능을 제공합니다.
-
-<br>
-
-<div style="text-align: center; margin: 1.5em 0;">
-<svg viewBox="0 0 600 370" xmlns="http://www.w3.org/2000/svg" style="max-width: 600px; width: 100%;">
-  <!-- Title -->
-  <text x="300" y="22" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="currentColor">HDRP 고급 라이팅 기능</text>
-  <!-- Card 1: Area Light (top-left) -->
-  <rect x="15" y="42" width="275" height="148" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
-  <text x="152" y="66" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">Area Light</text>
-  <line x1="35" y1="74" x2="270" y2="74" stroke="currentColor" stroke-width="0.5" opacity="0.2"/>
-  <text x="35" y="96" font-family="sans-serif" font-size="11" fill="currentColor">면적을 가진 광원</text>
-  <text x="35" y="114" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.6">(사각형, 디스크 등)</text>
-  <text x="35" y="138" font-family="sans-serif" font-size="11" fill="currentColor">점 광원보다 사실적인 부드러운 그림자</text>
-  <text x="35" y="160" font-family="sans-serif" font-size="11" fill="currentColor">계산 비용이 높음</text>
-  <text x="35" y="178" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.6">(레이 트레이싱 또는 근사)</text>
-  <!-- Card 2: Volumetric Fog (top-right) -->
-  <rect x="310" y="42" width="275" height="148" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
-  <text x="447" y="66" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">Volumetric Fog</text>
-  <line x1="330" y1="74" x2="565" y2="74" stroke="currentColor" stroke-width="0.5" opacity="0.2"/>
-  <text x="330" y="96" font-family="sans-serif" font-size="11" fill="currentColor">3D 공간에서 빛이 안개/입자에</text>
-  <text x="330" y="114" font-family="sans-serif" font-size="11" fill="currentColor">산란하는 효과</text>
-  <text x="330" y="138" font-family="sans-serif" font-size="11" fill="currentColor">광선이 안개를 통과하며 밝아지는</text>
-  <text x="330" y="156" font-family="sans-serif" font-size="11" fill="currentColor">God Ray 표현 가능</text>
-  <text x="330" y="178" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.6">볼류메트릭 렌더링 패스 추가</text>
-  <!-- Card 3: Sub-Surface Scattering (bottom-left) -->
-  <rect x="15" y="205" width="275" height="148" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
-  <text x="152" y="229" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">Sub-Surface Scattering (SSS)</text>
-  <line x1="35" y1="237" x2="270" y2="237" stroke="currentColor" stroke-width="0.5" opacity="0.2"/>
-  <text x="35" y="259" font-family="sans-serif" font-size="11" fill="currentColor">빛이 표면 아래로 투과하여</text>
-  <text x="35" y="277" font-family="sans-serif" font-size="11" fill="currentColor">산란하는 효과</text>
-  <text x="35" y="301" font-family="sans-serif" font-size="11" fill="currentColor">피부, 왁스, 나뭇잎 등</text>
-  <text x="35" y="319" font-family="sans-serif" font-size="11" fill="currentColor">반투과 재질의 사실적 표현</text>
-  <text x="35" y="341" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.6">별도의 SSS 프로파일과 렌더링 패스 필요</text>
-  <!-- Card 4: Screen Space Reflection (bottom-right) -->
-  <rect x="310" y="205" width="275" height="148" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
-  <text x="447" y="229" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">Screen Space Reflection (SSR)</text>
-  <line x1="330" y1="237" x2="565" y2="237" stroke="currentColor" stroke-width="0.5" opacity="0.2"/>
-  <text x="330" y="259" font-family="sans-serif" font-size="11" fill="currentColor">화면 공간에서 반사를 계산</text>
-  <text x="330" y="283" font-family="sans-serif" font-size="11" fill="currentColor">Reflection Probe보다</text>
-  <text x="330" y="301" font-family="sans-serif" font-size="11" fill="currentColor">동적이고 정밀한 반사</text>
-  <text x="330" y="325" font-family="sans-serif" font-size="11" fill="currentColor">G-Buffer의 깊이와 노멀을 활용</text>
-</svg>
-</div>
-
-<br>
-
-이 기능들은 모두 추가적인 렌더링 패스나 GPU 연산을 수반하므로, 각각을 활성화할 때마다 프래그먼트 셰이더 비용과 메모리 사용량이 증가합니다.
-
-### Lit Shader
-
-위와 같은 고급 라이팅 기능을 활용하려면 셰이더도 이에 대응해야 합니다.
-HDRP의 기본 셰이더인 **Lit Shader**는 Standard(일반 표면), Sub-Surface Scattering(피부 등), Anisotropy(머리카락, 브러시드 메탈 등), Iridescence(비눗방울, 기름막 등), Specular Color(비금속 스페큘러 직접 지정) 등의 표면 유형을 지원합니다. Anisotropy는 반사 특성이 방향에 따라 달라지는 재질, Iridescence는 보는 각도에 따라 색상이 변하는 재질을 표현합니다.
-
-<br>
-
-각 표면 유형에 따라 셰이더 내부의 BRDF 계산이 달라집니다. BRDF(Bidirectional Reflectance Distribution Function)는 빛이 표면에 닿았을 때 어떤 방향으로 얼마나 반사되는지를 수학적으로 정의하는 함수로, 표면 유형이 복잡할수록 BRDF 계산에 포함되는 항이 늘어나 프래그먼트 셰이더 비용이 증가합니다.
-
-### Frame Settings
-
-HDRP는 고급 라이팅 기능이 많은 만큼, 모든 카메라에서 모든 기능을 활성화하면 GPU 비용이 과도해질 수 있습니다.
-
-**Frame Settings**는 이 문제를 해결하기 위해 카메라별로 렌더링 기능을 개별적으로 켜거나 끌 수 있게 해주는 설정입니다. 예를 들어, 메인 카메라에서는 Volumetric Fog와 SSR을 활성화하되, 미니맵 카메라에서는 이 기능들을 모두 비활성화하여 비용을 줄일 수 있습니다. 반사 프로브(Reflection Probe) 렌더링이나 실시간 그림자 캐스케이드 수도 카메라별로 다르게 지정할 수 있습니다. 이 설정은 카메라 컴포넌트의 Frame Settings 오버라이드에서 관리합니다.
-
-### 제약사항
-
-HDRP는 **모바일을 지원하지 않습니다.** G-Buffer 메모리, 고급 라이팅의 GPU 요구사항, 높은 대역폭 소비가 모바일 환경과 맞지 않기 때문입니다. 모바일 GPU의 타일 기반 렌더링 구조에서는 G-Buffer가 요구하는 다중 Render Target의 대역폭 비용이 특히 큽니다.
-
-HDRP의 최소 요구 사양은 DirectX 11 / Metal / Vulkan을 지원하면서 **Compute Shader와 Shader Model 5.0**을 지원하는 GPU입니다.
-OpenGL과 OpenGL ES는 지원하지 않으므로, 이 API만 사용하는 기기에서는 HDRP를 실행할 수 없습니다.
-콘솔에서는 PlayStation 4, Xbox One 이상입니다. 대상 플랫폼이 PC(중급 이상) 또는 콘솔이고 시각적 품질이 최우선인 프로젝트에서 선택하는 파이프라인입니다.
-
-<br>
-
-URP와 HDRP가 대부분의 프로젝트를 커버하지만, 두 파이프라인 모두 맞지 않는 특수한 요구사항이 있을 수 있습니다.
+URP에서 부족한 부분이 보이더라도 곧바로 HDRP로 옮겨 가기보다, 먼저 URP의 Renderer Feature, Render Graph, 커스텀 셰이더로 해결할 수 있는지 확인합니다. 그래도 파이프라인의 실행 순서 자체가 요구와 맞지 않는다면 Custom SRP를 검토하게 됩니다.
 
 ---
 
 ## Custom SRP
 
-URP와 HDRP 외에, SRP 프레임워크를 사용하여 **렌더 파이프라인을 직접 구현**하는 것도 가능합니다. `RenderPipeline` 클래스를 상속받아 렌더링 루프를 처음부터 작성하는 방식입니다.
+Custom SRP는 SRP 프레임워크 위에서 **렌더 파이프라인을 직접 구현하는** 방식입니다. `RenderPipeline` 클래스를 상속해 카메라 처리, 컬링, 정렬, Render Target 설정, 드로우콜 제출 순서를 직접 작성합니다. URP 위에 패스를 추가하는 수준이 아니라, 한 프레임의 렌더링 루프 자체를 프로젝트가 책임지는 선택입니다.
 
-### 활용 사례
+### 직접 구현이 필요한 경우
 
-프로젝트가 특수한 시각적 스타일을 요구하여 기존 파이프라인으로 구현이 어려운 경우에 Custom SRP를 고려합니다.
-셀 셰이딩(Cel Shading, 만화처럼 명암을 단계적으로 나누어 표현하는 기법) 전용 파이프라인, 복셀(Voxel, 3D 공간을 작은 정육면체 단위로 구성하는 방식) 렌더링 전용 파이프라인, 특정 장르에 최적화된 경량 파이프라인 등이 예입니다.
+Custom SRP가 필요한 경우는 단순히 화면 효과 하나를 추가하고 싶을 때가 아닙니다. 그런 요구는 대개 URP의 Renderer Feature나 커스텀 셰이더로 처리할 수 있습니다. Custom SRP는 렌더링 순서, 컬링 방식, 패스 구성, Render Target 사용 방식 자체가 기존 파이프라인과 맞지 않을 때 검토합니다.
 
-학습 목적으로도 Custom SRP 구현이 유용합니다. 컬링, 정렬, 드로우콜 생성, Render Target 관리를 직접 구현해보면, URP나 HDRP가 내부에서 수행하는 작업을 구체적으로 파악할 수 있습니다.
+예를 들어 게임 전체가 특정 스타일의 셀 셰이딩(Cel Shading)만 사용하고, 그에 맞춰 조명과 그림자 계산을 단순화하려는 경우가 있습니다. 복셀(Voxel) 렌더링처럼 일반적인 메쉬 렌더링 흐름과 다른 구조를 쓰거나, 특정 장르에 맞춰 불필요한 기능을 걷어 낸 매우 가벼운 전용 파이프라인을 만들 때도 Custom SRP가 후보가 됩니다.
+
+학습용으로 직접 구현해 보는 것도 의미가 있습니다. 컬링, 정렬, 드로우콜 생성, Render Target 설정을 직접 작성하면 URP가 내부에서 처리하는 기본 흐름을 더 구체적으로 이해할 수 있습니다. 다만 실무에서 선택하려면, 구현보다 유지보수 비용까지 감당할 수 있는지 먼저 따져야 합니다.
 
 <br>
 
 **Custom SRP의 최소 구현 구조**
 
 ```csharp
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Rendering;
+
 class CustomRenderPipeline : RenderPipeline
 {
+    static readonly ShaderTagId ShaderTagId =
+        new ShaderTagId("SRPDefaultUnlit");
+
     protected override void Render(
-        ScriptableRenderContext context, Camera[] cameras)
+        ScriptableRenderContext context,
+        List<Camera> cameras)
     {
         foreach (Camera camera in cameras)
+            RenderCamera(context, camera);
+    }
+
+    static void RenderCamera(
+        ScriptableRenderContext context,
+        Camera camera)
+    {
+        // (1) 컬링
+        if (!camera.TryGetCullingParameters(out var cullingParams))
+            return;
+
+        var cullingResults = context.Cull(ref cullingParams);
+
+        // (2) 카메라 행렬과 기본 상태 설정
+        context.SetupCameraProperties(camera);
+
+        // (3) 컬러/깊이 버퍼 초기화
+        var cmd = CommandBufferPool.Get("Custom SRP");
+        cmd.ClearRenderTarget(true, true, Color.clear);
+        context.ExecuteCommandBuffer(cmd);
+        cmd.Clear();
+        CommandBufferPool.Release(cmd);
+
+        // (4) 불투명 오브젝트 렌더링
+        var sortingSettings = new SortingSettings(camera)
         {
-            // (1) 컬링
-            if (!camera.TryGetCullingParameters(out var cullingParams))
-                continue;
-            var cullingResults = context.Cull(ref cullingParams);
+            criteria = SortingCriteria.CommonOpaque
+        };
+        var drawingSettings =
+            new DrawingSettings(ShaderTagId, sortingSettings);
+        var filteringSettings =
+            new FilteringSettings(RenderQueueRange.opaque);
 
-            // (2) 카메라 설정 (VP 행렬 등)
-            context.SetupCameraProperties(camera);
+        context.DrawRenderers(
+            cullingResults, ref drawingSettings,
+            ref filteringSettings);
 
-            // (3) Clear
-            var cmd = CommandBufferPool.Get("Custom SRP");
-            cmd.ClearRenderTarget(true, true, Color.clear);
-            context.ExecuteCommandBuffer(cmd);
-            cmd.Clear();
-            CommandBufferPool.Release(cmd);
+        // (5) 반투명 오브젝트 렌더링
+        sortingSettings.criteria = SortingCriteria.CommonTransparent;
+        drawingSettings.sortingSettings = sortingSettings;
+        filteringSettings.renderQueueRange =
+            RenderQueueRange.transparent;
 
-            // (4) 불투명 오브젝트 렌더링
-            var sortingSettings = new SortingSettings(camera)
-            {
-                criteria = SortingCriteria.CommonOpaque
-            };
-            var drawingSettings = new DrawingSettings(
-                shaderTagId, sortingSettings);
-            var filteringSettings = new FilteringSettings(
-                RenderQueueRange.opaque);
-            context.DrawRenderers(
-                cullingResults, ref drawingSettings,
-                ref filteringSettings);
+        context.DrawRenderers(
+            cullingResults, ref drawingSettings,
+            ref filteringSettings);
 
-            // (5) 반투명 오브젝트 렌더링
-            sortingSettings.criteria =
-                SortingCriteria.CommonTransparent;
-            drawingSettings.sortingSettings = sortingSettings;
-            filteringSettings.renderQueueRange =
-                RenderQueueRange.transparent;
-            context.DrawRenderers(
-                cullingResults, ref drawingSettings,
-                ref filteringSettings);
-
-            // (6) GPU에 제출
-            context.Submit();
-        }
+        // (6) 누적된 명령 제출
+        context.Submit();
     }
 }
 ```
 
 <br>
 
-위 코드에서 `shaderTagId`는 렌더링에 사용할 셰이더 패스를 식별하는 태그입니다. 셰이더의 `Tags { "LightMode" = "..." }` 값과 일치하는 패스만 실행됩니다.
+위 코드는 실제 프로덕션용 렌더러가 아니라, Custom SRP의 최소 흐름을 보여 주는 예시입니다. 카메라별로 컬링 결과를 만들고, 카메라 상태를 설정한 뒤, 버퍼를 지우고, 불투명 오브젝트와 반투명 오브젝트를 나누어 그린 다음 `Submit()`으로 명령을 제출합니다.
 
-<br>
+`ShaderTagId`는 어떤 셰이더 패스를 그릴지 고르는 기준입니다. 셰이더의 `Tags { "LightMode" = "..." }` 값과 일치하는 패스만 `DrawRenderers()`의 대상이 됩니다. 예시에서는 `SRPDefaultUnlit` 패스만 그리므로, 조명과 그림자, 스카이박스, 후처리, Render Graph 같은 기능은 포함되어 있지 않습니다.
 
-렌더 파이프라인의 핵심 흐름은 컬링 → 정렬 → 드로우콜 생성 → GPU 제출이며, 위의 Custom SRP 코드가 그 흐름을 그대로 보여줍니다. URP와 HDRP도 동일한 흐름을 기반으로, 라이팅·그림자·후처리 등의 단계를 추가한 형태입니다.
+그래도 기본 흐름은 같습니다. 렌더 파이프라인은 결국 컬링 → 정렬 → 드로우콜 생성 → GPU 제출이라는 순서를 바탕으로 동작합니다. URP도 이 흐름 위에 라이트, 그림자, 후처리, Renderer Feature, Render Graph 같은 단계를 더한 구조라고 보면 됩니다.
 
 ### 유지보수 부담
 
-Custom SRP의 가장 큰 단점은 **유지보수 부담**입니다.
+Custom SRP의 비용은 처음 구현할 때보다 이후에 더 크게 드러납니다. URP에서는 렌더 패스 구성, Render Target 수명, 플랫폼별 처리, API 변화 대응을 Unity가 파이프라인 안에서 관리합니다. Custom SRP를 선택하면 이 책임을 프로젝트가 직접 떠안게 됩니다.
 
-URP와 HDRP는 Unity 팀이 지속적으로 업데이트하며, 새로운 GPU 기능 지원, 버그 수정, 성능 최적화를 반영합니다.
-Custom SRP는 이 모든 것을 직접 관리해야 합니다. Unity 버전 업그레이드 시 SRP API가 변경되면 Custom SRP도 함께 수정해야 하며, 새 플랫폼을 지원하려면 해당 GPU 특성에 맞는 최적화를 직접 구현해야 합니다.
+Unity 버전을 올릴 때는 SRP API와 렌더링 백엔드 동작을 다시 검증해야 합니다. 새 플랫폼을 추가한다면 GPU 특성, MSAA 처리, Store/Load Action, 셰이더 호환성도 직접 맞춰야 합니다. 그림자, 후처리, XR, 디버그 도구처럼 URP가 기본으로 제공하는 기능도 필요하다면 별도로 설계해야 합니다.
 
-프로젝트의 특수한 요구사항이 URP의 Renderer Feature나 Render Graph로 해결 가능하다면, Custom SRP보다 URP 위에서 확장하는 것이 유지보수 비용 면에서 유리합니다.
+따라서 Custom SRP의 판단 기준은 "직접 만들 수 있는가"가 아니라 **계속 관리할 수 있는가**입니다. 요구 사항이 URP의 Renderer Feature, Render Graph, 커스텀 셰이더 안에서 해결된다면 그 안에서 확장하는 편이 낫습니다. 파이프라인 루프 자체를 바꿔야 할 때만 Custom SRP를 선택합니다.
 
-<br>
-
-지금까지 Built-in, URP, HDRP, Custom SRP 네 가지 선택지를 다루었습니다. 이제 각 파이프라인의 특성을 바탕으로 실제 프로젝트에서의 선택 기준을 정리합니다.
+이제 선택 기준은 단순해집니다. 새 프로젝트는 URP에서 출발하고, Built-in은 기존 프로젝트와 이전 비용, HDRP는 명확한 고품질 PC/콘솔 요구, Custom SRP는 직접 파이프라인을 유지할 수 있는 특수 요구가 있을 때만 따로 검토합니다. 다음 절에서는 이 기준을 프로젝트 상황별로 정리합니다.
 
 ---
 
 ## 파이프라인 선택 기준
 
-파이프라인 변경 비용이 크므로, 렌더 파이프라인은 프로젝트 초기에 결정해야 합니다. 주요 선택 기준은 대상 플랫폼과 시각적 목표이며, 셰이더 호환성과 변경 비용도 함께 고려해야 합니다.
+앞에서 본 내용을 실제 프로젝트 판단으로 옮기면, 파이프라인 선택은 여러 후보를 같은 무게로 비교하는 일이 아닙니다. 기본 출발점은 URP입니다. 먼저 URP로 목표 플랫폼과 화면 품질, 필요한 렌더링 기능을 충족할 수 있는지 확인하고, 부족한 부분이 Renderer Feature, Render Graph, 커스텀 셰이더로 해결되는지 봅니다.
 
-### 비교 표
+그래도 요구가 맞지 않을 때만 다른 선택지를 엽니다. 기존 Built-in 프로젝트라면 유지할지 URP로 이전할지를 따지고, 고품질 PC/콘솔 요구가 URP로 해결되지 않는다면 HDRP를 검토합니다. 렌더링 루프 자체를 바꿔야 한다면 Custom SRP가 마지막 선택지가 됩니다.
 
-앞에서 다룬 세 파이프라인의 주요 특성을 항목별로 비교하면 다음과 같습니다.
+이 판단은 프로젝트 초기에 끝내는 편이 좋습니다. 렌더 파이프라인은 셰이더와 머티리얼, 라이팅, 후처리, 커스텀 렌더링 코드의 전제를 함께 정합니다. 중간에 바꾸면 화면 품질을 다시 맞추는 일뿐 아니라 에셋 변환, 셰이더 수정, 렌더링 코드 재작성, 시각적 검수까지 이어집니다.
 
-<br>
+### 상황별 판단
 
-| 항목 | Built-in | URP | HDRP |
-|---|---|---|---|
-| 대상 플랫폼 | 모든 플랫폼<br>(레거시) | 모바일 ~ PC<br>(주력) | PC / 콘솔<br>(고사양) |
-| Forward 렌더링 | O (멀티패스) | O (싱글패스) | O (선택) |
-| Deferred 렌더링 | O | O (선택) | O (기본) |
-| 라이트 제한 | 제한 없음<br>(비용 비례) | Forward:<br>Per Object 4~8<br>Forward+/Def:<br>제한 없음 | 제한 없음<br>(G-Buffer 기반) |
-| 셰이더 | Surface Shader | Shader Graph /<br>HLSL | Shader Graph /<br>HLSL |
-| 커스텀 패스 | CommandBuffer<br>(제한적) | Renderer Feature | Custom Pass<br>(Volume 기반) |
-| SRP Batcher | X | O | O |
-| Render Graph | X | O (Unity 6+) | O |
-| 모바일 지원 | O (비효율) | O (최적화) | X |
-| 고급 라이팅 | 제한적 | 기본 수준 | Area Light,<br>SSS, Vol. Fog |
-| 업데이트 상태 | 레거시<br>(동결) | 활발 | 활발 |
+아래 표는 파이프라인을 나란히 놓고 고르는 목록이 아니라, URP에서 출발한 뒤 어떤 경우에 예외를 검토할지 정리한 기준입니다. 새 프로젝트와 기존 프로젝트는 판단 방식이 다릅니다. 새 프로젝트는 앞으로의 확장성과 유지보수 비용을 먼저 보고, 기존 프로젝트는 출시 일정과 이전 비용, 품질 회귀 위험을 함께 봐야 합니다.
 
 <br>
 
-표에서 드러나듯, Built-in은 레거시로 동결된 상태이고, URP와 HDRP는 각각 대상 플랫폼과 시각적 품질 수준에 따라 명확히 구분됩니다. 이 구분을 바탕으로 실제 선택 기준을 항목별로 살펴봅니다.
+| 상황 | 판단 | 확인할 점 |
+|---|---|---|
+| 새 모바일 프로젝트 | URP | Forward/Forward+, SRP Batcher, Render Graph를 기준으로 CPU와 대역폭 비용을 관리할 수 있음 |
+| 새 PC/콘솔 프로젝트 | URP에서 시작 | 대부분의 실시간 렌더링 요구를 URP 안에서 처리할 수 있고, 플랫폼 확장 부담이 작음 |
+| 기존 Built-in 프로젝트 | 유지 또는 URP 이전 계획 | 셰이더와 머티리얼 변환, 라이팅 재설정, 출시 일정까지 함께 계산해야 함 |
+| 기존 HDRP 프로젝트 | 유지 중심 | 이미 구축한 고품질 렌더링을 보존하되, 신규 확장과 장기 유지 비용을 신중히 봐야 함 |
+| URP로 부족한 고품질 PC/콘솔 요구 | HDRP 제한 검토 | 필요한 기능이 HDRP에 이미 있고, 높은 메모리와 GPU 비용을 감수할 수 있어야 함 |
+| 파이프라인 구조 자체가 다른 특수 렌더링 | Custom SRP | URP의 Renderer Feature나 Render Graph로 해결할 수 없고, 장기 유지까지 감당할 수 있어야 함 |
+
+<br>
+
+핵심은 새 프로젝트와 기존 프로젝트를 구분하는 것입니다. 새 프로젝트라면 URP를 기본값으로 두고, 명확한 예외 조건이 있을 때만 다른 파이프라인을 엽니다. 반대로 이미 Built-in이나 HDRP로 제작 중인 프로젝트라면 무조건 이전하기보다, 일정과 품질 회귀, 마이그레이션 비용을 먼저 따져야 합니다.
 
 ### 대상 플랫폼
 
-대상 플랫폼이 **모바일**이라면 URP가 유일한 현실적 선택입니다. HDRP는 모바일을 지원하지 않고, Built-in은 멀티패스 드로우콜 비용과 SRP Batcher 미지원으로 모바일에서 성능 병목이 발생합니다.
+플랫폼은 파이프라인 선택에서 가장 먼저 걸러야 할 조건입니다. 특히 모바일은 선택 폭이 좁습니다. CPU 드로우콜 비용과 GPU 대역폭, 발열, 배터리까지 함께 관리해야 하므로, 처음부터 URP의 Forward/Forward+ 구조와 SRP Batcher를 기준으로 잡는 편이 맞습니다. HDRP는 모바일 대상 파이프라인이 아니고, Built-in은 조명이 늘어날수록 멀티패스 비용이 커지며 SRP Batcher도 사용할 수 없습니다.
 
-대상 플랫폼이 **PC/콘솔**이고 시각적 품질이 최우선이라면 HDRP를 선택합니다. Area Light, Volumetric Fog, Sub-Surface Scattering 등이 필요한 프로젝트에서 URP는 이 기능들을 제공하지 않습니다.
+PC나 콘솔에서도 기본 판단은 크게 달라지지 않습니다. URP는 Forward뿐 아니라 Forward+와 Deferred를 제공하므로, 조명이 많은 씬이나 비교적 높은 품질의 화면도 같은 파이프라인 안에서 단계적으로 확장할 수 있습니다. 여러 플랫폼을 동시에 노리는 프로젝트라면 이 점이 특히 중요합니다. 파이프라인을 하나로 유지할수록 셰이더, 머티리얼, 후처리 설정을 플랫폼마다 갈라 관리할 일이 줄어듭니다.
 
-대상이 **PC/콘솔이지만 모바일도 고려**하거나, 시각적 요구가 극단적이지 않다면 URP가 적합합니다. URP는 PC에서도 충분한 시각적 품질을 제공하며, Forward+ 렌더링으로 조명 제한도 완화할 수 있습니다.
+HDRP는 범용 선택지가 아니라 고사양 PC/콘솔을 전제로 한 제한적 선택지입니다. Volumetric Fog, Sub-Surface Scattering, 고급 반사처럼 HDRP에 이미 갖춰진 기능이 반드시 필요하고, G-Buffer와 추가 렌더 패스가 만드는 메모리와 대역폭 비용을 감당할 수 있을 때만 검토합니다. 단순히 "더 좋은 그래픽"이 필요하다는 이유만으로 HDRP를 고르기보다, URP에서 같은 요구를 충족할 수 있는지 먼저 확인하는 편이 안전합니다.
 
 ### 셰이더 호환성
 
-**각 파이프라인이 제공하는 기본 셰이더는 서로 호환되지 않습니다.**
-Built-in의 Surface Shader는 URP에서 동작하지 않고, URP의 Lit Shader는 HDRP에서 동작하지 않습니다. Core SRP 라이브러리만 사용하는 커스텀 셰이더는 파이프라인 간 동작할 수 있지만, 파이프라인별 기능(라이팅 모델, 셰이더 변수 등)에 의존하는 셰이더는 교체가 필요합니다. 실무에서는 대부분의 머티리얼이 파이프라인별 Lit 셰이더를 사용하므로, 파이프라인 변경 시 사실상 모든 머티리얼을 교체해야 합니다.
+파이프라인을 바꿀 때 가장 먼저 드러나는 문제는 셰이더입니다. 셰이더는 단순히 표면 색을 계산하는 코드가 아니라, 어떤 조명 데이터를 받을지, 어떤 렌더 패스에서 실행될지, 어떤 태그와 상수 버퍼 구조를 따를지까지 파이프라인의 규약에 맞춰 작성됩니다. 그래서 파이프라인이 다르면 같은 머티리얼처럼 보여도 내부 전제가 달라집니다.
 
-Unity는 Built-in에서 URP로의 변환을 돕는 **Render Pipeline Converter**(Window > Rendering > Render Pipeline Converter)와, Built-in에서 HDRP로의 머티리얼 변환 기능(Edit > Rendering > Materials)을 제공합니다.
-두 도구 모두 Unity 기본 셰이더의 자동 변환을 지원하지만, 커스텀 셰이더는 새 파이프라인에 맞게 수동으로 다시 작성해야 합니다. 커스텀 셰이더가 많을수록 파이프라인 변경 비용이 증가합니다.
+Built-in의 Surface Shader는 URP에서 그대로 동작하지 않습니다. URP의 Lit Shader와 HDRP의 Lit Shader도 이름은 비슷하지만, 서로 다른 라이팅 모델과 렌더링 구조를 전제로 합니다. 셰이더가 기대하는 `LightMode` 태그, 패스 구성, 머티리얼 프로퍼티 배치가 맞지 않으면 오브젝트가 제대로 그려지지 않거나 오류 셰이더로 표시될 수 있습니다.
+
+Built-in에서 URP로 이전할 때는 **Render Pipeline Converter**(Window > Rendering > Render Pipeline Converter)를 사용할 수 있습니다. 다만 이 도구는 주로 Unity가 제공하는 기본 셰이더와 일반적인 머티리얼 참조를 URP용으로 바꾸는 데 초점이 있습니다. 커스텀 HLSL, 직접 만든 조명 계산, 특정 렌더 패스에 의존하는 셰이더는 자동 변환 대상이 아니므로 새 파이프라인 규약에 맞춰 다시 작성해야 합니다.
+
+따라서 파이프라인 선택은 셰이더 작성 방식의 선택이기도 합니다. 새 프로젝트라면 처음부터 URP용 Shader Graph나 URP HLSL 구조를 기준으로 잡는 편이 이후 비용을 줄입니다. 기존 프로젝트를 옮긴다면 변환 도구를 먼저 돌리는 것보다, 커스텀 셰이더와 핵심 머티리얼이 얼마나 많은지부터 확인해야 합니다.
 
 ### 파이프라인 변경 비용
 
-셰이더 호환성 문제에서 알 수 있듯, 파이프라인 변경은 셰이더뿐 아니라 프로젝트 전반에 걸친 작업을 수반합니다.
+렌더 파이프라인을 바꾸는 일은 렌더링 설정 하나를 교체하는 작업이 아닙니다. 파이프라인은 셰이더, 머티리얼, 라이팅, 후처리, 커스텀 렌더링 코드가 기대하는 전제를 함께 정합니다. 그래서 전환이 시작되면 화면을 만드는 여러 층을 다시 맞춰야 합니다.
 
 <br>
 
 <div style="text-align: center; margin: 1.5em 0;">
-<svg viewBox="0 0 480 500" xmlns="http://www.w3.org/2000/svg" style="max-width: 480px; width: 100%;">
+<svg viewBox="0 0 500 430" xmlns="http://www.w3.org/2000/svg" style="max-width: 500px; width: 100%;">
   <!-- 제목 -->
-  <text x="240" y="22" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="currentColor">파이프라인 변경 시 수반되는 작업</text>
+  <text x="250" y="22" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="currentColor">파이프라인 전환 시 다시 맞춰야 하는 영역</text>
 
-  <!-- (1) 셰이더 변환/재작성 -->
-  <rect x="20" y="42" width="440" height="78" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
-  <circle cx="48" cy="62" r="12" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
-  <text x="48" y="66" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">1</text>
-  <text x="68" y="66" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">셰이더 변환/재작성</text>
-  <text x="48" y="86" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.6">모든 머티리얼의 셰이더를 새 파이프라인용으로 교체</text>
-  <text x="48" y="102" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.6">커스텀 셰이더는 수동 재작성 필요</text>
+  <!-- (1) 셰이더/머티리얼 -->
+  <rect x="24" y="42" width="452" height="76" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
+  <circle cx="52" cy="62" r="12" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
+  <text x="52" y="66" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">1</text>
+  <text x="76" y="66" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">셰이더와 머티리얼</text>
+  <text x="52" y="88" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.65">파이프라인별 셰이더 교체</text>
+  <text x="52" y="104" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.65">커스텀 HLSL과 핵심 머티리얼 재검토</text>
 
-  <!-- (2) 라이팅 재설정 -->
-  <rect x="20" y="132" width="440" height="78" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
-  <circle cx="48" cy="152" r="12" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
-  <text x="48" y="156" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">2</text>
-  <text x="68" y="156" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">라이팅 재설정</text>
-  <text x="48" y="176" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.6">라이트 설정, 그림자 설정, 라이트맵 재베이크</text>
-  <text x="48" y="192" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.6">파이프라인마다 라이팅 파라미터가 다름</text>
+  <!-- (2) 라이팅/후처리 -->
+  <rect x="24" y="132" width="452" height="76" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
+  <circle cx="52" cy="152" r="12" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
+  <text x="52" y="156" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">2</text>
+  <text x="76" y="156" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">라이팅과 후처리</text>
+  <text x="52" y="178" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.65">라이트, 그림자, 라이트맵 설정 재조정</text>
+  <text x="52" y="194" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.65">후처리 볼륨과 카메라 옵션 재구성</text>
 
-  <!-- (3) 후처리 재구성 -->
-  <rect x="20" y="222" width="440" height="78" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
-  <circle cx="48" cy="242" r="12" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
-  <text x="48" y="246" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">3</text>
-  <text x="68" y="246" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">후처리 재구성</text>
-  <text x="48" y="266" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.6">Built-in의 Post Processing Stack v2 →</text>
-  <text x="48" y="282" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.6">URP/HDRP의 Volume 기반 후처리로 변환</text>
+  <!-- (3) 커스텀 렌더링 -->
+  <rect x="24" y="222" width="452" height="76" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
+  <circle cx="52" cy="242" r="12" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
+  <text x="52" y="246" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">3</text>
+  <text x="76" y="246" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">커스텀 렌더링 코드</text>
+  <text x="52" y="268" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.65">CommandBuffer, Renderer Feature, Render Pass 이전</text>
+  <text x="52" y="284" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.65">Render Target 수명과 패스 순서 재검토</text>
 
-  <!-- (4) Renderer Feature / Custom Pass 이전 -->
-  <rect x="20" y="312" width="440" height="68" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
-  <circle cx="48" cy="332" r="12" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
-  <text x="48" y="336" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">4</text>
-  <text x="68" y="336" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">Renderer Feature / Custom Pass 이전</text>
-  <text x="48" y="356" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.6">커스텀 렌더링 기능의 API 변경</text>
-
-  <!-- (5) 시각적 결과 검증 -->
-  <rect x="20" y="392" width="440" height="78" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
-  <circle cx="48" cy="412" r="12" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
-  <text x="48" y="416" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">5</text>
-  <text x="68" y="416" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">시각적 결과 검증</text>
-  <text x="48" y="436" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.6">변환 후 모든 씬에서 시각적 결과가</text>
-  <text x="48" y="452" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.6">의도한 대로 나오는지 확인</text>
+  <!-- (4) 검증 -->
+  <rect x="24" y="312" width="452" height="76" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
+  <circle cx="52" cy="332" r="12" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
+  <text x="52" y="336" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">4</text>
+  <text x="76" y="336" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">시각적 검수와 성능 재측정</text>
+  <text x="52" y="358" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.65">씬별 밝기, 색, 그림자, 후처리 결과 확인</text>
+  <text x="52" y="374" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.65">드로우콜, RT 메모리, GPU 시간 다시 측정</text>
 </svg>
 </div>
 
 <br>
 
-이 비용은 프로젝트 규모에 비례합니다. 씬이 수십 개이고, 커스텀 셰이더가 수십 종이며, 라이트맵이 베이크되어 있는 프로젝트에서 파이프라인을 변경하면 수 주에서 수 개월의 작업이 필요할 수 있습니다. **프로젝트 초기에 파이프라인을 결정하고, 이후 변경하지 않는 것**이 원칙입니다.
+작은 샘플 프로젝트라면 변환 도구와 몇 가지 수동 수정으로 끝날 수 있습니다. 하지만 씬이 많고, 커스텀 셰이더와 베이크된 라이트맵, 후처리 프로파일, 커스텀 렌더 패스가 쌓인 프로젝트에서는 전환 자체가 별도의 마이그레이션 작업이 됩니다. 기능이 다시 동작하는지 확인하는 것과, 이전과 같은 화면이 나오는지 검수하는 것은 다른 문제입니다.
+
+그래서 렌더 파이프라인은 프로젝트 초기에 정하고, 중간에 바꾸지 않는 것을 전제로 설계하는 편이 좋습니다. 새 프로젝트는 URP에서 시작하고, 예외적인 요구가 분명할 때만 다른 파이프라인을 검토합니다.
 
 ---
 
 ## 마무리
 
-- **Built-in Render Pipeline**은 Forward와 Deferred를 모두 지원하지만, 렌더링 루프를 수정할 수 없고 멀티패스 구조로 인해 조명이 많을수록 드로우콜이 급증합니다. 레거시 상태이며, 신규 프로젝트에는 권장되지 않습니다.
-- **SRP(Scriptable Render Pipeline)**는 렌더링 루프를 C#으로 제어할 수 있는 프레임워크이며, URP와 HDRP의 기반입니다. SRP Batcher는 머티리얼 속성을 GPU 메모리에 상주시키고 같은 셰이더 배리언트의 드로우콜 사이에서 셰이더 바인딩을 생략하여 CPU 오버헤드를 줄입니다.
-- **URP**는 모바일~중급 PC를 대상으로 싱글패스 포워드 렌더링, SRP Batcher, Renderer Feature, Camera Stacking, Render Graph를 제공하며 모바일에서 가장 효율적인 선택입니다.
-- **HDRP**는 고사양 PC/콘솔을 대상으로 Deferred 기반의 고급 라이팅(Area Light, Volumetric Fog, SSS 등)을 제공하지만, 모바일은 지원하지 않습니다.
-- **Custom SRP**는 렌더링 루프를 완전히 제어할 수 있는 반면 유지보수 부담이 큽니다. URP의 Renderer Feature나 Render Graph로 해결 가능한 요구사항이라면 URP 위에서 구현하는 편이 유리합니다.
-- **파이프라인별 셰이더는 호환되지 않고** 변경 비용이 크므로, 프로젝트 초기에 대상 플랫폼과 시각적 목표를 기준으로 결정해야 합니다.
+이번 글의 결론은 단순합니다. 새 프로젝트는 URP에서 시작하고, 다른 파이프라인은 예외 조건이 있을 때만 검토합니다. 각 파이프라인이 지금 어디에 서 있는지 정리하면 다음과 같습니다.
+
+- **렌더 파이프라인**은 한 프레임을 그리는 동안 컬링과 정렬, 라이팅, Render Target, 후처리를 어떤 순서와 규칙으로 실행할지 정하는 상위 구조입니다.
+- **Built-in Render Pipeline**은 Unity의 이전 세대 렌더 파이프라인으로, 지금은 레거시로 남아 있습니다. 기존 프로젝트나 오래된 자료를 읽을 때는 구조를 알아 둘 필요가 있지만, 새 프로젝트의 기본 선택지로 삼기는 어렵습니다.
+- **SRP(Scriptable Render Pipeline)**는 렌더링 루프를 C# 코드로 제어하게 해 주는 기반으로, URP와 HDRP가 모두 이 위에 세워져 있습니다.
+- **URP**는 모바일부터 PC와 콘솔까지 폭넓게 대응하며, SRP Batcher와 Renderer Feature, Camera Stacking, Render Graph를 두루 갖춘 Unity의 단일 주력 파이프라인입니다.
+- **HDRP**는 고사양 PC와 콘솔을 겨냥한 고품질 파이프라인이지만, 지금은 신규 기능 개발에서 물러나 유지보수 모드에 있습니다. 기존 HDRP 프로젝트나 URP만으로는 충족하기 어려운 고품질 요구가 있을 때 제한적으로 검토합니다.
+- **Custom SRP**는 URP의 확장 지점으로도 풀리지 않는 특수한 렌더링 구조가 필요할 때 택하는 마지막 수단입니다.
+- **파이프라인 전환 비용**은 큽니다. 셰이더와 머티리얼, 라이팅, 후처리, 커스텀 렌더링 코드를 모두 새 파이프라인에 맞춰야 하므로, 방향은 프로젝트 초기에 정해 두는 편이 좋습니다.
 
 <br>
 
-렌더 파이프라인은 한 프레임을 완성하기 위한 렌더링 단계의 전체 구성과 순서를 정의하는 상위 구조입니다. 컬링, 정렬, 라이팅, 후처리의 방식과 순서가 파이프라인에 의해 결정되므로, 어떤 파이프라인을 선택하느냐에 따라 프로젝트의 성능 특성과 시각적 표현 범위가 함께 결정됩니다.
+어떤 파이프라인을 선택할지는 목표 플랫폼과 화면 품질, 전환 비용이 함께 정합니다. 대부분의 프로젝트에서 그 답은 URP이고, HDRP나 Custom SRP는 URP만으로는 충족하기 어려운 요구가 분명할 때 택하는 예외입니다.
 
 <br>
 
-이 시리즈에서 카메라([Unity 렌더링 (1)](/dev/unity/UnityRendering-1/)), Render Target([Unity 렌더링 (2)](/dev/unity/UnityRendering-2/)), 렌더 파이프라인(이 글)의 기초를 다루었습니다. 이 기초 위에서 [Unity 렌더 파이프라인 (1) - Built-in과 URP의 구조](/dev/unity/UnityPipeline-1/)의 렌더링 구조, [조명과 그림자 (1) - 실시간 조명과 베이크](/dev/unity/LightingAndShadows-1/)의 라이팅 비용, [셰이더 최적화 (1) - 셰이더 성능의 원리](/dev/unity/ShaderOptimization-1/)의 셰이더 성능을 구체적으로 이해할 수 있습니다.
+이로써 Unity 렌더링 세 편에서는 카메라([Unity 렌더링 (1)](/dev/unity/UnityRendering-1/))가 무엇을 어떤 순서로 그리는지, Render Target([Unity 렌더링 (2)](/dev/unity/UnityRendering-2/))이 그 결과를 어디에 저장하는지, 그리고 렌더 파이프라인(이 글)이 이 과정을 어떻게 하나로 묶는지를 살펴보았습니다. 이 내용을 바탕으로 [Unity 렌더 파이프라인 (1) - Built-in과 URP의 구조](/dev/unity/UnityPipeline-1/)에서 렌더링 구조를 더 깊게 다루고, [조명과 그림자 (1) - 실시간 조명과 베이크](/dev/unity/LightingAndShadows-1/)에서 라이팅 비용을, [셰이더 최적화 (1) - 셰이더 성능의 원리](/dev/unity/ShaderOptimization-1/)에서 셰이더 성능을 이어서 살펴볼 수 있습니다.
 
 <br>
 
@@ -715,11 +564,6 @@ Unity는 Built-in에서 URP로의 변환을 돕는 **Render Pipeline Converter**
 - [Unity 렌더 파이프라인 (1) - Built-in과 URP의 구조](/dev/unity/UnityPipeline-1/)
 - [조명과 그림자 (1) - 실시간 조명과 베이크](/dev/unity/LightingAndShadows-1/)
 - [셰이더 최적화 (1) - 셰이더 성능의 원리](/dev/unity/ShaderOptimization-1/)
-
-**시리즈**
-- [Unity 렌더링 (1) - Camera와 Rendering Layer](/dev/unity/UnityRendering-1/)
-- [Unity 렌더링 (2) - Render Target과 Frame Buffer](/dev/unity/UnityRendering-2/)
-- **Unity 렌더링 (3) - Render Pipeline 개요 (현재 글)**
 
 **전체 시리즈**
 - [하드웨어 기초 (1) - CPU 아키텍처와 파이프라인](/dev/unity/HardwareBasics-1/)
@@ -738,7 +582,7 @@ Unity는 Built-in에서 URP로의 변환을 돕는 **Render Pipeline Converter**
 - [색과 빛 (2) - 색 표현과 색공간](/dev/unity/ColorAndLight-2/)
 - [색과 빛 (3) - 셰이딩 모델](/dev/unity/ColorAndLight-3/)
 - [래스터화 파이프라인 (1) - 삼각형에서 프래그먼트까지](/dev/unity/RasterPipeline-1/)
-- [래스터화 파이프라인 (2) - 버퍼 시스템](/dev/unity/RasterPipeline-2/)
+- [래스터화 파이프라인 (2) - 출력 병합](/dev/unity/RasterPipeline-2/)
 - [래스터화 파이프라인 (3) - 디스플레이와 안티앨리어싱](/dev/unity/RasterPipeline-3/)
 - [Unity 엔진 핵심 (1) - GameObject와 Component](/dev/unity/UnityCore-1/)
 - [Unity 엔진 핵심 (2) - Transform 계층과 씬 그래프](/dev/unity/UnityCore-2/)
