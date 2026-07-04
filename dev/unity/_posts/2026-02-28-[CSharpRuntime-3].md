@@ -27,7 +27,7 @@ GC 덕분에 개발자는 메모리를 직접 해제하지 않아도 됩니다. 
 
 프로그램이 할당한 메모리는 언젠가 해제되어야 합니다. 메모리는 한정된 자원이라, 다 쓴 객체가 계속 남아 있으면 새로 할당할 공간이 줄어들기 때문입니다.
 
-문제는 어떤 객체를 더 이상 쓰지 않는지, 그래서 언제 메모리를 돌려줄지를 누가 판단하느냐입니다. 개발자가 코드에서 직접 해제하는 방법도 있고, 런타임이 대신 판단하도록 맡기는 방법도 있습니다. 먼저 직접 관리하는 방식의 위험을 짚은 뒤, GC가 그 일을 어떻게 대신하는지 다룹니다.
+문제는 어떤 객체를 더 이상 쓰지 않는지, 그래서 언제 메모리를 돌려줄지를 누가 판단하느냐입니다. 개발자가 코드에서 직접 해제하는 방법도 있고, 런타임이 대신 판단하도록 맡기는 방법도 있습니다. 먼저 직접 관리하는 방식의 위험을 살펴본 뒤, GC가 그 일을 어떻게 대신하는지 다룹니다.
 
 ### 수동 메모리 관리의 위험
 
@@ -376,7 +376,7 @@ Mark-and-Sweep은 참조 수가 아니라 루트에서 도달 가능한지를 �
   <text fill="currentColor" x="340" y="289" text-anchor="middle" font-size="11" font-family="sans-serif" opacity="0.6">Gen 0은 자주 검사</text>
   <text fill="currentColor" x="340" y="306" text-anchor="middle" font-size="11" font-family="sans-serif" opacity="0.6">오래 산 세대는 드물게 검사</text>
 
-  <text fill="currentColor" x="340" y="342" text-anchor="middle" font-size="10" font-family="sans-serif" opacity="0.55">핵심은 정확한 통계 그래프가 아니라 첫 수집에서 갈리는 흐름임</text>
+  <text fill="currentColor" x="340" y="342" text-anchor="middle" font-size="10" font-family="sans-serif" opacity="0.55">핵심은 정확한 통계 그래프가 아니라 첫 수집에서 나뉘는 흐름임</text>
   <text fill="currentColor" x="340" y="358" text-anchor="middle" font-size="10" font-family="sans-serif" opacity="0.55">바로 죽는 객체는 빨리 회수하고, 계속 살아남는 객체는 높은 세대로 보냄</text>
 </svg>
 </div>
@@ -1089,7 +1089,7 @@ GC 실행 시점은 보통 런타임이 정하지만, C#에는 이를 직접 요
 
 `GC.Collect()`는 GC 비용을 줄여 주는 도구가 아닙니다. 호출하면 그 자리에서 C# 코드 실행이 멈추고(Stop-the-World), 그러면서도 GC가 할 일의 양은 그대로이기 때문입니다. 바꿀 수 있는 것은 GC가 도는 시점뿐이므로, 씬 전환이나 로딩 화면처럼 멈춤이 자연스러운 순간에 한해 제한적으로 씁니다.
 
-GC 비용을 근본적으로 낮추려면 호출 시점이 아니라 할당량을 줄여야 합니다. 힙 할당이 어디서 얼마나 일어나는지는 Unity Profiler로 확인할 수 있습니다. CPU 모듈의 `GC.Alloc` 마커로 프레임마다 할당을 일으키는 메서드를 짚어낸 뒤, 그 지점의 할당을 줄이거나 없애는 것이 GC 스파이크를 줄이는 첫걸음입니다.
+GC 비용을 근본적으로 낮추려면 호출 시점이 아니라 할당량을 줄여야 합니다. 힙 할당이 어디서 얼마나 일어나는지는 Unity Profiler로 확인할 수 있습니다. CPU 모듈의 `GC.Alloc` 마커로 프레임마다 할당을 일으키는 메서드를 찾아낸 뒤, 그 지점의 할당을 줄이거나 없애는 것이 GC 스파이크를 줄이는 첫걸음입니다.
 
 ---
 
