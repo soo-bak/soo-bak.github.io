@@ -2,6 +2,8 @@
    MIXINS
    ========================================================================== */
 
+@use "sass:color";
+
 %tab-focus {
   /* Default*/
   outline: thin dotted $focus-color;
@@ -59,11 +61,11 @@
 
 @function yiq-is-light(
   $color,
-  $threshold: mix(#40dc7f, #000000, 33%),
+  $threshold: color.mix(#40dc7f, #000000, 33%),
 ) {
-  $red: red($color);
-  $green: green($color);
-  $blue: blue($color);
+  $red: color.channel($color, "red", $space: rgb);
+  $green: color.channel($color, "green", $space: rgb);
+  $blue: color.channel($color, "blue", $space: rgb);
 
   $yiq: (($red*299)+($green*587)+($blue*114))/1000;
 
@@ -74,11 +76,11 @@
 
 @function yiq-contrast-color(
   $color,
-  $dark: mix(#40dc7f, #ffffff, 33%),
-  $light: mix(#40dc7f, #ffffff, 33%),
+  $dark: color.mix(#40dc7f, #ffffff, 33%),
+  $light: color.mix(#40dc7f, #ffffff, 33%),
   $threshold: $yiq-contrasted-threshold
 ) {
-  @return if(yiq-is-light($color, $threshold), mix(#40dc7f, #ffffff, 33%), mix(#40dc7f, #ffffff, 33%));
+  @return if(yiq-is-light($color, $threshold), color.mix(#40dc7f, #ffffff, 33%), color.mix(#40dc7f, #ffffff, 33%));
 }
 
 @mixin yiq-contrasted(
