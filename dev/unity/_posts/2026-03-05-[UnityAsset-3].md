@@ -11,19 +11,21 @@ tags:
   - 모바일
 ---
 
-## 에셋이 모여 이루는 가장 큰 단위
+## 에셋에서 씬으로
 
-[Part 2](/dev/unity/UnityAsset-2/)에서 에셋이 직렬화되어 디스크에 저장되고, 역직렬화되어 메모리에 올라가는 과정을 다루었습니다. Instantiate가 오브젝트를 복제할 때 공유 에셋은 참조만 복사한다는 점, Resources 폴더의 한계도 확인했습니다.
+[Unity 에셋 시스템 (2) - Serialization과 Instantiation](/dev/unity/UnityAsset-2/)에서는 에셋 하나가 디스크와 메모리 사이를 오가는 과정을 다루었습니다. 에셋은 직렬화를 거쳐 파일로 저장되고 역직렬화를 거쳐 메모리로 복원되며, `Instantiate`는 GameObject와 컴포넌트만 복제하고 Mesh와 Texture 같은 공유 에셋은 참조만 복사합니다. 빌드 크기를 키우고 메모리 관리를 어렵게 하는 Resources 폴더의 구조적 한계도 함께 살펴보았습니다.
 
-<br>
+그런데 실행 중인 게임이 다루는 단위는 에셋 하나가 아니라 화면 하나입니다. 새 화면이 나타나려면 그 화면에 필요한 수많은 GameObject와 이들이 참조하는 에셋이 한꺼번에 준비되어야 합니다. 이 GameObject들과 참조 에셋이 모여 이루는 실행 단위가 **씬(Scene)**입니다.
 
-이 글에서는 에셋들이 모여 구성하는 가장 큰 단위인 **씬(Scene)**의 관리 방법을 살펴봅니다. 로딩과 언로딩을 통해 게임의 흐름(메뉴 → 게임 플레이 → 결과 화면)을 제어하는 기본 메커니즘이며, 전환 시점마다 대규모 메모리 할당과 해제가 발생합니다. 한 번의 전환에 수십~수백 MB의 에셋이 해제되고 다시 로드되므로, 씬 관리 전략은 곧 메모리 관리의 핵심 축이 됩니다.
+메뉴에서 게임 플레이로, 다시 결과 화면으로 넘어가는 게임 흐름의 전환은 결국 씬 하나를 언로드하고 다른 씬을 로드하는 작업입니다. 이 교체 한 번에 이전 씬의 오브젝트 정리와 새 씬의 에셋 로드가 함께 일어나고, 메모리 사용량이 수십~수백 MB 변동할 수 있습니다. 씬을 어떻게 나누고 전환을 언제 어떤 방식으로 처리하느냐에 따라, 로딩 중 화면이 멈추기도 하고 두 씬의 에셋이 겹치는 구간에는 메모리 피크가 생기기도 합니다.
+
+이 글에서는 씬의 구조에서 시작해 동기·비동기 씬 로딩, 여러 씬을 함께 올리는 Additive 모드, 씬 전환에도 오브젝트를 유지하는 DontDestroyOnLoad, 씬 언로딩과 메모리 해제, 대규모 월드를 위한 씬 분할 전략까지 차례로 살펴봅니다.
 
 ---
 
 ## 씬(Scene)의 구조
 
-씬은 **GameObject들의 집합**입니다. 카메라, 조명, 캐릭터, 배경, UI 등 게임 화면을 구성하는 모든 오브젝트가 하나의 씬에 포함됩니다.
+씬 하나는 화면을 구성하는 GameObject들의 모음입니다. 카메라와 조명, 캐릭터와 배경, UI처럼 역할이 다른 오브젝트가 한 씬 안에 함께 놓입니다. 각 GameObject에는 위치와 회전을 나타내는 Transform, 형상을 화면에 그리는 Renderer, 충돌을 판정하는 Collider, 동작을 정의하는 스크립트 같은 컴포넌트가 담기고, 이 가운데 일부는 머티리얼, 텍스처, 메쉬 같은 외부 에셋을 참조합니다.
 
 <div style="text-align: center; margin: 1.5em 0;">
 <svg viewBox="0 0 520 520" xmlns="http://www.w3.org/2000/svg" style="max-width: 520px; width: 100%;">
@@ -78,11 +80,15 @@ tags:
 </svg>
 </div>
 
-[Part 2](/dev/unity/UnityAsset-2/)에서 다루었듯이, 씬 파일(`.unity`)은 YAML 형식으로 저장됩니다. 씬에 포함된 모든 GameObject와 컴포넌트가 직렬화되어 기록되고, 각 오브젝트는 fileID로 식별됩니다. 에디터에서 씬을 저장하면 이 YAML 데이터가 디스크에 기록되고, 씬을 로드하면 역직렬화를 통해 메모리에 오브젝트를 복원합니다.
+그림에서 보듯 씬 파일에는 GameObject와 컴포넌트의 구성만 들어 있는 것이 아니라, 각 컴포넌트가 어떤 외부 에셋을 참조하는지도 함께 기록됩니다. Player의 MeshRenderer가 Material을 참조하고 그 Material이 다시 Texture를 참조하는 연결 관계까지 씬 파일 안에 담깁니다.
+
+씬을 저장하면 이 구성 전체가 직렬화되어 `.unity` 파일에 기록되고, 각 오브젝트는 fileID라는 고유 번호로 식별됩니다. 씬을 로드할 때는 반대로 Unity가 이 데이터를 역직렬화해 메모리 위의 오브젝트로 복원합니다.
+
+> 에셋이 YAML로 직렬화되어 디스크에 기록되는 과정은 [Unity 에셋 시스템 (2) - Serialization과 Instantiation](/dev/unity/UnityAsset-2/)에서 자세히 다룹니다.
 
 ### Build Settings에 씬 등록
 
-빌드에 포함할 씬은 **Build Settings**(File → Build Settings)의 **Scenes In Build** 목록에 등록해야 합니다. 등록된 씬은 인덱스 번호를 부여받으며, 인덱스 0번 씬이 앱 실행 시 가장 먼저 로드되는 씬입니다.
+씬을 만들었다고 해서 자동으로 빌드에 포함되지는 않습니다. 기본 씬 로딩 방식으로 사용할 씬은 **Build Settings**(File → Build Settings)의 **Scenes In Build** 목록에 직접 등록해야 합니다. 목록에 오른 씬은 위에서부터 차례로 인덱스 번호를 받고, 그중 0번 씬이 앱을 실행할 때 가장 먼저 로드됩니다.
 
 <br>
 
@@ -131,13 +137,17 @@ tags:
 
 <br>
 
-Unity의 **Addressables** 시스템을 사용하면 Build Settings에 등록하지 않은 씬도 런타임에 로드할 수 있지만, `SceneManager`를 통한 기본적인 씬 전환에는 Build Settings 등록이 필요합니다.
+이 목록을 기준으로 씬을 불러오는 것이 `SceneManager`입니다. 목록에 등록된 씬은 런타임에서 이름이나 인덱스로 지정해 불러올 수 있고, 목록에 없는 씬은 일반 빌드에 포함되지 않아 이 방식으로는 찾을 수 없습니다.
+
+등록하지 않은 씬까지 런타임에 로드해야 한다면 Unity의 **Addressables** 시스템이 필요하지만, 이는 별도의 패키징과 로딩 규칙을 따르는 다른 주제입니다. 이 글에서는 등록된 씬을 `SceneManager`로 불러오는 기본 흐름을 다룹니다. 그 첫 방식이 다음 절에서 살펴볼 동기 로딩입니다.
 
 ---
 
-## SceneManager.LoadScene — 동기 로딩
+## SceneManager.LoadScene: 동기 로딩
 
-`SceneManager.LoadScene`은 씬을 **동기적(Synchronous)**으로 로드합니다. 호출 자체는 즉시 반환되어 같은 프레임 내 나머지 코드가 계속 실행되지만, 실제 씬 로딩은 다음 프레임에서 수행됩니다. 로딩이 완료될 때까지 메인 스레드가 블로킹되는데, Unity는 게임 로직, 렌더링 명령 생성, 입력 처리를 모두 메인 스레드에서 순차 실행하므로 블로킹 동안 화면 갱신과 입력 처리가 멈춥니다.
+씬을 불러오는 가장 단순한 API가 `SceneManager.LoadScene`입니다. 이 API는 씬을 **동기적(Synchronous)**으로 로드하지만, 동기라고 해서 호출한 줄이 그 자리에서 멈추지는 않습니다. 호출은 같은 프레임 안에서 곧바로 반환되어 뒤따르는 코드도 계속 실행되고, 실제 씬 교체는 다음 프레임에 이루어집니다.
+
+실제 비용은 다음 프레임에서 나타납니다. Unity가 새 씬의 오브젝트와 에셋을 로드하고 활성화하는 동안 메인 스레드는 이 작업을 우선 처리해야 합니다. Unity의 게임 로직 실행, 입력 처리, 렌더링 명령 생성도 같은 메인 스레드에서 이루어지므로, 동기 로딩이 진행되는 동안에는 다음 화면을 그리거나 입력에 반응할 시간이 생기지 않습니다.
 
 <div style="text-align: center; margin: 1.5em 0;">
 <svg viewBox="0 0 560 540" xmlns="http://www.w3.org/2000/svg" style="max-width: 560px; width: 100%;">
@@ -160,7 +170,7 @@ Unity의 **Addressables** 시스템을 사용하면 Build Settings에 등록하�
 
   <!-- 다음 프레임 (블로킹 구간) -->
   <rect x="30" y="150" width="500" height="254" rx="5" fill="currentColor" fill-opacity="0.04" stroke="currentColor" stroke-width="1.5" stroke-dasharray="6,3"/>
-  <text x="44" y="170" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">다음 프레임 (메인 스레드 블로킹 — 로딩 완료까지)</text>
+  <text x="44" y="170" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">다음 프레임 (메인 스레드 블로킹, 로딩 완료까지)</text>
 
   <!-- 6단계 -->
   <rect x="50" y="182" width="460" height="28" rx="4" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1"/>
@@ -210,19 +220,25 @@ Unity의 **Addressables** 시스템을 사용하면 Build Settings에 등록하�
 </svg>
 </div>
 
-동기 로딩의 가장 큰 문제는 **프레임 정지**입니다. 씬의 에셋 총량이 클수록, 참조하는 에셋이 많을수록 정지 시간이 길어집니다. 에셋이 많은 게임 씬을 동기 로딩하면 2~5초 이상 화면이 멈출 수 있습니다. 사용자에게는 앱이 멈춘 것처럼 보이며, 모바일 OS가 응답 없음으로 판단하여 앱을 강제 종료하는 경우도 발생합니다.
+블로킹 시간은 새 씬에서 생성해야 하는 오브젝트 수와, 그 오브젝트들이 참조하는 에셋의 양에 따라 길어집니다. 텍스처, 메쉬, 오디오처럼 로드해야 할 데이터가 많은 게임 씬에서는 메인 스레드가 몇 초 동안 로딩 작업을 처리할 수 있습니다. 이 동안 화면 갱신과 입력 처리가 멈추므로, 사용자는 앱이 응답하지 않는 상태로 인식할 수 있습니다. 모바일 환경에서는 이런 정지가 길어지면 OS가 앱을 응답 없음 상태로 판단해 종료할 가능성도 있습니다.
 
-동기 로딩이 적합한 경우는 제한적입니다. 앱 시작 시 첫 번째 씬을 로드하는 경우(어차피 스플래시 화면이 표시됨), 또는 에셋이 거의 없는 작은 씬을 로드하는 경우에만 사용합니다.
+그래서 동기 로딩은 짧은 정지가 허용되는 상황에 한정해서 사용하는 편이 좋습니다. 예를 들어 앱 시작 시 첫 씬을 불러오면서 스플래시 화면이 표시되는 구간이나, 포함된 오브젝트와 에셋이 적어 로딩이 거의 즉시 끝나는 작은 씬이 이에 해당합니다. 플레이 중에 큰 게임 씬으로 전환해야 한다면, 다음 절에서 다룰 비동기 로딩을 사용하는 편이 적절합니다.
 
 ### 기존 씬의 처리
 
-기본 동작(LoadSceneMode.Single)에서는 새 씬을 로드하기 전에 현재 씬의 모든 오브젝트를 파괴합니다. 각 오브젝트의 OnDisable, OnDestroy 순서로 콜백이 호출됩니다. 새 씬 로드가 완료되면 Unity가 자동으로 `Resources.UnloadUnusedAssets()`를 호출하여, 이전 씬의 오브젝트만 참조하던 에셋을 메모리에서 해제합니다. 다만 이 자동 해제는 새 씬의 에셋 로딩이 끝난 뒤에 수행되므로, 전환 중에는 이전 씬과 새 씬의 에셋이 동시에 메모리에 올라가는 피크 구간이 생길 수 있습니다.
+동기 로딩에서 새 씬을 불러올 때 기본 모드는 `LoadSceneMode.Single`입니다. 이 모드에서는 새 씬이 현재 씬을 대체하므로, Unity는 기존 씬의 GameObject들을 먼저 정리합니다. 각 오브젝트는 비활성화 과정에서 `OnDisable`을 받고, 이어서 파괴 과정에서 `OnDestroy`를 받습니다. 구독 해제나 임시 상태 정리처럼 오브젝트 수명에 묶인 작업은 이 시점에 처리해야 합니다.
+
+다만 GameObject가 파괴되었다고 해서 그 오브젝트가 참조하던 텍스처, 메쉬, 오디오 같은 에셋까지 즉시 메모리에서 내려가는 것은 아닙니다. 오브젝트의 수명과 에셋 메모리의 수명은 별도로 관리됩니다. Unity는 새 씬 로딩이 끝난 뒤 `Resources.UnloadUnusedAssets()`를 자동으로 실행하고, 그때 더 이상 참조되지 않는 에셋을 해제합니다.
+
+이 순서 때문에 씬 전환 중에는 메모리 피크가 생길 수 있습니다. 이전 씬의 에셋이 아직 해제되지 않은 상태에서 새 씬의 에셋이 먼저 로드되기 때문입니다. 잠시 동안 두 씬의 에셋이 함께 메모리에 올라와 있고, 전환이 끝난 뒤 사용되지 않는 에셋을 정리하면서 메모리가 내려갑니다. 큰 씬끼리 바로 전환할 때 이 구간이 모바일 메모리 한계를 넘기 쉬운 지점입니다.
 
 ---
 
-## SceneManager.LoadSceneAsync — 비동기 로딩
+## SceneManager.LoadSceneAsync: 비동기 로딩
 
-`SceneManager.LoadSceneAsync`는 씬을 **비동기적(Asynchronous)**으로 로드하여 동기 로딩의 프레임 정지 문제를 해결합니다. 파일 읽기(I/O)와 역직렬화의 상당 부분은 백그라운드 스레드에서 수행되고, 로드된 오브젝트를 씬에 통합(Integration)하는 작업은 메인 스레드에서 여러 프레임에 걸쳐 분산 처리됩니다. 따라서 로딩이 진행되는 동안에도 게임이 계속 실행됩니다.
+앞 절에서 본 프레임 정지는 씬 로딩이 한 프레임에 몰리기 때문에 생깁니다. 이 멈춤을 줄이려면 무거운 작업을 여러 프레임에 나누어 처리하면서도, 그동안 게임 루프가 계속 진행되도록 해야 합니다. `SceneManager.LoadSceneAsync`는 씬을 **비동기적(Asynchronous)**으로 로드해 바로 이 방식을 따릅니다.
+
+비동기 로딩은 이 작업을 성격에 따라 둘로 나눕니다. 시간이 오래 걸리는 파일 읽기(I/O)와 역직렬화는 백그라운드 스레드에서 이루어지고, 읽어 들인 오브젝트를 실제 씬에 연결하는 통합(Integration) 작업만 메인 스레드가 여러 프레임에 걸쳐 조금씩 처리합니다. 메인 스레드가 한 프레임에 감당할 양이 줄어든 덕분에, 로딩이 진행되는 동안에도 화면이 갱신되고 입력도 처리됩니다.
 
 <div style="text-align: center; margin: 1.5em 0;">
 <svg viewBox="0 0 620 400" xmlns="http://www.w3.org/2000/svg" style="max-width: 620px; width: 100%;">
@@ -285,7 +301,11 @@ Unity의 **Addressables** 시스템을 사용하면 Build Settings에 등록하�
 
 ### AsyncOperation과 progress
 
-`LoadSceneAsync`는 로딩 상태를 추적할 수 있는 **AsyncOperation** 객체를 반환합니다. `progress` 프로퍼티의 값은 0에서 1까지 변화하지만, 실제 로딩 작업은 0~0.9 구간에서 수행됩니다. 0.9에서 1.0으로의 전환은 씬 활성화(오브젝트 초기화) 단계에 해당합니다.
+`LoadSceneAsync`는 호출 직후 **AsyncOperation** 객체를 반환합니다. 이 객체에는 비동기 로딩 작업의 상태가 들어 있으며, `progress` 프로퍼티로 현재 진행 정도를 확인할 수 있습니다. 값의 범위는 0.0부터 1.0까지지만, 씬 로딩에서는 이 값을 그대로 로딩 바의 0%부터 100%까지로 해석하면 실제 흐름과 어긋날 수 있습니다.
+
+씬 데이터 읽기, 역직렬화, 메모리 배치처럼 전환 전에 준비해야 하는 작업은 주로 `progress` 0.0부터 0.9까지의 구간에 반영됩니다. `progress`가 `0.9f`에 도달했다는 것은 새 씬을 활성화하기 직전까지의 준비가 끝났다는 뜻에 가깝습니다.
+
+남은 0.9에서 1.0까지의 구간은 씬 활성화 단계입니다. 이때 준비된 오브젝트가 실제 씬으로 전환되고, 활성화 과정에서 필요한 초기화가 이어집니다. 따라서 로딩 화면의 진행 바를 표시할 때는 보통 `operation.progress / 0.9f`로 0.0부터 0.9까지의 구간을 0%부터 100%까지로 환산하고, 활성화 시점은 다음 절의 `allowSceneActivation`으로 따로 다룹니다.
 
 <div style="text-align: center; margin: 1.5em 0;">
 <svg viewBox="0 0 540 220" xmlns="http://www.w3.org/2000/svg" style="max-width: 540px; width: 100%;">
@@ -323,7 +343,9 @@ Unity의 **Addressables** 시스템을 사용하면 Build Settings에 등록하�
 
 ### allowSceneActivation으로 활성화 시점 제어
 
-`AsyncOperation.allowSceneActivation`을 `false`로 설정하면, `progress`가 0.9에 도달해도 씬이 활성화되지 않고 대기합니다. 데이터 로딩이 끝난 뒤 원하는 시점(사용자 입력, 애니메이션 종료 등)에 `allowSceneActivation = true`로 설정하면 씬이 활성화됩니다.
+`progress`가 `0.9f`에 도달했다는 것은 전환에 필요한 준비가 끝나고, 이제 씬을 활성화할 수 있는 상태에 가까워졌다는 뜻입니다. 이 지점에서 곧바로 새 씬으로 넘어가도 되지만, 로딩 화면의 페이드 아웃을 끝내거나 "터치하여 시작" 입력을 기다려야 하는 경우도 있습니다.
+
+이때 사용하는 스위치가 `AsyncOperation.allowSceneActivation`입니다. 로딩을 시작한 뒤 이 값을 `false`로 두면, 작업은 `progress` `0.9f`에서 대기하고 새 씬은 아직 활성화되지 않습니다. 전환 연출이나 사용자 입력까지 마쳤다면 값을 `true`로 바꿉니다. 그때 남아 있던 활성화 단계가 진행되고, 새 씬의 오브젝트가 실제 실행 상태로 들어오며 생명주기 콜백이 이어집니다.
 
 <br>
 
@@ -347,7 +369,7 @@ Unity의 **Addressables** 시스템을 사용하면 Build Settings에 등록하�
   <rect x="30" y="130" width="460" height="58" rx="5" fill="currentColor" fill-opacity="0.04" stroke="currentColor" stroke-width="1.5" stroke-dasharray="6,3"/>
   <text x="44" y="148" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">2. 로딩 진행 (progress → 0.9)</text>
   <text x="44" y="166" font-family="sans-serif" font-size="11" fill="currentColor">씬 데이터는 메모리에 준비 완료</text>
-  <text x="44" y="180" font-family="sans-serif" font-size="11" fill="currentColor" opacity="0.6">활성화되지 않음 — 대기 상태</text>
+  <text x="44" y="180" font-family="sans-serif" font-size="11" fill="currentColor" opacity="0.6">활성화되지 않음, 대기 상태</text>
 
   <!-- 화살표 2→3 -->
   <line x1="260" y1="188" x2="260" y2="202" stroke="currentColor" stroke-width="1.5"/>
@@ -371,30 +393,40 @@ Unity의 **Addressables** 시스템을 사용하면 Build Settings에 등록하�
 
 <br>
 
-`allowSceneActivation`이 `false`인 동안에는 `AsyncOperation.isDone`도 `true`가 되지 않습니다. 로딩 완료를 `isDone`으로 검사하는 코드(예: 코루틴의 `yield return operation`)는 `allowSceneActivation`이 `true`로 전환될 때까지 완료되지 않습니다. 로딩 완료 여부를 판단하려면 `progress >= 0.9f` 조건을 사용해야 합니다.
+활성화를 보류한 상태에서는 완료를 판단하는 기준도 달라집니다. `allowSceneActivation`이 `false`이면 작업은 `progress` `0.9f`에서 대기하고, `AsyncOperation.isDone`은 아직 `true`가 되지 않습니다. 따라서 코루틴에서 `yield return operation`으로 완료를 기다리면, 활성화를 허용하기 전까지 코루틴도 그 지점에서 멈춰 있게 됩니다.
 
-동기 로딩과 비동기 로딩을 혼용할 때 주의할 점이 있습니다. `SceneManager.LoadScene`은 호출 시점에 진행 중인 모든 `AsyncOperation`을 강제 완료시킵니다. `allowSceneActivation`을 `false`로 설정하여 활성화를 보류한 비동기 로딩이 있더라도 즉시 완료 처리되므로, 의도하지 않은 씬 활성화가 발생할 수 있습니다.
+이 구간에서는 `isDone`을 준비 완료 신호로 쓰지 않습니다. 대신 `progress >= 0.9f`를 확인해 새 씬을 활성화할 준비가 되었는지 판단합니다. 이 시점에 로딩 화면의 시작 버튼을 표시하거나 페이드 아웃 같은 전환 연출을 마무리하고, 실제로 넘어가야 할 때 `allowSceneActivation`을 `true`로 바꾸면 됩니다. `isDone`은 씬 활성화까지 끝난 뒤에 확인할 최종 완료 신호로 보는 편이 맞습니다.
 
-<br>
+한 가지 더 주의할 점은 동기 로딩과 섞어 쓰는 경우입니다. `SceneManager.LoadScene`처럼 동기 씬 로딩을 호출하면, 대기 중이던 비동기 작업이 함께 진행되며 의도하지 않은 시점에 활성화될 수 있습니다. `allowSceneActivation`으로 전환 시점을 잡아 두었다면, 같은 흐름 안에서 별도의 동기 씬 로딩을 끼워 넣지 않는 편이 안전합니다.
 
-비동기 로딩이 프레임 드롭을 완전히 제거하지는 않습니다. Unity는 매 프레임 메인 스레드에서 오브젝트 통합에 쓸 수 있는 시간을 제한하지만, 단일 에셋의 통합 작업이 이 시간 예산을 초과하면 해당 프레임에서 스파이크가 발생합니다. 씬 활성화 시점에 호출되는 Awake/Start 콜백에서 무거운 초기화(대량의 오브젝트 생성, 복잡한 데이터 구조 구축 등)를 수행하는 경우에도 스파이크의 원인이 됩니다.
+### 비동기 로딩에도 남는 프레임 드롭
 
-`Application.backgroundLoadingPriority`는 매 프레임 오브젝트 통합에 허용되는 메인 스레드 시간의 상한을 결정합니다. 기본값(`ThreadPriority.Normal`)은 프레임당 최대 10ms입니다. 60 FPS 기준으로 한 프레임의 전체 시간은 약 16.7ms이므로, 통합에 10ms를 쓰면 게임 로직과 렌더링에 남는 시간은 약 6.7ms뿐입니다. `ThreadPriority.Low`로 낮추면 프레임당 통합 시간이 2ms로 줄어들어 프레임 드롭이 완화되지만, 프레임당 처리량이 줄어든 만큼 총 로딩 시간은 길어집니다.
+비동기 로딩을 사용해도 모든 비용이 백그라운드로 사라지는 것은 아닙니다. 디스크 읽기나 데이터 준비는 여러 프레임에 나뉘어 진행되지만, 준비된 에셋을 Unity 객체로 통합하고 씬에 반영하는 일부 작업은 메인 스레드에서 처리됩니다. 이 통합 시간이 한 프레임 안에서 길어지면, 비동기 로딩 중에도 순간적인 프레임 드롭이 보일 수 있습니다.
+
+Unity는 이런 통합 작업이 한 프레임을 지나치게 오래 붙잡지 않도록 시간 예산을 둡니다. 이 예산은 `Application.backgroundLoadingPriority`로 조절합니다. 기본값인 `ThreadPriority.Normal`은 프레임당 비교적 큰 시간을 로딩 통합에 허용하므로 로딩은 빨리 끝나지만, 60 FPS 기준 한 프레임 예산인 약 16.7ms 중 상당 부분을 차지할 수 있습니다. 값을 `ThreadPriority.Low`로 낮추면 프레임마다 로딩에 쓰는 시간이 줄어 화면 끊김은 완화될 수 있지만, 그만큼 전체 로딩 시간은 길어집니다.
+
+또 다른 스파이크 지점은 씬 활성화 프레임입니다. `allowSceneActivation`을 `true`로 바꾼 뒤 새 씬이 실제로 활성화되면, 그 씬의 오브젝트들이 생명주기 콜백을 실행합니다. 이때 `Awake`, `OnEnable`, `Start`에서 대량 생성, 동기 로드, 복잡한 초기화를 한꺼번에 수행하면 로딩 작업과 별개로 프레임 드롭이 생깁니다.
+
+이 비용은 `backgroundLoadingPriority`로 줄일 수 없습니다. 활성화 이후에 실행되는 사용자 코드의 비용이기 때문입니다. 무거운 초기화는 코루틴이나 async 흐름으로 여러 프레임에 나누고, 가능하면 로딩 화면 중에 미리 준비하거나 실제로 필요해지는 시점까지 늦추는 식으로 따로 관리해야 합니다.
 
 ---
 
 ## Additive 씬 로딩
 
-지금까지 다룬 씬 로딩은 모두 기존 씬을 파괴하고 새 씬으로 교체하는 LoadSceneMode.Single 방식이었습니다. 이와 달리, **Additive** 모드는 기존 씬을 유지한 채 추가 씬을 함께 로드합니다.
+지금까지의 씬 로딩은 새 씬이 기존 씬을 대체하는 흐름이었습니다. `LoadSceneMode.Single`로 씬을 로드하면 이전 씬은 언로드되고, 그 씬에 있던 GameObject들은 파괴됩니다. 전환이 끝난 뒤 실행 중인 씬은 새로 로드한 씬 하나만 남습니다.
+
+`LoadSceneMode.Additive`는 이 동작을 바꿉니다. 기존 씬을 내리지 않고 새 씬을 실행 중인 씬 목록에 추가합니다. 결과적으로 여러 씬이 동시에 로드되고, 각 씬에 들어 있는 오브젝트들이 같은 월드 안에서 함께 업데이트되고 렌더링됩니다.
+
+이 방식은 화면 전체를 새 씬으로 갈아끼우는 전환이 아니라, 현재 구성 위에 씬 조각을 더하는 방식에 가깝습니다. 공통 시스템을 담은 씬은 유지하고, UI, 던전 층, 실내 공간, 보스룸 같은 콘텐츠 씬만 필요할 때 추가하거나 제거할 수 있습니다. 대신 Single 모드처럼 이전 씬이 자동으로 정리되지 않으므로, 더 이상 필요 없는 Additive 씬은 `SceneManager.UnloadSceneAsync`로 직접 내려야 합니다.
 
 <div style="text-align: center; margin: 1.5em 0;">
 <svg viewBox="0 0 700 340" xmlns="http://www.w3.org/2000/svg" style="max-width: 700px; width: 100%;">
   <!-- Title -->
-  <text x="350" y="22" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="currentColor">Single 모드 vs Additive 모드</text>
+  <text x="350" y="22" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="currentColor">Single은 대체, Additive는 추가</text>
 
   <!-- === Left column: Single === -->
   <rect x="10" y="38" width="330" height="290" rx="5" fill="currentColor" fill-opacity="0.03" stroke="currentColor" stroke-width="1.5"/>
-  <text x="175" y="60" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">LoadSceneMode.Single</text>
+  <text x="175" y="60" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">Single: 기존 씬 대체</text>
 
   <!-- State 1 -->
   <text x="30" y="92" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.6">상태 1</text>
@@ -416,11 +448,11 @@ Unity의 **Addressables** 시스템을 사용하면 Build Settings에 등록하�
   <text x="245" y="183" text-anchor="middle" font-family="sans-serif" font-size="11" fill="currentColor" opacity="0.3">씬 A</text>
   <line x1="208" y1="168" x2="282" y2="188" stroke="currentColor" stroke-width="1.5" opacity="0.4"/>
   <line x1="282" y1="168" x2="208" y2="188" stroke="currentColor" stroke-width="1.5" opacity="0.4"/>
-  <text x="245" y="210" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.5">파괴됨</text>
+  <text x="245" y="210" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.5">언로드됨</text>
 
   <!-- === Right column: Additive === -->
   <rect x="360" y="38" width="330" height="290" rx="5" fill="currentColor" fill-opacity="0.03" stroke="currentColor" stroke-width="1.5"/>
-  <text x="525" y="60" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">LoadSceneMode.Additive</text>
+  <text x="525" y="60" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">Additive: 기존 씬 유지</text>
 
   <!-- State 1 -->
   <text x="380" y="92" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.6">상태 1</text>
@@ -456,13 +488,13 @@ Unity의 **Addressables** 시스템을 사용하면 Build Settings에 등록하�
   <rect x="605" y="250" width="68" height="28" rx="5" fill="currentColor" fill-opacity="0.15" stroke="currentColor" stroke-width="1.5"/>
   <text x="639" y="269" text-anchor="middle" font-family="sans-serif" font-size="11" fill="currentColor">씬 C</text>
 
-  <text x="525" y="300" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.5">세 씬 동시 활성화</text>
+  <text x="525" y="300" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.5">세 씬이 동시에 로드됨</text>
 </svg>
 </div>
 
 ### Additive 씬의 활용
 
-Additive 씬 로딩을 활용하면 UI, 게임 플레이, 환경을 각각 별도 씬으로 분리하고, 필요한 부분만 독립적으로 로드하거나 교체할 수 있습니다.
+Additive 모드는 화면을 이루는 요소를 역할별 씬으로 나눌 때 유용합니다. UI, 게임 플레이, 환경을 각각 다른 씬으로 분리하면 전체 씬을 한꺼번에 교체하지 않고 필요한 부분만 로드하거나 언로드할 수 있습니다.
 
 <div style="text-align: center; margin: 1.5em 0;">
 <svg viewBox="0 0 700 400" xmlns="http://www.w3.org/2000/svg" style="max-width: 700px; width: 100%;">
@@ -537,40 +569,40 @@ Additive 씬 로딩을 활용하면 UI, 게임 플레이, 환경을 각각 별�
 
 ### SetActiveScene
 
-Additive로 여러 씬이 동시에 로드되어 있으면, 런타임에 생성하는 오브젝트(Instantiate, new GameObject 등)의 소속 씬을 결정해야 합니다.
+Additive로 여러 씬을 동시에 로드하면, 새로 생성되는 오브젝트를 어느 씬에 넣을지 정해야 합니다. 씬이 하나뿐일 때는 드러나지 않던 문제지만, UI 씬과 게임 플레이 씬이 함께 올라와 있는 상태라면 `Instantiate`나 `new GameObject`로 만든 오브젝트의 소속 씬이 의미를 갖습니다.
 
-nity는 **Active Scene**으로 지정된 씬에 새 오브젝트를 소속시키며, `SceneManager.SetActiveScene(scene)`으로 Active Scene을 전환할 수 있습니다.
+이 기본 소속을 정하는 기준이 **Active Scene**입니다. 이름 때문에 현재 실행 중인 씬 하나만 가리키는 것처럼 보일 수 있지만, Additive로 로드된 씬들은 모두 함께 실행됩니다. 여기서 Active Scene은 새 GameObject가 들어갈 기본 대상 씬이고, 동시에 전역 환경 설정을 가져오는 기준 씬입니다. 어느 씬을 Active Scene으로 둘지는 `SceneManager.SetActiveScene(scene)`으로 바꿉니다.
 
 <br>
 
 ```csharp
-// 로드된 씬: [UI Scene] + [GamePlay Scene (Active)]
+// 로드된 씬: UI Scene, GamePlay Scene
+// Active Scene: GamePlay Scene
 
-Instantiate(bulletPrefab);
-// → bulletPrefab의 인스턴스는 GamePlay Scene에 소속
+var bullet = Instantiate(bulletPrefab);
+// bullet은 GamePlay Scene에 생성됨
 
 SceneManager.SetActiveScene(uiScene);
 
-Instantiate(tooltipPrefab);
-// → tooltipPrefab의 인스턴스는 UI Scene에 소속
-
-// Active Scene 설정은 오브젝트의 소속 씬을 결정
-// 씬 언로드 시 해당 씬에 소속된 오브젝트만 파괴됨
+var tooltip = Instantiate(tooltipPrefab);
+// tooltip은 UI Scene에 생성됨
 ```
 
 <br>
 
-Active Scene을 올바르게 설정해야 하는 이유는 두 가지입니다.
+코드에서 보듯 같은 `Instantiate` 호출이라도 Active Scene이 어디냐에 따라 생성 결과가 다른 씬에 들어갑니다. 다만 `SetActiveScene`은 이후 생성될 오브젝트의 기본 소속을 바꾸는 호출입니다. 이미 만들어진 오브젝트의 소속 씬을 옮기지는 않습니다. 기존 오브젝트를 다른 씬으로 옮겨야 한다면 `SceneManager.MoveGameObjectToScene`을 따로 사용합니다.
 
-첫째, 오브젝트의 소속 씬이 언로딩 동작에 영향을 줍니다. 특정 씬을 언로드하면 그 씬에 소속된 오브젝트만 파괴됩니다. 오브젝트가 잘못된 씬에 소속되어 있으면, 의도하지 않은 시점에 파괴되거나 파괴되지 않는 문제가 발생합니다.
+Active Scene을 맞춰 두어야 하는 첫 번째 이유는 언로드 범위입니다. 특정 씬을 언로드하면 그 씬에 속한 오브젝트가 함께 정리됩니다. 총알, 이펙트, 임시 UI처럼 콘텐츠 씬과 함께 사라져야 하는 오브젝트가 다른 씬에 생성되면 언로드 뒤에도 남을 수 있고, 반대로 계속 유지되어야 할 오브젝트가 콘텐츠 씬에 들어가면 씬을 내릴 때 함께 사라질 수 있습니다.
 
-둘째, Active Scene이 전역 라이팅 설정을 결정합니다. 라이트맵은 각 씬에 독립적으로 베이크되어 Additive로 로드된 씬도 자기 자신의 라이트맵을 사용하지만, 환경 조명·스카이박스·포그 같은 전역 설정은 Active Scene의 것이 적용됩니다. 콘텐츠 씬을 교체할 때 SetActiveScene을 올바른 씬으로 전환하지 않으면, 이전 씬의 환경 라이팅이 그대로 남아 시각적 이상이 발생할 수 있습니다.
+두 번째 이유는 전역 환경 설정입니다. 라이트맵처럼 씬별로 저장되는 데이터는 각 씬에 묶여 있지만, 환경 조명, 스카이박스, 포그처럼 화면 전체에 적용되는 설정은 Active Scene의 값을 기준으로 삼습니다. 콘텐츠 씬을 교체했는데 Active Scene을 새 씬으로 옮기지 않으면, 오브젝트는 새 씬의 것이지만 환경 설정은 이전 씬의 값으로 남아 어색한 화면이 나올 수 있습니다.
 
 ---
 
 ## DontDestroyOnLoad
 
-씬을 전환(LoadSceneMode.Single)하면 현재 씬의 모든 오브젝트가 파괴됩니다. 그런데 게임 매니저, 오디오 매니저, 네트워크 매니저처럼 게임 전체 수명 동안 유지되어야 하는 오브젝트가 있습니다. `DontDestroyOnLoad(gameObject)`를 호출하면, 해당 오브젝트는 씬 전환 시에도 파괴되지 않고 유지됩니다.
+`LoadSceneMode.Single`로 씬을 전환하면 이전 씬에 있던 오브젝트는 파괴됩니다. 하지만 게임 실행 동안 계속 유지되어야 하는 오브젝트도 있습니다. 점수와 진행도를 관리하는 GameManager, BGM을 이어서 재생하는 AudioManager, 서버 연결을 유지하는 NetworkManager처럼 씬이 바뀌어도 사라지면 안 되는 시스템 오브젝트입니다.
+
+이런 오브젝트를 씬 전환의 파괴 대상에서 제외하는 호출이 `DontDestroyOnLoad(gameObject)`입니다. 한 번 호출하면 해당 오브젝트는 다음 씬으로 전환될 때도 파괴되지 않고 유지됩니다.
 
 <div style="text-align: center; margin: 1.5em 0;">
 <svg viewBox="0 0 600 530" xmlns="http://www.w3.org/2000/svg" style="max-width: 600px; width: 100%;">
@@ -638,18 +670,15 @@ Active Scene을 올바르게 설정해야 하는 이유는 두 가지입니다.
 </svg>
 </div>
 
-DontDestroyOnLoad를 호출하면 해당 오브젝트는 기존 씬에서 분리되어, Unity가 내부적으로 관리하는 별도의 **DontDestroyOnLoad 씬**으로 이동합니다. 이 씬은 Hierarchy 창에서 별도로 표시되며, 런타임에서 `gameObject.scene.name`을 확인하면 `"DontDestroyOnLoad"`라는 이름이 반환됩니다.
+`DontDestroyOnLoad`가 호출된 오브젝트는 원래 씬에 남아 있는 것이 아니라, Unity가 내부적으로 관리하는 **DontDestroyOnLoad 씬**으로 옮겨집니다. 그래서 이후 `LoadSceneMode.Single`로 다른 씬을 로드해도 기존 씬의 언로드 대상에 포함되지 않습니다. 런타임에 `gameObject.scene.name`을 확인하면 `"DontDestroyOnLoad"`라는 이름을 볼 수 있고, Hierarchy 창에서도 이 별도 씬을 확인할 수 있습니다.
 
-DontDestroyOnLoad는 **루트 GameObject에만 동작**합니다.
-자식 오브젝트에 `DontDestroyOnLoad(childObject)`를 호출하면 Unity는 "DontDestroyOnLoad only works for root GameObjects or components on root GameObjects"라는 경고를 출력하며, 해당 호출은 무시됩니다. 루트 GameObject에 DontDestroyOnLoad를 적용하면, 그 오브젝트의 모든 자식도 함께 보존됩니다.
+적용 대상은 **루트 GameObject**입니다. 루트에 `DontDestroyOnLoad`를 한 번 적용하면 그 아래 자식들도 함께 유지됩니다. 반대로 자식 오브젝트를 직접 넘기면 호출은 적용되지 않고, Unity는 루트 GameObject나 루트의 컴포넌트에만 동작한다는 경고를 출력합니다. 따라서 유지해야 하는 묶음이 있다면, 그 묶음의 루트에만 호출을 둡니다.
 
-반대로, DontDestroyOnLoad 씬에 있는 오브젝트를 다시 특정 씬으로 되돌리고 싶다면 `SceneManager.MoveGameObjectToScene(gameObject, targetScene)`을 사용합니다.
-
-이 메서드 역시 루트 GameObject에만 동작하며, 자식 오브젝트에 호출하면 `InvalidOperationException`이 발생합니다. 더 이상 영구 보존할 필요가 없는 오브젝트를 일반 씬으로 옮겨, 해당 씬이 언로드될 때 함께 파괴되도록 할 때 활용합니다.
+필요하다면 DontDestroyOnLoad 씬에 들어간 오브젝트를 다시 일반 씬으로 옮길 수도 있습니다. 이때는 `SceneManager.MoveGameObjectToScene(gameObject, targetScene)`을 사용합니다. 이 메서드 역시 루트 GameObject를 대상으로 하므로 자식을 넘기면 예외가 발생합니다. 전역으로 유지하던 오브젝트를 특정 씬의 수명에 다시 묶고 싶다면, 대상 씬으로 옮긴 뒤 그 씬이 언로드될 때 함께 정리되도록 만들 수 있습니다.
 
 ### 일반적인 사용 대상
 
-DontDestroyOnLoad는 게임 전체 수명 동안 유지되어야 하는 시스템 오브젝트에 사용합니다.
+DontDestroyOnLoad는 게임 실행 동안 계속 유지되어야 하는 시스템 성격의 오브젝트에 적합합니다. 반대로 특정 씬에서만 잠시 사용하는 오브젝트에는 적용하지 않는 편이 좋습니다.
 
 <div style="text-align: center; margin: 1.5em 0;">
 <svg viewBox="0 0 560 380" xmlns="http://www.w3.org/2000/svg" style="max-width: 560px; width: 100%;">
@@ -703,20 +732,23 @@ DontDestroyOnLoad는 게임 전체 수명 동안 유지되어야 하는 시스�
 </svg>
 </div>
 
-EventSystem을 DontDestroyOnLoad로 설정하는 경우, 새 씬에도 EventSystem이 있으면 두 개가 동시에 존재하게 됩니다.
-Unity는 하나의 활성 EventSystem만 허용하므로, 중복을 감지하여 자기 자신을 파괴하는 로직을 추가해야 합니다.
+그림에서 EventSystem에 "중복 방지 필요"라고 적은 이유는 수명보다 개수가 더 중요한 오브젝트이기 때문입니다. EventSystem을 DontDestroyOnLoad로 유지했는데 새 씬에도 EventSystem이 배치되어 있으면, 씬 전환 뒤에는 EventSystem이 둘 이상 남습니다. UI 입력은 하나의 EventSystem을 기준으로 처리되어야 하므로, 이런 오브젝트는 전역으로 유지할지 씬마다 둘지를 먼저 정하고 중복 인스턴스가 생기지 않게 관리해야 합니다.
 
-반대로, 특정 화면에서만 쓰이는 UI 패널이나 임시 이펙트처럼 수명이 한정된 오브젝트에 DontDestroyOnLoad를 적용하면, 씬이 바뀐 뒤에도 메모리에 남아 낭비로 이어집니다.
+부적합한 대상도 같은 기준으로 판단합니다. 특정 화면에서만 필요한 UI 패널, 특정 전투에서만 쓰는 임시 데이터, 한 번 재생되고 사라질 이펙트처럼 수명이 짧거나 특정 씬에 묶인 오브젝트는 DontDestroyOnLoad에 올리지 않는 편이 맞습니다. 이런 오브젝트가 씬 전환 뒤에도 살아남으면 더 이상 쓰이지 않는 상주 객체가 되고, 참조하고 있던 에셋까지 함께 메모리에 남길 수 있습니다.
 
 ### 싱글턴 중복 인스턴스 문제
 
-DontDestroyOnLoad 오브젝트는 대부분 싱글턴 패턴으로 구현됩니다. 그런데 씬 A에서 GameManager를 DontDestroyOnLoad로 등록한 뒤, 게임 도중 씬 A로 다시 돌아오면 씬 A가 새로 로드되면서 GameManager가 한 번 더 생성됩니다. 기존 인스턴스는 DontDestroyOnLoad 씬에 이미 존재하므로, 두 개의 GameManager가 동시에 존재하게 됩니다. 이 중복을 방지하려면 Awake에서 기존 인스턴스 여부를 확인하고, 이미 존재하면 새로 생성된 자신을 즉시 파괴하는 로직이 필요합니다.
+EventSystem에서 본 중복 문제는 싱글턴 매니저에서도 자주 생깁니다. DontDestroyOnLoad로 유지하는 매니저는 보통 게임 전체에 하나만 있어야 하지만, 그 매니저가 씬 안에 배치되어 있다면 씬을 다시 로드할 때 새 인스턴스가 다시 만들어집니다.
 
-<br>
+예를 들어 씬 A에 GameManager가 있고, 첫 실행 때 이 오브젝트를 DontDestroyOnLoad로 올렸다고 가정해 보겠습니다. 이후 다른 씬을 거쳐 다시 씬 A를 로드하면, 씬 A에 배치된 GameManager가 새로 생성됩니다. 기존 GameManager는 DontDestroyOnLoad 씬에 남아 있으므로, 결과적으로 같은 역할의 매니저가 두 개가 됩니다.
 
-### 남용 시 메모리 누수 위험
+이 문제는 씬 전환 코드가 아니라 매니저 자신이 방어하는 편이 안전합니다. `Awake`에서 이미 등록된 인스턴스가 있는지 먼저 확인하고, 기존 인스턴스가 있다면 새로 만들어진 자신을 즉시 파괴합니다. 기존 인스턴스가 없을 때만 자신을 전역 인스턴스로 등록하고 DontDestroyOnLoad에 올리는 식입니다. 이렇게 해야 어떤 씬에서 시작하든 매니저가 하나만 유지됩니다.
 
-DontDestroyOnLoad 오브젝트에서 대량의 텍스처나 오디오 클립을 직접 참조하고 있으면, 그 에셋들은 씬 전환과 무관하게 게임 전체 수명 동안 메모리에 상주합니다.
+### 남용 시 메모리 상주 위험
+
+중복만큼 자주 문제가 되는 것이 메모리입니다. DontDestroyOnLoad 자체가 곧바로 메모리 누수를 만드는 것은 아닙니다. 문제는 이 오브젝트가 오래 살아남는 만큼, 이 오브젝트가 잡고 있는 참조도 오래 살아남는다는 점입니다.
+
+전역 매니저가 큰 텍스처, 오디오 클립, 프리팹을 필드로 직접 참조하고 있으면 Unity 입장에서는 그 에셋이 여전히 사용 중인 상태입니다. 씬을 언로드하거나 `Resources.UnloadUnusedAssets()`가 실행되어도, 살아 있는 DontDestroyOnLoad 오브젝트에서 참조가 이어져 있다면 해당 에셋은 해제 대상이 되지 않습니다.
 
 <div style="text-align: center; margin: 1.5em 0;">
 <svg viewBox="0 0 520 370" xmlns="http://www.w3.org/2000/svg" style="max-width: 520px; width: 100%;">
@@ -785,30 +817,36 @@ DontDestroyOnLoad 오브젝트에서 대량의 텍스처나 오디오 클립을 
 </svg>
 </div>
 
-DontDestroyOnLoad 오브젝트는 가능한 한 가볍게 유지해야 합니다. 에셋 데이터를 직접 참조하지 않고 Addressables 등으로 동적 로드/해제하며, 씬별로 필요한 리소스는 해당 씬에서만 로드하는 것이 원칙입니다. 적용 대상의 수 자체도 최소한으로 제한해야 합니다.
+그림의 예처럼 AudioManager가 메뉴, 게임, 보스, 엔딩 BGM을 모두 직접 참조하면 현재 한 곡만 재생하더라도 네 개의 오디오 클립이 모두 AudioManager를 통해 도달 가능한 상태로 남습니다. 씬이 바뀌어도 AudioManager는 유지되므로, 그 참조를 끊지 않는 한 클립들도 계속 메모리에 머무를 수 있습니다.
+
+따라서 DontDestroyOnLoad 오브젝트는 가능한 한 가볍게 유지하는 편이 좋습니다. 전역 매니저는 재생 상태, 설정, 로딩 흐름처럼 오래 유지되어야 하는 데이터와 기능만 갖고, 실제 콘텐츠 에셋은 필요해지는 시점에 따로 로드하는 구조가 낫습니다.
+
+Addressables 같은 동적 로딩을 사용하면 메뉴 BGM은 메뉴에서만 로드하고, 보스 BGM은 보스전에 들어갈 때 로드한 뒤 사용이 끝났을 때 해제할 수 있습니다. 인스펙터 필드로 직접 참조해야 한다면, 게임 전체에서 계속 필요한 에셋인지 먼저 확인해야 합니다. DontDestroyOnLoad 오브젝트를 전역 콘텐츠 보관함처럼 쓰기 시작하면 씬 전환으로 정리될 수 있는 리소스까지 함께 붙잡게 됩니다.
 
 ---
 
 ## 씬 언로딩과 메모리 해제
 
-씬을 전환하거나 Additive 씬을 제거할 때, 메모리가 즉시 해제되지는 않습니다. 오브젝트 파괴와 에셋 메모리 해제는 별도의 과정이기 때문입니다.
+씬을 언로드하면 먼저 그 씬에 속한 GameObject와 컴포넌트가 정리됩니다. 하지만 이것만으로 그 오브젝트들이 참조하던 텍스처, 메쉬, 오디오 클립까지 곧바로 메모리에서 내려가는 것은 아닙니다.
+
+Unity에서 씬 언로딩은 **오브젝트 파괴**와 **에셋 해제**가 나뉘어 진행됩니다. 화면에서 오브젝트가 사라졌다는 것은 더 이상 그 오브젝트가 실행되지 않는다는 뜻이지, 관련 에셋의 참조가 모두 끊어졌다는 뜻은 아닙니다. 같은 에셋을 다른 씬이나 DontDestroyOnLoad 오브젝트가 여전히 참조하고 있다면, 그 에셋은 계속 메모리에 남아야 합니다.
 
 ### 오브젝트 파괴 vs 에셋 해제
 
-씬을 언로드하면 그 씬에 소속된 GameObject와 컴포넌트가 파괴됩니다. 파괴되는 오브젝트에서 실행 중이던 **코루틴(Coroutine)**은 자동으로 중단됩니다. 코루틴은 MonoBehaviour가 소유하고 실행하는 함수이므로, 해당 오브젝트와 생명주기를 공유하기 때문입니다.
+씬 언로드의 첫 번째 결과는 오브젝트 파괴입니다. 언로드되는 씬에 속한 GameObject와 컴포넌트가 제거되고, 활성 상태였던 오브젝트에는 `OnDisable`과 `OnDestroy`가 호출됩니다. 그 오브젝트에서 실행 중이던 **코루틴(Coroutine)**도 함께 멈춥니다. 코루틴은 MonoBehaviour에 묶여 실행되므로, 대상 MonoBehaviour가 사라지면 더 이상 이어서 실행될 주체가 없습니다.
 
-반면, 해당 오브젝트가 다른 시스템에 등록한 이벤트 핸들러(예: 버튼의 onClick, C# 이벤트 구독 등)는 자동으로 해제되지 않습니다. 이벤트 시스템은 구독자의 생존 여부를 추적하지 않기 때문입니다. 파괴된 오브젝트의 메서드를 콜백으로 여전히 참조하게 되면 MissingReferenceException이 발생하므로, OnDestroy에서 이벤트 구독을 해제하는 것이 안전합니다.
+하지만 오브젝트가 외부 시스템에 남긴 연결까지 모두 사라지는 것은 아닙니다. 이벤트 발행자가 DontDestroyOnLoad 오브젝트나 정적 이벤트처럼 계속 살아 있다면, 파괴된 오브젝트의 메서드가 델리게이트에 남을 수 있습니다. 이 상태에서 콜백이 호출되면 이미 파괴된 Unity 오브젝트에 접근하게 되므로, 직접 등록한 이벤트 구독은 `OnDisable`이나 `OnDestroy`에서 해제해 두는 편이 안전합니다.
 
-오브젝트가 파괴되어도, 그 오브젝트가 참조하던 에셋(텍스처, 메쉬, 오디오 클립 등)의 메모리는 **즉시 해제되지 않습니다.**
+여기까지는 오브젝트의 생명주기 정리입니다. 텍스처, 메쉬, 오디오 클립 같은 에셋 메모리는 별도 기준으로 처리됩니다. 방금 파괴된 오브젝트가 참조를 놓았더라도, 같은 에셋을 다른 씬이나 전역 오브젝트가 여전히 참조하고 있다면 그 에셋은 계속 필요하기 때문입니다.
 
 <div style="text-align: center; margin: 1.5em 0;">
 <svg viewBox="0 0 560 460" xmlns="http://www.w3.org/2000/svg" style="max-width: 560px; width: 100%;">
   <!-- 타이틀 -->
-  <text x="280" y="20" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="currentColor">씬 A 언로드 시</text>
+  <text x="280" y="20" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="currentColor">씬 언로드와 에셋 해제</text>
 
   <!-- ===== 단계 1: 오브젝트 파괴 ===== -->
   <rect x="10" y="34" width="540" height="180" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
-  <text x="30" y="56" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">단계 1 — 오브젝트 파괴</text>
+  <text x="30" y="56" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">단계 1, 오브젝트 파괴</text>
 
   <!-- GO 박스들 (파괴됨) -->
   <rect x="30" y="68" width="120" height="32" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5" stroke-dasharray="4,3"/>
@@ -839,7 +877,7 @@ DontDestroyOnLoad 오브젝트는 가능한 한 가볍게 유지해야 합니다
   <rect x="370" y="148" width="160" height="32" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
   <text x="450" y="169" text-anchor="middle" font-family="sans-serif" font-size="11" fill="currentColor">Audio_C</text>
 
-  <text x="450" y="198" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.55">메모리에 잔류</text>
+  <text x="450" y="198" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.55">아직 메모리에 남음</text>
 
   <!-- 단계 1→2 화살표 -->
   <line x1="280" y1="214" x2="280" y2="244" stroke="currentColor" stroke-width="1.5"/>
@@ -847,7 +885,7 @@ DontDestroyOnLoad 오브젝트는 가능한 한 가볍게 유지해야 합니다
 
   <!-- ===== 단계 2: 에셋 해제 ===== -->
   <rect x="10" y="254" width="540" height="150" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
-  <text x="30" y="276" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">단계 2 — 에셋 해제 (별도 호출 필요)</text>
+  <text x="30" y="276" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">단계 2, 참조 검사 후 에셋 해제</text>
 
   <!-- UnloadUnusedAssets 호출 박스 -->
   <rect x="30" y="290" width="310" height="30" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
@@ -863,8 +901,8 @@ DontDestroyOnLoad 오브젝트는 가능한 한 가볍게 유지해야 합니다
 
   <!-- 해제 완료 아이콘 표시 (점선 박스) -->
   <rect x="370" y="330" width="160" height="32" rx="5" fill="currentColor" fill-opacity="0.04" stroke="currentColor" stroke-width="1" stroke-dasharray="4,3"/>
-  <text x="450" y="344" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.55">Texture_A — 해제됨</text>
-  <text x="450" y="356" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.55">Mesh_B, Audio_C — 해제됨</text>
+  <text x="450" y="344" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.55">Texture_A, 해제됨</text>
+  <text x="450" y="356" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.55">Mesh_B, Audio_C, 해제됨</text>
 
   <!-- 주의 텍스트 -->
   <rect x="30" y="334" width="320" height="28" rx="4" fill="currentColor" fill-opacity="0.04" stroke="currentColor" stroke-width="1" stroke-dasharray="4,3"/>
@@ -875,16 +913,20 @@ DontDestroyOnLoad 오브젝트는 가능한 한 가볍게 유지해야 합니다
 </svg>
 </div>
 
-오브젝트가 파괴되면 그 오브젝트의 에셋 참조는 사라지지만, 다른 오브젝트나 DDOL 씬에서 같은 에셋을 여전히 참조하고 있을 수 있습니다. Unity는 `Resources.UnloadUnusedAssets()`를 통해 모든 참조를 확인한 뒤에야 에셋 메모리를 해제합니다.
+그림에서 보듯 1단계에서 Player, Enemy, Environment가 파괴되어도 Texture_A, Mesh_B, Audio_C가 곧바로 내려가는 것은 아닙니다. 파괴된 오브젝트의 참조는 사라졌지만, 같은 에셋을 다른 씬이나 DontDestroyOnLoad 오브젝트가 잡고 있을 수 있기 때문입니다.
+
+그래서 에셋 해제에는 참조 검사 단계가 필요합니다. `Resources.UnloadUnusedAssets()`는 메모리에 올라온 에셋 중 더 이상 도달 가능한 참조가 없는 것만 찾아서 내립니다. 반대로 살아 있는 오브젝트가 하나라도 참조하고 있는 에셋은 씬 언로드 뒤에도 유지됩니다.
 
 ### Resources.UnloadUnusedAssets()
 
-이 함수는 현재 메모리에 로드된 에셋들의 **참조 상태를 추적**하여, 어디에서도 참조되지 않는 에셋을 메모리에서 해제합니다.
+`Resources.UnloadUnusedAssets()`는 현재 메모리에 올라와 있지만 더 이상 사용되지 않는 에셋을 찾아 내리는 함수입니다. Unity는 씬 계층, DontDestroyOnLoad 씬, 컴포넌트 필드, 정적 필드처럼 살아 있는 객체에서 도달할 수 있는 참조를 따라가며 에셋이 아직 필요한지 판단합니다.
+
+이 검사에서 어떤 살아 있는 객체도 더 이상 참조하지 않는 에셋만 해제 대상이 됩니다. 반대로 한 곳에서라도 참조가 남아 있다면, 그 에셋은 씬 언로드 이후에도 유지됩니다. 그래서 이 함수는 "메모리를 전부 비우는 호출"이 아니라 "참조가 끊긴 에셋만 정리하는 호출"로 이해하는 편이 맞습니다.
 
 <div style="text-align: center; margin: 1.5em 0;">
 <svg viewBox="0 0 560 260" xmlns="http://www.w3.org/2000/svg" style="max-width: 560px; width: 100%;">
   <!-- Title -->
-  <text x="280" y="22" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="currentColor">UnloadUnusedAssets() 동작</text>
+  <text x="280" y="22" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="currentColor">UnloadUnusedAssets()의 기준</text>
 
   <!-- Outer border -->
   <rect x="10" y="38" width="540" height="156" rx="5" fill="currentColor" fill-opacity="0.02" stroke="currentColor" stroke-width="1.5"/>
@@ -904,14 +946,14 @@ DontDestroyOnLoad 오브젝트는 가능한 한 가볍게 유지해야 합니다
   <line x1="165" y1="39" x2="165" y2="193" stroke="currentColor" stroke-width="0.5" opacity="0.15"/>
   <line x1="430" y1="39" x2="430" y2="193" stroke="currentColor" stroke-width="0.5" opacity="0.15"/>
 
-  <!-- Row 1: Texture_A — 해제 -->
+  <!-- Row 1: Texture_A, 해제 -->
   <text x="85" y="86" text-anchor="middle" font-family="monospace" font-size="11" fill="currentColor" opacity="0.4">Texture_A</text>
   <text x="290" y="86" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.4">참조 없음</text>
   <text x="490" y="86" text-anchor="middle" font-family="sans-serif" font-size="11" fill="currentColor" opacity="0.4">해제</text>
 
   <line x1="10" y1="97" x2="550" y2="97" stroke="currentColor" stroke-width="0.5" opacity="0.1"/>
 
-  <!-- Row 2: Texture_B — 유지 -->
+  <!-- Row 2: Texture_B, 유지 -->
   <rect x="11" y="98" width="538" height="31" fill="currentColor" fill-opacity="0.04"/>
   <text x="85" y="118" text-anchor="middle" font-family="monospace" font-size="11" fill="currentColor">Texture_B</text>
   <text x="290" y="118" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor">Player가 참조</text>
@@ -919,50 +961,55 @@ DontDestroyOnLoad 오브젝트는 가능한 한 가볍게 유지해야 합니다
 
   <line x1="10" y1="129" x2="550" y2="129" stroke="currentColor" stroke-width="0.5" opacity="0.1"/>
 
-  <!-- Row 3: Mesh_C — 해제 -->
+  <!-- Row 3: Mesh_C, 해제 -->
   <text x="85" y="150" text-anchor="middle" font-family="monospace" font-size="11" fill="currentColor" opacity="0.4">Mesh_C</text>
   <text x="290" y="150" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.4">참조 없음</text>
   <text x="490" y="150" text-anchor="middle" font-family="sans-serif" font-size="11" fill="currentColor" opacity="0.4">해제</text>
 
   <line x1="10" y1="161" x2="550" y2="161" stroke="currentColor" stroke-width="0.5" opacity="0.1"/>
 
-  <!-- Row 4: Audio_D — 유지 -->
+  <!-- Row 4: Audio_D, 유지 -->
   <rect x="11" y="162" width="538" height="31" fill="currentColor" fill-opacity="0.04"/>
   <text x="85" y="182" text-anchor="middle" font-family="monospace" font-size="11" fill="currentColor">Audio_D</text>
   <text x="290" y="182" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor">AudioManager가 참조 (DDOL)</text>
   <text x="490" y="182" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">유지</text>
 
   <!-- Footer -->
-  <text x="280" y="222" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.55">비동기 실행 (AsyncOperation 반환) · 참조 추적에 수백 ms 소요 가능</text>
-  <text x="280" y="238" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.55">프레임 스파이크 유발 가능 → 로딩 화면 중 호출 권장</text>
+  <text x="280" y="222" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.55">AsyncOperation 반환 · 참조 검사 비용 존재</text>
+  <text x="280" y="238" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.55">로딩 화면이나 전환 구간에서 호출하는 편이 안전</text>
 </svg>
 </div>
 
-UnloadUnusedAssets는 비용이 높은 연산입니다. 프로젝트에 에셋이 많을수록 추적 시간이 길어지며, 매 프레임 호출하면 성능 저하를 유발합니다.
+호출 결과는 `AsyncOperation`으로 돌아오므로 비동기 흐름에 넣을 수 있습니다. 다만 비동기라고 해서 비용이 없는 것은 아닙니다. 참조 관계를 검사하고 해제 대상을 정리하는 작업 자체는 프로젝트에 로드된 에셋과 객체가 많을수록 무거워질 수 있습니다.
+
+따라서 이 함수는 게임 플레이 중에 자주 호출할 함수가 아닙니다. 씬 전환 중 로딩 화면을 띄운 상태, 큰 콘텐츠 묶음을 언로드한 직후, 또는 메모리를 정리해도 화면 멈춤을 감출 수 있는 구간에서 호출하는 편이 좋습니다. 확인해야 할 대상이 많은 프로젝트일수록 한 번 실행하는 비용이 커지므로, 매 프레임 호출하는 식의 사용은 피해야 합니다.
 
 ### GC.Collect와의 관계
 
-**가비지 컬렉션(Garbage Collection)**은 C#의 **관리 힙(Managed Heap)**에서 더 이상 도달할 수 없는(unreachable) 객체를 수거하는 과정이며, `GC.Collect()`는 이를 즉시 실행하는 함수입니다.
+`Resources.UnloadUnusedAssets()`와 `GC.Collect()`는 둘 다 메모리 정리와 관련이 있지만, 정리하는 대상이 다릅니다. **가비지 컬렉션(Garbage Collection)**은 C#의 **관리 힙(Managed Heap)**을 검사해, 코드 어디에서도 더 이상 도달할 수 없는 객체를 수거합니다. `GC.Collect()`는 이 수거 작업을 즉시 요청하는 함수입니다.
 
-UnloadUnusedAssets의 참조 추적이 정확하려면 관리 힙의 도달 불가능한 객체가 먼저 수거되어야 하므로, UnloadUnusedAssets는 내부적으로 `GC.Collect()`를 호출합니다. 개발자가 별도로 `GC.Collect()`를 호출할 필요는 없습니다.
+반면 `UnloadUnusedAssets()`는 Unity 에셋 쪽을 정리합니다. 텍스처의 픽셀 데이터, 메쉬의 정점 데이터, 오디오 데이터처럼 실제 에셋 데이터는 네이티브 메모리에 있고, C#에서는 `Texture2D`, `Mesh`, `AudioClip` 같은 관리 래퍼를 통해 그 데이터를 가리킵니다. `GC.Collect()`만 호출한다고 해서 이런 네이티브 에셋 메모리가 내려가는 것은 아닙니다.
 
-Unity에서 텍스처나 메쉬 같은 에셋의 실제 데이터는 네이티브(C++) 메모리에 저장되고, C# 코드에서는 Texture2D, Mesh 같은 래퍼 객체를 통해 이를 참조합니다.
+두 정리 작업이 서로 영향을 주는 지점은 이 관리 래퍼입니다. 살아 있는 C# 객체가 `Texture2D`나 `Mesh` 래퍼를 참조하고 있으면, Unity는 그 에셋을 아직 사용할 수 있는 상태로 봅니다. 따라서 에셋을 내리려면 네이티브 데이터만 보는 것이 아니라, 살아 있는 관리 객체에서 해당 에셋으로 이어지는 참조가 남아 있는지도 함께 중요해집니다.
 
-씬이 언로드되면 GameObject와 컴포넌트는 파괴되어 `== null`이 `true`를 반환하지만, 가비지 컬렉터가 수거하기 전까지 관리 힙에는 남아 있습니다.
+씬을 언로드하면 GameObject와 컴포넌트의 네이티브 오브젝트는 파괴됩니다. Unity의 특수한 null 비교에서는 이 객체들이 `== null`처럼 보일 수 있습니다. 하지만 C# 래퍼 객체 자체는 관리 힙에 남아 있을 수 있고, 다른 관리 객체나 정적 필드가 그 래퍼를 계속 붙잡고 있다면 가비지 컬렉터도 수거하지 않습니다.
 
-이 객체가 참조하던 Texture2D 래퍼도 도달 가능한 상태로 유지되어, Unity는 해당 네이티브 에셋을 아직 사용 중으로 판단합니다.
+그 래퍼가 다시 `Texture2D`, `Mesh`, `AudioClip` 같은 에셋 래퍼를 참조하고 있다면, 에셋도 도달 가능한 상태로 남습니다. 이 경우 `UnloadUnusedAssets()`를 호출해도 해당 에셋은 사용 중인 것으로 판단되어 유지됩니다. 결국 관리 힙의 참조 정리가 제대로 되어 있지 않으면, 에셋 해제 결과에도 영향을 줄 수 있습니다.
 
-`GC.Collect()`를 실행해야 이런 객체들이 수거되고, 네이티브 에셋에 대한 참조가 완전히 제거되어 비로소 해제 대상이 됩니다.
+그렇다고 씬 전환마다 `GC.Collect()`를 따로 호출하는 습관을 들일 필요는 없습니다. `GC.Collect()`도 프레임을 멈출 수 있는 무거운 작업이고, `UnloadUnusedAssets()` 역시 별도 비용이 큽니다. 보통은 참조를 명확히 끊고, 큰 씬 전환이나 로딩 화면처럼 멈춤을 감출 수 있는 구간에서 `UnloadUnusedAssets()`를 호출한 뒤, 실제로 관리 힙 문제가 남는지는 프로파일러로 확인하는 편이 좋습니다.
 
 ### 씬 전환 시 전체 흐름
 
-씬 전환의 최적 패턴은 로딩 화면을 경유하는 것입니다.
-[메모리 관리 (2) - 네이티브 메모리와 에셋](/dev/unity/MemoryManagement-2/)에서 다룬 메모리 피크 관리와 직접 연결됩니다.
+앞에서 본 내용을 실제 씬 전환에 적용하면 핵심은 순서입니다. 메모리 여유가 충분한 전환이라면 새 씬을 먼저 로드한 뒤 이전 씬을 내리는 방식도 사용할 수 있습니다. 하지만 이전 씬과 새 씬의 에셋 규모가 크다면, 두 씬의 에셋이 동시에 올라오는 순간에 메모리 피크가 크게 튈 수 있습니다.
+
+이 피크를 낮추려면 로딩 화면을 중간에 두고 전환을 단계로 나누는 편이 낫습니다. 먼저 로딩 화면만 남길 수 있는 상태를 만든 뒤, 이전 씬을 언로드하고, 더 이상 참조되지 않는 에셋을 정리한 다음 새 씬을 로드합니다. 이렇게 하면 새 씬의 에셋을 올리기 전에 이전 씬에서만 쓰던 에셋을 내릴 기회를 만들 수 있습니다.
+
+> 메모리 피크 관리는 [메모리 관리 (2) - 네이티브 메모리와 에셋](/dev/unity/MemoryManagement-2/)에서 자세히 다룹니다.
 
 <div style="text-align: center; margin: 1.5em 0;">
 <svg viewBox="0 0 620 540" xmlns="http://www.w3.org/2000/svg" style="max-width: 620px; width: 100%;">
   <!-- ===== 상단: 5단계 순서도 ===== -->
-  <text x="310" y="18" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="currentColor">씬 전환 시 권장 흐름</text>
+  <text x="310" y="18" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="currentColor">메모리 피크를 낮추는 전환 흐름</text>
 
   <!-- 단계 1 -->
   <rect x="10" y="30" width="108" height="68" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
@@ -987,7 +1034,7 @@ Unity에서 텍스처나 메쉬 같은 에셋의 실제 데이터는 네이티�
   <!-- 단계 3 -->
   <rect x="282" y="30" width="108" height="68" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
   <text x="336" y="48" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">3. 미사용</text>
-  <text x="336" y="62" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">에셋 해제</text>
+  <text x="336" y="62" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">에셋 정리</text>
   <text x="336" y="80" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.55">UnloadUnusedAssets</text>
 
   <!-- 화살표 3→4 -->
@@ -1069,36 +1116,40 @@ Unity에서 텍스처나 메쉬 같은 에셋의 실제 데이터는 네이티�
   <line x1="565" y1="420" x2="565" y2="448" stroke="currentColor" stroke-width="0.8" stroke-dasharray="2,2" opacity="0.4"/>
 
   <!-- 핵심 강조 텍스트 -->
-  <text x="310" y="510" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.5">핵심: 이전 에셋 해제 후 새 에셋 로드 → 두 씬 에셋 동시 상주 구간(피크) 최소화</text>
-  <text x="310" y="526" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.5">Additive 씬 언로드 시 UnloadUnusedAssets 자동 호출 없음 → 명시 호출 필수</text>
+  <text x="310" y="510" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.5">핵심: 이전 에셋 정리 후 새 에셋 로드 → 두 씬 에셋 동시 상주 구간 축소</text>
+  <text x="310" y="526" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.5">Additive 씬 언로드만으로 에셋 메모리가 내려가지는 않음 → 필요 시 명시 정리</text>
 </svg>
 </div>
 
-3단계의 `Resources.UnloadUnusedAssets()` 명시 호출은 필수입니다. `LoadScene(Single)` 방식에서는 Unity가 새 씬 로드 후 `UnloadUnusedAssets`를 자동으로 호출하지만, `UnloadSceneAsync`(Additive 씬 언로드)에서는 자동 호출이 없습니다.
-따라서 Additive 기반 씬 전환에서는 개발자가 직접 호출해야 이전 씬의 에셋이 해제됩니다.
+그림에서 중요한 지점은 3단계입니다. `UnloadSceneAsync`로 Additive 씬을 내리면 그 씬의 오브젝트는 제거되지만, 에셋 메모리까지 함께 내려간다고 볼 수는 없습니다. 이전 씬에서만 쓰던 에셋을 실제로 정리하려면 참조가 끊긴 상태에서 `Resources.UnloadUnusedAssets()`를 호출해야 합니다.
 
-각 단계 사이에 `yield return`(코루틴) 또는 `await`(async/await)로 완료를 대기하는 것도 필수입니다.
-`UnloadSceneAsync`와 `UnloadUnusedAssets`는 모두 비동기로 실행되므로, 완료를 기다리지 않고 다음 단계를 시작하면 이전 에셋이 해제되기 전에 새 에셋이 로드되어 메모리 피크가 줄어들지 않습니다.
+Single 모드와 Additive 모드는 여기서 차이가 납니다. `LoadSceneMode.Single`로 씬을 로드하면 Unity가 `Resources.UnloadUnusedAssets()`를 자동으로 호출합니다. 반면 Additive 씬을 `UnloadSceneAsync`로 내리는 경우에는 에셋 메모리를 비우려면 별도의 정리 단계가 필요합니다. Additive 기반 전환에서 메모리 피크를 관리하려면 이 차이를 전제로 순서를 잡아야 합니다.
 
-메모리 피크가 높아지면 모바일에서 **OOM(Out Of Memory)**이 발생할 수 있습니다. OOM은 앱의 메모리 사용량이 OS 허용 한도를 초과했을 때 OS가 앱을 강제 종료하는 현상입니다. 모바일 기기의 RAM이 4~8GB이더라도 OS가 앱 하나에 허용하는 메모리는 대체로 1~2GB 수준이므로, 두 씬의 에셋이 겹치는 순간 이 한도를 넘기기 쉽습니다.
+각 단계 사이에서는 `yield return`이나 `await`로 앞 작업의 완료를 기다려야 합니다. `UnloadSceneAsync`, `Resources.UnloadUnusedAssets()`, `LoadSceneAsync`는 모두 완료 시점이 뒤로 밀릴 수 있는 작업입니다. 이전 씬 언로드와 에셋 정리가 끝나기 전에 새 씬 로드를 시작하면, 두 씬의 에셋이 겹쳐 올라와 피크를 낮추려던 의도가 사라집니다.
+
+메모리 피크가 기기의 허용 범위를 넘으면 모바일에서는 **OOM(Out Of Memory)**으로 앱이 종료될 수 있습니다. 기기 전체 RAM이 4GB나 8GB라고 해도 앱 하나가 그 전부를 쓸 수 있는 것은 아닙니다. 큰 씬을 전환할 때는 평균 메모리보다 전환 순간의 최고치를 먼저 확인해야 합니다.
 
 ---
 
 ## 대규모 월드를 위한 씬 분할 전략
 
-지금까지 다룬 씬 전환 패턴은 메뉴 → 게임 → 결과처럼 단계가 명확히 나뉘는 구조에 적합합니다. 오픈 월드나 대규모 맵을 가진 게임에서는 전체 월드를 하나의 씬에 담을 수 없습니다. 에셋 총량이 기기의 메모리 한계를 초과하기 때문입니다.
+앞서 살펴본 흐름은 메뉴에서 게임으로, 게임에서 결과 화면으로 넘어가는 것처럼 전환 지점이 분명한 구조에 잘 맞습니다. 플레이어가 잠시 로딩 화면을 보고, 이전 씬을 정리한 뒤, 다음 씬으로 넘어가는 방식입니다.
 
-이 문제를 해결하는 방법이 **씬 분할(Scene Splitting)**입니다.
+하지만 오픈 월드나 넓은 필드에서는 문제가 달라집니다. 플레이어는 끊김 없이 이동해야 하고, 월드 전체를 한 번에 로드하기에는 지형, 오브젝트, 텍스처, 조명 데이터가 너무 큽니다. 하나의 씬에 모두 담으면 초기 로딩 시간도 길어지고, 런타임 메모리도 기기의 한계를 넘기 쉽습니다.
+
+이때 사용하는 방식이 **씬 분할(Scene Splitting)**입니다. 월드를 여러 조각의 씬으로 나누고, 플레이어 주변처럼 지금 필요한 조각만 Additive로 로드합니다. 멀어진 조각은 언로드해 메모리에서 내려 보내고, 새로 가까워진 조각은 다시 로드합니다. 즉 씬을 화면 전환 단위가 아니라 월드를 스트리밍하는 단위로 사용하는 방식입니다.
 
 <br>
 
 ### 그리드 기반 월드 분할
 
-월드를 격자(Grid)로 나누어 각 셀을 별도의 씬으로 구성합니다. 플레이어 위치에 따라 현재 셀과 인접 셀만 Additive로 로드하고, 로드 범위를 벗어난 셀은 언로드하면 전체 월드 중 플레이어 주변의 에셋만 메모리에 유지됩니다.
+가장 단순한 분할 방식은 월드를 격자(Grid)로 나누는 것입니다. 월드 좌표를 일정한 크기의 셀로 나누고, 각 셀을 하나의 씬으로 저장합니다. 예를 들어 `Cell_11`에는 그 구역의 지형, 배치 오브젝트, 조명, 지역 전용 이펙트가 들어갑니다.
+
+런타임에서는 플레이어가 속한 셀을 기준으로 로드할 셀 집합을 계산합니다. 현재 셀만 로드하면 경계에 다가갔을 때 다음 구역이 보이지 않으므로, 보통 현재 셀과 주변 셀까지 함께 올립니다. 아래 예시는 플레이어가 `Cell_11`에 있을 때 주변 1칸까지 포함한 3×3 범위를 Additive로 로드하는 구조입니다.
 
 <div style="text-align: center; margin: 1.5em 0;">
 <svg viewBox="0 0 420 370" xmlns="http://www.w3.org/2000/svg" style="max-width: 420px; width: 100%;">
-  <text x="210" y="22" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="currentColor">그리드 기반 씬 분할</text>
+  <text x="210" y="22" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="currentColor">플레이어 기준 로드 범위</text>
 
   <!-- 로드 범위 점선 -->
   <rect x="30" y="40" width="360" height="240" rx="5" fill="currentColor" fill-opacity="0.03" stroke="currentColor" stroke-width="1" stroke-dasharray="6,3"/>
@@ -1139,20 +1190,26 @@ Unity에서 텍스처나 메쉬 같은 에셋의 실제 데이터는 네이티�
   <text x="325" y="246" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.55">.unity</text>
 
   <!-- 하단 설명 -->
-  <text x="210" y="300" text-anchor="middle" font-family="sans-serif" font-size="11" fill="currentColor">플레이어가 Cell_11에 위치할 때: 3×3 범위 전체 로드</text>
-  <text x="210" y="325" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.55">로드 : Cell_00 ~ Cell_22 (3×3 = 9개 셀)</text>
-  <text x="210" y="342" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.55">언로드 : 3×3 범위 밖의 셀</text>
+  <text x="210" y="300" text-anchor="middle" font-family="sans-serif" font-size="11" fill="currentColor">현재 셀: Cell_11</text>
+  <text x="210" y="325" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.55">로드: 현재 셀 + 주변 1칸 (3×3 = 9개 셀)</text>
+  <text x="210" y="342" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.55">언로드 후보: 로드 범위 밖으로 멀어진 셀</text>
   <text x="210" y="362" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.5">점선 = 로드 범위 경계</text>
 </svg>
 </div>
 
-### 스트리밍: 미리 로드하기
+로드 범위는 게임의 카메라 거리와 이동 속도에 맞춰 정합니다. 멀리까지 보이는 3D 월드라면 주변 1칸만으로는 부족할 수 있고, 이동 속도가 빠른 게임이라면 플레이어가 셀 경계에 닿기 전에 다음 셀이 준비되어 있어야 합니다. 반대로 시야가 좁거나 이동 속도가 느린 게임에서는 더 작은 범위로도 충분할 수 있습니다.
 
-플레이어가 셀 사이를 이동하면 로드 범위도 함께 이동합니다. **스트리밍(Streaming)**은 플레이어가 셀 경계에 가까워질 때 이동 방향의 인접 셀을 미리 비동기 로드하고, 반대쪽 셀을 언로드하여 끊김 없이 월드를 탐색할 수 있게 하는 방식입니다.
+셀 크기도 비용을 크게 바꿉니다. 셀이 너무 크면 한 번 로드할 때 필요 없는 오브젝트와 에셋까지 함께 올라와 메모리 이점이 줄어듭니다. 셀이 너무 작으면 로드와 언로드가 너무 자주 발생하고, 씬 수가 많아져 관리 비용이 늘어납니다. 따라서 셀 크기는 월드의 밀도, 시야 거리, 이동 속도, 플랫폼 메모리를 함께 보고 정해야 합니다.
+
+### 스트리밍: 미리 로드하고 늦게 내리기
+
+그리드로 월드를 나누었다면, 다음 문제는 플레이어 이동에 맞춰 로드 범위를 자연스럽게 옮기는 일입니다. 셀 경계에 도착한 뒤에야 다음 셀을 로드하기 시작하면 이미 늦습니다. 로딩이 끝날 때까지 빈 지형이 보이거나, 오브젝트가 뒤늦게 나타나는 팝인이 발생할 수 있습니다.
+
+**스트리밍(Streaming)**은 이 문제를 피하기 위해 필요한 셀을 미리 준비하는 방식입니다. 플레이어가 오른쪽 셀로 이동하고 있다면, 현재 3×3 범위는 유지한 채 오른쪽 열을 먼저 비동기로 로드합니다. 새 셀이 준비되고 플레이어가 실제로 다음 셀에 들어간 뒤에야, 반대편으로 멀어진 셀을 언로드합니다. 핵심은 새 범위는 필요해지기 전에 올리고, 기존 범위는 안전해진 뒤에 내리는 것입니다.
 
 <div style="text-align: center; margin: 1.5em 0;">
 <svg viewBox="0 0 680 340" xmlns="http://www.w3.org/2000/svg" style="max-width: 680px; width: 100%;">
-  <text x="340" y="20" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="currentColor">씬 스트리밍 동작</text>
+  <text x="340" y="20" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="currentColor">셀 스트리밍 흐름</text>
 
   <!-- 타임라인 축 -->
   <line x1="30" y1="52" x2="650" y2="52" stroke="currentColor" stroke-width="1.5"/>
@@ -1233,8 +1290,8 @@ Unity에서 텍스처나 메쉬 같은 에셋의 실제 데이터는 네이티�
   <rect x="398" y="126" width="38" height="24" rx="3" fill="currentColor" fill-opacity="0.20" stroke="currentColor" stroke-width="1.5" stroke-dasharray="3,2"/>
   <text x="417" y="142" text-anchor="middle" font-family="sans-serif" font-size="7" font-weight="bold" fill="currentColor">23</text>
 
-  <text x="350" y="166" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.55">Cell_12 방향 이동 감지</text>
-  <text x="350" y="178" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.55">03/13/23 비동기 로드 시작 (점선)</text>
+  <text x="350" y="166" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.55">Cell_12 방향 이동 예측</text>
+  <text x="350" y="178" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.55">03/13/23 미리 로드 중</text>
 
   <!-- 화살표 t1→t2 -->
   <line x1="448" y1="110" x2="485" y2="110" stroke="currentColor" stroke-width="1" stroke-dasharray="4,2"/>
@@ -1270,7 +1327,7 @@ Unity에서 텍스처나 메쉬 같은 에셋의 실제 데이터는 네이티�
   <text x="637" y="142" text-anchor="middle" font-family="sans-serif" font-size="7" font-weight="bold" fill="currentColor">23</text>
 
   <text x="570" y="166" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.55">플레이어 Cell_12 진입</text>
-  <text x="570" y="178" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.55">03/13/23 로드 완료, 00/10/20 언로드</text>
+  <text x="570" y="178" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.55">새 열 준비 후 왼쪽 열 언로드</text>
 
   <!-- 범례 -->
   <rect x="120" y="200" width="14" height="10" rx="2" fill="currentColor" fill-opacity="0.14" stroke="currentColor" stroke-width="1.5"/>
@@ -1283,28 +1340,32 @@ Unity에서 텍스처나 메쉬 같은 에셋의 실제 데이터는 네이티�
   <text x="420" y="209" font-family="sans-serif" font-size="9" fill="currentColor">로드 유지</text>
 
   <!-- 하단 결론 -->
-  <text x="340" y="240" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.55">플레이어 시점에서 끊김 없이 월드가 이어짐</text>
-  <text x="340" y="256" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.55">항상 일정 범위의 셀만 메모리에 유지</text>
+  <text x="340" y="240" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.55">다음 셀을 먼저 준비해 경계 진입 시 끊김을 줄임</text>
+  <text x="340" y="256" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.55">전환 중에는 기존 범위 + 미리 로드한 셀이 함께 유지됨</text>
 </svg>
 </div>
 
-플레이어가 현재 셀을 이동하는 동안, 이동 방향의 다음 셀이 백그라운드에서 비동기 로드됩니다.
-셀 경계에 도착할 때 로딩이 이미 완료되어 있으면 끊김 없이 새 영역이 나타납니다. 비동기 로딩은 셀의 에셋 양에 따라 수백 ms에서 수 초까지 걸리므로, 플레이어의 이동 속도와 로딩 시간을 고려하여 경계 도달 전에 충분한 여유를 두고 로딩을 시작해야 합니다.
-로딩이 완료되기 전에 플레이어가 새 셀에 진입하면, 빈 공간이 보이거나 오브젝트가 갑자기 나타나는 팝인(pop-in)이 발생합니다.
+위 타임라인에서 `t0`는 플레이어가 `Cell_11`에 있고 3×3 범위가 이미 로드된 상태입니다. `t1`에서는 플레이어가 `Cell_12` 방향으로 이동하고 있으므로 오른쪽 열인 `03`, `13`, `23`을 미리 로드합니다. 이때 기존 왼쪽 열인 `00`, `10`, `20`은 아직 내리지 않습니다. 새 열이 준비되기 전에 기존 셀을 내리면, 플레이어가 방향을 조금 바꾸거나 로딩이 늦어졌을 때 빈 구간이 생길 수 있기 때문입니다.
 
-메모리 측면에서는 로드된 셀의 총 수가 항상 일정하게 유지됩니다. 위 예시에서 로드 범위가 3×3이면 항상 9개 셀의 에셋만 메모리에 올라가므로, 월드 전체 크기와 무관하게 메모리 사용량의 상한을 예측할 수 있습니다.
+`t2`처럼 새 열 로드가 끝나고 플레이어가 `Cell_12`에 들어가면 로드 범위를 한 칸 오른쪽으로 옮깁니다. 그때 왼쪽 열은 언로드 후보가 됩니다. 실제 구현에서는 경계에 닿자마자 바로 내리기보다, 플레이어가 충분히 멀어졌을 때 내리는 식으로 약간의 여유를 두는 편이 안정적입니다. 경계 근처에서 앞뒤로 움직일 때 로드와 언로드가 반복되는 것을 막기 위해서입니다.
+
+미리 로드할 시점은 플레이어의 이동 속도와 셀 로딩 시간을 기준으로 정합니다. 로딩에 1초가 걸리고 플레이어가 1초 안에 셀 경계에 도달할 수 있다면, 경계 직전이 아니라 그보다 앞에서 로드를 시작해야 합니다. 로딩이 늦으면 팝인이 생기고, 너무 일찍 시작하면 전환 구간에서 동시에 유지하는 셀이 많아져 메모리 피크가 커집니다.
+
+따라서 메모리 상한을 계산할 때는 안정 상태의 3×3 범위만 보면 부족합니다. 위 예시의 안정 상태는 9개 셀이지만, `t1`처럼 새 열을 미리 로드하는 동안에는 기존 9개 셀에 3개 셀이 더해져 일시적으로 12개 셀이 메모리에 올라올 수 있습니다. 스트리밍 구조에서는 로드 범위뿐 아니라 미리 로드하는 버퍼까지 포함해 메모리 예산을 잡아야 합니다.
 
 ### 씬 간 공유 에셋 관리
 
-인접한 셀들은 같은 나무 프리팹이나 지형 텍스처를 공유하는 경우가 많습니다. 각 셀을 AssetBundle로 패키징할 때, 공유 에셋을 별도 번들로 분리하지 않으면 동일한 에셋이 셀마다 복사되어 메모리에 중복으로 올라갑니다.
+셀을 씬 단위로 나누었다고 해서 에셋 중복 문제가 자동으로 해결되는 것은 아닙니다. 이웃한 셀은 같은 나무 프리팹, 바위 메쉬, 지형 텍스처, 머티리얼을 공유하는 경우가 많습니다. 이 공유 에셋을 어디에 두고 어떤 단위로 패키징하느냐에 따라 빌드 크기와 런타임 메모리가 달라집니다.
+
+프로젝트 안의 일반 씬들이 같은 에셋 파일을 직접 참조한다면, Unity는 같은 GUID를 가리키는 에셋을 같은 대상으로 볼 수 있습니다. 문제는 셀을 AssetBundle이나 Addressables 그룹으로 나누어 배포할 때 더 자주 드러납니다. 공유 에셋을 별도 의존성으로 분리하지 않으면, 각 셀 번들 안에 같은 데이터가 반복해서 포함될 수 있습니다.
 
 <div style="text-align: center; margin: 1.5em 0;">
 <svg viewBox="0 0 520 430" xmlns="http://www.w3.org/2000/svg" style="max-width: 520px; width: 100%;">
-  <text x="260" y="22" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="currentColor">공유 에셋 문제와 해결</text>
+  <text x="260" y="22" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="currentColor">공유 에셋의 패키징 방식</text>
 
   <!-- 문제 섹션 -->
   <rect x="20" y="38" width="480" height="130" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
-  <text x="40" y="58" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">문제: 공유 에셋을 별도 번들로 분리하지 않은 경우</text>
+  <text x="40" y="58" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">문제: 셀 번들마다 공유 에셋을 함께 포함한 경우</text>
 
   <!-- Cell_11 번들 -->
   <rect x="35" y="70" width="140" height="44" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1"/>
@@ -1322,33 +1383,33 @@ Unity에서 텍스처나 메쉬 같은 에셋의 실제 데이터는 네이티�
   <text x="415" y="103" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor">Tree_A (4MB)</text>
 
   <!-- 중복 표시 -->
-  <text x="213" y="133" font-family="sans-serif" font-size="11" fill="currentColor">같은 에셋 3벌 복사</text>
+  <text x="213" y="133" font-family="sans-serif" font-size="11" fill="currentColor">동일 데이터가 3개 번들에 포함</text>
   <text x="400" y="133" font-family="sans-serif" font-size="11" fill="currentColor">= 12MB</text>
   <text x="470" y="155" text-anchor="middle" font-family="sans-serif" font-size="13" fill="currentColor" opacity="0.7">✕</text>
 
   <!-- 해결 섹션 -->
-  <text x="260" y="195" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">해결 방안</text>
+  <text x="260" y="195" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">공유 에셋을 한 곳에서 소유</text>
 
   <!-- 해결 1 -->
   <rect x="20" y="208" width="155" height="80" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
   <text x="97" y="228" text-anchor="middle" font-family="sans-serif" font-size="10" font-weight="bold" fill="currentColor">해결 1</text>
-  <text x="97" y="244" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor">씬 직접 참조</text>
-  <text x="97" y="258" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor">(번들 미사용)</text>
-  <text x="97" y="278" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.6">같은 GUID → 1회 로드</text>
+  <text x="97" y="244" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor">빌드 포함 씬</text>
+  <text x="97" y="258" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor">직접 참조</text>
+  <text x="97" y="278" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.6">같은 GUID 기준</text>
 
   <!-- 해결 2 -->
   <rect x="183" y="208" width="155" height="80" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
   <text x="260" y="228" text-anchor="middle" font-family="sans-serif" font-size="10" font-weight="bold" fill="currentColor">해결 2</text>
   <text x="260" y="244" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor">AssetBundle</text>
   <text x="260" y="258" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor">공유 번들 분리</text>
-  <text x="260" y="278" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.6">의존성 기록만, 복사 없음</text>
+  <text x="260" y="278" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.6">셀 번들은 의존성만 가짐</text>
 
   <!-- 해결 3 -->
   <rect x="345" y="208" width="155" height="80" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
   <text x="422" y="228" text-anchor="middle" font-family="sans-serif" font-size="10" font-weight="bold" fill="currentColor">해결 3</text>
   <text x="422" y="244" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor">Addressables</text>
   <text x="422" y="258" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor">별도 그룹 분리</text>
-  <text x="422" y="278" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.6">참조 카운팅 → 1회 로드</text>
+  <text x="422" y="278" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.6">참조 카운트로 수명 관리</text>
 
   <!-- 공통 결과 -->
   <!-- 화살표: 해결1 → 결과 -->
@@ -1360,28 +1421,31 @@ Unity에서 텍스처나 메쉬 같은 에셋의 실제 데이터는 네이티�
   <polygon points="256,310 260,318 264,310" fill="currentColor"/>
 
   <rect x="155" y="320" width="210" height="32" rx="5" fill="currentColor" fill-opacity="0.08" stroke="currentColor" stroke-width="1.5"/>
-  <text x="260" y="341" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">메모리 사용: 4MB (1회 로드)</text>
+  <text x="260" y="341" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">공유 데이터는 한 번만 로드</text>
 </svg>
 </div>
 
-Unity는 같은 에셋 파일(같은 GUID)을 참조하면 메모리에 한 번만 로드합니다.
+그림의 핵심은 Tree_A를 어느 셀이 소유하느냐입니다. Tree_A를 각 셀 번들에 함께 넣으면 `Cell_11`, `Cell_12`, `Cell_21`이 모두 같은 데이터를 자기 번들 안에 갖게 됩니다. 겉으로는 같은 나무 프리팹을 참조하는 것처럼 보여도, 패키징 결과는 세 사본이 될 수 있습니다.
 
-AssetBundle은 번들 단위로 독립된 파일을 생성합니다. 위 예시에서 Tree_A가 Cell_11 번들에도 Cell_12 번들에도 필요한데 어떤 번들에도 배정되어 있지 않으면, Unity는 런타임에 Tree_A를 찾을 곳이 없으므로 각 번들 안에 데이터를 복사합니다.
-복사된 데이터는 번들마다 별개이므로, 두 번들을 동시에 로드하면 같은 에셋이 메모리에 두 벌 존재합니다.
+해결은 공유 에셋의 소유 위치를 셀 밖으로 빼는 것입니다. Tree_A를 별도의 공유 번들이나 Addressables 그룹에 두고, 셀 번들은 그 에셋을 직접 포함하는 대신 의존성으로 참조합니다. 그러면 여러 셀이 동시에 로드되어도 실제 Tree_A 데이터는 공유 위치에서 한 번만 로드됩니다.
 
-Tree_A를 별도의 공유 번들에 배정하면, 각 셀 번들에는 "공유 번들에서 로드"라는 의존성 기록만 남아 에셋이 한 번만 
-로드됩니다.
-Addressables의 그룹 구성과 의존성 분석 기능을 활용하면 이 문제를 체계적으로 관리할 수 있습니다. 구체적인 방법은 [메모리 관리 (3) - Addressables와 에셋 전략](/dev/unity/MemoryManagement-3/)에서 다룹니다.
+수명 관리도 함께 맞춰야 합니다. 공유 번들은 하나의 셀이 언로드되었다고 바로 내리면 안 됩니다. 다른 셀이 아직 Tree_A를 사용하고 있을 수 있기 때문입니다. AssetBundle을 직접 관리한다면 의존 번들의 로드와 언로드 순서를 직접 보장해야 하고, Addressables를 사용한다면 핸들과 참조 카운트를 기준으로 `Release` 시점을 맞춰야 합니다.
+
+정리하면, 셀 씬은 지역 전용 데이터만 갖고, 여러 셀이 함께 쓰는 에셋은 별도 공유 단위로 분리하는 편이 좋습니다. 이렇게 해야 셀 스트리밍을 하면서도 같은 프리팹이나 텍스처가 셀마다 중복 로드되는 일을 줄일 수 있습니다.
+
+> Addressables를 활용한 구체적인 방법은 [메모리 관리 (3) - Addressables와 에셋 전략](/dev/unity/MemoryManagement-3/)에서 자세히 다룹니다.
 
 ### 공통 씬과 콘텐츠 씬 분리
 
-대규모 프로젝트에서는 씬을 **공통 씬(Persistent Scene)**과 **콘텐츠 씬(Content Scene)**으로 분리하는 구조가 일반적입니다.
+규모가 큰 프로젝트에서는 모든 전역 오브젝트를 DontDestroyOnLoad에 올리기보다, 처음부터 별도의 씬으로 관리하는 구조를 많이 사용합니다. 게임 실행 동안 유지될 시스템은 **공통 씬(Persistent Scene)**에 두고, 스테이지나 지역에 따라 바뀌는 요소는 **콘텐츠 씬(Content Scene)**으로 분리하는 방식입니다.
+
+공통 씬은 게임의 기준이 되는 씬입니다. 플레이어, 카메라 시스템, UI, 입력, 게임 매니저처럼 지역이 바뀌어도 계속 유지되어야 하는 오브젝트가 여기에 들어갑니다. 콘텐츠 씬은 교체 가능한 부분입니다. 지형, 적 배치, 지역 오브젝트, 로컬 조명처럼 스테이지마다 달라지는 데이터가 여기에 들어갑니다.
 
 <div style="text-align: center; margin: 1.5em 0;">
 <svg viewBox="0 0 480 420" xmlns="http://www.w3.org/2000/svg" style="max-width: 480px; width: 100%;">
   <text x="240" y="22" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="currentColor">공통 씬 + 콘텐츠 씬 구조</text>
   <rect x="40" y="40" width="400" height="120" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5"/>
-  <text x="240" y="62" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">Persistent Scene (항상 로드)</text>
+  <text x="240" y="62" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">Persistent Scene (유지)</text>
   <text x="70" y="84" font-family="sans-serif" font-size="11" fill="currentColor">플레이어 캐릭터</text>
   <text x="70" y="100" font-family="sans-serif" font-size="11" fill="currentColor">카메라 시스템</text>
   <text x="70" y="116" font-family="sans-serif" font-size="11" fill="currentColor">게임 매니저</text>
@@ -1392,12 +1456,12 @@ Addressables의 그룹 구성과 의존성 분석 기능을 활용하면 이 문
   <polygon points="236,164 240,156 244,164" fill="currentColor"/>
   <text x="340" y="183" text-anchor="middle" font-family="sans-serif" font-size="10" fill="currentColor" opacity="0.6">Additive 로드 / 언로드</text>
   <rect x="40" y="210" width="400" height="110" rx="5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.5" stroke-dasharray="6,3"/>
-  <text x="240" y="232" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">Content Scene (교체)</text>
+  <text x="240" y="232" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">Content Scene (교체 대상)</text>
   <text x="70" y="254" font-family="sans-serif" font-size="11" fill="currentColor">스테이지별 지형</text>
   <text x="70" y="270" font-family="sans-serif" font-size="11" fill="currentColor">스테이지별 적 배치</text>
   <text x="270" y="254" font-family="sans-serif" font-size="11" fill="currentColor">스테이지별 오브젝트</text>
   <text x="270" y="270" font-family="sans-serif" font-size="11" fill="currentColor">스테이지별 조명 (로컬)</text>
-  <text x="240" y="305" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.5">점선 = 교체 가능한 씬</text>
+  <text x="240" y="305" text-anchor="middle" font-family="sans-serif" font-size="9" fill="currentColor" opacity="0.5">점선 = 로드/언로드로 교체되는 씬</text>
   <rect x="40" y="335" width="400" height="78" rx="5" fill="currentColor" fill-opacity="0.04" stroke="currentColor" stroke-width="1" stroke-dasharray="4,2"/>
   <text x="240" y="355" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="currentColor">스테이지 전환 흐름</text>
   <text x="60" y="375" font-family="sans-serif" font-size="10" fill="currentColor">1. Content Scene (Stage 1) 언로드</text>
@@ -1407,25 +1471,30 @@ Addressables의 그룹 구성과 의존성 분석 기능을 활용하면 이 문
 </svg>
 </div>
 
-공통 씬에는 씬 전환과 무관하게 유지되어야 하는 오브젝트를, 콘텐츠 씬에는 스테이지별로 달라지는 요소만 배치합니다. 스테이지 전환 시 콘텐츠 씬만 교체하므로 공통 요소의 재로딩이 발생하지 않습니다.
+이 구조에서는 스테이지를 바꿀 때 콘텐츠 씬만 언로드하고 다음 콘텐츠 씬을 Additive로 로드합니다. 공통 씬은 계속 남아 있으므로 플레이어, 카메라, UI, 매니저를 다시 만들 필요가 없습니다. 전환 중에도 입력 상태나 UI 상태를 유지하기 쉽고, 공통 시스템의 초기화 비용도 반복해서 발생하지 않습니다.
 
-DontDestroyOnLoad 씬은 Unity가 내부적으로 관리하므로 개발자가 씬 자체를 언로드할 수 없고, 오브젝트를 해제하려면 하나씩 `Destroy()`를 호출해야 합니다. 공통 씬 방식에서는 씬의 로드/언로드 시점을 개발자가 직접 제어하므로, 공통 씬을 언로드하면 그 안의 모든 오브젝트가 함께 파괴됩니다.
+DontDestroyOnLoad와 비교하면 수명 관리도 더 눈에 보입니다. DontDestroyOnLoad 씬은 Unity 내부에서 관리되므로 개발자가 씬 단위로 언로드할 수 없습니다. 그 안의 오브젝트를 정리하려면 개별적으로 `Destroy()`해야 합니다. 반면 공통 씬은 일반 씬이므로 로드 여부를 직접 제어할 수 있고, 필요하면 공통 씬 자체를 언로드해 그 안의 오브젝트를 한 번에 정리할 수 있습니다.
+
+대신 경계는 분명히 해야 합니다. 특정 지역에서만 필요한 적, 지역 연출, 로컬 조명, 임시 오브젝트가 공통 씬에 들어가면 다시 전역 상주 객체가 됩니다. 공통 씬에는 여러 콘텐츠 씬을 지나도 계속 살아야 하는 것만 두고, 지역에 묶인 데이터는 콘텐츠 씬에 남기는 편이 좋습니다.
 
 ---
 
 ## 마무리
 
-- 동기 로딩은 메인 스레드를 블로킹하여 프레임 정지를 유발하며, 비동기 로딩은 여러 프레임에 걸쳐 작업을 분산합니다. allowSceneActivation으로 활성화 시점을 제어할 수 있습니다.
-- Additive 씬 로딩으로 UI, 게임플레이, 환경을 독립된 씬으로 분리하여 개별적으로 로드/언로드할 수 있습니다.
-- DontDestroyOnLoad는 씬 전환 시 오브젝트를 유지하지만, 참조 에셋이 해제되지 않으므로 최소한으로 사용해야 합니다.
-- 오브젝트 파괴 후에도 에셋 메모리는 즉시 해제되지 않으며, Resources.UnloadUnusedAssets()로 명시적 해제가 필요합니다.
-- 대규모 월드에서는 그리드 씬 분할과 공통 씬/콘텐츠 씬 분리로 메모리 사용량의 상한을 예측 가능하게 유지합니다.
+이번 글에서는 씬이 무엇으로 이루어지는지에서 출발해, 씬을 로드하고 유지하고 해제하는 과정을 메모리 사용과 함께 살펴보았습니다. 핵심은 다음과 같습니다.
 
-씬 관리의 본질은 메모리의 할당과 해제 시점을 제어하는 것입니다. 어떤 에셋을 언제 로드하고 언제 해제할지, 씬 전환 시 메모리 피크를 어떻게 최소화할지가 모바일 환경에서의 안정성을 결정합니다.
+- **동기 씬 로딩**은 로딩이 끝날 때까지 메인 스레드를 붙잡아 화면을 멈추게 합니다. 반면 **비동기 씬 로딩**은 파일 읽기와 역직렬화, 통합 작업을 여러 프레임과 스레드에 분산해 그 멈춤을 줄입니다.
+- **`AsyncOperation`**의 `progress`는 0.9까지가 실제 로딩 구간이고 그 뒤가 활성화 구간이므로, 로딩 바로 표시할 때는 0.9를 100%로 환산합니다. **`allowSceneActivation`**을 false로 두면 활성화를 원하는 시점까지 미룰 수 있습니다.
+- **Additive 모드**는 기존 씬을 둔 채 새 씬을 더해 여러 씬을 함께 올려 둡니다. UI와 게임 플레이, 환경을 역할별 씬으로 나누면 화면 전체를 한꺼번에 교체하지 않고 필요한 부분만 로드하거나 언로드할 수 있습니다.
+- **`DontDestroyOnLoad`**는 씬이 바뀌어도 오브젝트를 살려 두지만, 그 오브젝트가 참조하는 에셋까지 함께 메모리에 남습니다. 따라서 전역으로 유지할 대상은 꼭 필요한 시스템으로 좁혀야 합니다.
+- **씬 언로드**는 오브젝트를 파괴할 뿐, 그것이 참조하던 에셋을 곧바로 해제하지는 않습니다. Additive 씬을 내린 뒤 남은 에셋까지 해제하려면 `Resources.UnloadUnusedAssets()`를 직접 호출해야 합니다.
+- **대규모 월드**는 월드를 격자 셀 단위 씬으로 나누고, 게임 내내 유지할 시스템을 담는 공통 씬과 지역별 콘텐츠 씬을 분리해 다룹니다. 플레이어 주변의 셀만 로드하도록 개수를 제한하면 메모리 상한을 예측하기 쉬워집니다.
+
+결국 씬 관리는 메모리를 언제 확보하고 언제 해제할지 정하는 문제입니다. 어떤 에셋을 어느 시점에 로드하고 언로드할지, 전환 중 두 씬의 에셋이 겹치는 피크를 어떻게 낮출지가 메모리가 빠듯한 모바일에서 안정성을 좌우합니다.
 
 <br>
 
-에셋의 메모리 생명주기를 직접 제어하는 AssetBundle과 Addressables의 로드/해제 패턴은 [메모리 관리 (3) - Addressables와 에셋 전략](/dev/unity/MemoryManagement-3/)에서, Unity 엔진의 기본 구조와 실행 흐름은 [Unity 엔진 핵심 (1) - GameObject와 Component](/dev/unity/UnityCore-1/)에서 각각 확인할 수 있습니다.
+이 글은 씬 단위의 로드와 해제를 다뤘습니다. 에셋 하나하나의 메모리 생명주기를 관리하는 AssetBundle과 Addressables의 로드·해제 패턴은 [메모리 관리 (3) - Addressables와 에셋 전략](/dev/unity/MemoryManagement-3/)에서 이어집니다. 씬 안의 오브젝트가 어떤 구조로 연결되는지는 [Unity 엔진 핵심 (1) - GameObject와 Component](/dev/unity/UnityCore-1/)에서 확인할 수 있습니다.
 
 <br>
 
@@ -1435,11 +1504,6 @@ DontDestroyOnLoad 씬은 Unity가 내부적으로 관리하므로 개발자가 �
 - [Unity 엔진 핵심 (1) - GameObject와 Component](/dev/unity/UnityCore-1/)
 - [메모리 관리 (2) - 네이티브 메모리와 에셋](/dev/unity/MemoryManagement-2/)
 - [메모리 관리 (3) - Addressables와 에셋 전략](/dev/unity/MemoryManagement-3/)
-
-**시리즈**
-- [Unity 에셋 시스템 (1) - Asset Import Pipeline](/dev/unity/UnityAsset-1/)
-- [Unity 에셋 시스템 (2) - Serialization과 Instantiation](/dev/unity/UnityAsset-2/)
-- **Unity 에셋 시스템 (3) - Scene Management (현재 글)**
 
 **전체 시리즈**
 - [하드웨어 기초 (1) - CPU 아키텍처와 파이프라인](/dev/unity/HardwareBasics-1/)
@@ -1458,7 +1522,7 @@ DontDestroyOnLoad 씬은 Unity가 내부적으로 관리하므로 개발자가 �
 - [색과 빛 (2) - 색 표현과 색공간](/dev/unity/ColorAndLight-2/)
 - [색과 빛 (3) - 셰이딩 모델](/dev/unity/ColorAndLight-3/)
 - [래스터화 파이프라인 (1) - 삼각형에서 프래그먼트까지](/dev/unity/RasterPipeline-1/)
-- [래스터화 파이프라인 (2) - 버퍼 시스템](/dev/unity/RasterPipeline-2/)
+- [래스터화 파이프라인 (2) - 출력 병합](/dev/unity/RasterPipeline-2/)
 - [래스터화 파이프라인 (3) - 디스플레이와 안티앨리어싱](/dev/unity/RasterPipeline-3/)
 - [Unity 엔진 핵심 (1) - GameObject와 Component](/dev/unity/UnityCore-1/)
 - [Unity 엔진 핵심 (2) - Transform 계층과 씬 그래프](/dev/unity/UnityCore-2/)
