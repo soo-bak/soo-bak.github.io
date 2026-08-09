@@ -31,6 +31,8 @@ main-sidebar:
        url: "/daily-life/happiness/"
      - title: "Appreciation"
        url: "/daily-life/appreciation/"
+     - title: "Story"
+       url: "/daily-life/story/"
   - title: "Game Design"
     url: "/game-design/"
     children:
