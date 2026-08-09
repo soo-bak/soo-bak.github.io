@@ -1,7 +1,7 @@
 ---
 layout: single
 title: "왜 수박인가요??? - soo:bak"
-date: "2026-08-09 00:00:00 +0900"
+date: "2022-03-09 00:00:00 +0900"
 description: "이름이 왜 수박(soo:bak)인지에 대한 이야기입니다."
 pin: true
 tags:
